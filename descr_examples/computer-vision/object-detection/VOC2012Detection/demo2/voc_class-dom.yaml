@@ -1,0 +1,23 @@
+VOCClassDom:
+    $def: class_domain
+    classes:
+        - car
+        - aeroplane
+        - horse
+        - person
+        - bottle
+        - bicycle
+        - boat
+        - dog
+        - tvmonitor
+        - chair
+        - diningtable
+        - pottedplant
+        - train
+        - cat
+        - bird
+        - sofa
+        - sheep
+        - motorbike
+        - bus
+        - cow

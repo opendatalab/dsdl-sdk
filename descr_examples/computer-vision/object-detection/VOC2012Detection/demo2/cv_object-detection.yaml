@@ -1,0 +1,16 @@
+LocalObjectEntry:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        bbox: BBox
+        label: Label[dom=$cdom]
+    $optional: ['label']
+
+ObjectDetectionSample:
+    # Each sample contains an image together with a list of local objects.
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        image: Image
+        objects: List[LocalObjectEntry[cdom=$cdom]]
+        
