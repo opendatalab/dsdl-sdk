@@ -15,11 +15,14 @@ setup(
     name="dsdl",
     version=version["__version__"],
     description="Python SDK for DSDL",
-    author="dsdl team",
+    author="DSDL team",
     author_email="zhangchaobin@sensetime.com",
     packages=find_packages(),
+    package_data={},
+    include_package_data=True,
     install_requires=[
         "pyyaml>=6.0",
+        "click>=8.1.3",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.6",

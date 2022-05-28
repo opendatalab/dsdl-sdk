@@ -2,3 +2,5 @@
 #
 # Copyright DSDL Team of OpenDatalab. All rights reserved.
 #
+
+from .parser import parse

@@ -1,0 +1,24 @@
+$dsdl-version: "0.5.0"
+meta:
+  name: "my-dataset"
+  creator: "my-team"
+  dataset-version: "1.0.0"
+defs:
+  MyClassDom:
+    $def: class_domain
+    classes:
+      - dog
+      - cat
+      - fish
+      - tiger
+  ImageClassificationSample:
+    $def: struct
+    $fields:
+      image: Image
+      label: Label[dom=MyClassDom]
+      valid: Bool
+data:
+  sample-type: ImageClassificationSample
+  samples:
+    - { image: "xyz/0001.jpg", label: "cat", valid: True }
+    - { image: "xyz/0002.jpg", label: "dog", valid: True }
