@@ -12,14 +12,14 @@ class Field:
         self._default = default
 
     def __set__(self, instance, value):
-        self.memory[instance._cache_key] = value
+        self.memory[instance.cache_key] = value
 
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        if instance._cache_key not in self.memory:
+        if instance.cache_key not in self.memory:
             self.__set__(instance, self.get_default_value())
-        return self.memory[instance._cache_key]
+        return self.memory[instance.cache_key]
 
     def __str__(self):
         return "<%s>" % self.__class__.__name__

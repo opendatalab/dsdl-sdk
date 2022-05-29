@@ -1,4 +1,5 @@
 from .field import Field
+from .registry import registry
 from ..exception import ValidationError
 
 
@@ -7,8 +8,18 @@ class _CacheKey:
 
 
 class StructMetaclass(type):
-    def __new__(cls, name, bases, attributes):
-        return super(cls, cls).__new__(cls, name, bases, attributes)
+    def __new__(mcs, name, bases, attributes):
+        super_new = super().__new__
+
+        # Also ensure initialization is only performed for subclasses of Model
+        # (excluding Model class itself).
+        parents = [b for b in bases if isinstance(b, StructMetaclass)]
+        if not parents:
+            return super_new(mcs, name, bases, attributes)
+
+        new_class = super_new(mcs, name, bases, attributes)
+        registry.register(name, new_class)
+        return new_class
 
 
 class Struct(metaclass=StructMetaclass):
@@ -17,7 +28,6 @@ class Struct(metaclass=StructMetaclass):
         self.populate(**kwargs)
 
     def populate(self, **values):
-        """Populate values to fields. Skip non-existing."""
         values = values.copy()
         fields = list(self.iterate_with_name())
         for _, structure_name, field in fields:
@@ -28,7 +38,6 @@ class Struct(metaclass=StructMetaclass):
                 self.set_field(field, name, values.pop(name))
 
     def set_field(self, field, field_name, value):
-        """Sets the value of a field."""
         try:
             field.__set__(self, value)
         except ValidationError as error:
@@ -36,7 +45,6 @@ class Struct(metaclass=StructMetaclass):
 
     @classmethod
     def iterate_over_fields(cls):
-        """Iterate through fields as `(attribute_name, field_instance)`."""
         for attr in dir(cls):
             cls_attr = getattr(cls, attr)
             if isinstance(cls_attr, Field):
@@ -44,11 +52,10 @@ class Struct(metaclass=StructMetaclass):
 
     @classmethod
     def iterate_with_name(cls):
-        """Iterate over fields, but also give `structure_name`.
-        Format is `(attribute_name, structue_name, field_instance)`.
-        Structure name is name under which value is seen in structure and
-        schema (in primitives) and only there.
-        """
         for attr_name, field in cls.iterate_over_fields():
             structure_name = field.structure_name(attr_name)
             yield attr_name, structure_name, field
+
+    @property
+    def cache_key(self):
+        return self._cache_key
