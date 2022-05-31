@@ -13,3 +13,6 @@ class ImageClassificationSample(Struct):
     image = ImageField()
     label = LabelField(dom=MyClassDom)
     valid = BoolField()
+    val = NumField()
+    ival = IntField()
+    p = CoordField()

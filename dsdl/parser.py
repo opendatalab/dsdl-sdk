@@ -18,7 +18,7 @@ def label_field_generator(raw):
 
 
 def field_generator(raw_field_type: str) -> str:
-    if raw_field_type in ["Image", "Bool", "Num", "Int", "Str"]:
+    if raw_field_type in ["Image", "Bool", "Num", "Int", "Str", "Coord"]:
         return raw_field_type + "Field()"
     if raw_field_type.startswith("Label"):
         return label_field_generator(raw_field_type)

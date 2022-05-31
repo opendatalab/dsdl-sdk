@@ -4,14 +4,15 @@ NotSet = object()
 
 
 class Field:
-    default_validators = []
-
     def __init__(self, name=None, default=NotSet):
         self.memory = WeakKeyDictionary()
         self.name = name
         self._default = default
 
     def __set__(self, instance, value):
+        validated_val = self.validate(value)
+        if validated_val is not None:
+            value = validated_val
         self.memory[instance.cache_key] = value
 
     def __get__(self, instance, owner):
@@ -33,3 +34,9 @@ class Field:
 
     def structure_name(self, default):
         return self.name if self.name is not None else default
+
+    def validate(self, value):
+        """
+        Validate value and raise ValidationError if necessary.
+        """
+        return value

@@ -1,5 +1,5 @@
 from helloworld import ImageClassificationSample
-from dsdl import types
+import dsdl.types
 import yaml
 
 
@@ -11,8 +11,8 @@ if __name__ == "__main__":
         for item in data.items():
             if item[0] == "samples":
                 for sample in item[1]:
-                    cls = types.registry.get_struct(sample_type)
+                    cls = dsdl.types.registry.get_struct(sample_type)
                     sample_list.append(cls(**sample))
 
     for item in sample_list:
-        print(item.image)
+        print(item.image, item.val, type(item.val), item.ival, item.p)

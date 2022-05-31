@@ -6,6 +6,8 @@ class Registry:
         self.struct_map = {}
 
     def register(self, struct_name, struct_cls):
+        # NOTICE: Since this method is called when models are imported,
+        # it cannot perform imports because of the risk of import loops.
         if struct_name in self.struct_map:
             raise StructHasDefinedError
         self.struct_map[struct_name] = struct_cls
