@@ -1,4 +1,5 @@
 from .field import Field
+from .struct import Struct
 from ..exception import ValidationError
 
 
@@ -31,3 +32,17 @@ class StrField(Field):
             return "" + value
         except TypeError as _:
             raise ValidationError(f"expect str, got {value}")
+
+
+class ListField(Field):
+    def __init__(self, ele_type, ordered=False, *args, **kwargs):
+        self.ordered = ordered
+        self.ele_type = ele_type
+        super().__init__(*args, **kwargs)
+
+    def validate(self, value):
+        if isinstance(self.ele_type, Field):
+            value = [self.ele_type.validate(item) for item in value]
+        elif isinstance(self.ele_type, Struct):
+            value = [self.ele_type.__class__(**item) for item in value]
+        return value

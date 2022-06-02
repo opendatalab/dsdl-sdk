@@ -23,5 +23,5 @@ defs:
 data:
   sample-type: ImageClassificationSample
   samples:
-    - { image: "xyz/0001.jpg", label: "cat", valid: true, val: 1.25e-6, ival: 10.10, p: [10, 10]}
-    - { image: "xyz/0002.jpg", label: "dog", valid: false, val: 1000, ival: 1000, p: [101, 101]}
+    - { image: "xyz/0001.jpg", label: "cat", valid: true, val: 1.25e-6, i_val: 10.10, p: [10, 10], label_list: ["cat", "dog"], i_list: [100, 100], item_list: [{val: 10, i_list: [10, 10]}]}
+    - { image: "xyz/0002.jpg", label: "dog", valid: false, val: 1000, i_val: 1000, p: [101, 101], label_list: ["cat"], i_list: [1, 2], item_list: [{val: 10, i_list: [10]}]}

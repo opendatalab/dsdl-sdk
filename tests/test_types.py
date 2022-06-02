@@ -15,4 +15,4 @@ if __name__ == "__main__":
                     sample_list.append(cls(**sample))
 
     for item in sample_list:
-        print(item.image, item.val, type(item.val), item.ival, item.p)
+        print(item.image, item.val, type(item.val), item.i_val, item.p, item.i_list, item.item_list[0].val)
