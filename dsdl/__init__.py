@@ -4,3 +4,4 @@
 #
 
 from .parser import parse
+from .dataset import Dataset

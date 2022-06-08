@@ -27,7 +27,9 @@ class IntervalField(Field):
     def validate(self, value):
         value = validate_list_of_number(value, 2, float)
         if value[0] > value[1]:
-            raise ValidationError(f"expect |begin| less than or equal to |end|, got {value}")
+            raise ValidationError(
+                f"expect |begin| less than or equal to |end|, got {value}"
+            )
         return value
 
 

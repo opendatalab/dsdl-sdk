@@ -18,10 +18,53 @@ defs:
       label: Label[dom=MyClassDom]
       valid: Bool
       val : Num
-      ival : Int
+      i_val : Int
       p: Coord
 data:
   sample-type: ImageClassificationSample
   samples:
-    - { image: "xyz/0001.jpg", label: "cat", valid: true, val: 1.25e-6, i_val: 10.10, p: [10, 10], label_list: ["cat", "dog"], i_list: [100, 100], item_list: [{val: 10, i_list: [10, 10]}]}
-    - { image: "xyz/0002.jpg", label: "dog", valid: false, val: 1000, i_val: 1000, p: [101, 101], label_list: ["cat"], i_list: [1, 2], item_list: [{val: 10, i_list: [10]}]}
+    -
+      i_list:
+        - 100
+        - 100
+      i_val: 10.1
+      image: xyz/0001.jpg
+      item_list:
+        -
+          i_list:
+            - 10
+            - 10
+          val: 10
+      label: cat
+      label_list:
+        - cat
+        - dog
+      p:
+        - 10
+        - 10
+      val: 1.25e-06
+      valid: true
+    -
+      i_list:
+        - 1
+        - 2
+      i_val: 1000
+      image:
+        $descr:
+          size:
+            - 640
+            - 480
+        $loc: abc/0001.jpg
+      item_list:
+        -
+          i_list:
+            - 10
+          val: 10
+      label: dog
+      label_list:
+        - cat
+      p:
+        - 101
+        - 101
+      val: 1000
+      valid: false
