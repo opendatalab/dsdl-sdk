@@ -9,11 +9,6 @@ class MyClassDom(Enum):
     TIGER = "tiger"
 
 
-class TestListItem(Struct):
-    val = NumField()
-    i_list = ListField(IntField())
-
-
 class ImageClassificationSample(Struct):
     image = ImageField()
     label = LabelField(dom=MyClassDom)
@@ -21,7 +16,3 @@ class ImageClassificationSample(Struct):
     val = NumField()
     i_val = IntField()
     p = CoordField()
-    label_list = ListField(LabelField(dom=MyClassDom))
-    i_list = ListField(IntField())
-    item_list = ListField(TestListItem())
-    a = IntField()

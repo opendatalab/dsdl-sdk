@@ -1,4 +1,5 @@
 from .field import Field
+from .unstructure import UnstructuredObjectField
 from .registry import registry
 from ..exception import ValidationError
 
@@ -23,8 +24,9 @@ class StructMetaclass(type):
 
 
 class Struct(metaclass=StructMetaclass):
-    def __init__(self, **kwargs):
+    def __init__(self, dataset, **kwargs):
         self._cache_key = _CacheKey()
+        self.dataset = dataset
         self.populate(**kwargs)
 
     def populate(self, **values):
@@ -38,6 +40,8 @@ class Struct(metaclass=StructMetaclass):
                 self.set_field(field, name, values.pop(name))
 
     def set_field(self, field, field_name, value):
+        if isinstance(field, UnstructuredObjectField):
+            field.set_dataset(self.dataset)
         try:
             field.__set__(self, value)
         except ValidationError as error:
