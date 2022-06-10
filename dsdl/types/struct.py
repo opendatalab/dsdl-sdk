@@ -1,6 +1,7 @@
 from .field import Field
 from .unstructure import UnstructuredObjectField
 from .registry import registry
+from ..exception import ValidationError
 
 
 class StructMetaclass(type):
@@ -28,7 +29,7 @@ class StructMetaclass(type):
 class Struct(dict, metaclass=StructMetaclass):
     def __init__(self, dataset, **kwargs):
         super().__init__()
-        self.dataset = dataset
+        self._dataset = dataset
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -44,5 +45,8 @@ class Struct(dict, metaclass=StructMetaclass):
             return
 
         if isinstance(self.__mappings__[key], UnstructuredObjectField):
-            self.__mappings__[key].set_dataset(self.dataset)
-        self[key] = self.__mappings__[key].validate(value)
+            self.__mappings__[key].set_dataset(self._dataset)
+        try:
+            self[key] = self.__mappings__[key].validate(value)
+        except ValidationError as error:
+            raise ValidationError(f"Field '{key}' validation error: {error}.")
