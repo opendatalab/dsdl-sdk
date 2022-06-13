@@ -32,4 +32,9 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
     python_requires=">=3.6",
+    entry_points={
+        "console_scripts": [
+            "dsdl = dsdl.cli:cli",
+        ],
+    },
 )
