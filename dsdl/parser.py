@@ -27,7 +27,10 @@ def field_generator(raw_field_type: str) -> str:
 
 @click.command()
 @click.option(
-    "--dsdl-yaml",
+    "-y",
+    "--yaml",
+    "dsdl_yaml",
+    type=str,
     required=True,
 )
 def parse(dsdl_yaml):
