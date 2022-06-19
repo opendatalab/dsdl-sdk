@@ -16,7 +16,7 @@ setup(
     version=version["__version__"],
     description="Python SDK for DSDL",
     author="DSDL team",
-    author_email="zhangchaobin@sensetime.com",
+    author_email="dsdl-team@pjlab.org.cn",
     packages=find_packages(),
     package_data={},
     include_package_data=True,
