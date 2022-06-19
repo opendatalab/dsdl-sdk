@@ -8,3 +8,7 @@ class StructHasDefinedError(RuntimeError):
 
 class StructNotFoundError(RuntimeError):
     pass
+
+
+class DefineSyntaxError(SyntaxError):
+    pass
