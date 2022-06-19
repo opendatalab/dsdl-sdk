@@ -35,10 +35,10 @@ class StrField(Field):
 
 
 class ListField(Field):
-    def __init__(self, ele_type, ordered=False, *args, **kwargs):
+    def __init__(self, ele_type, ordered=False):
         self.ordered = ordered
         self.ele_type = ele_type
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
     def validate(self, value):
         if isinstance(self.ele_type, Field):

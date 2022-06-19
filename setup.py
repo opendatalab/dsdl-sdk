@@ -23,6 +23,7 @@ setup(
     install_requires=[
         "pyyaml>=6.0",
         "click>=8.1.3",
+        "networkx>=2.8.4",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.6",

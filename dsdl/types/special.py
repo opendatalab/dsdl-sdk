@@ -1,5 +1,6 @@
 from .field import Field
 from ..exception import ValidationError
+from datetime import date, time
 
 
 def validate_list_of_number(value, size_limit, item_type):
@@ -38,7 +39,36 @@ class BBoxField(Field):
         return validate_list_of_number(value, 4, float)
 
 
+class PolygonField(Field):
+    def validate(self, value):
+        for idx, item in enumerate(value):
+            value[idx] = validate_list_of_number(item, 2, float)
+        return value
+
+
 class LabelField(Field):
     def __init__(self, dom):
         super(LabelField, self).__init__()
         self.dom = dom
+
+
+class DateField(Field):
+    def __init__(self, fmt: str = ""):
+        super(DateField, self).__init__()
+        self.fmt = fmt
+
+    def validate(self, value):
+        if self.fmt == "":
+            return date.fromisoformat(value)
+        return date.strftime(value, self.fmt)
+
+
+class TimeField(Field):
+    def __init__(self, fmt: str = ""):
+        super(TimeField, self).__init__()
+        self.fmt = fmt
+
+    def validate(self, value):
+        if self.fmt == "":
+            return time.fromisoformat(value)
+        return time.strftime(value, self.fmt)
