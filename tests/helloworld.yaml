@@ -4,13 +4,6 @@ meta:
   creator: "my-team"
   dataset-version: "1.0.0"
 defs:
-  MyClassDom:
-    $def: class_domain
-    classes:
-      - dog
-      - cat
-      - fish
-      - tiger
   ImageClassificationSample:
     $def: struct
     $fields:
@@ -20,6 +13,14 @@ defs:
       val : Num
       i_val : Int
       p: Coord
+      date: Date[fmt="%Y-%m-%d"]
+  MyClassDom:
+    $def: class_domain
+    classes:
+      - dog
+      - cat
+      - fish
+      - tiger
 data:
   sample-type: ImageClassificationSample
   samples:
@@ -44,6 +45,7 @@ data:
         - 10
       val: 1.25e-06
       valid: true
+      date: "2020-12-29"
     -
       i_list:
         - 1
@@ -68,3 +70,4 @@ data:
         - 101
       val: 1000
       valid: false
+      date: "2020-12-29"
