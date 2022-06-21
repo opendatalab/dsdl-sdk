@@ -1,7 +1,7 @@
 $dsdl-version: "0.5.0"
 
 meta:
-	name: "COCO2017 Object Detection"
+    name: "COCO2017 Object Detection"
     creator: "MSRA"
     dataset-version: "1.0.0"
     subdata_name: "Validation Set"
