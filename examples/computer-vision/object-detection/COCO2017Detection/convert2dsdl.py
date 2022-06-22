@@ -11,11 +11,14 @@ import argparse
 import pdb
 
 
+TAB_SPACE = "    "
+
+
 def get_dict(file_name):
     dict_id_class = {}
-    with open('./coco_id-class.txt') as fp:
+    with open("./coco_id-class.txt") as fp:
         for line in fp.readlines():
-            id, clss = line.strip().split(':')
+            id, clss = line.strip().split(":")
             id = int(id)
             dict_id_class[id] = clss
     return dict_id_class
@@ -23,11 +26,18 @@ def get_dict(file_name):
 
 def parse_args():
     """Parse input arguments"""
-    parser = argparse.ArgumentParser(description='Convert v0.3 format to dsdl yaml file.')
-    parser.add_argument('--subdata_name', dest='subdata_name', help='Subdataset name: train/val/test', 
-                         default='val', type=str)
+    parser = argparse.ArgumentParser(
+        description="Convert v0.3 format to dsdl yaml file."
+    )
+    parser.add_argument(
+        "--subdata_name",
+        dest="subdata_name",
+        help="Subdataset name: train/val/test",
+        default="val",
+        type=str,
+    )
 
-    if len(sys.argv)==1:
+    if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(-1)
 
@@ -43,37 +53,37 @@ def write_sample(sample, file_point, dict_id_class):
     }
     """
     image_path = sample["media"]["path"]
-    file_point.writelines(f'\t\t- image: "{image_path}"\n')
+    file_point.writelines(f'{TAB_SPACE*2}image: "{image_path}"\n')
 
-    if 'ground_truth' in sample.keys():
+    if "ground_truth" in sample.keys():
         gts = sample["ground_truth"]
     else:
         gts = []
-    
-    file_point.writelines(f"\t\t  objects:\n")
+
+    file_point.writelines(f"{TAB_SPACE*2}objects:\n")
     for i in range(len(gts)):
-        if gts[i]['type'] == 'box2d':
+        if gts[i]["type"] == "box2d":
             [x1, y1, w, h] = gts[i]["bbox"]
             cls_id = gts[i]["categories"][0]["category_id"]
             cls_name = dict_id_class[cls_id]
-            is_crowd = True if gts[i]['attributes']['iscrowd'] else False
+            is_crowd = True if gts[i]["attributes"]["iscrowd"] else False
             file_point.writelines(
-                f'\t\t\t  - {{ bbox: [{x1}, {y1}, {w}, {h}], label: "{cls_name}", is_crowd: {is_crowd}}}\n'
+                f'{TAB_SPACE*3}- {{ bbox: [{x1}, {y1}, {w}, {h}], label: "{cls_name}", is_crowd: {is_crowd} }}\n'
             )
         else:
             pass
 
 
 if __name__ == "__main__":
-    
+
     args = parse_args()
-    print(f'Called with args: \n{args}')
+    print(f"Called with args: \n{args}")
     src_file = f"./{args.subdata_name}2017.json"
     out_file = f"./{args.subdata_name}_data.yaml"
-    print(f'source file: {src_file}')
-    print(f'res file: {out_file}')
+    print(f"source file: {src_file}")
+    print(f"res file: {out_file}")
 
-    file_id_class = './coco_id-class.txt'
+    file_id_class = "./coco_id-class.txt"
     dict_id_class = get_dict(file_id_class)
 
     with open(src_file) as fp:
@@ -81,8 +91,10 @@ if __name__ == "__main__":
 
     with open(out_file, "w") as fp:
         fp.writelines("data:\n")
-        fp.writelines("\tsample-type: ObjectDetectionSample[cdom=COCOClassDom]\n")
-        fp.writelines("\tsamples:\n")
+        fp.writelines(
+            f"{TAB_SPACE}sample-type: ObjectDetectionSample[cdom=COCOClassDom]\n"
+        )
+        fp.writelines(f"{TAB_SPACE}samples:\n")
 
         samples = train_data["samples"]
         # for i in range(len(samples)):
