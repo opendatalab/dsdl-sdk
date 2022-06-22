@@ -1,6 +1,6 @@
 from .field import Field
 from ..exception import ValidationError
-from datetime import date, time
+from datetime import date, time, datetime
 
 
 def validate_list_of_number(value, size_limit, item_type):
@@ -60,7 +60,7 @@ class DateField(Field):
     def validate(self, value):
         if self.fmt == "":
             return date.fromisoformat(value)
-        return date.strftime(value, self.fmt)
+        return datetime.strptime(value, self.fmt).date()
 
 
 class TimeField(Field):
@@ -71,4 +71,4 @@ class TimeField(Field):
     def validate(self, value):
         if self.fmt == "":
             return time.fromisoformat(value)
-        return time.strftime(value, self.fmt)
+        return datetime.strptime(value, self.fmt).time()
