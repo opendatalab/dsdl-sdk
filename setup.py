@@ -24,6 +24,7 @@ setup(
         "pyyaml>=6.0",
         "click>=8.1.3",
         "networkx>=2.8.4",
+        "Pillow>=9.1.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.6",
