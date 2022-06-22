@@ -1,10 +1,9 @@
 import os
 from contextlib import contextmanager
+from .base import BaseFileReader
 
 
-class LocalFileReader:
-    def __init__(self, working_dir=""):
-        self.working_dir = working_dir
+class LocalFileReader(BaseFileReader):
 
     @contextmanager
     def load(self, file):
