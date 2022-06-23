@@ -91,22 +91,22 @@ defs:
             - hair drier
             - toothbrush
     
-LocalObjectEntry:
-    $def: struct
-    $fields:
-        bbox: BBox
-        label: Label[dom=COCOClassDom]
-        $optional: ['label']
-
-ObjectDetectionSample:
-    # Each sample contains an image together with a list of local objects.
-    $def: struct
-    $fields:
-        image: Image
-        objects: List[etype=LocalObjectEntry]]
+    LocalObjectEntry:
+        $def: struct
+        $fields:
+            bbox: BBox
+            label: Label[dom=COCOClassDom]
+            $optional: ['label']
+    
+    ObjectDetectionSample:
+        # Each sample contains an image together with a list of local objects.
+        $def: struct
+        $fields:
+            image: Image
+            objects: List[etype=LocalObjectEntry]]
 
 data:
-    sample-type: ObjectDetectionSample[cdom=COCOClassDom]
+    sample-type: ObjectDetectionSample
     samples:
         image: "media/000000117266.jpg"
         objects:
