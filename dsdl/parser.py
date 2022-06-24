@@ -1,8 +1,10 @@
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from .exception import StructHasDefinedError, DefineSyntaxError
+from .exception import StructHasDefinedError, DefineSyntaxError, DefineTypeError
 import networkx as nx
+from .types.field import Field
+from .types.struct import Struct
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -27,6 +29,20 @@ class Parser(ABC):
 class DSDLParser(Parser):
     def __init__(self):
         self.define_map = dict()
+        self.TYPES_WITHOUT_PARS = [
+            "Bool",
+            "Num",
+            "Int",
+            "Str",
+            "Coord",
+            "Coord3D",
+            "Interval",
+            "BBox",
+            "Polygon",
+            "Image",
+        ]
+        self.TYPES_WITH_PARS = ["Date", "Label", "Time"]
+        self.TYPES_WITH_PARS_SP = ["List"]
 
     def parse(self, input_file):
         with open(input_file, "r") as f:
@@ -48,10 +64,7 @@ class DSDLParser(Parser):
                     if not raw_field[0].isidentifier():
                         continue
                     define_info["field_list"].append(
-                        {
-                            "name": raw_field[0],
-                            "type": self.parse_struct_field(raw_field[1]),
-                        }
+                        {"name": raw_field[0], "type": self.parse_struct_field(raw_field[1].replace(" ", "")), }
                     )
 
             if define_type == "class_domain":
@@ -61,9 +74,7 @@ class DSDLParser(Parser):
                     if not class_name.isidentifier():
                         continue
                     define_info["class_list"].append(
-                        {
-                            "name": class_name,
-                        }
+                        {"name": class_name, }
                     )
 
             self.define_map[define_info["name"]] = define_info
@@ -100,8 +111,75 @@ class DSDLParser(Parser):
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
 
+    def parse_list_filed(self, raw: str) -> str:
+        """
+        处理List类型的field
+        """
+        def sanitize_etype(val: str) -> str:
+            """
+            验证List类型中的etype是否存在（必须存在）且是否为合法类型
+            """
+            return self.parse_struct_field(val)
+
+        def all_subclasses(cls):
+            """
+            返回某个类的所有子类：like[<class '__main__.Bar'>, <class '__main__.Baz'>...]
+            """
+            return cls.__subclasses__() + [g for s in cls.__subclasses__() for g in all_subclasses(s)]
+
+        def rreplace(s, old, new, occurrence):
+            """
+            从右向左的替换函数，类似replace,不过是反着的
+            """
+            li = s.rsplit(old, occurrence)
+            return new.join(li)
+
+        def sanitize_ordered(val: str) -> str:
+            if val.lower() in ["true", "false"]:
+                if val.lower() == "true":
+                    return "True"
+                else:
+                    return "False"
+            else:
+                raise DefineSyntaxError(f"invalid value {val} in ordered of List {raw}.")
+
+        field_type = "List"
+
+        raw = rreplace(raw.replace(f"{field_type}[", "", 1), "]", "", 1)
+        param_list = raw.split(",")
+        ele_type, ordered = None, None
+        if len(param_list) == 2:
+            ele_type = param_list[0]
+            ordered = param_list[1]
+        elif len(param_list) == 1:
+            ele_type = param_list[0]
+        else:
+            raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+
+        ele_type = ele_type.split("=")
+        if len(ele_type) == 2:
+            if ele_type[0].strip() != "etype":
+                raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+            ele_type = ele_type[1]
+        elif len(ele_type) == 1:
+            ele_type = ele_type[0]
+        else:
+            raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+
+        res = field_type + "Field("
+        if ele_type:
+            ele_type = sanitize_etype(ele_type)
+            res += "ele_type=" + ele_type
+        else:
+            raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+        if ordered:
+            ordered = ordered.split("=")[-1]
+            ordered = sanitize_ordered(ordered)
+            res += ", ordered=" + ordered
+        return res + ")"
+
     @staticmethod
-    def parse_struct_field_with_params(raw: str) -> str:
+    def parse_struct_field_with_params(raw: str) -> str:  # Label, Time, Date类型的解析器
         def sanitize_dom(val: str) -> str:
             if not val.isidentifier():
                 raise DefineSyntaxError(f"invalid dom: {val}")
@@ -128,39 +206,33 @@ class DSDLParser(Parser):
         valid_param_list = []
         for param in param_list:
             parts = param.split("=")
-            if len(parts) != 2:
-                continue
-            if parts[0] not in field_map[field_type]:
-                continue
-            sanitized = field_map[field_type][parts[0]](parts[1])
-            valid_param_list.append(f"{parts[0]}={sanitized}")
+            # 需要考虑参数省略的情况，因为dom经常省略
+            if len(parts) == 2:
+                field_para = parts[0]
+                field_var = parts[1]
+            elif len(parts) == 1:
+                field_para = next(iter(field_map[field_type]))
+                field_var = parts[0]
+            else:
+                raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+            sanitized = field_map[field_type][field_para](field_var)
+            valid_param_list.append(f"{field_para}={sanitized}")
         return field_type + "Field(" + ",".join(valid_param_list) + ")"
 
-    @staticmethod
-    def parse_struct_field(raw_field_type: str) -> str:
-        if raw_field_type in [
-            "Bool",
-            "Num",
-            "Int",
-            "Str",
-            "Coord",
-            "Coord3D",
-            "Interval",
-            "BBox",
-            "Polygon",
-            "Image",
-        ]:
+    def parse_struct_field(self, raw_field_type: str) -> str:
+        if raw_field_type in self.TYPES_WITHOUT_PARS:
             return raw_field_type + "Field()"
-        return DSDLParser.parse_struct_field_with_params(raw_field_type)
+        elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS_SP)):
+            return self.parse_list_filed(raw_field_type)
+        elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS)):
+            return DSDLParser.parse_struct_field_with_params(raw_field_type)
+        else:
+            raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
 
 
 @click.command()
 @click.option(
-    "-y",
-    "--yaml",
-    "dsdl_yaml",
-    type=str,
-    required=True,
+    "-y", "--yaml", "dsdl_yaml", type=str, required=True,
 )
 def parse(dsdl_yaml):
     output_file = dsdl_yaml.replace(".yaml", ".py")

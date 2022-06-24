@@ -12,3 +12,7 @@ class StructNotFoundError(RuntimeError):
 
 class DefineSyntaxError(SyntaxError):
     pass
+
+
+class DefineTypeError(TypeError):
+    pass
