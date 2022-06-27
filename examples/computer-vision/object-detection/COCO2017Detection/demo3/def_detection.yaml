@@ -14,4 +14,4 @@ ObjectDetectionSample:
     $params: ['cdom']
     $fields:
         image: Image
-        objects: List[etype=LocalObjectEntry[cdom=$cdom]]]
+        objects: List[etype=LocalObjectEntry[cdom=$cdom]]

@@ -7,7 +7,7 @@ defs:
   ImageClassificationSample:
     $def: struct
     $fields:
-      i_list: List[ele_type=Int]     #  label = ListField(IntField())
+      i_list: List[etype=Int]     #  label = ListField(IntField())
       item_list: List[List[Int], ordered = True]  #  label = ListField(ListField(IntField()))
       image: Image
       label: Label[dom=MyClassDom]
