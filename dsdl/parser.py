@@ -16,6 +16,7 @@ class Parser(ABC):
     定义一个Parser的抽象基类（没法实例化的）：
     用处： 强制子类实现某些方法：写框架时常用。
     """
+
     @abstractmethod
     def parse(self, input_file_list):
         """
@@ -76,7 +77,7 @@ class DSDLParser(Parser):
         for define in class_defi:
             define_name = define[0]
             if define_name == "$dsdl-version":
-                self.dsdl_version = define[1]   # 存版本号，后续应该会使用（目前木有用）
+                self.dsdl_version = define[1]  # 存版本号，后续应该会使用（目前木有用）
                 continue
             define_type = define[1]["$def"]
             if not define_name.isidentifier():
@@ -93,7 +94,7 @@ class DSDLParser(Parser):
                     if not raw_field[0].isidentifier():
                         continue
                     define_info["field_list"].append(
-                        {"name": raw_field[0], "type": self.parse_struct_field(raw_field[1].replace(" ", "")), }
+                        {"name": raw_field[0], "type": self.parse_struct_field(raw_field[1].replace(" ", "")),}
                     )
 
             if define_type == "class_domain":
@@ -104,14 +105,14 @@ class DSDLParser(Parser):
                     if not class_name.isidentifier():
                         continue
                     define_info["class_list"].append(
-                        {"name": class_name, }
+                        {"name": class_name,}
                     )
 
             self.define_map[define_info["name"]] = define_info
 
     def generate(self, output_file):
         """
-
+        将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
         # WIP: check define cycles.
         define_graph = nx.DiGraph()
@@ -148,6 +149,7 @@ class DSDLParser(Parser):
         """
         解析处理List类型的field
         """
+
         def sanitize_etype(val: str) -> str:
             """
             验证List类型中的etype是否存在（必须存在）且是否为合法类型
@@ -216,6 +218,7 @@ class DSDLParser(Parser):
         """
         解析处理Label, Time, Date类型的field
         """
+
         def sanitize_dom(val: str) -> str:
             """
             Label中对dom部分的校验，是用来严格限制特定格式或者字符。
