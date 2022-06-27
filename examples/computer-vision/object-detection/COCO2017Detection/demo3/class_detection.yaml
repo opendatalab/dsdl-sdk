@@ -25,7 +25,7 @@ VOCClassDom:
         - cow
 
 COCOClassDom:
-    $def: class-domain
+    $def: class_domain
     classes:
         - person
         - bicycle
@@ -109,7 +109,7 @@ COCOClassDom:
         - toothbrush
 
 COCOClassFullDom:
-    $def: class-domain
+    $def: class_domain
     classes:
         - person
         - bicycle

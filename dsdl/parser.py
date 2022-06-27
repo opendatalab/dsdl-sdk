@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 from yaml import load as yaml_load
 from .exception import StructHasDefinedError, DefineSyntaxError, DefineTypeError
 import networkx as nx
-from .types.field import Field
-from .types.struct import Struct
+
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -13,23 +12,33 @@ except ImportError:
 
 
 class Parser(ABC):
+    """
+    定义一个Parser的抽象基类（没法实例化的）：
+    用处： 强制子类实现某些方法：写框架时常用。
+    """
     @abstractmethod
-    def parse(self, input_file):
+    def parse(self, input_file_list):
+        """
+        将yaml文件中的模型（struct）和标签(label)部分校验之后读入某个变量中
+        """
         pass
 
     @abstractmethod
     def generate(self, output_file):
+        """
+        将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
+        """
         pass
 
-    def process(self, input_file, output_file):
-        self.parse(input_file)
+    def process(self, input_file_list, output_file):
+        self.parse(input_file_list)
         self.generate(output_file)
 
 
 class DSDLParser(Parser):
     def __init__(self):
         self.define_map = dict()
-        self.TYPES_WITHOUT_PARS = [
+        self.TYPES_WITHOUT_PARS = [  # mmdetection 注册器
             "Bool",
             "Num",
             "Int",
@@ -43,13 +52,32 @@ class DSDLParser(Parser):
         ]
         self.TYPES_WITH_PARS = ["Date", "Label", "Time"]
         self.TYPES_WITH_PARS_SP = ["List"]
+        self.dsdl_version = None
 
-    def parse(self, input_file):
-        with open(input_file, "r") as f:
-            desc = yaml_load(f, Loader=YAMLSafeLoader)
+    def parse(self, input_file_list):
+        """
+        将yaml文件中的模型（struct）和标签(label)部分校验之后读入变量self.define_map中
+            input_file_list: 读入的yaml文件
+        """
+        desc = dict()
+        for input_file in input_file_list:
+            with open(input_file, "r") as f:
+                desc.update(yaml_load(f, Loader=YAMLSafeLoader))
 
-        for define in desc["defs"].items():
+        if "defs" in desc:
+            # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
+            # 因为有不同格式的yaml(数据和模型放同一个yaml中或者分开放)，所以用if...else分别做处理
+            class_defi = desc["defs"].items()
+            self.dsdl_version = desc["$dsdl-version"]  # 存版本号，后续应该会使用（目前木有用）
+        else:
+            class_defi = desc.items()
+
+        # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
+        for define in class_defi:
             define_name = define[0]
+            if define_name == "$dsdl-version":
+                self.dsdl_version = define[1]   # 存版本号，后续应该会使用（目前木有用）
+                continue
             define_type = define[1]["$def"]
             if not define_name.isidentifier():
                 continue
@@ -58,6 +86,7 @@ class DSDLParser(Parser):
 
             define_info = {"name": define_name}
             if define_type == "struct":
+                # 对class_defi中struct类型的ele做校验并存入define_info
                 define_info["type"] = "struct"
                 define_info["field_list"] = []
                 for raw_field in define[1]["$fields"].items():
@@ -68,6 +97,7 @@ class DSDLParser(Parser):
                     )
 
             if define_type == "class_domain":
+                # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
                 define_info["type"] = "class_domain"
                 define_info["class_list"] = []
                 for class_name in define[1]["classes"]:
@@ -80,6 +110,9 @@ class DSDLParser(Parser):
             self.define_map[define_info["name"]] = define_info
 
     def generate(self, output_file):
+        """
+
+        """
         # WIP: check define cycles.
         define_graph = nx.DiGraph()
         define_graph.add_nodes_from(self.define_map.keys())
@@ -113,7 +146,7 @@ class DSDLParser(Parser):
 
     def parse_list_filed(self, raw: str) -> str:
         """
-        处理List类型的field
+        解析处理List类型的field
         """
         def sanitize_etype(val: str) -> str:
             """
@@ -179,13 +212,24 @@ class DSDLParser(Parser):
         return res + ")"
 
     @staticmethod
-    def parse_struct_field_with_params(raw: str) -> str:  # Label, Time, Date类型的解析器
+    def parse_struct_field_with_params(raw: str) -> str:
+        """
+        解析处理Label, Time, Date类型的field
+        """
         def sanitize_dom(val: str) -> str:
+            """
+            Label中对dom部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
             if not val.isidentifier():
                 raise DefineSyntaxError(f"invalid dom: {val}")
             return val
 
         def sanitize_fmt(val: str) -> str:
+            """
+            Date, Time中对ftm部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
             val = val.strip("\"'")
             return f'"{val}"'
 
@@ -220,21 +264,31 @@ class DSDLParser(Parser):
         return field_type + "Field(" + ",".join(valid_param_list) + ")"
 
     def parse_struct_field(self, raw_field_type: str) -> str:
+        """
+        校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
+            raw_field_type: like: Int, Image, Label[dom=MyClassDom], List[List[Int], ordered = True], ....
+        """
         if raw_field_type in self.TYPES_WITHOUT_PARS:
+            # 不带参数的不需要校验，直接可以转化为python代码（注意区分yaml中的模型部分到ORM的校验和通过ORM读入数据的校验，
+            # 后者在dataset.py中定义，你脑子里想的Int也需要校验是数据的校验。）
             return raw_field_type + "Field()"
         elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS_SP)):
+            # 带参数的Date, Time, Label类型的字段的校验
             return self.parse_list_filed(raw_field_type)
         elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS)):
+            # 带参数的List类型的字段的校验
+            # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
             return DSDLParser.parse_struct_field_with_params(raw_field_type)
         else:
-            raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
+            # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
+            return raw_field_type
 
 
 @click.command()
 @click.option(
-    "-y", "--yaml", "dsdl_yaml", type=str, required=True,
+    "-y", "--yaml", "dsdl_yaml", type=str, required=True, multiple=True,
 )
 def parse(dsdl_yaml):
-    output_file = dsdl_yaml.replace(".yaml", ".py")
+    output_file = dsdl_yaml[0].replace(".yaml", ".py")
     dsdl_parser = DSDLParser()
     dsdl_parser.process(dsdl_yaml, output_file)

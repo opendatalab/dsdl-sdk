@@ -1,7 +1,7 @@
 $dsdl-version: "0.5.0"
 
 COCOClassDom:
-    $def: class-domain
+    $def: class_domain
     classes:
         - person
         - bicycle
@@ -83,7 +83,7 @@ COCOClassDom:
         - teddy bear
         - hair drier
         - toothbrush
-    
+
 LocalObjectEntry:
     $def: struct
     $fields:
@@ -96,4 +96,4 @@ ObjectDetectionSample:
     $def: struct
     $fields:
         image: Image
-        objects: List[etype=LocalObjectEntry]]
+        objects: List[etype=LocalObjectEntry]
