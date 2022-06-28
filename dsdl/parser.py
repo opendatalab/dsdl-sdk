@@ -1,3 +1,5 @@
+import abc
+
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
@@ -25,14 +27,14 @@ class Parser(ABC):
         """
         将yaml文件中的模型（struct）和标签(label)部分校验之后读入某个变量中
         """
-        raise NotImplementedError
+        pass
 
     @abstractmethod
     def generate(self, output_file):
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
-        raise NotImplementedError
+        pass
 
     def process(self, input_file_list, output_file):
         self.parse(input_file_list)
