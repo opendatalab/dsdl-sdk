@@ -1,8 +1,11 @@
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from .exception import StructHasDefinedError, DefineSyntaxError, DefineTypeError
+from .exception import DefineSyntaxError, DefineTypeError
+from .warning import DuplicateDefineWarning
 import networkx as nx
+from .config.config import Config
+import os
 
 
 try:
@@ -39,7 +42,7 @@ class Parser(ABC):
 class DSDLParser(Parser):
     def __init__(self):
         self.define_map = dict()
-        self.TYPES_WITHOUT_PARS = [  # mmdetection 注册器
+        self.TYPES_WITHOUT_PARS = [
             "Bool",
             "Num",
             "Int",
@@ -83,7 +86,7 @@ class DSDLParser(Parser):
             if not define_name.isidentifier():
                 continue
             if define_name in self.define_map:
-                raise StructHasDefinedError(f"{define_name} has defined.")
+                DuplicateDefineWarning(f"{define_name} has defined.")
 
             define_info = {"name": define_name}
             if define_type == "struct":
@@ -94,7 +97,12 @@ class DSDLParser(Parser):
                     if not raw_field[0].isidentifier():
                         continue
                     define_info["field_list"].append(
-                        {"name": raw_field[0], "type": self.parse_struct_field(raw_field[1].replace(" ", "")),}
+                        {
+                            "name": raw_field[0],
+                            "type": self.parse_struct_field(
+                                raw_field[1].replace(" ", "")
+                            ),
+                        }
                     )
 
             if define_type == "class_domain":
@@ -105,7 +113,9 @@ class DSDLParser(Parser):
                     if not class_name.isidentifier():
                         continue
                     define_info["class_list"].append(
-                        {"name": class_name,}
+                        {
+                            "name": class_name,
+                        }
                     )
 
             self.define_map[define_info["name"]] = define_info
@@ -114,7 +124,7 @@ class DSDLParser(Parser):
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
-        # WIP: check define cycles.
+        # check define cycles. 如果有环形（就是循环定义）那是不行滴～
         define_graph = nx.DiGraph()
         define_graph.add_nodes_from(self.define_map.keys())
         for key, val in self.define_map.items():
@@ -160,7 +170,9 @@ class DSDLParser(Parser):
             """
             返回某个类的所有子类：like[<class '__main__.Bar'>, <class '__main__.Baz'>...]
             """
-            return cls.__subclasses__() + [g for s in cls.__subclasses__() for g in all_subclasses(s)]
+            return cls.__subclasses__() + [
+                g for s in cls.__subclasses__() for g in all_subclasses(s)
+            ]
 
         def rreplace(s, old, new, occurrence):
             """
@@ -176,7 +188,9 @@ class DSDLParser(Parser):
                 else:
                     return "False"
             else:
-                raise DefineSyntaxError(f"invalid value {val} in ordered of List {raw}.")
+                raise DefineSyntaxError(
+                    f"invalid value {val} in ordered of List {raw}."
+                )
 
         field_type = "List"
 
@@ -283,15 +297,30 @@ class DSDLParser(Parser):
             # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
             return DSDLParser.parse_struct_field_with_params(raw_field_type)
         else:
-            # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
             return raw_field_type
+            # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
 
 
 @click.command()
 @click.option(
-    "-y", "--yaml", "dsdl_yaml", type=str, required=True, multiple=True,
+    "-y",
+    "--yaml",
+    "dsdl_yaml",
+    type=str,
+    required=True,
 )
 def parse(dsdl_yaml):
-    output_file = dsdl_yaml[0].replace(".yaml", ".py")
+    config = Config(
+        os.getenv(
+            "CONFIG_PATH", dsdl_yaml    # eg. "/Users/jiangyiying/sherry/work/dsdl-sdk/coco_demo1_config.yaml"
+        )
+    )
+    config.fetch()
+
+    input_file_list = [config.STRUCT_YAML]
+    if config.CLASS_YAML != config.STRUCT_YAML:
+        input_file_list.append(config.STRUCT_YAML)
+
+    output_file = os.path.join(config.DSDL_LIBRARY_PATH, "data_field.py")
     dsdl_parser = DSDLParser()
-    dsdl_parser.process(dsdl_yaml, output_file)
+    dsdl_parser.process(input_file_list, output_file)
