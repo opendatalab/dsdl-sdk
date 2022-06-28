@@ -25,14 +25,14 @@ class Parser(ABC):
         """
         将yaml文件中的模型（struct）和标签(label)部分校验之后读入某个变量中
         """
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def generate(self, output_file):
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
-        pass
+        raise NotImplementedError
 
     def process(self, input_file_list, output_file):
         self.parse(input_file_list)
