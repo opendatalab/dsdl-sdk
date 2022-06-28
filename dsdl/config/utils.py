@@ -45,7 +45,6 @@ class ConfigBase:
         return value.split(",")
 
     def __str__(self):
-        # return self.name + ":" + str(self.age)
         res = []
         for attribute, value in self.__dict__.items():
             try:
@@ -83,10 +82,12 @@ class YamlConfig(ConfigBase):
             return self.DSDL_LIBRARY_PATH
 
     def fetch(self):
+        # 如果config.yaml里面不存在，先判断我们给定默认config.py中存在不，不存在就用其他值赋值
         if (
             "STRUCT_YAML" not in self.config_dict.keys()
             and "CLASS_YAML" not in self.config_dict.keys()
         ):
+
             if not getattr(self, "STRUCT_YAML"):
                 setattr(self, "STRUCT_YAML", self._get_config_field("DATA_YAML"))
             if not getattr(self, "CLASS_YAML"):
