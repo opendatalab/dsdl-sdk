@@ -1,6 +1,4 @@
 from .field import Field
-from .generic import ListField
-from .unstructure import UnstructuredObjectField
 from .registry import registry
 from ..exception import ValidationError
 
@@ -45,7 +43,7 @@ class Struct(dict, metaclass=StructMetaclass):
             self[key] = value
             return
 
-        if isinstance(self.__mappings__[key], (UnstructuredObjectField, ListField)):
+        if hasattr(self.__mappings__[key], "set_dataset"):
             self.__mappings__[key].set_dataset(self._dataset)
         try:
             self[key] = self.__mappings__[key].validate(value)

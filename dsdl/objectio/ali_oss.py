@@ -5,6 +5,9 @@ from .base import BaseFileReader
 
 
 class AliOSSFileReader(BaseFileReader):
+    """
+    该类的作用为读取 阿里云OSS上面的文件
+    """
 
     def __init__(self, working_dir, bucket_name, access_key_id, access_key_secret, endpoint):
         super().__init__(working_dir)
