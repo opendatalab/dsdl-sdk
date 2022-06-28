@@ -79,4 +79,4 @@ class LocalObjectEntry(Struct):
 
 class ObjectDetectionSample(Struct):
     image = ImageField()
-    objects = ListField(ele_type=LocalObjectEntry)
+    objects = ListField(ele_type=LocalObjectEntry())

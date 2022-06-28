@@ -1,5 +1,3 @@
-import abc
-
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
@@ -299,7 +297,7 @@ class DSDLParser(Parser):
             # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
             return DSDLParser.parse_struct_field_with_params(raw_field_type)
         else:
-            return raw_field_type
+            return raw_field_type + "()"
             # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
 
 
