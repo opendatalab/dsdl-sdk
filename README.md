@@ -6,6 +6,7 @@
 
 ## 安装
 
+python 环境3.8及以上
 ```bash
 $ python setup.py install
 ```
@@ -13,7 +14,7 @@ $ python setup.py install
 parser入口
 
 ```bash
-$ dsdl parse --yaml tests/helloworld.yaml
+$ dsdl parse --yaml tests/coco_demo1_config.yaml
 ```
 
 

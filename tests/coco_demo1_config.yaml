@@ -1,0 +1,4 @@
+DSDL_LIBRARY_PATH : "/Users/jiangyiying/sherry/work/dsdl-sdk/examples/computer-vision/object-detection/COCO2017Detection/demo1"
+DATA_YAML: "coco_val_demo.yaml"
+# STRUCT_YAML和CLASS_YAML不写默认用DATA_YAML,
+# STRUCT_YAML和CLASS_YAML写了一个，另一个不写，默认互相使用

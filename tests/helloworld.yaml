@@ -35,12 +35,11 @@ data:
       image: xyz/0001.jpg
       item_list:
         -
-          i_list:
-            - 10
-            - 10
-          val:
-            - 50
-            - 40
+          - 10
+          - 10
+        -
+          - 50
+          - 40
       label: cat
       label_list:
         - cat
@@ -64,11 +63,12 @@ data:
         $loc: abc/0001.jpg
       item_list:
         -
-          i_list:
-            - 10
-          val:
-            - 10
-            - 20
+          - 10
+          - 30
+          - 50
+        -
+          - 10
+          - 20
       label: dog
       label_list:
         - cat
