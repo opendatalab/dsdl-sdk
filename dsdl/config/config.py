@@ -7,6 +7,3 @@ class Config(YamlConfig):
     DATA_YAML: str = "coco_val_demo.yaml"
     STRUCT_YAML: str
     CLASS_YAML: str
-
-
-

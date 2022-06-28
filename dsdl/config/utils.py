@@ -49,7 +49,7 @@ class ConfigBase:
         res = []
         for attribute, value in self.__dict__.items():
             try:
-                res.append(str(attribute) + '=' + str(value))
+                res.append(str(attribute) + "=" + str(value))
             except:
                 continue
         return " ".join(res)
@@ -86,20 +86,12 @@ class YamlConfig(ConfigBase):
             return self.DSDL_LIBRARY_PATH
 
     def fetch(self):
-        if (self.STRUCT_YAML is None
-            and self.CLASS_YAML is None
-        ):
+        if self.STRUCT_YAML is None and self.CLASS_YAML is None:
             setattr(self, "STRUCT_YAML", self._get_config_field("DATA_YAML"))
             setattr(self, "CLASS_YAML", self._get_config_field("DATA_YAML"))
-        elif (
-                self.STRUCT_YAML is not None
-                and self.CLASS_YAML is None
-        ):
+        elif self.STRUCT_YAML is not None and self.CLASS_YAML is None:
             setattr(self, "CLASS_YAML", self._get_config_field("STRUCT_YAML"))
-        elif (
-            self.STRUCT_YAML is None
-            and self.CLASS_YAML is not None
-        ):
+        elif self.STRUCT_YAML is None and self.CLASS_YAML is not None:
             setattr(self, "STRUCT_YAML", self._get_config_field("CLASS_YAML"))
         for field in self.__annotations__.keys():
             setattr(self, field, self._get_config_field(field))
