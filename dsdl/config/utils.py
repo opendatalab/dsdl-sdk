@@ -68,9 +68,6 @@ class YamlConfig(ConfigBase):
             if "DSDL_LIBRARY_PATH" in self.config_dict
             else getattr(self, "DSDL_LIBRARY_PATH")
         )
-        self.DATA_YAML = None
-        self.STRUCT_YAML = None
-        self.CLASS_YAML = None
 
     def _get_config_field(self, field: str):
         if field in self.config_dict:
@@ -86,12 +83,25 @@ class YamlConfig(ConfigBase):
             return self.DSDL_LIBRARY_PATH
 
     def fetch(self):
-        if self.STRUCT_YAML is None and self.CLASS_YAML is None:
-            setattr(self, "STRUCT_YAML", self._get_config_field("DATA_YAML"))
-            setattr(self, "CLASS_YAML", self._get_config_field("DATA_YAML"))
-        elif self.STRUCT_YAML is not None and self.CLASS_YAML is None:
-            setattr(self, "CLASS_YAML", self._get_config_field("STRUCT_YAML"))
-        elif self.STRUCT_YAML is None and self.CLASS_YAML is not None:
-            setattr(self, "STRUCT_YAML", self._get_config_field("CLASS_YAML"))
+        if (
+            "STRUCT_YAML" not in self.config_dict.keys()
+            and "CLASS_YAML" not in self.config_dict.keys()
+        ):
+            if not getattr(self, "STRUCT_YAML"):
+                setattr(self, "STRUCT_YAML", self._get_config_field("DATA_YAML"))
+            if not getattr(self, "CLASS_YAML"):
+                setattr(self, "CLASS_YAML", self._get_config_field("DATA_YAML"))
+        elif (
+            "STRUCT_YAML" in self.config_dict.keys()
+            and "CLASS_YAML" not in self.config_dict.keys()
+        ):
+            if not getattr(self, "CLASS_YAML"):
+                setattr(self, "CLASS_YAML", self._get_config_field("STRUCT_YAML"))
+        elif (
+            "STRUCT_YAML" not in self.config_dict.keys()
+            and "CLASS_YAML" in self.config_dict.keys()
+        ):
+            if not getattr(self, "STRUCT_YAML"):
+                setattr(self, "STRUCT_YAML", self._get_config_field("CLASS_YAML"))
         for field in self.__annotations__.keys():
             setattr(self, field, self._get_config_field(field))
