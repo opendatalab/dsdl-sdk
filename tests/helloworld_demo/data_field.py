@@ -12,6 +12,8 @@ class MyClassDom(Enum):
 
 
 class ImageClassificationSample(Struct):
+    i_list = ListField(ele_type=IntField())
+    item_list = ListField(ele_type=ListField(ele_type=IntField()), ordered=True)
     image = ImageField()
     label = LabelField(dom=MyClassDom)
     valid = BoolField()
@@ -19,3 +21,4 @@ class ImageClassificationSample(Struct):
     i_val = IntField()
     p = CoordField()
     date = DateField(fmt="%Y-%m-%d")
+    label_list = ListField(ele_type=LabelField(dom=MyClassDom))

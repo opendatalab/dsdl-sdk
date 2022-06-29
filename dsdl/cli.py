@@ -7,7 +7,7 @@ from dsdl import parse
 def cli():
     pass
 
-
+# parser解析器的入口：用来解析yaml里面的模型和标签部分。
 cli.add_command(parse)
 
 

@@ -1,8 +1,11 @@
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from .exception import StructHasDefinedError, DefineSyntaxError
+from .exception import DefineSyntaxError
+from .warning import DuplicateDefineWarning
 import networkx as nx
+import os
+
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -11,37 +14,102 @@ except ImportError:
 
 
 class Parser(ABC):
+    """
+    定义一个Parser的抽象基类（没法实例化的）：
+    用处： 强制子类实现某些方法：写框架时常用。
+    """
+
     @abstractmethod
-    def parse(self, input_file):
+    def parse(self, input_file_list):
+        """
+        将yaml文件中的模型（struct）和标签(label)部分校验之后读入某个变量中
+        """
         pass
 
     @abstractmethod
     def generate(self, output_file):
+        """
+        将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
+        """
         pass
 
-    def process(self, input_file, output_file):
-        self.parse(input_file)
+    def process(self, data_file, library_path, output_file):
+        self.parse(data_file, library_path)
         self.generate(output_file)
 
 
 class DSDLParser(Parser):
     def __init__(self):
         self.define_map = dict()
+        self.TYPES_WITHOUT_PARS = [
+            "Bool",
+            "Num",
+            "Int",
+            "Str",
+            "Coord",
+            "Coord3D",
+            "Interval",
+            "BBox",
+            "Polygon",
+            "Image",
+        ]
+        self.TYPES_WITH_PARS = ["Date", "Label", "Time"]
+        self.TYPES_WITH_PARS_SP = ["List"]
+        self.dsdl_version = None
 
-    def parse(self, input_file):
-        with open(input_file, "r") as f:
+    def parse(self, data_file, library_path):
+        """
+        将yaml文件中的模型（struct）和标签(label)部分校验之后读入变量self.define_map中
+            input_file_list: 读入的yaml文件
+        """
+        with open(data_file, "r") as f:
             desc = yaml_load(f, Loader=YAMLSafeLoader)
 
-        for define in desc["defs"].items():
+        if "$import" in desc:
+            import_list = desc["$import"]
+            import_list = [
+                os.path.join(library_path, p.strip() + ".yaml") for p in import_list
+            ]
+        else:
+            import_list = []
+        if "defs" in desc:
+            # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
+            # 因为有不同格式的yaml(数据和模型放同一个yaml中或者分开放)，所以用if...else分别做处理
+            # 注意区分这个root_class_defi,为啥要把他先存好？如果import的yaml中，有重复的模型，需要用它覆盖，参见白皮书2.5.1
+            root_class_defi = desc["defs"].items()
+            self.dsdl_version = desc["$dsdl-version"]  # 存版本号，后续应该会使用（目前木有用）
+        else:
+            root_class_defi = dict()
+
+        import_desc = dict()
+        for input_file in import_list:
+            with open(input_file, "r") as f:
+                import_desc.update(yaml_load(f, Loader=YAMLSafeLoader))
+
+        if "defs" in import_desc:
+            # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
+            # 因为有不同格式的yaml(数据和模型放同一个yaml中或者分开放)，所以用if...else分别做处理
+            class_defi = import_desc["defs"]
+        else:
+            class_defi = import_desc
+        # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
+        class_defi.update(root_class_defi)
+
+        # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
+        for define in class_defi.items():
             define_name = define[0]
+            if define_name == "$dsdl-version":
+                self.dsdl_version = define[1]  # 存版本号，后续应该会使用（目前木有用）
+                continue
             define_type = define[1]["$def"]
             if not define_name.isidentifier():
                 continue
             if define_name in self.define_map:
-                raise StructHasDefinedError(f"{define_name} has defined.")
+                DuplicateDefineWarning(f"{define_name} has defined.")
 
             define_info = {"name": define_name}
             if define_type == "struct":
+                # 对class_defi中struct类型的ele做校验并存入define_info
                 define_info["type"] = "struct"
                 define_info["field_list"] = []
                 for raw_field in define[1]["$fields"].items():
@@ -50,11 +118,14 @@ class DSDLParser(Parser):
                     define_info["field_list"].append(
                         {
                             "name": raw_field[0],
-                            "type": self.parse_struct_field(raw_field[1]),
+                            "type": self.parse_struct_field(
+                                raw_field[1].replace(" ", "")
+                            ),
                         }
                     )
 
             if define_type == "class_domain":
+                # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
                 define_info["type"] = "class_domain"
                 define_info["class_list"] = []
                 for class_name in define[1]["classes"]:
@@ -69,7 +140,10 @@ class DSDLParser(Parser):
             self.define_map[define_info["name"]] = define_info
 
     def generate(self, output_file):
-        # WIP: check define cycles.
+        """
+        将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
+        """
+        # check define cycles. 如果有环形（就是循环定义）那是不行滴～
         define_graph = nx.DiGraph()
         define_graph.add_nodes_from(self.define_map.keys())
         for key, val in self.define_map.items():
@@ -100,14 +174,98 @@ class DSDLParser(Parser):
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
 
+    def parse_list_filed(self, raw: str) -> str:
+        """
+        解析处理List类型的field
+        """
+
+        def sanitize_etype(val: str) -> str:
+            """
+            验证List类型中的etype是否存在（必须存在）且是否为合法类型
+            """
+            return self.parse_struct_field(val)
+
+        def all_subclasses(cls):
+            """
+            返回某个类的所有子类：like[<class '__main__.Bar'>, <class '__main__.Baz'>...]
+            """
+            return cls.__subclasses__() + [
+                g for s in cls.__subclasses__() for g in all_subclasses(s)
+            ]
+
+        def rreplace(s, old, new, occurrence):
+            """
+            从右向左的替换函数，类似replace,不过是反着的
+            """
+            li = s.rsplit(old, occurrence)
+            return new.join(li)
+
+        def sanitize_ordered(val: str) -> str:
+            if val.lower() in ["true", "false"]:
+                if val.lower() == "true":
+                    return "True"
+                else:
+                    return "False"
+            else:
+                raise DefineSyntaxError(
+                    f"invalid value {val} in ordered of List {raw}."
+                )
+
+        field_type = "List"
+
+        raw = rreplace(raw.replace(f"{field_type}[", "", 1), "]", "", 1)
+        param_list = raw.split(",")
+        ele_type, ordered = None, None
+        if len(param_list) == 2:
+            ele_type = param_list[0]
+            ordered = param_list[1]
+        elif len(param_list) == 1:
+            ele_type = param_list[0]
+        else:
+            raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+
+        ele_type = ele_type.split("=")
+        if len(ele_type) == 2:
+            if ele_type[0].strip() != "etype":
+                raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+            ele_type = ele_type[1]
+        elif len(ele_type) == 1:
+            ele_type = ele_type[0]
+        else:
+            raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+
+        res = field_type + "Field("
+        if ele_type:
+            ele_type = sanitize_etype(ele_type)
+            res += "ele_type=" + ele_type
+        else:
+            raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+        if ordered:
+            ordered = ordered.split("=")[-1]
+            ordered = sanitize_ordered(ordered)
+            res += ", ordered=" + ordered
+        return res + ")"
+
     @staticmethod
     def parse_struct_field_with_params(raw: str) -> str:
+        """
+        解析处理Label, Time, Date类型的field
+        """
+
         def sanitize_dom(val: str) -> str:
+            """
+            Label中对dom部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
             if not val.isidentifier():
                 raise DefineSyntaxError(f"invalid dom: {val}")
             return val
 
         def sanitize_fmt(val: str) -> str:
+            """
+            Date, Time中对ftm部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
             val = val.strip("\"'")
             return f'"{val}"'
 
@@ -128,30 +286,38 @@ class DSDLParser(Parser):
         valid_param_list = []
         for param in param_list:
             parts = param.split("=")
-            if len(parts) != 2:
-                continue
-            if parts[0] not in field_map[field_type]:
-                continue
-            sanitized = field_map[field_type][parts[0]](parts[1])
-            valid_param_list.append(f"{parts[0]}={sanitized}")
+            # 需要考虑参数省略的情况，因为dom经常省略
+            if len(parts) == 2:
+                field_para = parts[0]
+                field_var = parts[1]
+            elif len(parts) == 1:
+                field_para = next(iter(field_map[field_type]))
+                field_var = parts[0]
+            else:
+                raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+            sanitized = field_map[field_type][field_para](field_var)
+            valid_param_list.append(f"{field_para}={sanitized}")
         return field_type + "Field(" + ",".join(valid_param_list) + ")"
 
-    @staticmethod
-    def parse_struct_field(raw_field_type: str) -> str:
-        if raw_field_type in [
-            "Bool",
-            "Num",
-            "Int",
-            "Str",
-            "Coord",
-            "Coord3D",
-            "Interval",
-            "BBox",
-            "Polygon",
-            "Image",
-        ]:
+    def parse_struct_field(self, raw_field_type: str) -> str:
+        """
+        校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
+            raw_field_type: like: Int, Image, Label[dom=MyClassDom], List[List[Int], ordered = True], ....
+        """
+        if raw_field_type in self.TYPES_WITHOUT_PARS:
+            # 不带参数的不需要校验，直接可以转化为python代码（注意区分yaml中的模型部分到ORM的校验和通过ORM读入数据的校验，
+            # 后者在dataset.py中定义，你脑子里想的Int也需要校验是数据的校验。）
             return raw_field_type + "Field()"
-        return DSDLParser.parse_struct_field_with_params(raw_field_type)
+        elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS_SP)):
+            # 带参数的Date, Time, Label类型的字段的校验
+            return self.parse_list_filed(raw_field_type)
+        elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS)):
+            # 带参数的List类型的字段的校验
+            # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
+            return DSDLParser.parse_struct_field_with_params(raw_field_type)
+        else:
+            return raw_field_type + "()"
+            # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
 
 
 @click.command()
@@ -162,7 +328,10 @@ class DSDLParser(Parser):
     type=str,
     required=True,
 )
-def parse(dsdl_yaml):
-    output_file = dsdl_yaml.replace(".yaml", ".py")
+@click.option(
+    "-p", "--path", "dsdl_library_path", type=str, default="dsdl/dsdl_library"
+)
+def parse(dsdl_yaml, dsdl_library_path):
+    output_file = os.path.join(os.path.dirname(dsdl_yaml), "data_field.py")
     dsdl_parser = DSDLParser()
-    dsdl_parser.process(dsdl_yaml, output_file)
+    dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
