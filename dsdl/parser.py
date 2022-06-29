@@ -5,6 +5,7 @@ from .exception import DefineSyntaxError
 from .warning import DuplicateDefineWarning
 import networkx as nx
 import os
+import re
 
 
 try:
@@ -56,6 +57,8 @@ class DSDLParser(Parser):
         self.TYPES_WITH_PARS = ["Date", "Label", "Time"]
         self.TYPES_WITH_PARS_SP = ["List"]
         self.dsdl_version = None
+        self.data_sample_type = None
+        self.sample_type_par_map = dict()
 
     def parse(self, data_file, library_path):
         """
@@ -64,6 +67,12 @@ class DSDLParser(Parser):
         """
         with open(data_file, "r") as f:
             desc = yaml_load(f, Loader=YAMLSafeLoader)
+        # 获取 self.data_sample_type和self.sample_type_par_map
+        try:
+            data_sample_type = desc["data"]["sample-type"]
+        except KeyError as e:
+            raise DefineSyntaxError(f"data yaml must contains {e} in `data` section")
+        self.parse_param_sample_type(data_sample_type)
 
         if "$import" in desc:
             import_list = desc["$import"]
@@ -96,12 +105,11 @@ class DSDLParser(Parser):
         class_defi.update(root_class_defi)
 
         # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
-        for define in class_defi.items():
-            define_name = define[0]
+        for define_name, define_value in class_defi.items():
             if define_name == "$dsdl-version":
-                self.dsdl_version = define[1]  # 存版本号，后续应该会使用（目前木有用）
+                self.dsdl_version = define_value  # 存版本号，后续应该会使用（目前木有用）
                 continue
-            define_type = define[1]["$def"]
+            define_type = define_value["$def"]
             if not define_name.isidentifier():
                 continue
             if define_name in self.define_map:
@@ -111,16 +119,22 @@ class DSDLParser(Parser):
             if define_type == "struct":
                 # 对class_defi中struct类型的ele做校验并存入define_info
                 define_info["type"] = "struct"
+                if "$params" in define_value:
+                    replace_flag = True
+                else:
+                    replace_flag = False
                 define_info["field_list"] = []
-                for raw_field in define[1]["$fields"].items():
+                for raw_field in define_value["$fields"].items():
                     if not raw_field[0].isidentifier():
                         continue
+                    field = raw_field[1].replace(" ", "")
+                    if replace_flag:
+                        for param, value in self.sample_type_par_map.items():
+                            field = field.replace("$" + param, value)
                     define_info["field_list"].append(
                         {
                             "name": raw_field[0],
-                            "type": self.parse_struct_field(
-                                raw_field[1].replace(" ", "")
-                            ),
+                            "type": self.parse_struct_field(field),
                         }
                     )
 
@@ -128,7 +142,7 @@ class DSDLParser(Parser):
                 # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
                 define_info["type"] = "class_domain"
                 define_info["class_list"] = []
-                for class_name in define[1]["classes"]:
+                for class_name in define_value["classes"]:
                     if not class_name.isidentifier():
                         continue
                     define_info["class_list"].append(
@@ -173,6 +187,18 @@ class DSDLParser(Parser):
                         print(f'''    {class_name.upper()} = "{class_name}"''', file=of)
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
+
+    def parse_param_sample_type(self, raw: str):
+        """
+        raw: ObjectDetectionSample[cdom=COCOClassFullDom]
+        """
+        c_dom = re.findall(r"\[(.*?)\]", raw)
+        if c_dom:
+            temp = c_dom[0].split("=")
+            self.sample_type_par_map[temp[0].strip()] = temp[1].strip()
+            self.data_sample_type = raw.replace("["+c_dom[0]+"]", "", 1).strip()
+        else:
+            self.data_sample_type = raw
 
     def parse_list_filed(self, raw: str) -> str:
         """
@@ -224,15 +250,18 @@ class DSDLParser(Parser):
         else:
             raise DefineSyntaxError(f"invalid parameters {raw} in List.")
 
-        ele_type = ele_type.split("=")
+        ele_type = ele_type.split("=", 1)
         if len(ele_type) == 2:
             if ele_type[0].strip() != "etype":
                 raise DefineSyntaxError(f"List types must contains parameters `etype`.")
             ele_type = ele_type[1]
-        elif len(ele_type) == 1:
-            ele_type = ele_type[0]
+            c_dom = re.findall(r"\[(.*?)\]", ele_type)
+            if c_dom:
+                ele_type = ele_type.replace("[" + c_dom[0] + "]", "", 1).strip()
         else:
-            raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+            ele_type = ele_type[0]
+        # else:
+        #     raise DefineSyntaxError(f"invalid parameters {raw} in List.")
 
         res = field_type + "Field("
         if ele_type:
