@@ -6,56 +6,35 @@ from prettytable import PrettyTable
 
 
 class DetectionDataset(BaseDataset):
-    # KEY_MAPPING: yaml文件中定义的字段名称和dataset内部字段名称的对应关系，
-    # 比如下面的实例表示yaml中sample中的media字段对应了dataset样本中的$media字段
-    # yaml中annotation字段对应了dataset样本的中的$annotation字段
-    # yaml中的box2d字段对应了dataset样本中的$box2d字段
-    # yaml中的category字段对应了dataset样本中的$category字段
-    # 该对应字典可由用户自己指定，详见visualize_demo1.py中的内容
-    KEY_MAPPING = {
-        "$media": "media",
-        "$annotation": {
-            "$key": "annotation",
-            "$box2d": "box2d",
-            "$category": "category"
-        },
+    """
+    {
+        image: {image: reader_obj},
+        list: {objects: [{bbox: {bbox: xxx}, label: {label: xxx}, extra: {}}]}
+        extra: {}
     }
+    """
 
-    def parse_struct(self, sample):
-        """
-        该方法的作用是将根据yaml文件定义的样本Struct对象读取为数据集中可操作的数据结构
-        下面的代码就是将
-        class ObjectDetectionSample(Struct):
-            image = ImageField()
-            objects = ListField(ele_type=LocalObjectEntry())
-        转换为一个样本（为字典类型）
-            {
-            $media: PIL.Image object
-            $annotation: {
-                $box2d: [...]
-                $category: [...]
-                }
-            }
-        """
-        data_info = {}
-        ground_truth = {"$box2d": [], "$category": []}
-        media_key = self.get_field_name(self.key_mapping["$media"])
-        image_struct = getattr(sample, media_key)
-        if image_struct is None:
+    def process_sample(self, sample):
+
+        data_info = {"image extra": sample.get("extra", {})}
+
+        if "image" not in sample:
             return None
-        image = Image.open(io.BytesIO(image_struct.read()))
-        data_info["$media"] = image
-        gt_key = self.get_field_name(self.key_mapping["$annotation"])
-        gt_struct_list = getattr(sample, gt_key)
-        box2d_key = self.get_field_name(self.key_mapping["$annotation"]["$box2d"])
-        category_key = self.get_field_name(self.key_mapping["$annotation"]["$category"])
-        for gt_struct in gt_struct_list:
-            box2d_item = getattr(gt_struct, box2d_key)
-            category = getattr(gt_struct, category_key)
-            if box2d_item is not None:
-                ground_truth["$box2d"].append(box2d_item)
-                ground_truth["$category"].append(category)
-        data_info["$annotation"] = ground_truth
+        image_reader = self._get_first_value(sample["image"])
+        image = Image.open(io.BytesIO(image_reader.read()))
+        data_info["image"] = image
+
+        annotations = {"bbox": [], "label": [], "anno extra": []}
+        data_info["annotation"] = annotations
+
+        if "list" not in sample:
+            return data_info
+
+        obj_lst = self._get_first_value(sample["list"])
+        for obj in obj_lst:
+            annotations["anno extra"].append(obj.get("extra", {}))
+            annotations["bbox"].append(self._get_first_value(obj.get("bbox", {})))
+            annotations["label"].append(self._get_first_value(obj.get("label", {})))
 
         return data_info
 
@@ -63,9 +42,9 @@ class DetectionDataset(BaseDataset):
         """
         该方法的作用是将parse_struct方法的返回值（单个样本）进行图像可视化
         """
-        image = sample["$media"]
-        box2d_lst = sample["$annotation"]["$box2d"]
-        category_lst = sample["$annotation"]["$category"]
+        image = sample["image"]
+        box2d_lst = sample["annotation"]["bbox"]
+        category_lst = sample["annotation"]["label"]
 
         # font = ImageFont.truetype(size=np.floor(1.5e-2 * np.shape(image)[1] + 10).astype('int32'))
         font = ImageFont.load_default()
@@ -105,13 +84,14 @@ class DetectionDataset(BaseDataset):
         """
         table = PrettyTable()
         table.title = "Samples"
-        table.field_names = ["sample idx", "media shape", "bbox", "label"]
-        table._max_width = {"bbox": 50, "label": 25}
+        table.field_names = ["sample idx", "media shape", "annotation"]
+        table._max_width = {"annotation": 50}
         if not isinstance(sample, list):
             sample = [sample]
 
         for idx, s in enumerate(sample, start=1):
-            row = [idx, np.shape(s["$media"]), s["$annotation"]["$box2d"], s["$annotation"]["$category"]]
+            row = [idx, np.shape(s["image"]), list(zip(s["annotation"]["bbox"], s["annotation"]["label"],
+                   s["annotation"]["anno extra"]))]
             table.add_row(row)
 
         return table
