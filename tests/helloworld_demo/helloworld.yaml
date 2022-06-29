@@ -7,6 +7,8 @@ defs:
   ImageClassificationSample:
     $def: struct
     $fields:
+      i_list: List[etype=Int]     #  label = ListField(IntField())
+      item_list: List[List[Int], ordered = True]  #  label = ListField(ListField(IntField()))
       image: Image
       label: Label[dom=MyClassDom]
       valid: Bool
@@ -14,6 +16,7 @@ defs:
       i_val : Int
       p: Coord
       date: Date[fmt="%Y-%m-%d"]
+      label_list: List[Label[MyClassDom]] # label = ListField[LabelField(dom=MyClassDom)]
   MyClassDom:
     $def: class_domain
     classes:
@@ -32,10 +35,11 @@ data:
       image: xyz/0001.jpg
       item_list:
         -
-          i_list:
-            - 10
-            - 10
-          val: 10
+          - 10
+          - 10
+        -
+          - 50
+          - 40
       label: cat
       label_list:
         - cat
@@ -59,9 +63,12 @@ data:
         $loc: abc/0001.jpg
       item_list:
         -
-          i_list:
-            - 10
-          val: 10
+          - 10
+          - 30
+          - 50
+        -
+          - 10
+          - 20
       label: dog
       label_list:
         - cat

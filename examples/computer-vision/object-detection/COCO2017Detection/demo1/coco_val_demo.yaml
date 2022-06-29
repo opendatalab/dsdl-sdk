@@ -8,7 +8,7 @@ meta:
 
 defs:
     COCOClassDom:
-        $def: class-domain
+        $def: class_domain
         classes:
             - person
             - bicycle
@@ -90,20 +90,20 @@ defs:
             - teddy bear
             - hair drier
             - toothbrush
-    
+
     LocalObjectEntry:
         $def: struct
         $fields:
             bbox: BBox
             label: Label[dom=COCOClassDom]
             $optional: ['label']
-    
+
     ObjectDetectionSample:
         # Each sample contains an image together with a list of local objects.
         $def: struct
         $fields:
             image: Image
-            objects: List[etype=LocalObjectEntry]]
+            objects: List[etype=LocalObjectEntry]
 
 data:
     sample-type: ObjectDetectionSample

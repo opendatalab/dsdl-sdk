@@ -1,0 +1,2 @@
+class DuplicateDefineWarning(SyntaxWarning):
+    pass
