@@ -1,4 +1,4 @@
-from demo2.object_detection import ObjectDetectionSample
+from demo2.data_field import ObjectDetectionSample
 from dsdl.dataset import DetectionDataset
 
 import click
@@ -13,19 +13,12 @@ from random import randint
 @click.option("-r", "--random", is_flag=True, help="whether to sample randomly")
 @click.option("-v", "--visualize", is_flag=True, help="whether to visualize the sample selected")
 def main(dsdl_yaml, config, num, random, visualize):
-    key_mapping = {
-        "$media": "image",
-        "$annotation": {
-            "$key": "objects",
-            "$box2d": "bbox",
-            "$category": "label"
-        },
-    }
+
     if config == "local":
         from config import coco_config
     else:
         from config import coco_ali_oss_config as coco_config
-    dataset = DetectionDataset(dsdl_yaml, coco_config, key_mapping)
+    dataset = DetectionDataset(dsdl_yaml, coco_config)
 
     num = min(num, len(dataset))
     if not random:

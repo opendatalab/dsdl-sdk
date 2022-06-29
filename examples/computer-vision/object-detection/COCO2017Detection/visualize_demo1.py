@@ -1,4 +1,4 @@
-from demo1.coco_val_demo import ObjectDetectionSample
+from demo1.data_field import ObjectDetectionSample
 from dsdl.dataset import DetectionDataset
 
 import click
@@ -13,25 +13,13 @@ from random import randint
 @click.option("-r", "--random", is_flag=True, help="whether to sample randomly")
 @click.option("-v", "--visualize", is_flag=True, help="whether to visualize the sample selected")
 def main(dsdl_yaml, config, num, random, visualize):
-    # key_mapping: 用户自定义的键对应字典，下面的实例的含义为：
-    #               yaml文件中，字段image对应了dataset样本中的$media
-    #               yaml文件中，字段objects对应了dataset样本中的$annotation
-    #               yaml文件中，字段bbox对应了dataset样本中的$box2d
-    #               yaml文件中，字段label对应了dataset样本中的$category
-    key_mapping = {
-        "$media": "image",
-        "$annotation": {
-            "$key": "objects",
-            "$box2d": "bbox",
-            "$category": "label"
-        },
-    }
+
     # 判断当前是读取本地文件还是阿里云OSS上的文件
     if config == "local":
         from config import coco_config
     else:
         from config import coco_ali_oss_config as coco_config
-    dataset = DetectionDataset(dsdl_yaml, coco_config, key_mapping)
+    dataset = DetectionDataset(dsdl_yaml, coco_config)
 
     # 选取要读取的样本的索引
     num = min(num, len(dataset))

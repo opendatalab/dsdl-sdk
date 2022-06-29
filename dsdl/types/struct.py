@@ -39,6 +39,7 @@ class Struct(dict, metaclass=StructMetaclass):
             raise AttributeError(r"'Model' object has no attribute '%s'" % key)
 
     def __setattr__(self, key, value):
+
         if key not in self.__mappings__:
             self[key] = value
             return
@@ -49,3 +50,6 @@ class Struct(dict, metaclass=StructMetaclass):
             self[key] = self.__mappings__[key].validate(value)
         except ValidationError as error:
             raise ValidationError(f"Field '{key}' validation error: {error}.")
+
+    def get_mapping(self):
+        return self.__mappings__
