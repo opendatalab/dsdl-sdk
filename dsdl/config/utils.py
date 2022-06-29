@@ -88,21 +88,21 @@ class YamlConfig(ConfigBase):
             and "CLASS_YAML" not in self.config_dict.keys()
         ):
 
-            if not getattr(self, "STRUCT_YAML"):
+            if getattr(self, "STRUCT_YAML", None) is None:
                 setattr(self, "STRUCT_YAML", self._get_config_field("DATA_YAML"))
-            if not getattr(self, "CLASS_YAML"):
+            if getattr(self, "CLASS_YAML", None) is None:
                 setattr(self, "CLASS_YAML", self._get_config_field("DATA_YAML"))
         elif (
             "STRUCT_YAML" in self.config_dict.keys()
             and "CLASS_YAML" not in self.config_dict.keys()
         ):
-            if not getattr(self, "CLASS_YAML"):
+            if getattr(self, "CLASS_YAML", None) is None:
                 setattr(self, "CLASS_YAML", self._get_config_field("STRUCT_YAML"))
         elif (
             "STRUCT_YAML" not in self.config_dict.keys()
             and "CLASS_YAML" in self.config_dict.keys()
         ):
-            if not getattr(self, "STRUCT_YAML"):
+            if getattr(self, "STRUCT_YAML", None) is None:
                 setattr(self, "STRUCT_YAML", self._get_config_field("CLASS_YAML"))
         for field in self.__annotations__.keys():
             setattr(self, field, self._get_config_field(field))
