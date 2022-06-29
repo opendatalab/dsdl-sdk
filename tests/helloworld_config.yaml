@@ -1,4 +1,0 @@
-DSDL_LIBRARY_PATH : "/Users/jiangyiying/sherry/work/dsdl-sdk/tests/helloworld_demo"
-DATA_YAML: "helloworld.yaml"
-# STRUCT_YAML和CLASS_YAML不写默认用DATA_YAML,
-# STRUCT_YAML和CLASS_YAML写了一个，另一个不写，默认互相使用

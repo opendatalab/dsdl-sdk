@@ -1,10 +1,9 @@
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from .exception import DefineSyntaxError, DefineTypeError
+from .exception import DefineSyntaxError
 from .warning import DuplicateDefineWarning
 import networkx as nx
-from .config.config import Config
 import os
 
 
@@ -34,8 +33,8 @@ class Parser(ABC):
         """
         pass
 
-    def process(self, input_file_list, output_file):
-        self.parse(input_file_list)
+    def process(self, data_file, library_path, output_file):
+        self.parse(data_file, library_path)
         self.generate(output_file)
 
 
@@ -58,26 +57,46 @@ class DSDLParser(Parser):
         self.TYPES_WITH_PARS_SP = ["List"]
         self.dsdl_version = None
 
-    def parse(self, input_file_list):
+    def parse(self, data_file, library_path):
         """
         将yaml文件中的模型（struct）和标签(label)部分校验之后读入变量self.define_map中
             input_file_list: 读入的yaml文件
         """
-        desc = dict()
-        for input_file in input_file_list:
-            with open(input_file, "r") as f:
-                desc.update(yaml_load(f, Loader=YAMLSafeLoader))
+        with open(data_file, "r") as f:
+            desc = yaml_load(f, Loader=YAMLSafeLoader)
 
+        if "$import" in desc:
+            import_list = desc["$import"]
+            import_list = [
+                os.path.join(library_path, p.strip() + ".yaml") for p in import_list
+            ]
+        else:
+            import_list = []
         if "defs" in desc:
             # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
             # 因为有不同格式的yaml(数据和模型放同一个yaml中或者分开放)，所以用if...else分别做处理
-            class_defi = desc["defs"].items()
+            # 注意区分这个root_class_defi,为啥要把他先存好？如果import的yaml中，有重复的模型，需要用它覆盖，参见白皮书2.5.1
+            root_class_defi = desc["defs"].items()
             self.dsdl_version = desc["$dsdl-version"]  # 存版本号，后续应该会使用（目前木有用）
         else:
-            class_defi = desc.items()
+            root_class_defi = dict()
+
+        import_desc = dict()
+        for input_file in import_list:
+            with open(input_file, "r") as f:
+                import_desc.update(yaml_load(f, Loader=YAMLSafeLoader))
+
+        if "defs" in import_desc:
+            # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
+            # 因为有不同格式的yaml(数据和模型放同一个yaml中或者分开放)，所以用if...else分别做处理
+            class_defi = import_desc["defs"]
+        else:
+            class_defi = import_desc
+        # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
+        class_defi.update(root_class_defi)
 
         # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
-        for define in class_defi:
+        for define in class_defi.items():
             define_name = define[0]
             if define_name == "$dsdl-version":
                 self.dsdl_version = define[1]  # 存版本号，后续应该会使用（目前木有用）
@@ -309,18 +328,10 @@ class DSDLParser(Parser):
     type=str,
     required=True,
 )
-def parse(dsdl_yaml):
-    config = Config(
-        os.getenv(
-            "CONFIG_PATH", dsdl_yaml    # eg. "/Users/jiangyiying/sherry/work/dsdl-sdk/coco_demo1_config.yaml"
-        )
-    )
-    config.fetch()
-
-    input_file_list = [config.STRUCT_YAML]
-    if config.CLASS_YAML != config.STRUCT_YAML:
-        input_file_list.append(config.STRUCT_YAML)
-
-    output_file = os.path.join(config.DSDL_LIBRARY_PATH, "data_field.py")
+@click.option(
+    "-p", "--path", "dsdl_library_path", type=str, default="dsdl/dsdl_library"
+)
+def parse(dsdl_yaml, dsdl_library_path):
+    output_file = os.path.join(os.path.dirname(dsdl_yaml), "data_field.py")
     dsdl_parser = DSDLParser()
-    dsdl_parser.process(input_file_list, output_file)
+    dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
