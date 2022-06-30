@@ -196,7 +196,7 @@ class DSDLParser(Parser):
         if c_dom:
             temp = c_dom[0].split("=")
             self.sample_type_par_map[temp[0].strip()] = temp[1].strip()
-            self.data_sample_type = raw.replace("["+c_dom[0]+"]", "", 1).strip()
+            self.data_sample_type = raw.replace("[" + c_dom[0] + "]", "", 1).strip()
         else:
             self.data_sample_type = raw
 
@@ -358,7 +358,11 @@ class DSDLParser(Parser):
     required=True,
 )
 @click.option(
-    "-p", "--path", "dsdl_library_path", type=str, default="dsdl/dsdl_library"
+    "-p",
+    "--path",
+    "dsdl_library_path",
+    type=str,
+    default="dsdl/dsdl_library",
 )
 def parse(dsdl_yaml, dsdl_library_path):
     output_file = os.path.join(os.path.dirname(dsdl_yaml), "data_field.py")
