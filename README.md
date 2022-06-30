@@ -17,11 +17,13 @@ parser入口
 $ dsdl parse --yaml tests/helloworld_demo/helloworld.yaml
 ```
 其他可以尝试的例子：
-```bash
+1. 这个demo2的例子没写`-p`是因为，已经把需要import的yaml放进`dsdl/dsdl_library`里面了哦，不然要写明地址
+```bash 
 $ dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml
 ```
+2.
 ```bash
-$ dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo2
+$ dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo3/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo3
 ```
 注意:
 1. 我们只需要传入数据的yaml文件（如果数据和模型啥的都放一起那就传那个）就会生成在同一目录下的`.py`文件
