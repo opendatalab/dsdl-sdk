@@ -11,10 +11,10 @@
 python setup.py install
 ```
 
-2. 使用DSDL的parser生成demo中的`coco_val_demo.py`文件
+2. 使用DSDL的parser生成demo中的`data_field.py`文件
 ```bash
 dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo1/coco_val_demo.yaml
-dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml
+dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo2
 dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo3/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo3
 ```
 

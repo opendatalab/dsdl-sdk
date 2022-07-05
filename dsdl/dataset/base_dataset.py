@@ -1,3 +1,4 @@
+import re
 from torch.utils.data import Dataset
 from yaml import load as yaml_load
 from typing import Callable, Dict, Optional, Tuple
@@ -37,12 +38,12 @@ class BaseDataset(Dataset):
         sample_list = []
         with open(self.sample_file, "r") as f:
             data = yaml_load(f, Loader=YAMLSafeLoader)["data"]
-            sample_type = data["sample-type"]
+            sample_type = BaseDataset.extract_sample_type(data["sample-type"])
             cls = types.registry.get_struct(sample_type)
             for item in data.items():
                 if item[0] == "samples":
                     for sample in item[1]:
-                        sample_list.append(BaseDataset._parse_struct(cls(dataset=self, **sample)))
+                        sample_list.append(self._parse_struct(cls(dataset=self, **sample)))
         return sample_list
 
     @staticmethod
@@ -106,3 +107,11 @@ class BaseDataset(Dataset):
     @staticmethod
     def format_sample(sample):
         raise NotImplementedError
+
+    @staticmethod
+    def extract_sample_type(sample_type):
+        c_dom = re.findall(r"\[(.*?)\]", sample_type)
+        if c_dom:
+            return sample_type.replace("[" + c_dom[0] + "]", "", 1).strip()
+        else:
+            return sample_type

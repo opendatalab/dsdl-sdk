@@ -1,0 +1,25 @@
+$dsdl-version: "0.5.0"
+
+VOCClassDom:
+    $def: class_domain
+    classes:
+        - horse
+        - person
+        - bottle
+        - tvmonitor
+        - chair
+        - diningtable
+        - pottedplant
+        - aeroplane
+        - car
+        - train
+        - dog
+        - bicycle
+        - boat
+        - cat
+        - sofa
+        - bird
+        - sheep
+        - motorbike
+        - bus
+        - cow

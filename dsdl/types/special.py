@@ -1,5 +1,7 @@
+import re
 from .field import Field
 from ..exception import ValidationError
+from ..warning import InvalidLabelWarning
 from datetime import date, time, datetime
 
 
@@ -50,6 +52,24 @@ class LabelField(Field):
     def __init__(self, dom):
         super(LabelField, self).__init__()
         self.dom = dom
+
+    def validate(self, value):
+        try:
+            if isinstance(value, int):
+                category_name = self.dom(value).name
+                return dict(name=category_name, id=value, dom=self.dom.__name__)
+            elif isinstance(value, str):
+                category_id = getattr(self.dom, self.clean(value)).value
+                return dict(name=value, id=category_id, dom=self.dom.__name__)
+            else:
+                raise TypeError("invalid class label type.")
+        except:
+            InvalidLabelWarning(f"The label {value} is not valid.")
+            return dict(name="invalid", id=-1, dom=self.dom.__name__)
+    @staticmethod
+    def clean(varStr):
+        return re.sub('\W|^(?=\d)', '_', varStr).lower()
+
 
 
 class DateField(Field):

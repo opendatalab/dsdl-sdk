@@ -52,6 +52,7 @@ class DetectionDataset(BaseDataset):
         draw = ImageDraw.Draw(image)
 
         for (label_, bbox_) in zip(category_lst, box2d_lst):
+            label_ = label_["name"]
             bbox_[0], bbox_[1], bbox_[2], bbox_[3] = bbox_[0], bbox_[1], bbox_[0] + bbox_[2], bbox_[1] + bbox_[3]
 
             bbox_[0] = int(bbox_[0])
@@ -59,7 +60,7 @@ class DetectionDataset(BaseDataset):
             bbox_[2] = int(bbox_[2])
             bbox_[3] = int(bbox_[3])
 
-            label_size = draw.textsize(label_, font)
+            label_size = draw.textsize(str(label_), font)
 
             text_origin = np.array([bbox_[0], bbox_[1] + 0.2 * label_size[1]])
 
