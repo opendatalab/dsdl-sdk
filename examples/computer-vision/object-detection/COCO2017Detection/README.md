@@ -4,21 +4,29 @@
 > - demo2: 过渡demo: 定义definition模板，支持import操作
 > - demo3: 最佳demo: Definition模板 + 类别形参，完全将def模板和data实例解耦
 
-## demo1
+## 执行步骤
 
 1. 安装DSDL sdk
+```bash
+python setup.py install
+```
 
-2. 使用DSDL的parser生成demo1中的`coco_val_demo.py`文件
+2. 使用DSDL的parser生成demo中的`coco_val_demo.py`文件
+```bash
+dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo1/coco_val_demo.yaml
+dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml
+dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo3/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo3
+```
 
 3. 然后cd到工作路径：`<root>/examples/computer-vision/object-detection/COCO2017Detection`
 
-4. 待执行的代码为`visualize_demo1.py`，在执行代码之前，需要代码做出一些修改：
+4. 待执行的代码为`visualize_demo?.py`(根据想演示的demo将?替换为1-3具体数字)，在执行代码之前，需要代码做出一些修改：
 
    1. 在`config.py`中，需要修改其中的
       1. `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）
       2. `coco_config`中的参数`working_dir`（本地数据所在的目录）
 
-5. 执行代码`visualize_demo1.py`，执行命令的示例为：
+5. 执行代码`visualize_demo?.py`，执行命令的示例(visualize_demo1.py)为：
 
    ```bash
    python visualize_demo1.py -y demo1/coco_val_demo.yaml -c ali-oss -n 10 -r -v
@@ -33,24 +41,4 @@
    | -n       | `--num`       | 加载数据集的样本数量                                         |
    | -r       | `--random`    | 在加载数据集中的样本时是否随机选取样本，如果不指定的话就按顺序从开始选取样本 |
    | -v       | `--visualize` | 是否将加载的数据进行可视化展示                               |
-
-## demo2
-
-1. 安装DSDL sdk
-
-2. 使用DSDL的parser生成demo2中的`object_detection.py`文件
-
-3. 然后cd到工作路径：`<root>/examples/computer-vision/object-detection/COCO2017Detection`
-
-4. 待执行的代码为`visualize_demo2.py`，在执行代码之前，需要代码做出一些修改：
-
-   1. 在`config.py`中，需要修改其中的
-      1. `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）
-      2. `coco_config`中的参数`working_dir`（本地数据所在的目录）
-
-5. 执行代码`visualize_demo2.py`，执行命令的示例为：
-
-   ```bash
-   python visualize_demo2.py -y demo2/object_detection.yaml -c ali-oss -n 10 -r -v
-   ```
 

@@ -174,6 +174,7 @@ class COCOClassFullDom(Enum):
 class LocalObjectEntry(Struct):
     bbox = BBoxField()
     label = LabelField(dom=COCOClassFullDom)
+    is_crowd = BoolField()
 
 
 class ObjectDetectionSample(Struct):

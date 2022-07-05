@@ -26,6 +26,7 @@ setup(
         "networkx>=2.8.4",
         "Pillow>=9.1.0",
         "oss2>=2.15.0",
+        "prettytable>=3.3.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
