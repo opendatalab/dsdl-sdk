@@ -1,0 +1,116 @@
+{
+    "dataset_name": "PASCAL VOC2012 Detection",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "PASCAL VOC2012 Detection",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 1,
+                    "category_name": "horse"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "person"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "bottle"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "tvmonitor"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "chair"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "diningtable"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "pottedplant"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "aeroplane"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "car"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "train"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "dog"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "bicycle"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "boat"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "cat"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "sofa"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "bird"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "sheep"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "motorbike"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "bus"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "cow"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 5717,
+                "annotated_media_num": 5717
+            }
+        ],
+        "val": [
+            {
+                "media_type": "image",
+                "media_num": 5823,
+                "annotated_media_num": 5823
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 10991,
+                "annotated_media_num": 0
+            }
+        ]
+    }
+}
