@@ -37,6 +37,11 @@ class Parser(ABC):
     def process(self, data_file, library_path, output_file):
         self.parse(data_file, library_path)
         self.generate(output_file)
+        print(
+            f"Convert Yaml File to Python Code Successfully!\n \
+            Yaml file (source): {data_file}\n \
+            Output file (output): {output_file}"
+        )
 
 
 class DSDLParser(Parser):

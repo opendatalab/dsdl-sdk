@@ -6,6 +6,7 @@ LocalObjectEntry:
     $fields:
         bbox: BBox
         label: Label[dom=$cdom]
+        is_crowd: Bool
         $optional: ['label']
 
 ObjectDetectionSample:
