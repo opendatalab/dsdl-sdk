@@ -1,0 +1,1090 @@
+$dsdl-version: "0.5.0"
+
+meta:
+    name: "COCO2017 Object Detection"
+    creator: "MSRA"
+    dataset-version: "1.0.0"
+    subdata_name: "Validation Set"
+
+defs:
+    COCOClassDom:
+        $def: class_domain
+        classes:
+            - person
+            - bicycle
+            - car
+            - motorcycle
+            - airplane
+            - bus
+            - train
+            - truck
+            - boat
+            - traffic light
+            - fire hydrant
+            - stop sign
+            - parking meter
+            - bench
+            - bird
+            - cat
+            - dog
+            - horse
+            - sheep
+            - cow
+            - elephant
+            - bear
+            - zebra
+            - giraffe
+            - backpack
+            - umbrella
+            - handbag
+            - tie
+            - suitcase
+            - frisbee
+            - skis
+            - snowboard
+            - sports ball
+            - kite
+            - baseball bat
+            - baseball glove
+            - skateboard
+            - surfboard
+            - tennis racket
+            - bottle
+            - wine glass
+            - cup
+            - fork
+            - knife
+            - spoon
+            - bowl
+            - banana
+            - apple
+            - sandwich
+            - orange
+            - broccoli
+            - carrot
+            - hot dog
+            - pizza
+            - donut
+            - cake
+            - chair
+            - couch
+            - potted plant
+            - bed
+            - dining table
+            - toilet
+            - tv
+            - laptop
+            - mouse
+            - remote
+            - keyboard
+            - cell phone
+            - microwave
+            - oven
+            - toaster
+            - sink
+            - refrigerator
+            - book
+            - clock
+            - vase
+            - scissors
+            - teddy bear
+            - hair drier
+            - toothbrush
+
+    SingleObject:
+        $def: struct
+        $fields:
+            bounding_box: BBox
+            label: Label[dom=COCOClassDom]
+            $optional: ['label']
+
+    ObjectDetectionSample:
+        # Each sample contains an image together with a list of local objects.
+        $def: struct
+        $fields:
+            image: Image
+            objects: List[etype=SingleObject]
+
+data:
+    sample-type: ObjectDetectionSample
+    samples:
+        - image: "media/000000117266.jpg"
+          objects:
+            - { bounding_box: [0.0, 421.09, 154.53, 208.61], label: "dog", is_crowd: False }
+            - { bounding_box: [181.21, 88.17, 180.35, 347.61], label: "person", is_crowd: False }
+            - { bounding_box: [330.33, 227.44, 21.22, 16.0], label: "spoon", is_crowd: False }
+            - { bounding_box: [310.83, 237.03, 36.6, 24.72], label: "bowl", is_crowd: False }
+            - { bounding_box: [342.29, 236.85, 50.33, 28.16], label: "bowl", is_crowd: False }
+            - { bounding_box: [154.07, 156.96, 12.71, 48.63], label: "bottle", is_crowd: False }
+            - { bounding_box: [170.99, 186.86, 24.99, 14.21], label: "bowl", is_crowd: False }
+            - { bounding_box: [369.3, 253.15, 57.7, 29.96], label: "bowl", is_crowd: False }
+            - { bounding_box: [197.42, 321.09, 91.36, 198.79], label: "person", is_crowd: False }
+        - image: "media/000000117267.jpg"
+          objects:
+            - { bounding_box: [200.61, 89.65, 400.22, 251.02], label: "dog", is_crowd: False }
+            - { bounding_box: [94.78, 0.95, 240.66, 211.01], label: "person", is_crowd: False }
+        - image: "media/000000117268.jpg"
+          objects:
+            - { bounding_box: [272.1, 200.23, 151.97, 279.77], label: "dog", is_crowd: False }
+            - { bounding_box: [181.23, 86.28, 27.44, 73.53], label: "bottle", is_crowd: False }
+            - { bounding_box: [174.74, 0.0, 261.04, 220.79], label: "toilet", is_crowd: False }
+        - image: "media/000000117269.jpg"
+          objects:
+            - { bounding_box: [197.97, 117.22, 170.45, 222.07], label: "dog", is_crowd: False }
+            - { bounding_box: [58.45, 81.69, 131.53, 125.9], label: "potted plant", is_crowd: False }
+            - { bounding_box: [9.29, 160.0, 466.58, 314.84], label: "car", is_crowd: False }
+            - { bounding_box: [1.29, 150.59, 186.23, 261.24], label: "car", is_crowd: False }
+            - { bounding_box: [594.08, 175.0, 45.2, 128.07], label: "car", is_crowd: False }
+        - image: "media/000000117270.jpg"
+          objects:
+            - { bounding_box: [112.71, 154.82, 367.29, 479.35], label: "dog", is_crowd: False }
+        - image: "media/000000117271.jpg"
+          objects:
+            - { bounding_box: [86.93, 90.76, 82.5, 74.54], label: "dog", is_crowd: False }
+            - { bounding_box: [207.4, 69.19, 106.79, 82.39], label: "potted plant", is_crowd: False }
+            - { bounding_box: [25.74, 45.78, 18.47, 72.24], label: "tv", is_crowd: False }
+            - { bounding_box: [176.76, 23.51, 85.4, 83.79], label: "person", is_crowd: False }
+            - { bounding_box: [53.71, 116.22, 39.69, 29.31], label: "teddy bear", is_crowd: False }
+        - image: "media/000000117272.jpg"
+          objects:
+            - { bounding_box: [124.71, 196.18, 372.85, 356.81], label: "dog", is_crowd: False }
+            - { bounding_box: [59.4, 50.77, 501.48, 390.96], label: "motorcycle", is_crowd: False }
+            - { bounding_box: [288.83, 70.02, 27.52, 26.74], label: "cup", is_crowd: False }
+            - { bounding_box: [312.59, 76.52, 27.44, 23.42], label: "cup", is_crowd: False }
+        - image: "media/000000117273.jpg"
+          objects:
+            - { bounding_box: [427.58, 77.87, 188.88, 285.91], label: "dog", is_crowd: False }
+            - { bounding_box: [403.99, 36.29, 59.21, 275.06], label: "person", is_crowd: False }
+            - { bounding_box: [260.73, 0.96, 153.76, 335.22], label: "person", is_crowd: False }
+            - { bounding_box: [202.97, 1.52, 100.06, 278.26], label: "person", is_crowd: False }
+            - { bounding_box: [155.51, 1.63, 96.4, 272.2], label: "person", is_crowd: False }
+            - { bounding_box: [19.14, 2.39, 89.98, 255.58], label: "person", is_crowd: False }
+            - { bounding_box: [0.0, 2.39, 38.29, 248.88], label: "person", is_crowd: False }
+            - { bounding_box: [107.64, 0.32, 36.52, 111.68], label: "person", is_crowd: False }
+            - { bounding_box: [26.82, 0.55, 68.09, 66.94], label: "handbag", is_crowd: False }
+            - { bounding_box: [404.94, 0.96, 64.95, 44.88], label: "handbag", is_crowd: False }
+            - { bounding_box: [570.27, 38.39, 28.79, 27.89], label: "person", is_crowd: False }
+            - { bounding_box: [511.39, 56.96, 19.45, 44.21], label: "chair", is_crowd: False }
+            - { bounding_box: [531.28, 42.02, 20.51, 57.08], label: "person", is_crowd: False }
+            - { bounding_box: [472.76, 53.6, 24.45, 23.96], label: "person", is_crowd: False }
+        - image: "media/000000117274.jpg"
+          objects:
+            - { bounding_box: [29.0, 492.01, 72.51, 134.73], label: "dog", is_crowd: False }
+            - { bounding_box: [273.57, 276.86, 30.75, 71.03], label: "bottle", is_crowd: False }
+            - { bounding_box: [176.9, 346.37, 183.1, 284.76], label: "toilet", is_crowd: False }
+            - { bounding_box: [140.0, 295.49, 171.08, 204.5], label: "sink", is_crowd: False }
+        - image: "media/000000117275.jpg"
+          objects:
+            - { bounding_box: [61.68, 389.34, 130.77, 138.47], label: "dog", is_crowd: False }
+            - { bounding_box: [337.22, 375.89, 83.23, 156.41], label: "bottle", is_crowd: False }
+            - { bounding_box: [63.85, 234.5, 12.5, 35.16], label: "bottle", is_crowd: False }
+            - { bounding_box: [176.62, 307.13, 16.0, 55.66], label: "chair", is_crowd: False }
+            - { bounding_box: [94.76, 264.52, 330.99, 365.32], label: "dining table", is_crowd: False }
+            - { bounding_box: [112.11, 261.4, 82.16, 89.09], label: "dining table", is_crowd: False }
+            - { bounding_box: [108.9, 211.21, 46.51, 73.24], label: "person", is_crowd: False }
+            - { bounding_box: [299.02, 257.39, 11.83, 8.03], label: "potted plant", is_crowd: False }
+            - { bounding_box: [293.63, 227.35, 21.73, 44.33], label: "potted plant", is_crowd: False }
+            - { bounding_box: [310.92, 250.27, 23.46, 25.68], label: "potted plant", is_crowd: False }
+            - { bounding_box: [157.5, 186.06, 25.59, 79.0], label: "potted plant", is_crowd: False }
+            - { bounding_box: [337.3, 339.33, 11.89, 24.56], label: "fork", is_crowd: False }
+            - { bounding_box: [194.6, 457.4, 154.25, 74.21], label: "knife", is_crowd: False }
+            - { bounding_box: [294.8, 350.29, 30.87, 22.55], label: "knife", is_crowd: False }
+            - { bounding_box: [45.44, 245.07, 89.94, 77.64], label: "bench", is_crowd: False }
+            - { bounding_box: [52.55, 232.52, 13.98, 35.09], label: "bottle", is_crowd: False }
+            - { bounding_box: [265.88, 540.29, 43.77, 72.02], label: "wine glass", is_crowd: False }
+            - { bounding_box: [173.87, 190.62, 18.37, 44.35], label: "potted plant", is_crowd: False }
+            - { bounding_box: [180.98, 101.15, 186.59, 344.53], label: "person", is_crowd: False }
+            - { bounding_box: [295.38, 528.58, 74.81, 105.5], label: "cup", is_crowd: False }
+            - { bounding_box: [130.09, 276.33, 16.0, 7.07], label: "knife", is_crowd: False }
+            - { bounding_box: [343.42, 378.75, 16.69, 9.23], label: "knife", is_crowd: False }
+            - { bounding_box: [167.85, 287.44, 19.55, 8.69], label: "fork", is_crowd: False }
+            - { bounding_box: [155.11, 105.97, 64.83, 146.58], label: "potted plant", is_crowd: False }
+            - { bounding_box: [0.0, 274.51, 98.95, 119.7], label: "oven", is_crowd: False }
+        - image: "media/000000117276.jpg"
+          objects:
+            - { bounding_box: [0.97, 9.8, 467.44, 463.58], label: "dog", is_crowd: False }
+            - { bounding_box: [429.31, 336.21, 189.31, 83.79], label: "car", is_crowd: False }
+            - { bounding_box: [432.32, 337.05, 183.12, 82.99], label: "truck", is_crowd: False }
+        - image: "media/000000117278.jpg"
+          objects:
+            - { bounding_box: [387.99, 97.43, 84.99, 81.29], label: "dog", is_crowd: False }
+            - { bounding_box: [7.36, 34.36, 632.64, 329.64], label: "car", is_crowd: False }
+        - image: "media/000000117279.jpg"
+          objects:
+            - { bounding_box: [297.73, 252.34, 60.21, 108.45], label: "dog", is_crowd: False }
+            - { bounding_box: [175.2, 1.91, 148.4, 330.31], label: "person", is_crowd: False }
+            - { bounding_box: [13.89, 0.0, 8.28, 42.04], label: "knife", is_crowd: False }
+            - { bounding_box: [159.33, 127.12, 22.32, 17.25], label: "cup", is_crowd: False }
+            - { bounding_box: [361.61, 70.87, 18.56, 16.3], label: "cup", is_crowd: False }
+            - { bounding_box: [43.62, 0.39, 9.63, 49.45], label: "fork", is_crowd: False }
+            - { bounding_box: [68.54, 0.17, 12.68, 51.22], label: "spoon", is_crowd: False }
+            - { bounding_box: [82.01, 64.96, 4.48, 25.87], label: "spoon", is_crowd: False }
+            - { bounding_box: [330.89, 60.37, 14.18, 16.74], label: "cup", is_crowd: False }
+            - { bounding_box: [331.4, 80.38, 14.86, 16.79], label: "cup", is_crowd: False }
+            - { bounding_box: [334.53, 95.48, 16.12, 17.23], label: "cup", is_crowd: False }
+            - { bounding_box: [355.63, 51.58, 16.19, 20.48], label: "cup", is_crowd: False }
+            - { bounding_box: [349.41, 91.55, 10.22, 18.04], label: "cup", is_crowd: False }
+            - { bounding_box: [358.62, 91.67, 16.39, 15.43], label: "cup", is_crowd: False }
+            - { bounding_box: [349.77, 74.72, 14.65, 14.97], label: "cup", is_crowd: False }
+            - { bounding_box: [197.74, 134.03, 51.24, 19.11], label: "sink", is_crowd: False }
+            - { bounding_box: [50.16, 60.69, 11.5, 27.15], label: "spoon", is_crowd: False }
+            - { bounding_box: [354.87, 151.04, 12.13, 10.93], label: "cup", is_crowd: False }
+            - { bounding_box: [335.49, 136.7, 11.0, 9.64], label: "cup", is_crowd: False }
+            - { bounding_box: [344.17, 57.09, 12.37, 17.1], label: "cup", is_crowd: False }
+            - { bounding_box: [340.97, 147.0, 9.47, 10.48], label: "cup", is_crowd: False }
+        - image: "media/000000117277.jpg"
+          objects:
+            - { bounding_box: [76.39, 294.14, 158.96, 184.78], label: "dog", is_crowd: False }
+            - { bounding_box: [305.56, 230.39, 117.12, 243.94], label: "bicycle", is_crowd: False }
+            - { bounding_box: [481.77, 240.8, 114.51, 239.48], label: "bicycle", is_crowd: False }
+            - { bounding_box: [372.16, 257.65, 78.18, 190.49], label: "bicycle", is_crowd: False }
+            - { bounding_box: [3.3, 173.97, 120.02, 128.83], label: "car", is_crowd: False }
+            - { bounding_box: [583.4, 171.03, 32.15, 32.51], label: "car", is_crowd: False }
+            - { bounding_box: [296.21, 133.81, 143.06, 336.43], label: "person", is_crowd: False }
+            - { bounding_box: [453.07, 119.95, 136.29, 357.42], label: "person", is_crowd: False }
+            - { bounding_box: [416.5, 163.46, 131.17, 73.63], label: "backpack", is_crowd: False }
+            - { bounding_box: [351.79, 126.79, 106.07, 121.84], label: "person", is_crowd: False }
+            - { bounding_box: [517.51, 155.71, 31.65, 24.18], label: "bicycle", is_crowd: False }
+            - { bounding_box: [182.37, 114.44, 143.46, 92.88], label: "truck", is_crowd: False }
+            - { bounding_box: [445.92, 155.94, 18.79, 17.46], label: "car", is_crowd: False }
+        - image: "media/000000117280.jpg"
+          objects:
+            - { bounding_box: [270.55, 80.55, 367.51, 393.7], label: "dog", is_crowd: False }
+            - { bounding_box: [65.8, 311.73, 341.93, 162.88], label: "toilet", is_crowd: False }
+        - image: "media/000000117281.jpg"
+          objects:
+            - { bounding_box: [473.07, 395.93, 38.65, 28.67], label: "dog", is_crowd: False }
+            - { bounding_box: [204.01, 235.08, 60.84, 177.36], label: "person", is_crowd: False }
+            - { bounding_box: [0.43, 499.79, 339.79, 106.45], label: "bench", is_crowd: False }
+            - { bounding_box: [204.42, 304.1, 52.51, 152.76], label: "bicycle", is_crowd: False }
+        - image: "media/000000117282.jpg"
+          objects:
+            - { bounding_box: [136.73, 179.48, 114.34, 137.22], label: "dog", is_crowd: False }
+            - { bounding_box: [117.68, 132.13, 515.09, 346.84], label: "bicycle", is_crowd: False }
+            - { bounding_box: [463.58, 2.68, 26.02, 25.09], label: "car", is_crowd: False }
+            - { bounding_box: [6.5, 150.34, 124.61, 151.69], label: "bench", is_crowd: False }
+            - { bounding_box: [55.01, 55.28, 175.82, 136.99], label: "bench", is_crowd: False }
+            - { bounding_box: [166.5, 76.28, 109.36, 136.87], label: "bench", is_crowd: False }
+            - { bounding_box: [488.96, 5.29, 17.46, 13.97], label: "car", is_crowd: False }
+            - { bounding_box: [530.3, 7.36, 22.7, 12.9], label: "car", is_crowd: False }
+            - { bounding_box: [559.02, 9.14, 27.17, 13.32], label: "car", is_crowd: False }
+        - image: "media/000000117283.jpg"
+          objects:
+            - { bounding_box: [402.7, 58.79, 197.92, 201.84], label: "dog", is_crowd: False }
+            - { bounding_box: [220.36, 329.98, 239.41, 79.68], label: "car", is_crowd: False }
+            - { bounding_box: [0.81, 305.17, 197.12, 107.1], label: "car", is_crowd: False }
+            - { bounding_box: [141.69, 324.6, 100.27, 80.66], label: "car", is_crowd: False }
+            - { bounding_box: [442.7, 340.69, 179.41, 68.65], label: "car", is_crowd: False }
+            - { bounding_box: [446.94, 331.29, 60.62, 80.53], label: "person", is_crowd: False }
+            - { bounding_box: [494.37, 331.45, 84.1, 79.43], label: "person", is_crowd: False }
+            - { bounding_box: [1.62, 360.76, 53.21, 54.46], label: "person", is_crowd: False }
+            - { bounding_box: [277.98, 371.09, 32.24, 38.28], label: "person", is_crowd: False }
+            - { bounding_box: [597.96, 338.69, 42.04, 71.66], label: "person", is_crowd: False }
+            - { bounding_box: [169.56, 307.78, 161.95, 31.53], label: "car", is_crowd: False }
+            - { bounding_box: [4.99, 311.58, 15.22, 5.76], label: "person", is_crowd: False }
+            - { bounding_box: [0.0, 340.16, 22.3, 68.5], label: "person", is_crowd: False }
+            - { bounding_box: [354.59, 366.21, 43.67, 43.67], label: "person", is_crowd: False }
+        - image: "media/000000117284.jpg"
+          objects:
+            - { bounding_box: [120.24, 0.32, 359.76, 596.04], label: "dog", is_crowd: False }
+        - image: "media/000000117285.jpg"
+          objects:
+            - { bounding_box: [464.19, 273.52, 93.72, 82.24], label: "dog", is_crowd: False }
+            - { bounding_box: [69.7, 260.42, 141.93, 202.76], label: "car", is_crowd: False }
+            - { bounding_box: [417.55, 177.06, 177.06, 342.23], label: "car", is_crowd: False }
+            - { bounding_box: [375.99, 350.48, 55.87, 29.19], label: "bench", is_crowd: False }
+            - { bounding_box: [399.05, 306.02, 85.27, 184.74], label: "car", is_crowd: False }
+        - image: "media/000000117286.jpg"
+          objects:
+            - { bounding_box: [506.13, 157.73, 72.8, 81.47], label: "dog", is_crowd: False }
+            - { bounding_box: [157.49, 1.45, 132.37, 288.9], label: "person", is_crowd: False }
+            - { bounding_box: [344.69, 0.0, 136.17, 321.43], label: "person", is_crowd: False }
+            - { bounding_box: [235.75, 1.45, 78.67, 244.48], label: "person", is_crowd: False }
+            - { bounding_box: [140.12, 12.57, 45.11, 190.99], label: "person", is_crowd: False }
+            - { bounding_box: [564.58, 17.19, 75.42, 405.76], label: "person", is_crowd: False }
+            - { bounding_box: [463.66, 58.45, 61.1, 92.85], label: "bicycle", is_crowd: False }
+            - { bounding_box: [108.94, 35.91, 39.52, 118.58], label: "bicycle", is_crowd: False }
+            - { bounding_box: [1.78, 81.08, 45.13, 79.46], label: "bicycle", is_crowd: False }
+            - { bounding_box: [0.0, 89.62, 16.82, 81.14], label: "bicycle", is_crowd: False }
+            - { bounding_box: [0.0, 10.82, 107.41, 89.68], label: "bicycle", is_crowd: False }
+            - { bounding_box: [262.19, 173.16, 113.92, 117.68], label: "skateboard", is_crowd: False }
+            - { bounding_box: [531.52, 0.18, 56.16, 64.67], label: "cup", is_crowd: False }
+            - { bounding_box: [455.67, 64.31, 24.75, 58.75], label: "handbag", is_crowd: False }
+            - { bounding_box: [282.99, 56.37, 26.17, 69.64], label: "handbag", is_crowd: False }
+            - { bounding_box: [483.11, 23.67, 120.78, 121.75], label: "bicycle", is_crowd: False }
+            - { bounding_box: [288.1, 0.45, 61.75, 182.44], label: "person", is_crowd: False }
+            - { bounding_box: [334.76, 48.96, 30.44, 108.75], label: "bicycle", is_crowd: False }
+            - { bounding_box: [502.41, 25.0, 137.33, 124.67], label: "bicycle", is_crowd: False }
+            - { bounding_box: [1.01, 258.41, 278.6, 164.53], label: "bicycle", is_crowd: False }
+            - { bounding_box: [116.51, 40.42, 31.94, 54.05], label: "bicycle", is_crowd: False }
+            - { bounding_box: [90.02, 0.0, 46.08, 80.5], label: "person", is_crowd: False }
+            - { bounding_box: [15, 5, 113, 152], label: "bicycle", is_crowd: True }
+        - image: "media/000000117287.jpg"
+          objects:
+            - { bounding_box: [245.5, 4.46, 36.3, 46.81], label: "potted plant", is_crowd: False }
+            - { bounding_box: [270.43, 0.0, 52.4, 29.41], label: "potted plant", is_crowd: False }
+            - { bounding_box: [158.28, 0.0, 51.8, 34.76], label: "potted plant", is_crowd: False }
+            - { bounding_box: [421.24, 148.57, 156.41, 172.72], label: "toilet", is_crowd: False }
+            - { bounding_box: [250.35, 165.27, 176.65, 154.98], label: "toilet", is_crowd: False }
+            - { bounding_box: [338.75, 0.0, 40.79, 39.27], label: "potted plant", is_crowd: False }
+            - { bounding_box: [387.5, 0.0, 55.97, 39.29], label: "potted plant", is_crowd: False }
+        - image: "media/000000117288.jpg"
+          objects:
+            - { bounding_box: [120.66, 161.06, 36.35, 55.39], label: "potted plant", is_crowd: False }
+            - { bounding_box: [453.81, 205.4, 20.72, 30.14], label: "cup", is_crowd: False }
+            - { bounding_box: [241.69, 197.36, 7.7, 8.59], label: "cup", is_crowd: False }
+            - { bounding_box: [572.37, 218.25, 66.23, 22.71], label: "bowl", is_crowd: False }
+            - { bounding_box: [162.68, 197.35, 27.88, 16.0], label: "bowl", is_crowd: False }
+            - { bounding_box: [282.87, 198.67, 73.8, 107.86], label: "oven", is_crowd: False }
+            - { bounding_box: [491.41, 222.61, 62.91, 5.74], label: "sink", is_crowd: False }
+            - { bounding_box: [298.67, 132.88, 9.85, 47.11], label: "spoon", is_crowd: False }
+            - { bounding_box: [463.88, 119.24, 95.76, 101.59], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [131.26, 187.06, 12.28, 29.22], label: "vase", is_crowd: False }
+            - { bounding_box: [98.04, 223.01, 82.9, 21.98], label: "sink", is_crowd: False }
+            - { bounding_box: [579.17, 210.39, 49.01, 8.23], label: "apple", is_crowd: False }
+        - image: "media/000000117289.jpg"
+          objects:
+            - { bounding_box: [6.59, 93.28, 34.3, 34.66], label: "potted plant", is_crowd: False }
+            - { bounding_box: [69.24, 111.08, 148.11, 248.12], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [340.96, 219.72, 40.96, 9.76], label: "bowl", is_crowd: False }
+            - { bounding_box: [355.41, 205.08, 14.41, 8.77], label: "apple", is_crowd: False }
+            - { bounding_box: [345.77, 217.14, 6.51, 5.52], label: "apple", is_crowd: False }
+            - { bounding_box: [368.07, 212.14, 12.15, 10.62], label: "orange", is_crowd: False }
+            - { bounding_box: [327.14, 129.99, 67.75, 29.64], label: "microwave", is_crowd: False }
+            - { bounding_box: [318.49, 203.72, 73.02, 25.9], label: "oven", is_crowd: False }
+            - { bounding_box: [287.37, 177.33, 39.45, 22.0], label: "toaster", is_crowd: False }
+            - { bounding_box: [254.33, 165.7, 5.76, 15.12], label: "spoon", is_crowd: False }
+            - { bounding_box: [433.55, 211.52, 21.45, 13.83], label: "bowl", is_crowd: False }
+            - { bounding_box: [354.69, 217.64, 11.14, 5.61], label: "orange", is_crowd: False }
+            - { bounding_box: [2.89, 205.33, 24.04, 85.59], label: "chair", is_crowd: False }
+            - { bounding_box: [216.25, 202.36, 22.81, 6.46], label: "sink", is_crowd: False }
+            - { bounding_box: [257.51, 180.86, 8.51, 17.27], label: "vase", is_crowd: False }
+            - { bounding_box: [271.88, 178.49, 11.1, 20.13], label: "vase", is_crowd: False }
+            - { bounding_box: [320.7, 203.6, 161.26, 57.0], label: "dining table", is_crowd: False }
+            - { bounding_box: [22.87, 210.81, 12.3, 14.34], label: "dining table", is_crowd: False }
+            - { bounding_box: [360.4, 206.68, 9.13, 6.73], label: "orange", is_crowd: False }
+            - { bounding_box: [24.18, 233.97, 27.93, 82.67], label: "chair", is_crowd: False }
+        - image: "media/000000117291.jpg"
+          objects:
+            - { bounding_box: [561.01, 183.34, 33.0, 41.34], label: "potted plant", is_crowd: False }
+            - { bounding_box: [278.11, 314.78, 106.1, 159.66], label: "chair", is_crowd: False }
+            - { bounding_box: [428.39, 316.39, 119.74, 149.67], label: "chair", is_crowd: False }
+            - { bounding_box: [544.97, 309.7, 95.03, 158.61], label: "chair", is_crowd: False }
+            - { bounding_box: [237.25, 257.38, 401.64, 182.82], label: "dining table", is_crowd: False }
+            - { bounding_box: [14.02, 112.0, 70.11, 361.35], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [406.44, 256.33, 32.95, 27.69], label: "bowl", is_crowd: False }
+            - { bounding_box: [346.86, 254.74, 20.33, 11.64], label: "banana", is_crowd: False }
+            - { bounding_box: [361.07, 255.88, 8.31, 7.46], label: "apple", is_crowd: False }
+            - { bounding_box: [472.81, 211.12, 57.25, 25.21], label: "microwave", is_crowd: False }
+            - { bounding_box: [333.28, 230.76, 68.15, 9.15], label: "sink", is_crowd: False }
+            - { bounding_box: [300.8, 244.23, 22.96, 33.9], label: "vase", is_crowd: False }
+            - { bounding_box: [471.75, 248.13, 22.26, 33.87], label: "cup", is_crowd: False }
+            - { bounding_box: [436.31, 166.1, 7.7, 12.78], label: "cup", is_crowd: False }
+            - { bounding_box: [477.65, 169.16, 7.9, 11.47], label: "cup", is_crowd: False }
+            - { bounding_box: [338.46, 254.45, 46.85, 29.42], label: "bowl", is_crowd: False }
+            - { bounding_box: [481.31, 109.86, 24.45, 15.31], label: "bowl", is_crowd: False }
+            - { bounding_box: [507.76, 113.35, 24.15, 11.71], label: "bowl", is_crowd: False }
+            - { bounding_box: [480.98, 137.42, 20.09, 9.27], label: "bowl", is_crowd: False }
+            - { bounding_box: [502.69, 137.78, 24.09, 13.64], label: "bowl", is_crowd: False }
+            - { bounding_box: [346.04, 258.99, 10.86, 6.65], label: "apple", is_crowd: False }
+            - { bounding_box: [369.02, 260.94, 11.49, 6.57], label: "apple", is_crowd: False }
+            - { bounding_box: [427.73, 163.9, 8.18, 16.34], label: "cup", is_crowd: False }
+            - { bounding_box: [427.79, 84.51, 36.0, 9.48], label: "bowl", is_crowd: False }
+            - { bounding_box: [276.5, 83.81, 20.24, 6.35], label: "bowl", is_crowd: False }
+            - { bounding_box: [480.24, 88.46, 37.06, 8.72], label: "bowl", is_crowd: False }
+            - { bounding_box: [244.47, 83.21, 17.9, 6.23], label: "bowl", is_crowd: False }
+            - { bounding_box: [373.4, 255.48, 97.84, 22.42], label: "oven", is_crowd: False }
+            - { bounding_box: [415.92, 242.95, 56.45, 17.19], label: "oven", is_crowd: False }
+        - image: "media/000000117290.jpg"
+          objects:
+            - { bounding_box: [314.46, 261.42, 70.64, 100.13], label: "potted plant", is_crowd: False }
+            - { bounding_box: [52.03, 149.05, 85.25, 116.36], label: "microwave", is_crowd: False }
+            - { bounding_box: [18.56, 367.08, 175.08, 251.22], label: "oven", is_crowd: False }
+            - { bounding_box: [1.17, 336.35, 30.15, 29.51], label: "knife", is_crowd: False }
+            - { bounding_box: [348.62, 334.1, 21.52, 32.15], label: "vase", is_crowd: False }
+            - { bounding_box: [7.14, 371.24, 27.32, 20.55], label: "knife", is_crowd: False }
+            - { bounding_box: [7.8, 342.05, 29.71, 29.56], label: "knife", is_crowd: False }
+            - { bounding_box: [14.13, 351.78, 24.17, 24.32], label: "knife", is_crowd: False }
+            - { bounding_box: [391.26, 361.28, 35.74, 12.65], label: "sink", is_crowd: False }
+            - { bounding_box: [249.35, 384.0, 139.64, 167.9], label: "refrigerator", is_crowd: False }
+        - image: "media/000000117292.jpg"
+          objects:
+            - { bounding_box: [290.13, 9.4, 91.57, 48.19], label: "potted plant", is_crowd: False }
+            - { bounding_box: [450.61, 13.2, 64.28, 57.38], label: "potted plant", is_crowd: False }
+            - { bounding_box: [177.3, 213.8, 27.95, 72.83], label: "bottle", is_crowd: False }
+            - { bounding_box: [129.48, 199.97, 27.64, 55.28], label: "bottle", is_crowd: False }
+            - { bounding_box: [466.38, 99.54, 75.06, 297.93], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [162.58, 170.85, 3.97, 13.31], label: "knife", is_crowd: False }
+            - { bounding_box: [166.78, 169.46, 7.63, 15.68], label: "knife", is_crowd: False }
+            - { bounding_box: [171.28, 174.85, 6.18, 16.36], label: "knife", is_crowd: False }
+            - { bounding_box: [182.78, 176.45, 6.88, 14.67], label: "knife", is_crowd: False }
+            - { bounding_box: [284.03, 171.47, 118.98, 177.51], label: "oven", is_crowd: False }
+            - { bounding_box: [153.78, 230.05, 60.08, 17.91], label: "sink", is_crowd: False }
+            - { bounding_box: [169.76, 172.29, 7.71, 13.8], label: "knife", is_crowd: False }
+            - { bounding_box: [179.59, 188.28, 8.94, 14.53], label: "knife", is_crowd: False }
+            - { bounding_box: [173.43, 210.74, 16.78, 12.62], label: "bowl", is_crowd: False }
+            - { bounding_box: [117.64, 198.46, 8.61, 22.91], label: "bottle", is_crowd: False }
+            - { bounding_box: [25.38, 224.79, 28.78, 78.42], label: "wine glass", is_crowd: False }
+            - { bounding_box: [101.72, 222.89, 22.2, 38.14], label: "wine glass", is_crowd: False }
+            - { bounding_box: [80.23, 220.03, 24.57, 45.35], label: "wine glass", is_crowd: False }
+            - { bounding_box: [176.99, 168.51, 2.36, 4.99], label: "knife", is_crowd: False }
+            - { bounding_box: [179.14, 178.59, 2.38, 11.53], label: "knife", is_crowd: False }
+            - { bounding_box: [180.27, 175.98, 4.12, 13.39], label: "knife", is_crowd: False }
+            - { bounding_box: [173.61, 175.61, 6.26, 15.82], label: "knife", is_crowd: False }
+            - { bounding_box: [464.99, 191.22, 11.86, 10.85], label: "bottle", is_crowd: False }
+            - { bounding_box: [501.05, 80.12, 17.62, 24.06], label: "cup", is_crowd: False }
+        - image: "media/000000117293.jpg"
+          objects:
+            - { bounding_box: [365.9, 0.0, 157.59, 126.98], label: "potted plant", is_crowd: False }
+            - { bounding_box: [386.66, 121.37, 124.73, 300.31], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [494.62, 377.57, 100.06, 47.66], label: "chair", is_crowd: False }
+            - { bounding_box: [209.94, 200.1, 10.44, 15.95], label: "cup", is_crowd: False }
+            - { bounding_box: [191.5, 198.12, 11.43, 18.1], label: "cup", is_crowd: False }
+            - { bounding_box: [344.72, 224.64, 55.61, 134.84], label: "oven", is_crowd: False }
+            - { bounding_box: [267.63, 213.54, 78.34, 13.75], label: "sink", is_crowd: False }
+            - { bounding_box: [458.55, 105.88, 51.13, 17.87], label: "bowl", is_crowd: False }
+            - { bounding_box: [355.66, 189.83, 48.63, 34.92], label: "microwave", is_crowd: False }
+            - { bounding_box: [548.96, 25.03, 90.52, 250.39], label: "surfboard", is_crowd: False }
+            - { bounding_box: [177.04, 194.1, 14.7, 20.42], label: "bottle", is_crowd: False }
+            - { bounding_box: [379.33, 177.87, 8.94, 18.52], label: "bottle", is_crowd: False }
+            - { bounding_box: [471.55, 78.81, 38.46, 28.0], label: "bowl", is_crowd: False }
+        - image: "media/000000117294.jpg"
+          objects:
+            - { bounding_box: [126.74, 240.09, 109.25, 87.4], label: "potted plant", is_crowd: False }
+            - { bounding_box: [16.62, 287.49, 154.93, 181.32], label: "toilet", is_crowd: False }
+            - { bounding_box: [406.56, 243.77, 121.16, 44.56], label: "sink", is_crowd: False }
+            - { bounding_box: [555.03, 344.28, 84.97, 109.33], label: "chair", is_crowd: False }
+        - image: "media/000000117295.jpg"
+          objects:
+            - { bounding_box: [269.55, 180.58, 29.42, 62.6], label: "potted plant", is_crowd: False }
+            - { bounding_box: [207.18, 171.48, 38.54, 74.14], label: "potted plant", is_crowd: False }
+            - { bounding_box: [166.18, 185.54, 20.86, 58.02], label: "potted plant", is_crowd: False }
+            - { bounding_box: [235.88, 198.4, 38.65, 45.84], label: "potted plant", is_crowd: False }
+            - { bounding_box: [179.73, 423.32, 91.19, 92.69], label: "cat", is_crowd: False }
+            - { bounding_box: [323.54, 572.77, 27.34, 67.23], label: "bottle", is_crowd: False }
+            - { bounding_box: [306.92, 191.31, 17.9, 52.3], label: "bottle", is_crowd: False }
+            - { bounding_box: [4.3, 38.74, 104.76, 591.22], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [113.36, 288.72, 36.16, 31.91], label: "oven", is_crowd: False }
+            - { bounding_box: [261.1, 205.55, 15.8, 37.86], label: "bottle", is_crowd: False }
+            - { bounding_box: [137.15, 190.48, 14.4, 57.6], label: "spoon", is_crowd: False }
+            - { bounding_box: [298.42, 153.5, 42.86, 23.81], label: "banana", is_crowd: False }
+            - { bounding_box: [308.93, 103.9, 29.93, 28.96], label: "banana", is_crowd: False }
+            - { bounding_box: [380.34, 286.67, 21.54, 17.29], label: "sink", is_crowd: False }
+            - { bounding_box: [103.43, 311.86, 87.81, 255.19], label: "chair", is_crowd: False }
+            - { bounding_box: [339.12, 289.52, 62.12, 267.09], label: "oven", is_crowd: False }
+        - image: "media/000000117296.jpg"
+          objects:
+            - { bounding_box: [38.74, 0.0, 165.74, 333.63], label: "potted plant", is_crowd: False }
+            - { bounding_box: [108.75, 338.14, 25.09, 17.3], label: "cup", is_crowd: False }
+            - { bounding_box: [0.71, 202.0, 45.91, 39.69], label: "apple", is_crowd: False }
+            - { bounding_box: [537.17, 299.54, 102.83, 125.12], label: "microwave", is_crowd: False }
+            - { bounding_box: [395.87, 332.22, 143.46, 140.23], label: "oven", is_crowd: False }
+            - { bounding_box: [85.33, 322.37, 53.69, 36.87], label: "sink", is_crowd: False }
+            - { bounding_box: [0.0, 364.57, 59.7, 84.39], label: "bowl", is_crowd: False }
+            - { bounding_box: [85.15, 338.27, 20.79, 18.49], label: "bowl", is_crowd: False }
+            - { bounding_box: [84.2, 338.45, 21.38, 19.74], label: "cup", is_crowd: False }
+        - image: "media/000000117297.jpg"
+          objects:
+            - { bounding_box: [513.2, 84.47, 90.76, 70.59], label: "potted plant", is_crowd: False }
+            - { bounding_box: [328.17, 0.96, 237.96, 186.15], label: "potted plant", is_crowd: False }
+            - { bounding_box: [326.2, 123.56, 55.63, 63.12], label: "potted plant", is_crowd: False }
+            - { bounding_box: [448.77, 175.76, 64.45, 123.0], label: "potted plant", is_crowd: False }
+            - { bounding_box: [362.44, 235.86, 44.27, 185.38], label: "chair", is_crowd: False }
+            - { bounding_box: [46.11, 254.31, 94.99, 166.93], label: "chair", is_crowd: False }
+            - { bounding_box: [180.68, 223.58, 29.9, 39.88], label: "chair", is_crowd: False }
+            - { bounding_box: [74.35, 249.17, 313.47, 172.81], label: "dining table", is_crowd: False }
+            - { bounding_box: [580.8, 74.6, 59.2, 346.76], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [221.64, 87.5, 17.45, 26.91], label: "bottle", is_crowd: False }
+            - { bounding_box: [477.93, 287.33, 57.81, 36.51], label: "bowl", is_crowd: False }
+            - { bounding_box: [533.97, 288.44, 58.4, 30.49], label: "bowl", is_crowd: False }
+            - { bounding_box: [212.54, 241.87, 35.58, 60.59], label: "vase", is_crowd: False }
+            - { bounding_box: [491.32, 298.4, 15.99, 9.81], label: "orange", is_crowd: False }
+            - { bounding_box: [508.3, 298.72, 17.26, 11.27], label: "orange", is_crowd: False }
+            - { bounding_box: [183.0, 160.82, 92.05, 139.74], label: "potted plant", is_crowd: False }
+            - { bounding_box: [242.88, 250.95, 44.79, 19.69], label: "bowl", is_crowd: False }
+            - { bounding_box: [554.66, 299.98, 14.53, 6.43], label: "orange", is_crowd: False }
+            - { bounding_box: [566.52, 296.57, 14.47, 9.59], label: "orange", is_crowd: False }
+        - image: "media/000000117298.jpg"
+          objects:
+            - { bounding_box: [102.49, 118.47, 7.9, 17.31], label: "potted plant", is_crowd: False }
+            - { bounding_box: [26.5, 215.25, 61.5, 14.5], label: "chair", is_crowd: False }
+            - { bounding_box: [116.5, 189.57, 50.0, 25.5], label: "chair", is_crowd: False }
+            - { bounding_box: [79.55, 178.05, 208.36, 48.7], label: "dining table", is_crowd: False }
+            - { bounding_box: [301.84, 74.94, 49.62, 151.44], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [220.65, 178.93, 37.84, 27.91], label: "banana", is_crowd: False }
+            - { bounding_box: [137.47, 124.11, 60.18, 71.02], label: "oven", is_crowd: False }
+            - { bounding_box: [266.33, 134.49, 27.87, 3.47], label: "sink", is_crowd: False }
+            - { bounding_box: [215.77, 184.9, 17.26, 15.97], label: "orange", is_crowd: False }
+            - { bounding_box: [231.6, 200.96, 16.69, 15.93], label: "orange", is_crowd: False }
+            - { bounding_box: [230.55, 178.25, 11.73, 10.98], label: "orange", is_crowd: False }
+            - { bounding_box: [205.19, 187.01, 14.99, 21.2], label: "orange", is_crowd: False }
+            - { bounding_box: [241.95, 180.42, 51.37, 45.4], label: "chair", is_crowd: False }
+            - { bounding_box: [217.89, 200.56, 14.14, 13.49], label: "orange", is_crowd: False }
+        - image: "media/000000117299.jpg"
+          objects:
+            - { bounding_box: [0.0, 351.56, 70.13, 150.94], label: "potted plant", is_crowd: False }
+            - { bounding_box: [0.0, 426.95, 229.86, 203.97], label: "dining table", is_crowd: False }
+            - { bounding_box: [68.06, 287.46, 18.87, 19.23], label: "cup", is_crowd: False }
+            - { bounding_box: [99.76, 290.46, 17.54, 16.17], label: "cup", is_crowd: False }
+            - { bounding_box: [66.71, 220.26, 16.08, 33.51], label: "cup", is_crowd: False }
+            - { bounding_box: [68.53, 471.64, 27.28, 16.73], label: "bowl", is_crowd: False }
+            - { bounding_box: [69.9, 467.19, 27.26, 8.68], label: "bowl", is_crowd: False }
+            - { bounding_box: [69.1, 459.53, 26.58, 11.54], label: "bowl", is_crowd: False }
+            - { bounding_box: [130.88, 396.94, 102.11, 136.63], label: "oven", is_crowd: False }
+            - { bounding_box: [290.52, 385.44, 162.51, 92.04], label: "sink", is_crowd: False }
+            - { bounding_box: [385.88, 247.98, 8.59, 43.82], label: "book", is_crowd: False }
+            - { bounding_box: [0.0, 421.19, 23.72, 80.7], label: "vase", is_crowd: False }
+            - { bounding_box: [13.8, 415.97, 33.12, 46.5], label: "vase", is_crowd: False }
+            - { bounding_box: [16.67, 215.79, 17.43, 33.16], label: "wine glass", is_crowd: False }
+            - { bounding_box: [30.32, 217.72, 14.81, 30.18], label: "wine glass", is_crowd: False }
+            - { bounding_box: [55.5, 222.06, 11.87, 28.84], label: "wine glass", is_crowd: False }
+            - { bounding_box: [42.64, 220.63, 13.58, 29.39], label: "wine glass", is_crowd: False }
+            - { bounding_box: [84.56, 288.96, 15.22, 17.1], label: "cup", is_crowd: False }
+            - { bounding_box: [104.73, 230.64, 12.59, 28.32], label: "cup", is_crowd: False }
+            - { bounding_box: [14.94, 295.55, 28.77, 10.07], label: "bowl", is_crowd: False }
+            - { bounding_box: [14.8, 293.89, 29.32, 1.72], label: "bowl", is_crowd: False }
+            - { bounding_box: [45.41, 288.5, 17.08, 6.55], label: "bowl", is_crowd: False }
+            - { bounding_box: [373.5, 249.05, 12.17, 43.6], label: "book", is_crowd: False }
+            - { bounding_box: [93.07, 229.19, 12.3, 24.6], label: "wine glass", is_crowd: False }
+            - { bounding_box: [10.97, 217.68, 11.64, 32.42], label: "wine glass", is_crowd: False }
+            - { bounding_box: [104.82, 231.62, 9.07, 23.86], label: "wine glass", is_crowd: False }
+            - { bounding_box: [113.75, 232.25, 10.08, 26.45], label: "wine glass", is_crowd: False }
+            - { bounding_box: [98.67, 230.48, 9.5, 26.46], label: "wine glass", is_crowd: False }
+            - { bounding_box: [41.38, 223.22, 6.05, 18.76], label: "wine glass", is_crowd: False }
+            - { bounding_box: [41.55, 294.2, 19.46, 11.93], label: "cup", is_crowd: False }
+            - { bounding_box: [84.92, 290.96, 3.16, 10.01], label: "cup", is_crowd: False }
+            - { bounding_box: [304.38, 267.54, 9.65, 15.58], label: "cup", is_crowd: False }
+            - { bounding_box: [15.08, 273.51, 29.91, 20.58], label: "bowl", is_crowd: False }
+            - { bounding_box: [360.91, 241.3, 23.55, 52.02], label: "book", is_crowd: False }
+            - { bounding_box: [394.07, 250.54, 9.2, 43.34], label: "book", is_crowd: False }
+        - image: "media/000000117300.jpg"
+          objects:
+            - { bounding_box: [279.11, 209.81, 206.02, 160.44], label: "tv", is_crowd: False }
+            - { bounding_box: [155.06, 38.76, 114.6, 113.77], label: "train", is_crowd: False }
+            - { bounding_box: [50.89, 58.0, 66.82, 189.34], label: "person", is_crowd: False }
+            - { bounding_box: [281.13, 40.81, 165.48, 166.35], label: "tv", is_crowd: False }
+        - image: "media/000000117301.jpg"
+          objects:
+            - { bounding_box: [1.08, 1.72, 574.7, 471.39], label: "tv", is_crowd: False }
+            - { bounding_box: [134.0, 60.49, 373.08, 359.36], label: "person", is_crowd: False }
+            - { bounding_box: [44.22, 61.75, 242.7, 345.17], label: "person", is_crowd: False }
+            - { bounding_box: [220.99, 354.69, 57.88, 55.14], label: "tie", is_crowd: False }
+        - image: "media/000000117302.jpg"
+          objects:
+            - { bounding_box: [282.09, 253.6, 183.94, 101.97], label: "potted plant", is_crowd: False }
+            - { bounding_box: [586.23, 324.18, 16.15, 38.93], label: "bottle", is_crowd: False }
+            - { bounding_box: [571.56, 322.61, 16.42, 40.37], label: "bottle", is_crowd: False }
+            - { bounding_box: [96.0, 362.42, 40.27, 63.0], label: "bottle", is_crowd: False }
+            - { bounding_box: [186.59, 393.69, 175.02, 32.31], label: "sink", is_crowd: False }
+            - { bounding_box: [0.0, 299.29, 49.95, 101.25], label: "potted plant", is_crowd: False }
+            - { bounding_box: [446.09, 326.06, 99.88, 99.94], label: "toilet", is_crowd: False }
+        - image: "media/000000117303.jpg"
+          objects:
+            - { bounding_box: [97.28, 202.37, 60.28, 39.91], label: "tv", is_crowd: False }
+            - { bounding_box: [405.97, 275.39, 96.7, 161.41], label: "chair", is_crowd: False }
+            - { bounding_box: [0.0, 104.63, 90.61, 332.22], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [446.26, 33.74, 34.83, 39.19], label: "clock", is_crowd: False }
+            - { bounding_box: [423.87, 205.53, 77.78, 39.12], label: "microwave", is_crowd: False }
+            - { bounding_box: [519.65, 243.34, 120.35, 9.81], label: "sink", is_crowd: False }
+            - { bounding_box: [313.8, 228.19, 21.49, 18.95], label: "bowl", is_crowd: False }
+            - { bounding_box: [0.36, 246.78, 24.84, 19.68], label: "bowl", is_crowd: False }
+            - { bounding_box: [277.97, 219.03, 32.25, 28.77], label: "bowl", is_crowd: False }
+        - image: "media/000000117304.jpg"
+          objects:
+            - { bounding_box: [3.88, 0.0, 287.98, 251.13], label: "tv", is_crowd: False }
+            - { bounding_box: [280.34, 1.78, 141.35, 195.84], label: "tv", is_crowd: False }
+            - { bounding_box: [378.76, 287.74, 60.77, 40.6], label: "mouse", is_crowd: False }
+            - { bounding_box: [79.0, 291.11, 298.85, 86.74], label: "keyboard", is_crowd: False }
+            - { bounding_box: [195.38, 150.05, 13.53, 14.27], label: "person", is_crowd: False }
+            - { bounding_box: [162.66, 75.65, 41.61, 35.94], label: "person", is_crowd: False }
+            - { bounding_box: [236.11, 72.81, 12.37, 16.3], label: "person", is_crowd: False }
+            - { bounding_box: [233.52, 209.77, 29.97, 36.0], label: "cat", is_crowd: False }
+            - { bounding_box: [55.58, 78.68, 21.78, 15.58], label: "carrot", is_crowd: False }
+        - image: "media/000000117305.jpg"
+          objects:
+            - { bounding_box: [146.9, 16.69, 105.64, 88.52], label: "potted plant", is_crowd: False }
+            - { bounding_box: [59.68, 15.2, 94.6, 231.98], label: "toilet", is_crowd: False }
+        - image: "media/000000117306.jpg"
+          objects:
+            - { bounding_box: [145.26, 214.29, 165.39, 107.87], label: "tv", is_crowd: False }
+            - { bounding_box: [379.69, 522.07, 98.31, 53.21], label: "sink", is_crowd: False }
+            - { bounding_box: [4.19, 590.63, 186.24, 49.37], label: "sink", is_crowd: False }
+            - { bounding_box: [216.04, 233.23, 47.09, 80.0], label: "person", is_crowd: False }
+            - { bounding_box: [157.76, 242.73, 40.1, 71.56], label: "person", is_crowd: False }
+        - image: "media/000000117307.jpg"
+          objects:
+            - { bounding_box: [0.0, 208.62, 28.13, 67.81], label: "potted plant", is_crowd: False }
+            - { bounding_box: [1.27, 592.47, 69.48, 47.53], label: "toilet", is_crowd: False }
+            - { bounding_box: [214.77, 452.58, 254.85, 131.72], label: "sink", is_crowd: False }
+        - image: "media/000000117309.jpg"
+          objects:
+            - { bounding_box: [2.88, 213.21, 166.83, 93.49], label: "tv", is_crowd: False }
+            - { bounding_box: [412.89, 388.41, 27.33, 51.26], label: "bottle", is_crowd: False }
+            - { bounding_box: [459.81, 405.96, 20.19, 39.34], label: "sink", is_crowd: False }
+            - { bounding_box: [253.69, 371.48, 88.26, 70.74], label: "vase", is_crowd: False }
+            - { bounding_box: [166.2, 361.4, 17.52, 37.07], label: "bottle", is_crowd: False }
+            - { bounding_box: [186.57, 360.98, 17.04, 40.31], label: "bottle", is_crowd: False }
+            - { bounding_box: [167.88, 398.09, 24.58, 55.0], label: "bottle", is_crowd: False }
+        - image: "media/000000117308.jpg"
+          objects:
+            - { bounding_box: [426.66, 91.19, 89.88, 95.56], label: "tv", is_crowd: False }
+            - { bounding_box: [275.58, 230.99, 57.63, 125.42], label: "person", is_crowd: False }
+            - { bounding_box: [322.91, 378.26, 85.5, 19.06], label: "sink", is_crowd: False }
+            - { bounding_box: [173.64, 379.73, 81.74, 16.42], label: "sink", is_crowd: False }
+        - image: "media/000000117310.jpg"
+          objects:
+            - { bounding_box: [24.14, 0.0, 323.24, 235.69], label: "tv", is_crowd: False }
+            - { bounding_box: [310.0, 40.0, 226.0, 194.0], label: "tv", is_crowd: False }
+            - { bounding_box: [346.01, 261.28, 293.99, 122.89], label: "keyboard", is_crowd: False }
+        - image: "media/000000117311.jpg"
+          objects:
+            - { bounding_box: [352.62, 201.36, 31.35, 38.76], label: "tv", is_crowd: False }
+            - { bounding_box: [568.62, 160.92, 40.28, 52.68], label: "backpack", is_crowd: False }
+            - { bounding_box: [84.74, 240.42, 26.41, 80.64], label: "handbag", is_crowd: False }
+            - { bounding_box: [204.02, 217.04, 24.52, 58.8], label: "handbag", is_crowd: False }
+            - { bounding_box: [266.97, 303.37, 57.43, 52.59], label: "suitcase", is_crowd: False }
+            - { bounding_box: [249.85, 184.09, 41.2, 175.91], label: "person", is_crowd: False }
+            - { bounding_box: [93.58, 127.59, 545.25, 226.31], label: "person", is_crowd: False }
+            - { bounding_box: [271.07, 253.9, 58.62, 59.88], label: "handbag", is_crowd: False }
+            - { bounding_box: [520.35, 191.24, 22.77, 30.18], label: "handbag", is_crowd: False }
+            - { bounding_box: [557.42, 212.1, 81.21, 57.43], label: "suitcase", is_crowd: False }
+            - { bounding_box: [539.72, 255.13, 17.68, 51.23], label: "suitcase", is_crowd: False }
+            - { bounding_box: [544.39, 203.26, 15.54, 15.94], label: "person", is_crowd: False }
+            - { bounding_box: [548.46, 185.2, 9.57, 13.94], label: "person", is_crowd: False }
+            - { bounding_box: [19.67, 133.25, 66.53, 78.57], label: "tv", is_crowd: False }
+            - { bounding_box: [463.49, 74.01, 28.31, 52.63], label: "tv", is_crowd: False }
+            - { bounding_box: [177.29, 91.5, 86.97, 72.2], label: "tv", is_crowd: False }
+            - { bounding_box: [315.29, 217.63, 39.54, 29.4], label: "tv", is_crowd: False }
+            - { bounding_box: [526.9, 221.44, 21.39, 34.83], label: "suitcase", is_crowd: False }
+        - image: "media/000000117312.jpg"
+          objects:
+            - { bounding_box: [263.24, 172.56, 98.61, 60.75], label: "tv", is_crowd: False }
+            - { bounding_box: [293.22, 306.6, 113.62, 79.72], label: "chair", is_crowd: False }
+            - { bounding_box: [463.44, 250.69, 124.63, 89.9], label: "couch", is_crowd: False }
+            - { bounding_box: [211.81, 274.9, 293.2, 134.27], label: "dining table", is_crowd: False }
+            - { bounding_box: [491.91, 183.51, 34.85, 73.4], label: "person", is_crowd: False }
+            - { bounding_box: [520.37, 257.46, 67.66, 93.56], label: "chair", is_crowd: False }
+            - { bounding_box: [144.61, 232.1, 46.11, 38.57], label: "chair", is_crowd: False }
+            - { bounding_box: [70.61, 341.31, 95.16, 85.69], label: "chair", is_crowd: False }
+            - { bounding_box: [444.5, 299.5, 98.21, 61.7], label: "chair", is_crowd: False }
+            - { bounding_box: [613.14, 302.12, 26.66, 46.91], label: "chair", is_crowd: False }
+            - { bounding_box: [83.18, 262.06, 31.24, 10.52], label: "apple", is_crowd: False }
+            - { bounding_box: [457.74, 390.67, 58.48, 36.33], label: "vase", is_crowd: False }
+            - { bounding_box: [595.38, 390.6, 44.12, 36.4], label: "vase", is_crowd: False }
+            - { bounding_box: [74.88, 267.62, 48.53, 12.67], label: "bowl", is_crowd: False }
+            - { bounding_box: [378.98, 132.3, 18.99, 5.87], label: "book", is_crowd: False }
+            - { bounding_box: [165.13, 293.17, 32.79, 108.22], label: "vase", is_crowd: False }
+            - { bounding_box: [198.43, 277.54, 29.1, 125.02], label: "vase", is_crowd: False }
+            - { bounding_box: [201.52, 222.14, 8.97, 20.44], label: "book", is_crowd: False }
+            - { bounding_box: [432.8, 230.26, 20.38, 50.0], label: "vase", is_crowd: False }
+            - { bounding_box: [193.0, 221.05, 8.64, 20.95], label: "vase", is_crowd: False }
+            - { bounding_box: [192.55, 182.99, 9.31, 16.71], label: "vase", is_crowd: False }
+            - { bounding_box: [186.04, 158.86, 16.01, 16.56], label: "vase", is_crowd: False }
+            - { bounding_box: [452.95, 235.27, 73.49, 33.77], label: "chair", is_crowd: False }
+            - { bounding_box: [472.35, 211.58, 21.39, 14.08], label: "chair", is_crowd: False }
+            - { bounding_box: [178.08, 263.68, 72.31, 18.95], label: "couch", is_crowd: False }
+            - { bounding_box: [404.88, 266.27, 77.8, 13.47], label: "couch", is_crowd: False }
+        - image: "media/000000117313.jpg"
+          objects:
+            - { bounding_box: [265.67, 222.31, 26.48, 14.71], label: "tv", is_crowd: False }
+            - { bounding_box: [224.52, 226.91, 71.41, 79.78], label: "chair", is_crowd: False }
+            - { bounding_box: [305.12, 227.59, 33.26, 30.85], label: "chair", is_crowd: False }
+            - { bounding_box: [411.88, 342.35, 203.94, 85.65], label: "dining table", is_crowd: False }
+            - { bounding_box: [188.51, 163.75, 37.51, 184.66], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [90.46, 227.13, 59.01, 35.54], label: "microwave", is_crowd: False }
+            - { bounding_box: [0.0, 292.47, 55.99, 24.31], label: "sink", is_crowd: False }
+            - { bounding_box: [291.05, 227.72, 56.19, 49.48], label: "couch", is_crowd: False }
+            - { bounding_box: [225.4, 227.81, 71.67, 78.68], label: "couch", is_crowd: False }
+        - image: "media/000000117314.jpg"
+          objects:
+            - { bounding_box: [235.21, 123.92, 48.11, 40.09], label: "tv", is_crowd: False }
+            - { bounding_box: [0.0, 266.99, 54.58, 22.46], label: "sink", is_crowd: False }
+            - { bounding_box: [354.46, 202.58, 25.09, 4.9], label: "sink", is_crowd: False }
+            - { bounding_box: [141.67, 237.21, 32.79, 10.75], label: "remote", is_crowd: False }
+        - image: "media/000000117315.jpg"
+          objects:
+            - { bounding_box: [105.37, 2.58, 185.95, 138.43], label: "tv", is_crowd: False }
+            - { bounding_box: [3.37, 1.12, 87.64, 294.39], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [326.3, 72.0, 30.47, 47.05], label: "book", is_crowd: False }
+            - { bounding_box: [339.48, 129.06, 17.52, 51.91], label: "book", is_crowd: False }
+            - { bounding_box: [345.43, 184.09, 11.57, 46.96], label: "book", is_crowd: False }
+            - { bounding_box: [186.76, 65.63, 12.6, 10.28], label: "car", is_crowd: False }
+            - { bounding_box: [344.31, 0.13, 2.69, 19.88], label: "book", is_crowd: False }
+            - { bounding_box: [328.39, 32.3, 3.14, 32.25], label: "book", is_crowd: False }
+            - { bounding_box: [349.25, 25.37, 7.62, 36.4], label: "book", is_crowd: False }
+            - { bounding_box: [352.29, 84.24, 4.57, 35.03], label: "book", is_crowd: False }
+            - { bounding_box: [333.55, 129.14, 9.04, 46.78], label: "book", is_crowd: False }
+            - { bounding_box: [341.14, 179.82, 14.75, 50.28], label: "book", is_crowd: False }
+            - { bounding_box: [351.35, 290.27, 5.65, 51.52], label: "book", is_crowd: False }
+            - { bounding_box: [336.47, 182.79, 7.13, 44.83], label: "book", is_crowd: False }
+            - { bounding_box: [118.18, 306.49, 85.72, 187.02], label: "cat", is_crowd: False }
+            - { bounding_box: [322.38, 182.43, 14.27, 44.58], label: "book", is_crowd: False }
+        - image: "media/000000117317.jpg"
+          objects:
+            - { bounding_box: [204.72, 584.58, 14.54, 39.44], label: "bird", is_crowd: False }
+            - { bounding_box: [4.12, 318.08, 127.73, 122.23], label: "chair", is_crowd: False }
+            - { bounding_box: [125.06, 256.38, 68.78, 107.12], label: "chair", is_crowd: False }
+            - { bounding_box: [0.0, 279.53, 480.0, 352.53], label: "dining table", is_crowd: False }
+            - { bounding_box: [1.44, 11.51, 243.05, 379.68], label: "person", is_crowd: False }
+            - { bounding_box: [356.56, 91.89, 121.55, 133.07], label: "couch", is_crowd: False }
+            - { bounding_box: [413.43, 489.59, 66.57, 117.61], label: "cup", is_crowd: False }
+            - { bounding_box: [122.71, 366.69, 50.72, 12.92], label: "spoon", is_crowd: False }
+            - { bounding_box: [326.99, 355.32, 27.2, 25.55], label: "cake", is_crowd: False }
+            - { bounding_box: [417.55, 427.96, 62.45, 71.17], label: "cup", is_crowd: False }
+            - { bounding_box: [249.4, 380.54, 54.25, 65.1], label: "hot dog", is_crowd: False }
+        - image: "media/000000117318.jpg"
+          objects:
+            - { bounding_box: [171.68, 109.17, 163.76, 152.31], label: "tv", is_crowd: False }
+            - { bounding_box: [235.17, 192.52, 404.83, 229.64], label: "chair", is_crowd: False }
+            - { bounding_box: [0.0, 190.95, 243.73, 167.92], label: "laptop", is_crowd: False }
+            - { bounding_box: [434.24, 249.83, 31.41, 14.61], label: "mouse", is_crowd: False }
+            - { bounding_box: [251.68, 243.27, 152.89, 45.15], label: "keyboard", is_crowd: False }
+            - { bounding_box: [55.65, 269.35, 145.86, 60.45], label: "keyboard", is_crowd: False }
+            - { bounding_box: [334.51, 128.32, 90.66, 118.63], label: "tv", is_crowd: False }
+        - image: "media/000000117319.jpg"
+          objects:
+            - { bounding_box: [149.85, 80.88, 147.03, 176.62], label: "bird", is_crowd: False }
+            - { bounding_box: [1.85, 251.93, 498.15, 172.52], label: "car", is_crowd: False }
+            - { bounding_box: [473.95, 239.1, 26.05, 22.38], label: "car", is_crowd: False }
+        - image: "media/000000117320.jpg"
+          objects:
+            - { bounding_box: [212.41, 200.69, 96.56, 190.34], label: "bird", is_crowd: False }
+            - { bounding_box: [0.0, 45.36, 175.42, 105.52], label: "bird", is_crowd: False }
+            - { bounding_box: [333.21, 432.16, 146.79, 155.13], label: "bird", is_crowd: False }
+            - { bounding_box: [54.76, 289.78, 122.51, 31.84], label: "fork", is_crowd: False }
+            - { bounding_box: [139.46, 0.0, 128.64, 59.65], label: "bird", is_crowd: False }
+            - { bounding_box: [355.06, 0.0, 124.94, 66.16], label: "bird", is_crowd: False }
+        - image: "media/000000117322.jpg"
+          objects:
+            - { bounding_box: [438.41, 63.47, 18.11, 10.84], label: "bird", is_crowd: False }
+            - { bounding_box: [261.38, 173.6, 245.42, 50.05], label: "bicycle", is_crowd: False }
+            - { bounding_box: [263.57, 152.85, 201.56, 28.28], label: "bicycle", is_crowd: False }
+            - { bounding_box: [80.22, 154.72, 344.78, 229.21], label: "motorcycle", is_crowd: False }
+            - { bounding_box: [269.33, 56.35, 9.55, 8.59], label: "bird", is_crowd: False }
+            - { bounding_box: [305.31, 53.16, 8.34, 12.53], label: "bird", is_crowd: False }
+            - { bounding_box: [280.46, 206.22, 222.65, 71.15], label: "bicycle", is_crowd: False }
+            - { bounding_box: [194.44, 45.07, 7.96, 9.6], label: "bird", is_crowd: False }
+            - { bounding_box: [590.8, 55.15, 6.67, 8.39], label: "bird", is_crowd: False }
+            - { bounding_box: [175.69, 46.43, 19.03, 17.77], label: "bird", is_crowd: False }
+            - { bounding_box: [183.44, 40.57, 5.1, 7.63], label: "bird", is_crowd: False }
+            - { bounding_box: [442.0, 72.61, 5.75, 5.76], label: "bird", is_crowd: False }
+        - image: "media/000000117321.jpg"
+          objects:
+            - { bounding_box: [128.0, 91.56, 341.68, 354.06], label: "cat", is_crowd: False }
+            - { bounding_box: [2.06, 2.06, 637.6, 471.76], label: "bicycle", is_crowd: False }
+        - image: "media/000000117323.jpg"
+          objects:
+            - { bounding_box: [186.29, 73.39, 125.81, 72.58], label: "cat", is_crowd: False }
+            - { bounding_box: [0.0, 0.08, 499.46, 370.98], label: "car", is_crowd: False }
+        - image: "media/000000117324.jpg"
+          objects:
+            - { bounding_box: [214.71, 106.01, 425.29, 367.48], label: "cat", is_crowd: False }
+            - { bounding_box: [2.16, 406.47, 362.42, 73.53], label: "sink", is_crowd: False }
+            - { bounding_box: [417.1, 132.96, 138.56, 93.98], label: "toilet", is_crowd: False }
+            - { bounding_box: [1.24, 132.99, 37.31, 180.32], label: "toilet", is_crowd: False }
+        - image: "media/000000117325.jpg"
+          objects:
+            - { bounding_box: [231.91, 85.21, 408.09, 389.4], label: "cat", is_crowd: False }
+            - { bounding_box: [1.08, 172.58, 439.01, 306.34], label: "cat", is_crowd: False }
+        - image: "media/000000117316.jpg"
+          objects:
+            - { bounding_box: [465.19, 225.78, 166.91, 146.17], label: "tv", is_crowd: False }
+            - { bounding_box: [332.55, 120.93, 100.01, 93.43], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [248.11, 116.28, 38.54, 45.0], label: "bird", is_crowd: False }
+            - { bounding_box: [180.94, 199.86, 15.08, 32.29], label: "umbrella", is_crowd: False }
+            - { bounding_box: [128.19, 266.65, 37.11, 60.54], label: "backpack", is_crowd: False }
+            - { bounding_box: [355.23, 287.54, 98.87, 185.7], label: "chair", is_crowd: False }
+        - image: "media/000000117326.jpg"
+          objects:
+            - { bounding_box: [208.52, 112.52, 289.03, 285.93], label: "cat", is_crowd: False }
+            - { bounding_box: [461.42, 6.19, 85.68, 138.33], label: "bottle", is_crowd: False }
+            - { bounding_box: [284.96, 0.7, 64.72, 35.17], label: "cup", is_crowd: False }
+            - { bounding_box: [104.63, 0.0, 535.37, 467.06], label: "sink", is_crowd: False }
+            - { bounding_box: [539.69, 49.87, 64.66, 120.62], label: "bottle", is_crowd: False }
+        - image: "media/000000117327.jpg"
+          objects:
+            - { bounding_box: [36.62, 0.0, 427.91, 412.58], label: "cat", is_crowd: False }
+            - { bounding_box: [176.36, 148.36, 47.71, 69.13], label: "bottle", is_crowd: False }
+            - { bounding_box: [2.16, 360.27, 560.9, 55.01], label: "sink", is_crowd: False }
+            - { bounding_box: [37.21, 177.77, 60.72, 152.44], label: "bottle", is_crowd: False }
+            - { bounding_box: [115.81, 200.38, 23.1, 38.58], label: "toothbrush", is_crowd: False }
+        - image: "media/000000117328.jpg"
+          objects:
+            - { bounding_box: [103.34, 155.99, 375.33, 221.3], label: "cat", is_crowd: False }
+            - { bounding_box: [96.68, 292.09, 284.39, 134.91], label: "toilet", is_crowd: False }
+            - { bounding_box: [539.27, 102.67, 100.73, 114.19], label: "sink", is_crowd: False }
+        - image: "media/000000117329.jpg"
+          objects:
+            - { bounding_box: [194.21, 176.51, 300.75, 303.49], label: "cat", is_crowd: False }
+            - { bounding_box: [270.88, 14.63, 312.05, 465.37], label: "toilet", is_crowd: False }
+        - image: "media/000000117330.jpg"
+          objects:
+            - { bounding_box: [245.51, 108.3, 226.13, 135.68], label: "cat", is_crowd: False }
+            - { bounding_box: [147.18, 28.8, 12.66, 37.61], label: "bottle", is_crowd: False }
+            - { bounding_box: [90.83, 27.17, 549.17, 333.83], label: "car", is_crowd: False }
+            - { bounding_box: [492.55, 0.0, 143.35, 52.9], label: "bicycle", is_crowd: False }
+        - image: "media/000000117331.jpg"
+          objects:
+            - { bounding_box: [110.32, 19.09, 468.84, 425.36], label: "cat", is_crowd: False }
+            - { bounding_box: [63.23, 7.09, 529.03, 453.65], label: "bowl", is_crowd: False }
+        - image: "media/000000117332.jpg"
+          objects:
+            - { bounding_box: [244.04, 219.25, 177.93, 114.97], label: "cat", is_crowd: False }
+            - { bounding_box: [471.74, 79.74, 166.2, 304.52], label: "car", is_crowd: False }
+            - { bounding_box: [61.48, 1.08, 578.16, 310.65], label: "car", is_crowd: False }
+            - { bounding_box: [1.08, 1.63, 269.8, 209.11], label: "car", is_crowd: False }
+        - image: "media/000000117333.jpg"
+          objects:
+            - { bounding_box: [211.7, 78.24, 281.65, 338.71], label: "cat", is_crowd: False }
+            - { bounding_box: [443.81, 38.89, 196.19, 201.14], label: "couch", is_crowd: False }
+            - { bounding_box: [3.02, 233.89, 636.98, 194.11], label: "dining table", is_crowd: False }
+            - { bounding_box: [209.54, 69.66, 290.91, 345.52], label: "dog", is_crowd: False }
+            - { bounding_box: [187.39, 54.44, 324.88, 345.95], label: "bowl", is_crowd: False }
+            - { bounding_box: [105.31, 74.6, 101.64, 54.87], label: "bowl", is_crowd: False }
+            - { bounding_box: [452.63, 32.53, 187.37, 206.23], label: "chair", is_crowd: False }
+            - { bounding_box: [91.78, 251.12, 120.56, 80.72], label: "mouse", is_crowd: False }
+        - image: "media/000000117334.jpg"
+          objects:
+            - { bounding_box: [160.88, 185.82, 125.86, 356.62], label: "cat", is_crowd: False }
+            - { bounding_box: [165.39, 212.95, 207.1, 128.0], label: "toilet", is_crowd: False }
+        - image: "media/000000117335.jpg"
+          objects:
+            - { bounding_box: [46.06, 1.92, 549.82, 422.2], label: "cat", is_crowd: False }
+            - { bounding_box: [0.0, 177.52, 637.14, 244.68], label: "sink", is_crowd: False }
+        - image: "media/000000117336.jpg"
+          objects:
+            - { bounding_box: [161.29, 179.03, 266.94, 120.16], label: "cat", is_crowd: False }
+            - { bounding_box: [113.71, 234.68, 385.48, 134.67], label: "car", is_crowd: False }
+        - image: "media/000000117337.jpg"
+          objects:
+            - { bounding_box: [185.65, 85.6, 167.92, 117.28], label: "cat", is_crowd: False }
+            - { bounding_box: [0.0, 18.75, 500.0, 329.84], label: "car", is_crowd: False }
+            - { bounding_box: [239.33, 31.87, 23.89, 13.93], label: "car", is_crowd: False }
+            - { bounding_box: [274.28, 32.03, 16.93, 8.54], label: "car", is_crowd: False }
+            - { bounding_box: [0.0, 13.89, 11.3, 10.68], label: "car", is_crowd: False }
+        - image: "media/000000117338.jpg"
+          objects:
+            - { bounding_box: [121.03, 40.86, 514.14, 388.97], label: "cat", is_crowd: False }
+            - { bounding_box: [7.65, 0.63, 66.7, 44.17], label: "bottle", is_crowd: False }
+            - { bounding_box: [4.31, 228.67, 464.9, 231.91], label: "sink", is_crowd: False }
+            - { bounding_box: [194.66, 0.0, 64.68, 41.41], label: "cup", is_crowd: False }
+            - { bounding_box: [114.34, 0.0, 60.4, 43.15], label: "cup", is_crowd: False }
+            - { bounding_box: [5.17, 0.53, 69.74, 40.8], label: "cup", is_crowd: False }
+            - { bounding_box: [196.99, 1.04, 71.06, 41.14], label: "bottle", is_crowd: False }
+            - { bounding_box: [627.12, 399.83, 12.88, 52.37], label: "toilet", is_crowd: False }
+        - image: "media/000000117339.jpg"
+          objects:
+            - { bounding_box: [139.84, 111.51, 266.88, 232.15], label: "cat", is_crowd: False }
+        - image: "media/000000117340.jpg"
+          objects:
+            - { bounding_box: [122.43, 111.29, 242.35, 197.31], label: "cat", is_crowd: False }
+        - image: "media/000000117341.jpg"
+          objects:
+            - { bounding_box: [170.88, 59.71, 170.13, 223.34], label: "cat", is_crowd: False }
+            - { bounding_box: [0.0, 147.8, 499.77, 202.2], label: "sink", is_crowd: False }
+        - image: "media/000000117342.jpg"
+          objects:
+            - { bounding_box: [325.16, 71.23, 314.84, 322.06], label: "cat", is_crowd: False }
+            - { bounding_box: [77.64, 106.41, 59.08, 145.51], label: "bottle", is_crowd: False }
+            - { bounding_box: [0.73, 205.76, 73.46, 54.21], label: "bowl", is_crowd: False }
+            - { bounding_box: [2.16, 122.64, 637.84, 351.64], label: "sink", is_crowd: False }
+        - image: "media/000000117343.jpg"
+          objects:
+            - { bounding_box: [17.2, 315.05, 143.02, 174.2], label: "cat", is_crowd: False }
+            - { bounding_box: [40.45, 2.06, 334.55, 416.85], label: "motorcycle", is_crowd: False }
+        - image: "media/000000117344.jpg"
+          objects:
+            - { bounding_box: [264.39, 397.8, 73.4, 242.2], label: "cat", is_crowd: False }
+            - { bounding_box: [12.01, 210.84, 289.52, 335.7], label: "toilet", is_crowd: False }
+        - image: "media/000000117345.jpg"
+          objects:
+            - { bounding_box: [217.33, 139.78, 46.51, 81.39], label: "cat", is_crowd: False }
+            - { bounding_box: [145.04, 11.4, 30.28, 64.57], label: "person", is_crowd: False }
+            - { bounding_box: [259.35, 60.66, 101.19, 156.46], label: "person", is_crowd: False }
+            - { bounding_box: [225.0, 4.21, 68.26, 152.53], label: "person", is_crowd: False }
+            - { bounding_box: [335.61, 93.03, 9.62, 12.64], label: "person", is_crowd: False }
+            - { bounding_box: [346.61, 77.13, 14.25, 65.25], label: "person", is_crowd: False }
+            - { bounding_box: [356.95, 82.58, 21.28, 65.29], label: "person", is_crowd: False }
+            - { bounding_box: [246.61, 29.31, 16.09, 9.88], label: "cell phone", is_crowd: False }
+            - { bounding_box: [76.53, 20.25, 81.58, 218.31], label: "person", is_crowd: False }
+            - { bounding_box: [294.78, 23.36, 40.98, 64.57], label: "person", is_crowd: False }
+            - { bounding_box: [267.45, 92.29, 30.68, 62.98], label: "handbag", is_crowd: False }
+            - { bounding_box: [161.69, 62.34, 69.15, 161.69], label: "person", is_crowd: False }
+            - { bounding_box: [149.44, 86.82, 18.33, 10.57], label: "cell phone", is_crowd: False }
+            - { bounding_box: [109.78, 33.43, 121.12, 193.03], label: "person", is_crowd: False }
+            - { bounding_box: [390.3, 146.77, 46.92, 43.06], label: "person", is_crowd: False }
+            - { bounding_box: [113.79, 0.0, 34.93, 19.19], label: "person", is_crowd: False }
+        - image: "media/000000117346.jpg"
+          objects:
+            - { bounding_box: [39.78, 222.8, 444.0, 147.2], label: "cat", is_crowd: False }
+            - { bounding_box: [249.44, 98.94, 187.91, 194.57], label: "person", is_crowd: False }
+            - { bounding_box: [117.03, 70.37, 382.97, 299.63], label: "bed", is_crowd: False }
+        - image: "media/000000117347.jpg"
+          objects:
+            - { bounding_box: [130.75, 181.68, 156.91, 143.14], label: "cat", is_crowd: False }
+            - { bounding_box: [93.48, 281.65, 327.91, 349.48], label: "toilet", is_crowd: False }
+        - image: "media/000000117348.jpg"
+          objects:
+            - { bounding_box: [70.5, 236.11, 495.55, 190.76], label: "cat", is_crowd: False }
+            - { bounding_box: [1.08, 28.65, 638.92, 445.4], label: "car", is_crowd: False }
+            - { bounding_box: [547.34, 35.72, 13.07, 21.51], label: "person", is_crowd: False }
+        - image: "media/000000117349.jpg"
+          objects:
+            - { bounding_box: [0.0, 101.15, 452.3, 319.43], label: "cat", is_crowd: False }
+        - image: "media/000000117350.jpg"
+          objects:
+            - { bounding_box: [374.97, 173.6, 58.36, 93.66], label: "horse", is_crowd: False }
+            - { bounding_box: [328.04, 160.9, 49.48, 99.88], label: "horse", is_crowd: False }
+            - { bounding_box: [256.27, 201.32, 57.69, 33.09], label: "horse", is_crowd: False }
+            - { bounding_box: [458.11, 175.37, 53.59, 36.05], label: "horse", is_crowd: False }
+            - { bounding_box: [433.73, 108.19, 206.27, 318.81], label: "car", is_crowd: False }
+        - image: "media/000000117351.jpg"
+          objects:
+            - { bounding_box: [201.47, 116.07, 250.92, 143.78], label: "cat", is_crowd: False }
+            - { bounding_box: [114.22, 11.42, 53.92, 127.02], label: "bottle", is_crowd: False }
+            - { bounding_box: [146.11, 40.11, 344.74, 222.5], label: "sink", is_crowd: False }
+            - { bounding_box: [0.95, 251.54, 32.4, 164.84], label: "toilet", is_crowd: False }
+            - { bounding_box: [260.36, 2.35, 61.76, 82.1], label: "cup", is_crowd: False }
+            - { bounding_box: [307.18, 0.0, 54.94, 71.42], label: "cup", is_crowd: False }
+            - { bounding_box: [334.16, 1.49, 17.86, 49.52], label: "toothbrush", is_crowd: False }
+        - image: "media/000000117352.jpg"
+          objects:
+            - { bounding_box: [49.69, 83.53, 210.52, 264.01], label: "cat", is_crowd: False }
+            - { bounding_box: [101.23, 0.0, 389.27, 393.87], label: "chair", is_crowd: False }
+            - { bounding_box: [0.92, 168.27, 636.37, 254.37], label: "car", is_crowd: False }
+        - image: "media/000000117353.jpg"
+          objects:
+            - { bounding_box: [283.64, 233.67, 31.02, 58.38], label: "horse", is_crowd: False }
+            - { bounding_box: [240.3, 230.71, 29.58, 62.5], label: "horse", is_crowd: False }
+            - { bounding_box: [339.15, 252.42, 189.24, 145.35], label: "bicycle", is_crowd: False }
+            - { bounding_box: [361.58, 143.49, 97.18, 250.13], label: "person", is_crowd: False }
+            - { bounding_box: [431.62, 180.84, 44.29, 69.13], label: "backpack", is_crowd: False }
+            - { bounding_box: [236.16, 221.35, 9.16, 9.62], label: "stop sign", is_crowd: False }
+        - image: "media/000000117354.jpg"
+          objects:
+            - { bounding_box: [211.18, 83.42, 252.37, 384.35], label: "horse", is_crowd: False }
+            - { bounding_box: [112.88, 115.82, 119.97, 236.01], label: "person", is_crowd: False }
+        - image: "media/000000117355.jpg"
+          objects:
+            - { bounding_box: [2.06, 70.19, 422.2, 369.55], label: "horse", is_crowd: False }
+            - { bounding_box: [242.01, 69.13, 226.17, 398.17], label: "horse", is_crowd: False }
+            - { bounding_box: [23.62, 199.88, 578.8, 187.92], label: "car", is_crowd: False }
+            - { bounding_box: [281.77, 14.46, 97.93, 138.62], label: "person", is_crowd: False }
+            - { bounding_box: [89.93, 118.92, 48.76, 68.26], label: "person", is_crowd: False }
+            - { bounding_box: [346.73, 86.2, 177.91, 367.0], label: "horse", is_crowd: False }
+            - { bounding_box: [503.61, 107.22, 46.09, 121.46], label: "horse", is_crowd: False }
+            - { bounding_box: [161.12, 136.46, 28.02, 34.79], label: "person", is_crowd: False }
+            - { bounding_box: [179.06, 8.63, 149.93, 237.3], label: "person", is_crowd: False }
+            - { bounding_box: [31.18, 115.93, 50.1, 88.59], label: "person", is_crowd: False }
+            - { bounding_box: [361.96, 23.07, 89.4, 78.37], label: "person", is_crowd: False }
+        - image: "media/000000117356.jpg"
+          objects:
+            - { bounding_box: [140.57, 148.8, 33.54, 60.12], label: "horse", is_crowd: False }
+            - { bounding_box: [286.51, 167.18, 103.1, 73.42], label: "car", is_crowd: False }
+            - { bounding_box: [43.95, 125.81, 153.94, 66.93], label: "bus", is_crowd: False }
+            - { bounding_box: [248.93, 151.87, 23.6, 45.68], label: "person", is_crowd: False }
+            - { bounding_box: [168.77, 158.54, 11.55, 18.59], label: "person", is_crowd: False }
+            - { bounding_box: [43.17, 140.72, 8.69, 21.93], label: "person", is_crowd: False }
+            - { bounding_box: [37.89, 140.34, 7.48, 22.01], label: "person", is_crowd: False }
+            - { bounding_box: [334.69, 175.78, 28.43, 16.2], label: "person", is_crowd: False }
+            - { bounding_box: [323.57, 150.26, 123.81, 60.01], label: "truck", is_crowd: False }
+            - { bounding_box: [236.2, 150.47, 13.85, 46.62], label: "person", is_crowd: False }
+            - { bounding_box: [387.73, 139.7, 9.5, 10.35], label: "person", is_crowd: False }
+            - { bounding_box: [395.36, 140.12, 5.93, 9.88], label: "person", is_crowd: False }
+            - { bounding_box: [0.0, 142.71, 46.74, 55.08], label: "truck", is_crowd: False }
+            - { bounding_box: [194.44, 155.33, 20.65, 28.81], label: "person", is_crowd: False }
+        - image: "media/000000117357.jpg"
+          objects:
+            - { bounding_box: [180.91, 281.14, 38.4, 45.48], label: "dog", is_crowd: False }
+            - { bounding_box: [51.12, 12.56, 548.88, 387.44], label: "motorcycle", is_crowd: False }
+            - { bounding_box: [221.85, 100.97, 68.02, 65.23], label: "bicycle", is_crowd: False }
+            - { bounding_box: [218.68, 158.78, 61.05, 55.34], label: "bicycle", is_crowd: False }
+            - { bounding_box: [398.63, 144.76, 121.03, 90.28], label: "truck", is_crowd: False }
+        - image: "media/000000117358.jpg"
+          objects:
+            - { bounding_box: [168.9, 413.03, 74.55, 104.02], label: "sheep", is_crowd: False }
+            - { bounding_box: [65.0, 473.44, 170.39, 166.56], label: "sheep", is_crowd: False }
+            - { bounding_box: [191.3, 422.49, 143.78, 175.54], label: "sheep", is_crowd: False }
+            - { bounding_box: [88.82, 387.02, 118.4, 101.72], label: "sheep", is_crowd: False }
+            - { bounding_box: [266.83, 217.03, 144.03, 249.42], label: "person", is_crowd: False }
+            - { bounding_box: [250.08, 237.64, 68.89, 126.94], label: "person", is_crowd: False }
+            - { bounding_box: [150.37, 252.25, 62.23, 136.89], label: "person", is_crowd: False }
+            - { bounding_box: [94.62, 291.24, 67.27, 134.52], label: "person", is_crowd: False }
+            - { bounding_box: [0.42, 298.6, 101.1, 189.65], label: "person", is_crowd: False }
+            - { bounding_box: [49.95, 305.89, 73.52, 168.1], label: "person", is_crowd: False }
+            - { bounding_box: [200.75, 255.61, 48.77, 104.95], label: "person", is_crowd: False }
+            - { bounding_box: [189.73, 0.0, 235.27, 439.9], label: "person", is_crowd: False }
+            - { bounding_box: [304.8, 189.3, 79.46, 84.69], label: "person", is_crowd: False }
+            - { bounding_box: [241.63, 355.02, 112.32, 131.28], label: "sheep", is_crowd: False }
+            - { bounding_box: [0.0, 483.16, 146.88, 155.88], label: "sheep", is_crowd: False }
+            - { bounding_box: [199.27, 525.72, 147.86, 113.12], label: "sheep", is_crowd: False }
+            - { bounding_box: [36.66, 311.37, 20.21, 28.47], label: "person", is_crowd: False }
+            - { bounding_box: [100.21, 286.19, 14.12, 24.4], label: "person", is_crowd: False }
+            - { bounding_box: [74.93, 393.13, 47.23, 33.99], label: "handbag", is_crowd: False }
+            - { bounding_box: [33.65, 430.84, 50.94, 66.04], label: "handbag", is_crowd: False }
+            - { bounding_box: [73.56, 265.73, 15.27, 62.07], label: "person", is_crowd: False }
+            - { bounding_box: [270.77, 355.96, 94.35, 96.81], label: "sheep", is_crowd: False }
+            - { bounding_box: [193.35, 354.91, 144.74, 139.55], label: "sheep", is_crowd: False }
+            - { bounding_box: [230.01, 155.86, 25.23, 30.34], label: "cell phone", is_crowd: False }
+            - { bounding_box: [230.29, 253.29, 49.52, 107.13], label: "person", is_crowd: False }
+            - { bounding_box: [0, 89, 387, 502], label: "person", is_crowd: True }
+        - image: "media/000000117359.jpg"
+          objects:
+            - { bounding_box: [154.48, 218.62, 113.11, 270.35], label: "horse", is_crowd: False }
+            - { bounding_box: [264.83, 202.76, 146.17, 263.45], label: "car", is_crowd: False }
+            - { bounding_box: [75.52, 209.12, 90.16, 117.07], label: "car", is_crowd: False }
+            - { bounding_box: [1.44, 95.86, 122.52, 420.9], label: "car", is_crowd: False }
+            - { bounding_box: [0.0, 96.36, 123.69, 427.15], label: "truck", is_crowd: False }
+            - { bounding_box: [251.57, 247.76, 47.13, 46.91], label: "car", is_crowd: False }
+        - image: "media/000000117360.jpg"
+          objects:
+            - { bounding_box: [129.11, 218.26, 87.7, 190.38], label: "horse", is_crowd: False }
+            - { bounding_box: [511.26, 168.52, 128.74, 293.01], label: "horse", is_crowd: False }
+            - { bounding_box: [3.17, 238.5, 83.77, 52.6], label: "horse", is_crowd: False }
+        - image: "media/000000117361.jpg"
+          objects:
+            - { bounding_box: [38.71, 304.3, 81.72, 151.61], label: "cow", is_crowd: False }
+            - { bounding_box: [172.18, 302.22, 61.71, 137.56], label: "cow", is_crowd: False }
+            - { bounding_box: [116.64, 307.91, 59.23, 133.03], label: "cow", is_crowd: False }
+            - { bounding_box: [232.28, 297.15, 68.59, 138.53], label: "cow", is_crowd: False }
+            - { bounding_box: [140.47, 112.07, 21.69, 20.21], label: "clock", is_crowd: False }
+        - image: "media/000000117362.jpg"
+          objects:
+            - { bounding_box: [221.72, 170.33, 55.82, 53.12], label: "cow", is_crowd: False }
+            - { bounding_box: [470.47, 201.71, 29.53, 35.94], label: "couch", is_crowd: False }
+            - { bounding_box: [339.64, 201.11, 18.76, 31.1], label: "chair", is_crowd: False }
+            - { bounding_box: [358.25, 200.89, 19.02, 30.53], label: "chair", is_crowd: False }
+            - { bounding_box: [317.85, 200.82, 23.54, 30.47], label: "chair", is_crowd: False }
+            - { bounding_box: [470.9, 202.98, 29.1, 33.84], label: "chair", is_crowd: False }
+            - { bounding_box: [344.88, 171.62, 17.24, 31.84], label: "chair", is_crowd: False }
+            - { bounding_box: [386.17, 199.17, 72.82, 33.54], label: "couch", is_crowd: False }
+            - { bounding_box: [419.35, 172.03, 37.76, 32.75], label: "couch", is_crowd: False }
+            - { bounding_box: [0.72, 177.28, 234.45, 91.9], label: "car", is_crowd: False }
+            - { bounding_box: [40.68, 147.02, 23.63, 23.22], label: "car", is_crowd: False }
+            - { bounding_box: [97.1, 185.73, 28.66, 27.72], label: "person", is_crowd: False }
+            - { bounding_box: [5.1, 50.72, 31.03, 82.11], label: "traffic light", is_crowd: False }
+            - { bounding_box: [102.87, 78.09, 34.29, 34.91], label: "traffic light", is_crowd: False }
+            - { bounding_box: [437.2, 85.11, 22.23, 64.79], label: "traffic light", is_crowd: False }
+            - { bounding_box: [201.3, 105.86, 16.34, 29.23], label: "traffic light", is_crowd: False }
+            - { bounding_box: [313.23, 197.28, 8.1, 31.73], label: "chair", is_crowd: False }
+            - { bounding_box: [326.22, 203.66, 54.66, 27.3], label: "dining table", is_crowd: False }
+        - image: "media/000000117364.jpg"
+          objects:
+            - { bounding_box: [361.7, 90.14, 51.73, 132.17], label: "bottle", is_crowd: False }
+            - { bounding_box: [14.93, 70.18, 289.7, 176.21], label: "microwave", is_crowd: False }
+            - { bounding_box: [262.1, 101.23, 26.94, 14.6], label: "clock", is_crowd: False }
+            - { bounding_box: [323.14, 66.31, 34.4, 52.37], label: "teddy bear", is_crowd: False }
+            - { bounding_box: [435.88, 0.0, 64.12, 106.5], label: "potted plant", is_crowd: False }
+        - image: "media/000000117363.jpg"
+          objects:
+            - { bounding_box: [16.07, 245.79, 13.42, 27.79], label: "bottle", is_crowd: False }
+            - { bounding_box: [8.97, 277.58, 172.64, 222.42], label: "toilet", is_crowd: False }
+            - { bounding_box: [132.75, 425.86, 200.25, 74.14], label: "sink", is_crowd: False }
+        - image: "media/000000117365.jpg"
+          objects:
+            - { bounding_box: [46.72, 252.43, 75.77, 114.94], label: "bottle", is_crowd: False }
+            - { bounding_box: [32.37, 86.12, 54.27, 133.33], label: "bottle", is_crowd: False }
+            - { bounding_box: [2.87, 273.28, 89.98, 141.67], label: "bottle", is_crowd: False }
+            - { bounding_box: [236.74, 113.24, 172.1, 228.18], label: "refrigerator", is_crowd: False }
+            - { bounding_box: [1.46, 76.32, 38.3, 164.97], label: "bottle", is_crowd: False }
+            - { bounding_box: [98.36, 378.87, 53.77, 46.13], label: "bottle", is_crowd: False }
