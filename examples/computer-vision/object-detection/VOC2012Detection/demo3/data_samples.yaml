@@ -1,7 +1,14 @@
 $dsdl-version: "0.5.0"
+
 $import:
     - object-detection
     - voc-class-domain
+
+meta:
+    name: "PASCAL VOC Object Detection"
+    creator: "Oxford"
+    dataset-version: "1.0.0"
+    subdata_name: "Demo"
 
 data:
     sample-type: ObjectDetectionSample[cdom=VOCClassDom]
