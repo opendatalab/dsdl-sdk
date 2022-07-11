@@ -1,5 +1,6 @@
 import re
 from .field import Field
+from ..geometry import BBox, Label
 from ..exception import ValidationError
 from ..warning import InvalidLabelWarning
 from datetime import date, time, datetime
@@ -38,7 +39,7 @@ class IntervalField(Field):
 
 class BBoxField(Field):
     def validate(self, value):
-        return validate_list_of_number(value, 4, float)
+        return BBox(*validate_list_of_number(value, 4, float))
 
 
 class PolygonField(Field):
@@ -57,15 +58,16 @@ class LabelField(Field):
         try:
             if isinstance(value, int):
                 category_name = self.dom(value).name
-                return dict(name=category_name, id=value, dom=self.dom.__name__)
+                return Label(category_name=category_name, category_id=value, class_domain=self.dom)
             elif isinstance(value, str):
                 category_id = getattr(self.dom, self.clean(value)).value
-                return dict(name=value, id=category_id, dom=self.dom.__name__)
+                return Label(category_name=value, category_id=category_id, class_domain=self.dom)
             else:
                 raise TypeError("invalid class label type.")
         except:
             InvalidLabelWarning(f"The label {value} is not valid.")
-            return dict(name="invalid", id=-1, dom=self.dom.__name__)
+            return Label(category_name="invalid", category_id=-1, class_domain=self.dom)
+
     @staticmethod
     def clean(varStr):
         return re.sub('\W|^(?=\d)', '_', varStr).lower()

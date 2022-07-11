@@ -1,4 +1,5 @@
 from .field import Field
+from ..geometry import ImageMedia
 
 
 class FileReader(object):
@@ -32,4 +33,4 @@ class ImageField(UnstructuredObjectField):
     def validate(self, value):
         if isinstance(value, str):
             value = {"$loc": value}
-        return FileReader(self.dataset, value)
+        return ImageMedia(value["$loc"], FileReader(self.dataset, value))
