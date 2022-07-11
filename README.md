@@ -1,47 +1,46 @@
-# DSDL-SDK
+# DSDL-SDK 使用说明
 
-基于DSDL的开发工具包，包含：
-1. 基于DSDL的数据集描述
-2. 对应DSDL语法解析器
-
-## 安装
+## 安装DSDL
 
 python 环境3.8及以上
 ```bash
 python setup.py install
 ```
 
-parser入口
+## 执行步骤
 
+1. 安装DSDL sdk
 ```bash
-dsdl parse --yaml tests/helloworld_demo/helloworld.yaml
+python setup.py install
 ```
-其他可以尝试的例子：
 
-**COCO2017Detection**：
-
-1. 这个demo2的例子没写`-p`是因为，已经把需要import的yaml放进`dsdl/dsdl_library`里面了哦，不然要写明地址
-```bash 
-dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml
-```
-2. 
-
+2. 使用DSDL的parser生成demo中的`data_field.py`文件
 ```bash
-dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo3/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo3
+dsdl parse --yaml demo/coco_demo.yaml
 ```
-注意:
-1. 我们只需要传入数据的yaml文件（如果数据和模型啥的都放一起那就传那个）就会生成在同一目录下的`.py`文件
-2. 如果不写`-p`,默认的其他yaml存放路径是`dsdl/dsdl_library`,所以不写`-p`请先把需要import的yaml放进`dsdl/dsdl_library`
 
-**VOCDetection**：
+3. 待执行的代码为`visualize_demo.py`，在执行代码之前，需要代码做出一些修改：
 
-1. demo3：
+   1. 在`config.py`中，需要修改其中的
+      1. `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）
+      2. `local_config`中的参数`working_dir`（本地数据所在的目录）
+
+4. 执行代码`visualize.py`，执行命令：
 
    ```bash
-   dsdl parse --yaml examples/computer-vision/object-detection/VOC2012Detection/demo3/voc2012-detection-samples.yaml
+   python visualize.py -y coco_demo.yaml -c ali-oss -n 3 -r -v
    ```
 
-   
+   每个参数的意义为：
+
+   | 参数简写 | 参数全写      | 参数解释                                                     |
+   | -------- | ------------- | :----------------------------------------------------------- |
+   | -y       | `--yaml`      | dsdl_yaml文件的路径                                          |
+   | -c       | `--config`    | 只可以指定为`local`或是`ali-oss`，分别表示读取本地的数据与读取阿里云的数据 |
+   | -n       | `--num`       | 加载数据集的样本数量                                         |
+   | -r       | `--random`    | 在加载数据集中的样本时是否随机选取样本，如果不指定的话就按顺序从开始选取样本 |
+   | -v       | `--visualize` | 是否将加载的数据进行可视化展示                               |
+
 
 ## Acknowledgments
 
