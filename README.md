@@ -22,7 +22,7 @@ dsdl parse --yaml demo/coco_demo.yaml
 3. 待执行的代码为`visualize_demo.py`，在执行代码之前，需要代码做出一些修改：
 
    1. 在`config.py`中，需要修改其中的
-      a.本地读取： `local_config`中的参数`working_dir`（本地数据所在的目录）  
+      a.本地读取： `local_config`中的参数`working_dir`（本地数据所在的目录）    
       b.阿里云OSS读取： `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）  
 
 4. 执行代码`visualize.py`，执行命令：
