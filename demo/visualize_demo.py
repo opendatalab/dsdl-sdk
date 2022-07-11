@@ -16,10 +16,10 @@ def main(dsdl_yaml, config, num, random, visualize):
 
     # 判断当前是读取本地文件还是阿里云OSS上的文件
     if config == "local":
-        from config import coco_config
+        from config import local_config as cur_config
     else:
-        from config import coco_ali_oss_config as coco_config
-    dataset = DetectionDataset(dsdl_yaml, coco_config)
+        from config import ali_oss_config as cur_config
+    dataset = DetectionDataset(dsdl_yaml, cur_config)
 
     # 选取要读取的样本的索引
     num = min(num, len(dataset))
