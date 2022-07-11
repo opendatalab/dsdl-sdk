@@ -1,6 +1,6 @@
 $dsdl-version: "0.5.0"
 $import:
-    - object_detection
+    - object-detection
 
 meta:
     name: "COCO2017 Object Detection"
