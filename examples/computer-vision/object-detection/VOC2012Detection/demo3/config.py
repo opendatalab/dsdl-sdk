@@ -1,6 +1,6 @@
 from dsdl.objectio import LocalFileReader, AliOSSFileReader
 
-coco_config = dict(
+local_config = dict(
     UnstructuredObjectFileReader=LocalFileReader(working_dir=""),
 )
 
@@ -11,6 +11,6 @@ ali_oss_kwargs = dict(access_key_secret="9Gh6sZIQGlNCrjrIxdJFfWqc78VceS",
                       working_dir="PASCALVOC2012Detection/standard/0.3/")
 
 # 阿里云OSS读取的配置字典
-coco_ali_oss_config = dict(
+ali_oss_config = dict(
     UnstructuredObjectFileReader=AliOSSFileReader(**ali_oss_kwargs)
 )
