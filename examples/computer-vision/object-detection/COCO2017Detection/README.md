@@ -23,9 +23,9 @@ or (dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detectio
 
 4. 待执行的代码为`visualize_demo?.py`(根据想演示的demo将?替换为1-3具体数字)，在执行代码之前，需要代码做出一些修改：
 
-   1. 在`config.py`中，需要修改其中的
-      a. 本地读取：`local_config`中的参数`working_dir`
-      b. 阿里云OSS读取：`ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）
+   1. 在`config.py`中，需要修改其中的  
+      a. 本地读取：`local_config`中的参数`working_dir`  
+      b. 阿里云OSS读取：`ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）  
 
 5. 执行代码`visualize_demo?.py`，执行命令的示例(visualize_demo1.py)为：
 
