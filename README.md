@@ -1,37 +1,32 @@
 # DSDL-SDK 使用说明
 
-## 安装DSDL
+## 1. 安装DSDL
 
 python 环境3.8及以上
 ```bash
 python setup.py install
 ```
 
-## Demo执行步骤
+## 2. Demo演示（COCO数据集可视化）
 
-1. 安装DSDL SDK
-```bash
-python setup.py install
-```
-
-2. 使用DSDL的parser生成demo中的`data_field.py`文件
+#### 2.1 解析器反序列化Yaml为Python代码
 ```bash
 dsdl parse --yaml demo/coco_demo.yaml
 ```
 
-3. 待执行的代码为`visualize_demo.py`，在执行代码之前，需要代码做出一些修改：
+#### 2.2 配置文件修改，设置读取路径
 
-   1. 在`config.py`中，需要修改其中的  
-      a.本地读取： `local_config`中的参数`working_dir`（本地数据所在的目录）    
-      b.阿里云OSS读取： `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）  
+  在`config.py`中，列举了所有支持的媒体文件读取方式，根据实际情况选择并配置文件路径等信息：  
+  a.本地读取： `local_config`中的参数`working_dir`（本地数据所在的目录）    
+  b.阿里云OSS读取： `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）  
 
-4. 执行代码`visualize.py`，执行命令：
+#### 2.3 可视化功能展示：
 
    ```bash
    python visualize.py -y coco_demo.yaml -c ali-oss -n 3 -r -v
    ```
 
-   每个参数的意义为：
+   相关参数含义：
 
    | 参数简写 | 参数全写      | 参数解释                                                     |
    | -------- | ------------- | :----------------------------------------------------------- |
@@ -45,4 +40,3 @@ dsdl parse --yaml demo/coco_demo.yaml
 ## Acknowledgments
 
 * Field & Model Design inspired by [Django ORM](https://www.djangoproject.com/) and [jsonmodels](https://github.com/jazzband/jsonmodels)
-
