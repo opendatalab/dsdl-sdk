@@ -27,6 +27,7 @@ setup(
         "Pillow>=9.1.0",
         "oss2>=2.15.0",
         "prettytable>=3.3.0",
+        "opencv-python>=4.6.0.66",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
