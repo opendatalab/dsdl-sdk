@@ -1,4 +1,4 @@
-from .base_dataset import BaseDataset
+from .base_dataset import Dataset
 
 
 try:
@@ -7,7 +7,7 @@ except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 
 
-class DemoDataset(BaseDataset):
+class DemoDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.sample_list[idx]

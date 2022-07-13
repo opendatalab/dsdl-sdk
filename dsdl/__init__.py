@@ -4,4 +4,4 @@
 #
 
 from .parser import parse
-from .dataset import DetectionDataset
+from .dataset import Dataset, ImageVisualizePipeline

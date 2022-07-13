@@ -1,8 +1,8 @@
 $dsdl-version: "0.5.0"
 
 $import:
-    - object-detection
-    - voc-class-domain
+    - task/object-detection
+    - class/voc-class-domain
 
 meta:
     name: "PASCAL VOC Object Detection"

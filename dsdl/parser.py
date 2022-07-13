@@ -373,6 +373,7 @@ class DSDLParser(Parser):
     default="dsdl/dsdl_library",
 )
 def parse(dsdl_yaml, dsdl_library_path):
-    output_file = os.path.join(os.path.dirname(dsdl_yaml), "data_field.py")
+    dsdl_name = os.path.splitext(os.path.basename(dsdl_yaml))[0]
+    output_file = os.path.join(os.path.dirname(dsdl_yaml), f"{dsdl_name}.py")
     dsdl_parser = DSDLParser()
     dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
