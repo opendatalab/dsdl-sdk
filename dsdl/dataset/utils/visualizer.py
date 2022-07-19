@@ -4,6 +4,7 @@ import os
 from collections import defaultdict
 
 from .parser import Parser
+from ...geometry import LabelList, BBox
 
 
 class VisualizerUtil:
@@ -27,8 +28,6 @@ class VisualizerUtil:
 
         field_lst = sorted(field_lst, key=lambda k: field_order.get(k, -1))
         return field_lst
-
-
 
 
 class ImageVisualizer:
@@ -61,13 +60,21 @@ class ImageVisualizer:
     def visualize(self):
         image = self.image.to_image()
         draw_obj = ImageDraw.Draw(image)
+        image_label_lst = []
         for gt_dir, gt_item in self.ground_truths.items():
             field_keys = VisualizerUtil.sort_field(gt_item.keys())
             for field_key in field_keys:
-                for ann_item in gt_item[field_key].values():
-                    if hasattr(ann_item, "visualize"):
-                        draw_obj = ann_item.visualize(image=image, draw_obj=draw_obj, palette=self.palette,
-                                                      **gt_item)
+                if field_key == "label":
+                    draw_obj = LabelList(gt_item[field_key].values()).visualize(image=image, draw_obj=draw_obj,
+                                                                                image_label_list=image_label_lst,
+                                                                                palette=self.palette, **gt_item)
+                else:
+                    for ann_item in gt_item[field_key].values():
+                        if hasattr(ann_item, "visualize"):
+                            draw_obj = ann_item.visualize(image=image, draw_obj=draw_obj, palette=self.palette,
+                                                          **gt_item)
+        LabelList(image_label_lst).visualize(image=image, draw_obj=draw_obj, palette=self.palette,
+                                             bbox={"temp": BBox(0, 0, 0, 0)})
         del draw_obj
         return image
 

@@ -30,11 +30,19 @@ or (dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detectio
 5. 执行代码`visualize_demo.py`：
 
    ```bash
-   python visualize_demo.py -y coco_val_demo.yaml -c ali-oss -n 10 -r -v -f label bbox bool
+   python visualize_demo.py -y coco_val_demo.yaml -c ali-oss -n 10 -r -v -f Label BBox
    ```
 
-   每个参数的意义为：
+   或：
 
+   ```bash
+   python visualize_demo.py -y coco_val_demo.yaml -c ali-oss -n 10 -r -v -t detection
+   ```
+   
+   
+   
+   每个参数的意义为：
+   
    | 参数简写 | 参数全写      | 参数解释                                                     |
    | -------- | ------------- | :----------------------------------------------------------- |
    | -y       | `--yaml`      | dsdl_yaml文件的路径                                          |
@@ -42,5 +50,6 @@ or (dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detectio
    | -n       | `--num`       | 加载数据集的样本数量                                         |
    | -r       | `--random`    | 在加载数据集中的样本时是否随机选取样本，如果不指定的话就按顺序从开始选取样本 |
    | -v       | `--visualize` | 是否将加载的数据进行可视化展示                               |
-   | -f       | `--field`     | 选择需要进行可视化的字段，如`-f bbox`表示可视化bbox，`-f label`表示对label进行可视化等等，可以同时选择多个，如`-f label bbox bool` |
+   | -f       | `--field`     | 选择需要进行可视化的字段，如`-f BBox`表示可视化bbox，`-f Label`表示对label进行可视化等等，可以同时选择多个，如`-f Label BBox` |
+   | -t       | `--task`      | 可以选择当前需要可视化的任务类型，如果选择`-t detection`，则等价于`-f Label BBox` |
 
