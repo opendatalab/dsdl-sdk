@@ -1,4 +1,3 @@
-from PIL import ImageDraw
 from typing import Optional, Dict, Tuple, List
 import os
 from collections import defaultdict
@@ -59,23 +58,20 @@ class ImageVisualizer:
 
     def visualize(self):
         image = self.image.to_image()
-        draw_obj = ImageDraw.Draw(image)
+        image = image.convert("RGBA")
         image_label_lst = []
         for gt_dir, gt_item in self.ground_truths.items():
             field_keys = VisualizerUtil.sort_field(gt_item.keys())
             for field_key in field_keys:
                 if field_key == "label":
-                    draw_obj = LabelList(gt_item[field_key].values()).visualize(image=image, draw_obj=draw_obj,
-                                                                                image_label_list=image_label_lst,
-                                                                                palette=self.palette, **gt_item)
+                    image = LabelList(gt_item[field_key].values()).visualize(image=image,
+                                                                             image_label_list=image_label_lst,
+                                                                             palette=self.palette, **gt_item)
                 else:
                     for ann_item in gt_item[field_key].values():
                         if hasattr(ann_item, "visualize"):
-                            draw_obj = ann_item.visualize(image=image, draw_obj=draw_obj, palette=self.palette,
-                                                          **gt_item)
-        LabelList(image_label_lst).visualize(image=image, draw_obj=draw_obj, palette=self.palette,
-                                             bbox={"temp": BBox(0, 0, 0, 0)})
-        del draw_obj
+                            image = ann_item.visualize(image=image, palette=self.palette, **gt_item)
+        LabelList(image_label_lst).visualize(image=image, palette=self.palette, bbox={"temp": BBox(0, 0, 0, 0)})
         return image
 
     def format(self):
