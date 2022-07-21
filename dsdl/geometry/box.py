@@ -1,5 +1,6 @@
 from typing import TypeVar, List
 import numpy as np
+from PIL import ImageDraw
 
 _ELE_TYPE = TypeVar("_ELE_TYPE", int, float)
 
@@ -58,6 +59,9 @@ class BBox:
     @property
     def xywh(self) -> List[_ELE_TYPE]:
         return [self.xmin, self.ymin, self.width, self.height]
+    @property
+    def openmmlabformat(self) -> List[_ELE_TYPE]:
+        return [self.xmin, self.ymin, self.xmax, self.ymax]
 
     def to_int(self):
         self._data = [int(_) for _ in self._data]
@@ -65,7 +69,8 @@ class BBox:
     def to_float(self):
         self._data = [float(_) for _ in self._data]
 
-    def visualize(self, image, draw_obj, palette, **kwargs):
+    def visualize(self, image, palette, **kwargs):
+        draw_obj = ImageDraw.Draw(image)
         color = (0, 255, 0)
         if "label" in kwargs:
             for label in kwargs["label"].values():
@@ -73,8 +78,9 @@ class BBox:
                     palette[label.category_name] = tuple(np.random.randint(0, 255, size=[3]))
 
                 color = palette[label.category_name]
-        draw_obj.rectangle(self.xyxy, outline=color, width=2)
-        return draw_obj
+        draw_obj.rectangle(self.xyxy, outline=(*color, 255), width=2)
+        del draw_obj
+        return image
 
     def __repr__(self):
         return str(self.xyxy)

@@ -3,12 +3,12 @@ from ..geometry import ImageMedia
 
 
 class FileReader(object):
-    def __init__(self, dataset, args):
-        self.dataset = dataset
+    def __init__(self, file_reader, args):
+        self._file_reader = file_reader
         self.args = args
 
     def read(self):
-        reader = self.dataset.config["UnstructuredObjectFileReader"]
+        reader = self._file_reader
         with reader.load(self.args["$loc"]) as f:
             return f.read()
 
@@ -16,14 +16,14 @@ class FileReader(object):
 class UnstructuredObjectField(Field):
     def __init__(self):
         super().__init__()
-        self._dataset = None
+        self._file_reader = None
 
-    def set_dataset(self, dataset):
-        self._dataset = dataset
+    def set_file_reader(self, file_reader):
+        self._file_reader = file_reader
 
     @property
-    def dataset(self):
-        return self._dataset
+    def file_reader(self):
+        return self._file_reader
 
 
 class ImageField(UnstructuredObjectField):
@@ -33,4 +33,4 @@ class ImageField(UnstructuredObjectField):
     def validate(self, value):
         if isinstance(value, str):
             value = {"$loc": value}
-        return ImageMedia(value["$loc"], FileReader(self.dataset, value))
+        return ImageMedia(value["$loc"], FileReader(self.file_reader, value))
