@@ -18,16 +18,14 @@ def parse_args():
         description="Convert v0.3 format to dsdl yaml file."
     )
     parser.add_argument(
-        "-s"
-        "--src_dir",
+        "-s" "--src_dir",
         dest="src_dir",
         help="source file path: eg./Users/jiangyiying/sherry/tunas_data_demo/MNIST-tunas",
         required=True,
         type=str,
     )
     parser.add_argument(
-        "-o"
-        "--out_dir",
+        "-o" "--out_dir",
         dest="out_dir",
         default=None,
         help="out file path: eg./Users/jiangyiying/sherry/tunas_data_demo/MNIST-dsdl",
@@ -43,7 +41,7 @@ def parse_args():
 
 
 class ConvertV3toDsdlYaml:
-    def __init__(self, dataset_path, output_path = None):
+    def __init__(self, dataset_path, output_path=None):
         self.dataset_name = None
         self.struct_sample_name = None
         self.dataset_path = dataset_path
@@ -71,7 +69,7 @@ class ConvertV3toDsdlYaml:
         for task in dataset_info["tasks"]:
             if task["type"] == "classification":
                 dict_id_class = {}
-                struct_name = self.camel_case(task["name"])+"ClassDom"
+                struct_name = self.camel_case(task["name"]) + "ClassDom"
                 struct_def = "class_domain"
                 for c in task["catalog"]:
                     dict_id_class[c["category_id"]] = str(c["category_name"])
@@ -100,7 +98,9 @@ class ConvertV3toDsdlYaml:
                 for class_name in struct["classes"].values():
                     try:
                         int(class_name)
-                        fp.writelines(f"{TAB_SPACE * 2}- {self.dataset_name}_{class_name}\n")
+                        fp.writelines(
+                            f"{TAB_SPACE * 2}- {self.dataset_name}_{class_name}\n"
+                        )
                     except ValueError:
                         fp.writelines(f"{TAB_SPACE*2}- {class_name}\n")
 
@@ -117,15 +117,19 @@ class ConvertV3toDsdlYaml:
                 fp.writelines(f"{TAB_SPACE * 2}label: Label[dom=$cdom]\n")
                 fp.writelines(f"{TAB_SPACE}$optional: ['label']\n")
                 self.sample_struct[list(self.sample_struct.keys())[0]]["param"] = "cdom"
-                self.sample_struct[list(self.sample_struct.keys())[0]]["label"] = "label"
+                self.sample_struct[list(self.sample_struct.keys())[0]][
+                    "label"
+                ] = "label"
             else:
                 params = ["cdom" + str(i) for i in range(len(self.sample_struct))]
                 fp.writelines(f"{TAB_SPACE}$params: {params}\n")
                 fp.writelines(f"{TAB_SPACE}$fields: \n")
                 fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
-                for name, param, i in zip(self.sample_struct, params, range(len(self.sample_struct))):
+                for name, param, i in zip(
+                    self.sample_struct, params, range(len(self.sample_struct))
+                ):
                     label = "label" + str(i)
-                    label_content = "Label[dom="+param+"]"
+                    label_content = "Label[dom=" + param + "]"
                     fp.writelines(f"{TAB_SPACE *2}{label}: {label_content}\n")
                     self.sample_struct[name]["param"] = param
                     self.sample_struct[name]["label"] = label
@@ -147,7 +151,10 @@ class ConvertV3toDsdlYaml:
             fp.writelines(f'{TAB_SPACE}subdata-name: "{self.sub_dataset_name}"\n')
             fp.writelines("\n")
             fp.writelines("data:\n")
-            cdom_temp = [struct["param"]+"="+struct["name"] for struct in self.sample_struct.values()]
+            cdom_temp = [
+                struct["param"] + "=" + struct["name"]
+                for struct in self.sample_struct.values()
+            ]
             fp.writelines(
                 f"{TAB_SPACE}sample-type: {self.struct_sample_name}[{','.join(cdom_temp)}]\n"
             )
@@ -178,7 +185,9 @@ class ConvertV3toDsdlYaml:
                 label = self.sample_struct[name]["label"]
                 try:
                     int(cls_name)
-                    file_point.writelines(f"{TAB_SPACE * 2}  {label}: {self.dataset_name}_{cls_name}\n")
+                    file_point.writelines(
+                        f"{TAB_SPACE * 2}  {label}: {self.dataset_name}_{cls_name}\n"
+                    )
                 except ValueError:
                     file_point.writelines(f"{TAB_SPACE * 2}  {label}: {cls_name}\n")
             else:
@@ -188,7 +197,7 @@ class ConvertV3toDsdlYaml:
         if not self.output_path:
             temp = os.path.basename(self.dataset_path)
             root_path = os.path.dirname(self.dataset_path)
-            self.output_path = os.path.join(root_path, temp+"_dsdl")
+            self.output_path = os.path.join(root_path, temp + "_dsdl")
             if not os.path.exists(self.output_path):
                 os.mkdir(self.output_path)
         self.get_dataset_info()
@@ -206,7 +215,9 @@ class ConvertV3toDsdlYaml:
         import_file_list = ["class_dom", "struct_sample"]
         for file in file_list:
             self.get_sample_data(os.path.join(file_name, file))
-            out_file = os.path.join(self.output_path, self.sub_dataset_name+"_data.yaml")
+            out_file = os.path.join(
+                self.output_path, self.sub_dataset_name + "_data.yaml"
+            )
             self.write_data_yaml(import_file_list, out_file)
             print(f"generate data yaml file: {out_file}")
 
@@ -222,5 +233,3 @@ if __name__ == "__main__":
     # out_file = None
     v3toyaml = ConvertV3toDsdlYaml(src_file, out_file)
     v3toyaml.convert_pipeline()
-
-
