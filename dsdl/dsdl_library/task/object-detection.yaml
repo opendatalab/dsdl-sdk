@@ -7,7 +7,7 @@ LocalObjectEntry:
         bbox: BBox
         label: Label[dom=$cdom]
         is_crowd: Bool
-        $optional: ['label']
+    $optional: ['label']
 
 ObjectDetectionSample:
     # Each sample contains an image together with a list of local objects.

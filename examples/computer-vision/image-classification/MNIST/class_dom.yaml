@@ -1,0 +1,15 @@
+$dsdl-version: "0.5.0"
+
+MnistImageClassificationClassDom:
+    $def: class_domain
+    classes:
+        - MNIST_0
+        - MNIST_1
+        - MNIST_2
+        - MNIST_3
+        - MNIST_4
+        - MNIST_5
+        - MNIST_6
+        - MNIST_7
+        - MNIST_8
+        - MNIST_9

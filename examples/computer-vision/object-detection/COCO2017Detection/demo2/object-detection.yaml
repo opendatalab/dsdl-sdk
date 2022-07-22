@@ -89,7 +89,7 @@ LocalObjectEntry:
     $fields:
         bbox: BBox
         label: Label[dom=COCOClassDom]
-        $optional: ['label']
+    $optional: ['label']
 
 ObjectDetectionSample:
     # Each sample contains an image together with a list of local objects.

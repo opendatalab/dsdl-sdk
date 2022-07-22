@@ -1,0 +1,24 @@
+$dsdl-version: "0.5.0"
+$import:
+    - class_dom
+    - struct_sample
+
+meta:
+    name: "IMAGENET"
+    creator: "MSRA"
+    dataset-version: "1.0.0"
+    subdata-name: "val"
+
+data:
+    sample-type: ImagenetSample[cdom=Ilsvrc2012ImagesClassificationClassDom]
+    samples:
+        - image: "media/000000000021.JPEG"
+        - image: "media/000000000022.JPEG"
+        - image: "media/000000000020.JPEG"
+        - image: "media/000000000023.JPEG"
+        - image: "media/000000000025.JPEG"
+        - image: "media/000000000024.JPEG"
+        - image: "media/000000000027.JPEG"
+        - image: "media/000000000028.JPEG"
+        - image: "media/000000000026.JPEG"
+        - image: "media/000000000029.JPEG"
