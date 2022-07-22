@@ -1,0 +1,34 @@
+$dsdl-version: "0.5.0"
+$import:
+    - class_dom
+    - struct_sample
+
+meta:
+    name: "IMAGENET"
+    creator: "MSRA"
+    dataset-version: "1.0.0"
+    subdata-name: "train"
+
+data:
+    sample-type: ImagenetSample[cdom=Ilsvrc2012ImagesClassificationClassDom]
+    samples:
+        - image: "media/000000000005.JPEG"
+          label: n02033041
+        - image: "media/000000000000.JPEG"
+          label: n01630670
+        - image: "media/000000000002.JPEG"
+          label: n01734418
+        - image: "media/000000000006.JPEG"
+          label: n01580077
+        - image: "media/000000000009.JPEG"
+          label: n01986214
+        - image: "media/000000000003.JPEG"
+          label: n01498041
+        - image: "media/000000000001.JPEG"
+          label: n01968897
+        - image: "media/000000000008.JPEG"
+          label: n01689811
+        - image: "media/000000000007.JPEG"
+          label: n02094433
+        - image: "media/000000000004.JPEG"
+          label: n02091244
