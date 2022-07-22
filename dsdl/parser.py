@@ -76,11 +76,11 @@ class DSDLParser(Parser):
 
         # 校验必须有meta和$dsdl-version字段，见白皮书2.1
         try:
-            self.dsdl_version = desc["$dsdl-version"]   # 存版本号，后续应该会使用（目前木有用）
+            self.dsdl_version = desc["$dsdl-version"]  # 存版本号，后续应该会使用（目前木有用）
         except KeyError as e:
             raise DefineSyntaxError(f"data yaml must contains {e} section")
         try:
-            self.meta = desc["meta"]   # 存版meta信息，后续应该会使用（目前木有用）
+            self.meta = desc["meta"]  # 存版meta信息，后续应该会使用（目前木有用）
         except KeyError as e:
             raise DefineSyntaxError(f"data yaml must contains {e} section")
 
@@ -133,7 +133,9 @@ class DSDLParser(Parser):
             try:
                 define_type = define_value["$def"]
             except KeyError as e:
-                raise DefineSyntaxError(f"{define_name} section must contains {e} sub-section")
+                raise DefineSyntaxError(
+                    f"{define_name} section must contains {e} sub-section"
+                )
 
             define_info = {"name": define_name}
             if define_type == "struct":
@@ -154,15 +156,17 @@ class DSDLParser(Parser):
                         for param, value in self.sample_type_par_map.items():
                             field_type = field_type.replace("$" + param, value)
                     field_list[field_name] = {
-                            "name": field_name,
-                            "type": self.parse_struct_field(field_type),
-                        }
+                        "name": field_name,
+                        "type": self.parse_struct_field(field_type),
+                    }
                 # $optional字段在$fields字段之后处理，因为需要判断optional里面的字段必须是field字段里面的filed_name
                 if "$optional" in define_value:
                     for optional_name in define_value["$optional"]:
                         if optional_name in field_list:
                             temp_type = field_list[optional_name]["type"]
-                            temp_type = self.rreplace(temp_type, ")", ", blank=True)", 1)
+                            temp_type = self.rreplace(
+                                temp_type, ")", ", blank=True)", 1
+                            )
                             field_list[optional_name]["type"] = temp_type
                         else:
                             raise DefineSyntaxError(f"{optional_name} is not in $field")
