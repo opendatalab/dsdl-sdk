@@ -165,7 +165,7 @@ class DSDLParser(Parser):
                         if optional_name in field_list:
                             temp_type = field_list[optional_name]["type"]
                             temp_type = self.rreplace(
-                                temp_type, ")", ", blank=True)", 1
+                                temp_type, ")", ", optional=True)", 1
                             )
                             field_list[optional_name]["type"] = temp_type
                         else:

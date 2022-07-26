@@ -20,4 +20,4 @@ class Cifar10ImageClassificationClassDom(Enum):
 
 class Cifar10Sample(Struct):
     image = ImageField()
-    label = LabelField(dom=Cifar10ImageClassificationClassDom, blank=True)
+    label = LabelField(dom=Cifar10ImageClassificationClassDom, optional=True)
