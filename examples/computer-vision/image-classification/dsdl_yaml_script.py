@@ -54,7 +54,7 @@ class ConvertV3toDsdlYaml:
         self.dataset_path = dataset_path
         self.output_path = output_path
         self.dataset_name = None
-        self.struct_sample_name = None   # data里面的sample_type, 也是struct里面那个关键的Sample的名字
+        self.struct_sample_name = None  # data里面的sample_type, 也是struct里面那个关键的Sample的名字
         self.dataset_info = dict()
         # 用来定义数据模型，就是.yaml的class_dom部分
         # {"name": struct_name: XXClassDom, "$def": struct_def, "classes": dict_id_class, "param": param, "label": label}
@@ -64,7 +64,6 @@ class ConvertV3toDsdlYaml:
         self.sub_dataset_name = None
         self.attributes = dict()  # {attribute_name: type}
         self.optional = set()
-
 
     @staticmethod
     def camel_case(s):
@@ -96,12 +95,12 @@ class ConvertV3toDsdlYaml:
         if len(self.class_dom) == 1:
             self.class_dom[list(self.class_dom.keys())[0]]["param"] = "cdom"
             self.class_dom[list(self.class_dom.keys())[0]]["label"] = "label"
-            self.optional.add('label')
+            self.optional.add("label")
         # 需要考虑有多个任务的情况，也就是不止一个分类任务，这时候参数也不只cdom一个。。我们分别命名为cdom1, cdom2...
         else:
             params = ["cdom" + str(i) for i in range(len(self.class_dom))]
             for name, param, i in zip(
-                    self.class_dom, params, range(len(self.class_dom))
+                self.class_dom, params, range(len(self.class_dom))
             ):
                 label = "label" + str(i)
                 # label_content = "Label[dom=" + param + "]"
@@ -110,16 +109,11 @@ class ConvertV3toDsdlYaml:
                 self.class_dom[name]["label"] = label
                 self.optional.add(label)
 
-
-
-
-
     def get_sample_data(self, file_name):
         with open(file_name) as fp:
             dataset = json.load(fp)
         self.sub_dataset_name = dataset["sub_dataset_name"]
         self.samples = dataset["samples"]
-
 
     def write_class_yaml(self, out_file):
         with open(out_file, "w+") as fp:
@@ -144,22 +138,21 @@ class ConvertV3toDsdlYaml:
             fp.writelines("\n")
             fp.writelines(f"{self.struct_sample_name}:\n")
             fp.writelines(f"{TAB_SPACE}$def: struct\n")
-            params = [i['param'] for i in self.class_dom.values()]
+            params = [i["param"] for i in self.class_dom.values()]
             fp.writelines(f"{TAB_SPACE}$params: {params}\n")
-
-            # $field
+            # $field 部分
             fp.writelines(f"{TAB_SPACE}$fields: \n")
             fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
             for sample_struct in self.class_dom.values():
-                label = sample_struct['label']
-                label_content = "Label[dom=" + sample_struct['param'] + "]"
+                label = sample_struct["label"]
+                label_content = "Label[dom=" + sample_struct["param"] + "]"
                 fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
             for attr_name, attr_type in self.attributes.items():
-                fp.writelines(f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}\n")
-            # $optional
+                fp.writelines(
+                    f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}\n"
+                )
+            # $optional 部分
             fp.writelines(f"{TAB_SPACE}$optional: {list(self.optional)}\n")
-
-
 
     def write_data_yaml(self, import_file_list, out_file):
         """
@@ -238,8 +231,12 @@ class ConvertV3toDsdlYaml:
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
                     for attribute_name, attribute_value in attributes.items():
-                        file_point.writelines(f"{TAB_SPACE * 2}  {attribute_name}: {attribute_name}\n")
-                        self.attributes.update({attribute_name: attribute_value.__class__.__name__})
+                        file_point.writelines(
+                            f"{TAB_SPACE * 2}  {attribute_name}: {attribute_name}\n"
+                        )
+                        self.attributes.update(
+                            {attribute_name: attribute_value.__class__.__name__}
+                        )
                         self.optional.add(attribute_name)
             else:
                 pass
