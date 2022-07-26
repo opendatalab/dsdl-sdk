@@ -20,4 +20,4 @@ class MnistImageClassificationClassDom(Enum):
 
 class MnistSample(Struct):
     image = ImageField()
-    label = LabelField(dom=MnistImageClassificationClassDom, blank=True)
+    label = LabelField(dom=MnistImageClassificationClassDom, optional=True)

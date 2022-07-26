@@ -20,4 +20,4 @@ class Ilsvrc2012ImagesClassificationClassDom(Enum):
 
 class ImagenetSample(Struct):
     image = ImageField()
-    label = LabelField(dom=Ilsvrc2012ImagesClassificationClassDom, blank=True)
+    label = LabelField(dom=Ilsvrc2012ImagesClassificationClassDom, optional=True)
