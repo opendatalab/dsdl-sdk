@@ -56,13 +56,14 @@ class ConvertV3toDsdlYaml:
         self.dataset_name = None
         self.struct_sample_name = None  # data里面的sample_type, 也是struct里面那个关键的Sample的名字
         self.dataset_info = dict()
-        # 用来定义数据模型，就是.yaml的class_dom部分
-        # {"name": struct_name: XXClassDom, "$def": struct_def, "classes": dict_id_class, "param": param, "label": label}
+        # 用来定义数据模型，就是.yaml的class_dom部分 {"name": struct_name: XXClassDom, "$def": struct_def, "classes":
+        # dict_id_class, "param": param, "label": label}
         self.class_dom = dict()
         # 数据部分
         self.sample = dict()
         self.sub_dataset_name = None
         self.attributes = dict()  # {attribute_name: type}
+        self.confidence = None  # confidence_type
         self.optional = set()
 
     @staticmethod
@@ -83,7 +84,14 @@ class ConvertV3toDsdlYaml:
                 struct_name = self.camel_case(task["name"]) + "ClassDom"
                 struct_def = "class_domain"
                 for c in task["catalog"]:
-                    dict_id_class[c["category_id"]] = str(c["category_name"])
+                    # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
+                    # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
+                    # 所以现在遇到这种情况我们统一将类别名变成'_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成'_0'...
+                    dict_id_class[c["category_id"]] = self.clean(c["category_name"])
+                    supercategories = c.get("supercategories", None)
+                    if supercategories:
+                        supercategories = ".".join([self.clean(i) for i in supercategories])
+                        dict_id_class[c["category_id"]] = self.clean(c["category_name"]) + "." + supercategories
                 self.class_dom[task["name"]] = {
                     "name": struct_name,
                     "$def": struct_def,
@@ -100,7 +108,7 @@ class ConvertV3toDsdlYaml:
         else:
             params = ["cdom" + str(i) for i in range(len(self.class_dom))]
             for name, param, i in zip(
-                self.class_dom, params, range(len(self.class_dom))
+                    self.class_dom, params, range(len(self.class_dom))
             ):
                 label = "label" + str(i)
                 # label_content = "Label[dom=" + param + "]"
@@ -124,13 +132,15 @@ class ConvertV3toDsdlYaml:
                 fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
                 fp.writelines(f"{TAB_SPACE}classes:\n")
                 for class_name in struct["classes"].values():
-                    try:
-                        int(class_name)
-                        fp.writelines(
-                            f"{TAB_SPACE * 2}- {self.dataset_name}_{class_name}\n"
-                        )
-                    except ValueError:
-                        fp.writelines(f"{TAB_SPACE*2}- {class_name}\n")
+                    fp.writelines(f"{TAB_SPACE * 2}- {class_name}\n")
+                    # try:
+                    #     int(class_name)
+                    #     fp.writelines(
+                    #         f"{TAB_SPACE * 2}- {self.dataset_name}_{class_name}\n"
+                    #     )
+                    # except ValueError:
+                    #     fp.writelines(f"{TAB_SPACE*2}- {class_name}\n")
+                fp.writelines("\n")
 
     def write_struct_yaml(self, out_file):
         with open(out_file, "w+") as fp:
@@ -145,12 +155,16 @@ class ConvertV3toDsdlYaml:
             fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
             for sample_struct in self.class_dom.values():
                 label = sample_struct["label"]
-                label_content = "Label[dom=" + sample_struct["param"] + "]"
+                label_content = "Label[dom=$" + sample_struct["param"] + "]"
                 fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
-            for attr_name, attr_type in self.attributes.items():
-                fp.writelines(
-                    f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}\n"
-                )
+            # if self.attributes:
+            fp.writelines(f"{TAB_SPACE * 2}attributes: Dict\n")
+            # for attr_name, attr_type in self.attributes.items():
+            #     fp.writelines(
+            #         f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}\n"
+            #     )
+            # if self.confidence:
+            fp.writelines(f"{TAB_SPACE * 2}confidence: Num\n")
             # $optional 部分
             fp.writelines(f"{TAB_SPACE}$optional: {list(self.optional)}\n")
 
@@ -201,6 +215,7 @@ class ConvertV3toDsdlYaml:
         }
         """
         image_path = sample["media"]["path"]
+        # eg. - image: "media/000000000007.png"
         file_point.writelines(f'{TAB_SPACE * 2}- image: "{image_path}"\n')
 
         if "ground_truth" in sample.keys():
@@ -214,30 +229,33 @@ class ConvertV3toDsdlYaml:
                 cls_id = gt["category_id"]
                 cls_name = self.class_dom[name]["classes"][cls_id]
                 label = self.class_dom[name]["label"]
-                attributes = gt["attributes"] if "attributes" in gt else None
-                try:
-                    # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
-                    # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
-                    # 所以现在遇到这种情况我们统一将类别名变成'数据集名_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成
-                    # 'MNIST_0'...
-                    int(cls_name)
-                    file_point.writelines(
-                        f"{TAB_SPACE * 2}  {label}: {self.dataset_name}_{cls_name}\n"
-                    )
-                except ValueError:
-                    file_point.writelines(f"{TAB_SPACE * 2}  {label}: {cls_name}\n")
-
+                attributes = gt.get("attributes", None)
+                confidence = gt.get("confidence", None)
+                # eg. label: _9
+                file_point.writelines(
+                    f"{TAB_SPACE * 2}  {label}: {cls_name}\n"
+                )
                 # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
+                    file_point.writelines(
+                        f"{TAB_SPACE * 2}  attributes: \n"
+                    )
                     for attribute_name, attribute_value in attributes.items():
                         file_point.writelines(
-                            f"{TAB_SPACE * 2}  {attribute_name}: {attribute_name}\n"
+                            f"{TAB_SPACE * 3}  {attribute_name}: {attribute_value}\n"
                         )
                         self.attributes.update(
                             {attribute_name: attribute_value.__class__.__name__}
                         )
-                        self.optional.add(attribute_name)
+                self.optional.add('attributes')
+                if confidence:
+                    file_point.writelines(
+                        f"{TAB_SPACE * 2}  confidence: {confidence}\n"
+                    )
+                    self.confidence = confidence.__class__.__name__
+                self.optional.add('confidence')
+
             else:
                 pass
 
@@ -261,13 +279,17 @@ class ConvertV3toDsdlYaml:
             self.write_data_yaml(import_file_list, out_file)
             print(f"generate data yaml file: {out_file}")
         # 2. generate class yaml file
-        out_file = os.path.join(self.output_path, "class_dom.yaml")
+        out_file = os.path.join(self.output_path, "class-dom.yaml")
         self.write_class_yaml(out_file)
         print(f"generate class yaml file: {out_file}")
         # 3. generate struct sample yaml file
-        out_file = os.path.join(self.output_path, "struct_sample.yaml")
+        out_file = os.path.join(self.output_path, "struct.yaml")
         self.write_struct_yaml(out_file)
         print(f"generate struct sample yaml file: {out_file}")
+
+    @staticmethod
+    def clean(varStr):
+        return re.sub("\W|^(?=\d)", "_", varStr)
 
 
 if __name__ == "__main__":
@@ -277,7 +299,7 @@ if __name__ == "__main__":
     out_file = args.out_dir
     print(f"your input source dictionary: {src_file}")
     print(f"your input destination dictionary: {out_file}")
-    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/IMAGENET-tunas"
+    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
     # out_file = None
     v3toyaml = ConvertV3toDsdlYaml(src_file, out_file)
     v3toyaml.convert_pipeline()

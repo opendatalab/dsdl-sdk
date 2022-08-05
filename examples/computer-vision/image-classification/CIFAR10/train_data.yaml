@@ -1,7 +1,7 @@
 $dsdl-version: "0.5.0"
 $import:
-    - class_dom
-    - struct_sample
+    - class/cifar10-class-dom
+    - task/classification-template
 
 meta:
     name: "CIFAR10"
