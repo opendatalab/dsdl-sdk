@@ -1,13 +1,15 @@
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from .exception import DefineSyntaxError
-from .warning import DuplicateDefineWarning
+from dsdl.exception import DefineSyntaxError
+from dsdl.warning import DuplicateDefineWarning
 import networkx as nx
 import os
 import re
 from typing import List, Set
 from collections import defaultdict
+from .utils import *
+from .parse_params import ParserParam, SingleStructParam
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -67,11 +69,11 @@ class DSDLParser(Parser):
         self.meta = dict()
         # eg. 对于：sample-type: SceneAndObjectSample[scenedom=SceneDom, objectdom=ObjectDom]， 就是SceneAndObjectSample
         self.data_sample_type = None
-        # eg. {SceneAndObjectSample:{scenedom: SceneDom, objectdom: ObjectDom}}
-        self.sample_param_map = defaultdict(dict)
-        # eg. {SceneAndObjectSample:{$parent:[](父类只能有一个或为空),scenedom: None, objectdom: None},
-        #  LocalObjectEntry:{$parent:[SceneAndObjectSample], cdom:None}}
-        self.general_param_map = defaultdict(dict)
+        # # eg. {SceneAndObjectSample:{scenedom: SceneDom, objectdom: ObjectDom}}
+        # self.sample_param_map = defaultdict(dict)
+        # # eg. {SceneAndObjectSample:{$parent:[](父类只能有一个或为空),scenedom: None, objectdom: None},
+        # #  LocalObjectEntry:{$parent:[SceneAndObjectSample], cdom:None}}
+        # self.general_param_map = defaultdict(dict)
 
     def parse(self, data_file: str, library_path: str):
         """
@@ -96,8 +98,6 @@ class DSDLParser(Parser):
             data_sample_type = desc["data"]["sample-type"]
         except KeyError as e:
             raise DefineSyntaxError(f"data yaml must contains {e} in `data` section")
-        # 获取 self.data_sample_type和self.sample_param_map
-        self.parse_param_sample_type(data_sample_type)
 
         if "$import" in desc:
             import_list = desc["$import"]
@@ -129,7 +129,9 @@ class DSDLParser(Parser):
         # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
         class_defi.update(root_class_defi)
 
-        self.general_param_map = self.get_params(class_defi)
+        # self.general_param_map = self.get_params(class_defi)
+        # 获取 self.data_sample_type和self.sample_param_map
+        PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
 
         # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
         for define_name, define_value in class_defi.items():
@@ -160,9 +162,8 @@ class DSDLParser(Parser):
                     if not field_name.isidentifier():
                         continue
                     if struct_params:
-                        for param, value in self.general_param_map[define_name].items():
-                            if param != "$parent":
-                                field_type = field_type.replace("$" + param, value)
+                        for param, value in PARAMS.general_param_map[define_name].params_dict.items():
+                            field_type = field_type.replace("$" + param, value)
                     field_list[field_name] = {
                         "name": field_name,
                         "type": self.parse_struct_field(field_type),
@@ -172,7 +173,7 @@ class DSDLParser(Parser):
                     for optional_name in define_value["$optional"]:
                         if optional_name in field_list:
                             temp_type = field_list[optional_name]["type"]
-                            temp_type = self.add_key_value_2_struct_field(
+                            temp_type = add_key_value_2_struct_field(
                                 temp_type, "optional", True
                             )
                             field_list[optional_name]["type"] = temp_type
@@ -188,7 +189,7 @@ class DSDLParser(Parser):
                 for class_name in define_value["classes"]:
                     define_info["class_list"].append(
                         {
-                            "name": self.clean(class_name),
+                            "name": sanitize_variable_name(class_name),
                         }
                     )
 
@@ -232,23 +233,6 @@ class DSDLParser(Parser):
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
 
-    def parse_param_sample_type(self, raw: str):
-        """
-        raw: ObjectDetectionSample[cdom=COCOClassFullDom]
-        """
-        c_dom = re.findall(r"\[(.*)\]", raw)
-        if c_dom:
-            self.data_sample_type = raw.replace("[" + c_dom[0] + "]", "", 1).strip()
-
-            temp = c_dom[0].split(",")
-            for param in temp:
-                param = param.strip()
-                temp = param.split("=")
-                self.sample_param_map[self.data_sample_type].update(
-                    {temp[0].strip(): temp[1].strip()}
-                )
-        else:
-            self.data_sample_type = raw
 
     def parse_list_filed(self, raw: str) -> str:
         """
@@ -282,7 +266,7 @@ class DSDLParser(Parser):
 
         field_type = "List"
 
-        raw = self.rreplace(raw.replace(f"{field_type}[", "", 1), "]", "", 1)
+        raw = rreplace(raw.replace(f"{field_type}[", "", 1), "]", "", 1)
         param_list = raw.split(",")
         ele_type, ordered = None, None
         if len(param_list) == 2:
@@ -395,154 +379,6 @@ class DSDLParser(Parser):
                 ).strip()
             return raw_field_type + "()"
             # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
-
-    def validate_params(self, struct_params_field: Set, struct_name: str):
-        input_params = set(self.sample_param_map[struct_name].keys())
-        if input_params != struct_params_field:
-            raise DefineSyntaxError(
-                f"error of definition of params {struct_params_field}"
-            )
-        return struct_params_field
-
-    def get_params(self, class_defi):
-        # 对class_defi循环，先拿到每个struct的params(self.general_param_map), 需要一个单独的循环，因为定义的顺序不一定
-        # 先得到self.general_param_map =
-        # {SceneAndObjectSample:{$parent = [], scenedom: None, objectdom: None},
-        # LocalObjectEntry:{$parent = [], cdom:None}}
-        for define_name, define_value in class_defi.items():
-            if "$def" in define_value and define_value["$def"] == "struct":
-                struct_params = define_value.get("$params", None)
-                if struct_params:
-                    self.general_param_map[define_name] = {
-                        key: None for key in struct_params
-                    }
-                    self.general_param_map[define_name]["$parent"] = []
-        # 然后填充self.general_param_map =
-        # {SceneAndObjectSample:{$parent = [],scenedom: SceneDom, objectdom: ObjectDom},
-        # LocalObjectEntry:{$parent = [SceneAndObjectSample],cdom: $scenedom}}
-        if len(self.general_param_map) <= 1:
-            for key in self.general_param_map[define_name].keys():
-                if key != "$parent":
-                    try:
-                        self.general_param_map[define_name][
-                            key
-                        ] = self.sample_param_map[define_name][key]
-                    except KeyError as e:
-                        raise DefineSyntaxError(f"miss the params {e} in definition")
-        else:
-            for define_name, define_value in class_defi.items():
-                if "$def" in define_value and define_value["$def"] == "struct":
-                    struct_params = define_value.get("$params", None)
-                    if struct_params:
-                        if define_name == list(self.sample_param_map.keys())[0]:
-                            for key in self.general_param_map[define_name].keys():
-                                if key != "$parent":
-                                    try:
-                                        self.general_param_map[define_name][
-                                            key
-                                        ] = self.sample_param_map[define_name][key]
-                                    except KeyError as e:
-                                        raise DefineSyntaxError(
-                                            f"miss the params {e} in definition"
-                                        )
-
-                        for raw_type in define_value["$fields"].values():
-                            field_type = raw_type.replace(" ", "")
-                            # 得到中括号中的 [...] 中的东西，贪婪匹配
-                            for structure in self.general_param_map.keys():
-                                if structure in field_type:
-                                    self.general_param_map[structure]["$parent"].append(
-                                        define_name
-                                    )
-                                    try:
-                                        # 如List[LocalObjectEntry[cdom=$objectdom]]会提取到'cdom=$objectdom'
-                                        temp = re.findall(
-                                            r"%s\[(.*?)\]" % str(structure), field_type
-                                        )[0]
-                                    except KeyError:
-                                        raise DefineSyntaxError(
-                                            f"definition error of filed {field_type}"
-                                        )
-                                    for param in temp.split(","):
-                                        param = param.split("=")
-                                        if len(param) != 2:
-                                            raise DefineSyntaxError(
-                                                f"error in params definition {field_type}"
-                                            )
-                                        key, value = param[0], param[1]
-                                        try:
-                                            self.general_param_map[structure][
-                                                key
-                                            ] = value
-                                        except KeyError as e:
-                                            raise DefineSyntaxError(
-                                                f"miss the params {e} in definition"
-                                            )
-                                    break
-
-            define_graph = nx.DiGraph()
-            define_graph.add_nodes_from(self.general_param_map.keys())
-            for key, val in self.general_param_map.items():
-                if len(val["$parent"]) > 1:
-                    raise DefineSyntaxError(f"error in definition")
-                if len(val["$parent"]) == 1:
-                    for k in self.general_param_map.keys():  # MyEntry
-                        if k in val["$parent"][0]:
-                            define_graph.add_edge(k, key)
-            if not nx.is_directed_acyclic_graph(define_graph):
-                raise "define cycle found."
-            ordered_keys = list(nx.topological_sort(define_graph))
-            for struct in ordered_keys[1:]:
-                parent_struct = self.general_param_map[struct]["$parent"]
-                if not parent_struct:
-                    raise DefineSyntaxError(
-                        f"each struct must have one parent struct, but can {struct} have no"
-                    )
-                if len(parent_struct) > 1:
-                    raise DefineSyntaxError(
-                        "each struct must have one parent struct, but can have more than one child struct.\n"
-                        f"{struct} have more than one parent struct"
-                    )
-                parent_struct = parent_struct[0]
-                for key, val in self.general_param_map[struct].items():
-                    if key != "$parent":
-                        if val.startswith("$"):
-                            parent_key = val.replace("$", "").strip()
-                            self.general_param_map[struct][
-                                key
-                            ] = self.general_param_map[parent_struct][parent_key]
-        return self.general_param_map
-
-    @staticmethod
-    def clean(varStr: str) -> str:
-        """
-        1. 将`.`替换为`__` 2.将（非字母开头）和（非字母数字及下划线）替换为`_`
-        eg. apple.fruit_and_vegetables会转化为apple__fruit_and_vegetables
-        """
-        temp = varStr.split(".")
-        temp = [re.sub("\W|^(?=\d)", "_", i) for i in temp]
-        temp = "__".join(temp)
-        return temp
-
-    @staticmethod
-    def rreplace(s, old, new, occurrence):
-        """
-        从右向左的替换函数，类似replace,不过是反着的
-        """
-        li = s.rsplit(old, occurrence)
-        return new.join(li)
-
-    @staticmethod
-    def add_key_value_2_struct_field(field: str, key, value):
-        p = re.compile(r"[(](.*)[)]", re.S)  # 贪婪匹配
-        k_v_list = re.findall(p, field)[0].strip()
-        if k_v_list:
-            k_v_list = k_v_list.split(",")
-        else:
-            k_v_list = []
-        k_v_list.append(str(key) + "=" + str(value))
-        temp = "(" + ", ".join(k_v_list) + ")"
-        return field.replace("(" + re.findall(p, field)[0] + ")", temp)
 
 
 @click.command()
