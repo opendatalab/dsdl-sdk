@@ -1,0 +1,11 @@
+$dsdl-version: "0.5.0"
+
+TemplateClassification:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        image: Image
+        label: Label[dom=$cdom]                         # 对于tunas0.3中的category_id，类别的唯一标识符，在任务内唯一
+        confidence: Num                                 # 标注的置信度
+        attributes: Dict                                # 当前标注所附带的其他属性信息
+    $optional: ['label','confidence','attributes']

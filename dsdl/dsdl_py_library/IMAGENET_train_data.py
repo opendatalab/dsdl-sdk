@@ -18,6 +18,8 @@ class Ilsvrc2012ImagesClassificationClassDom(Enum):
     n01986214 = 10
 
 
-class ImagenetSample(Struct):
+class TemplateClassification(Struct):
     image = ImageField()
     label = LabelField(dom=Ilsvrc2012ImagesClassificationClassDom, optional=True)
+    confidence = NumField(optional=True)
+    attributes = DictField(optional=True)

@@ -1,0 +1,44 @@
+$dsdl-version: "0.5.0"
+$import:
+    - class/cifar100-class-dom
+    - task/cifar100-struct
+
+meta:
+    name: "CIFAR100"
+    creator: "MSRA"
+    dataset-version: "1.0.0"
+    subdata-name: "test"
+
+data:
+    sample-type: Cifar100Sample[cdom0=Cifar100ImagesFineLabelClassificationClassDom,cdom1=Cifar100ImagesCoarseLabelClassificationClassDom]
+    samples:
+        - image: "media/000000000010.png"
+          label0: forest.large_natural_outdoor_scenes
+          label1: large_natural_outdoor_scenes
+        - image: "media/000000000011.png"
+          label0: mountain.large_natural_outdoor_scenes
+          label1: large_natural_outdoor_scenes
+        - image: "media/000000000012.png"
+          label0: seal.aquatic_mammals
+          label1: aquatic_mammals
+        - image: "media/000000000013.png"
+          label0: mushroom.fruit_and_vegetables
+          label1: fruit_and_vegetables
+        - image: "media/000000000015.png"
+          label0: tulip.flowers
+          label1: flowers
+        - image: "media/000000000016.png"
+          label0: camel.large_omnivores_and_herbivores
+          label1: large_omnivores_and_herbivores
+        - image: "media/000000000014.png"
+          label0: sea.large_natural_outdoor_scenes
+          label1: large_natural_outdoor_scenes
+        - image: "media/000000000017.png"
+          label0: butterfly.insects
+          label1: insects
+        - image: "media/000000000018.png"
+          label0: cloud.large_natural_outdoor_scenes
+          label1: large_natural_outdoor_scenes
+        - image: "media/000000000019.png"
+          label0: apple.fruit_and_vegetables
+          label1: fruit_and_vegetables

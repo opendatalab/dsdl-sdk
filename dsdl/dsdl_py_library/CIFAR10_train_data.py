@@ -18,6 +18,8 @@ class Cifar10ImageClassificationClassDom(Enum):
     truck = 10
 
 
-class Cifar10Sample(Struct):
+class TemplateClassification(Struct):
     image = ImageField()
     label = LabelField(dom=Cifar10ImageClassificationClassDom, optional=True)
+    confidence = NumField(optional=True)
+    attributes = DictField(optional=True)

@@ -1,7 +1,7 @@
 $dsdl-version: "0.5.0"
 $import:
-    - class_dom
-    - struct_sample
+    - class/imagenet-class-dom
+    - task/classification-template
 
 meta:
     name: "IMAGENET"
@@ -10,7 +10,7 @@ meta:
     subdata-name: "train"
 
 data:
-    sample-type: ImagenetSample[cdom=Ilsvrc2012ImagesClassificationClassDom]
+    sample-type: TemplateClassificationSample[cdom=Ilsvrc2012ImagesClassificationClassDom]
     samples:
         - image: "media/000000000005.JPEG"
           label: n02033041

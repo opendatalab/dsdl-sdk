@@ -6,18 +6,20 @@ from enum import Enum, unique
 
 @unique
 class MnistImageClassificationClassDom(Enum):
-    mnist_0 = 1
-    mnist_1 = 2
-    mnist_2 = 3
-    mnist_3 = 4
-    mnist_4 = 5
-    mnist_5 = 6
-    mnist_6 = 7
-    mnist_7 = 8
-    mnist_8 = 9
-    mnist_9 = 10
+    _0 = 1
+    _1 = 2
+    _2 = 3
+    _3 = 4
+    _4 = 5
+    _5 = 6
+    _6 = 7
+    _7 = 8
+    _8 = 9
+    _9 = 10
 
 
-class MnistSample(Struct):
+class TemplateClassification(Struct):
     image = ImageField()
     label = LabelField(dom=MnistImageClassificationClassDom, optional=True)
+    confidence = NumField(optional=True)
+    attributes = DictField(optional=True)
