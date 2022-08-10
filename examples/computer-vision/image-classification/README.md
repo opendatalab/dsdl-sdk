@@ -9,7 +9,7 @@ python setup.py install
 
 3. 执行代码 `dsdl_yaml_script`,该代码可以统一将tunas 0.3版本的数据集转换为dsdl所需的yaml文件
    ```bash
-   python dsdl_yaml_script.py -s "/Users/jiangyiying/sherry/tunas_data_demo/IMAGENET-tunas" -o "/Users/jiangyiying/sherry/tunas_data_demo/IMAGENET-tunas_dsdl/"
+   python dsdl_yaml_script.py -s "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR10-tunas" -o "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR10-tunas_dsdl/"
    ```
      每个参数的意义为：
 
@@ -22,5 +22,5 @@ python setup.py install
 
 2. 使用DSDL的parser生成demo中的`train_data.py`文件
 ```bash
-dsdl parse --yaml examples/computer-vision/image-classification/IMAGENET/train_data.yaml -p examples/computer-vision/image-classification/IMAGENET
+dsdl parse --yaml examples/computer-vision/image-classification/CIFAR10/train_data.yaml
 ```
