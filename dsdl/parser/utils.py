@@ -37,6 +37,12 @@ def add_key_value_2_struct_field(field: str, key, value):
 def sort_nx(
     dict_sort_key: Dict[str, List[str]],
 ) -> List:
+    """
+    利用有向图对嵌套结构进行排序
+    Args:
+        dict_sort_key： {当前节点：[父节点],...}
+    Returns: 排好序的节点的list，从父到子
+    """
     define_graph = nx.DiGraph()
     define_graph.add_nodes_from(dict_sort_key.keys())
     for key, val in dict_sort_key.items():
