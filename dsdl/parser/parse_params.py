@@ -15,7 +15,6 @@ class SingleStructParam:
 
 @dataclass()
 class StructParams:
-    # struct_name: str
     params_list: List[SingleStructParam] = field(default_factory=list)
 
 
@@ -44,10 +43,16 @@ class ParserParam:
 
     def _get_params(self, class_defi):
         self.general_param_map = defaultdict(SingleStructParam)
-        # 对class_defi循环，先拿到每个struct的params(self.general_param_map), 需要一个单独的循环，因为定义的顺序不一定
+        ###################################################################################
+        # 1。对class_defi循环，先拿到每个struct的params(self.general_param_map), 需要一个单独的循环，因为定义的顺序不一定
+        # 以白皮书实例演练：计算机视觉：带场景分类的目标检测为列：
         # 先得到self.general_param_map =
-        # {SceneAndObjectSample:{$parent = [], scenedom: None, objectdom: None},
-        # LocalObjectEntry:{$parent = [], cdom:None}}
+        # {SceneAndObjectSample:{struct_name: SceneAndObjectSample
+        #     params_dict: {scenedom: None, objectdom: None}
+        #     parents_struct: []},
+        # LocalObjectEntry:{struct_name: SceneAndObjectSample
+        #     cdom: {cdom: None}
+        #     parents_struct: []},}
         for define_name, define_value in class_defi.items():
             if "$def" in define_value and define_value["$def"] == "struct":
                 struct_params = define_value.get("$params", None)
@@ -57,9 +62,15 @@ class ParserParam:
                         params_dict={key: None for key in struct_params},
                     )
                     self.general_param_map[define_name] = temp
-        # 然后填充self.general_param_map =
-        # {SceneAndObjectSample:{$parent = [],scenedom: SceneDom, objectdom: ObjectDom},
-        # LocalObjectEntry:{$parent = [SceneAndObjectSample],cdom: $scenedom}}
+        ###################################################################################
+        # 2。然后填充`SingleStructParam`中的params_dict和parents_struct元素，
+        # self.general_param_map =
+        # {SceneAndObjectSample:{struct_name: SceneAndObjectSample
+        #     params_dict: {scenedom: SceneDom, objectdom: ObjectDom}
+        #     parents_struct: []},
+        # LocalObjectEntry:{struct_name: SceneAndObjectSample
+        #     cdom: {cdom: $scenedom}
+        #     parents_struct: [SceneAndObjectSample]},}
         if len(self.general_param_map) == 0:
             return None
         if len(self.general_param_map) == 1:
@@ -67,7 +78,9 @@ class ParserParam:
             temp_name = list(self.general_param_map.keys())[0]
             for key in temp_param_map.params_dict.keys():
                 try:
-                    self.general_param_map[temp_name].params_dict[key] = self.sample_param_map.params_dict[key]
+                    self.general_param_map[temp_name].params_dict[
+                        key
+                    ] = self.sample_param_map.params_dict[key]
                 except KeyError as e:
                     raise DefineSyntaxError(f"miss the params {e} in definition")
         else:
@@ -119,14 +132,24 @@ class ParserParam:
                                                 f"miss the params {e} in definition"
                                             )
                                     break
-
+            ###################################################################################
+            # 3。最后利用有向图对struct_name进行排序（父->子），本例中是[SceneAndObjectSample, LocalObjectEntry]
+            # sort_param_dict = {SceneAndObjectSample: [], LocalObjectEntry:[SceneAndObjectSample]}
             sort_param_dict = {}
             for key, val in self.general_param_map.items():
-                if len(val.parents_struct) > 1:
+                if len(val.parents_struct) > 1:  # 目前只能处理只有一个父节点的情况
                     raise DefineSyntaxError(f"error in definition")
                 else:
-                    sort_param_dict[key] = val.parents_struct  # {str: list[str]}
-            ordered_keys = sort_nx(sort_param_dict)
+                    sort_param_dict[key] = val.parents_struct  # {list[str]}
+            ordered_keys = sort_nx(sort_param_dict)  # 用有向图排序
+            # 对排序后的struct，按顺序填充参数的具体值，最后得到
+            # self.general_param_map =
+            # {SceneAndObjectSample:{struct_name: SceneAndObjectSample
+            #     params_dict: {scenedom: SceneDom, objectdom: ObjectDom}
+            #     parents_struct: []},
+            # LocalObjectEntry:{struct_name: SceneAndObjectSample
+            #     cdom: {cdom: ObjectDom}
+            #     parents_struct: [SceneAndObjectSample]},}
             for struct in ordered_keys[1:]:
                 parent_struct = self.general_param_map[struct].parents_struct
                 if not parent_struct:
