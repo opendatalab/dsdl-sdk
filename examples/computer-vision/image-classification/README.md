@@ -5,7 +5,7 @@
 python setup.py install
 ```
 
-2. 然后cd到工作路径：`<root>/examples/computer-vision/image-classification`(根据想演示的demo将?替换为1-3具体数字)
+2. 然后cd到工作路径：`<root>/examples/computer-vision/image-classification`
 
 3. 执行代码 `dsdl_yaml_script`,该代码可以统一将tunas 0.3版本的数据集转换为dsdl所需的yaml文件
    ```bash
