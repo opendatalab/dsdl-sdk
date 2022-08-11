@@ -47,7 +47,7 @@ def sort_nx(
     define_graph.add_nodes_from(dict_sort_key.keys())
     for key, val in dict_sort_key.items():
         for base in val:
-            for k in dict_sort_key.keys():  # MyEntry
+            for k in dict_sort_key.keys():
                 if k in base:
                     define_graph.add_edge(k, key)
     if not nx.is_directed_acyclic_graph(define_graph):
