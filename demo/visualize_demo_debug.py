@@ -1,5 +1,4 @@
 from dsdl.dataset import Dataset, ImageVisualizePipeline, Util
-
 import numpy as np
 from random import randint
 import cv2
@@ -14,12 +13,14 @@ def parse_args():
                         help="read from local or aliyun-OSS")
     parser.add_argument("-n", "--num", type=int, default=10, help="how many samples sampled from the dataset")
     parser.add_argument("-r", "--random", action="store_true", default=False, help="whether to sample randomly")
-    parser.add_argument("-v", "--visualize", action="store_true", default=False, help="whether to visualize the sample selected")
-    parser.add_argument("-f", "--fields", nargs="+", type=str, help="the fields to display")
+    parser.add_argument("-v", "--visualize", action="store_true", default=False,
+                        help="whether to visualize the sample selected")
+    parser.add_argument("-f", "--fields", nargs="*", type=str, help="the fields to display")
+    parser.add_argument("-t", "--task", type=str, help="the task to visualize")
     return parser.parse_args()
 
 
-def main(dsdl_yaml, config, num, random, visualize, field_list):
+def main(dsdl_yaml, config, num, random, visualize, field_list, task):
     dsdl_name = os.path.splitext(os.path.basename(dsdl_yaml))[0]
     exec(f"from {dsdl_name} import *")
     # 判断当前是读取本地文件还是阿里云OSS上的文件
@@ -29,10 +30,21 @@ def main(dsdl_yaml, config, num, random, visualize, field_list):
         from config import ali_oss_config as location_config
     dataset = Dataset(dsdl_yaml, location_config)
     palette = {}
-    field_list = [_.lower() for _ in field_list]
-    if "image" not in field_list:
-        field_list.append("image")
+    if task:
+        assert task in ["detection",
+                        "segmentation"], "invalid task, you can only choose in ['detection', 'segmentation']"
+        if task == "detection":
+            field_list = ["image", "bool", "label", "bbox"]
+        else:
+            field_list = ["image", "bool", "label"]
+    else:
+        if field_list is None:
+            field_list = []
+        field_list = list(set(field_list + ["image", "bool"]))
+        field_list = [_.lower() for _ in field_list]
+
     num = min(num, len(dataset))
+
     if not random:
         indices = list(range(num))
     else:
@@ -53,5 +65,5 @@ def main(dsdl_yaml, config, num, random, visualize, field_list):
 
 
 if __name__ == '__main__':
-
-    main("coco_demo.yaml", "ali-oss", 3, True, True, ["label", "bool"])
+    # args = parse_args()
+    main("coco_demo.yaml", "ali-oss", 5, True, True, ["label", "bool", "bbox"], None)
