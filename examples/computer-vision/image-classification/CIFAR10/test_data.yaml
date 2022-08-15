@@ -1,0 +1,54 @@
+$dsdl-version: "0.5.0"
+$import:
+    - class/cifar10-class-dom
+    - task/classification-template
+
+meta:
+    name: "CIFAR10"
+    creator: "MSRA"
+    dataset-version: "1.0.0"
+    subdata-name: "test"
+
+data:
+    sample-type: Cifar10Sample[cdom=Cifar10ImageClassificationClassDom]
+    samples:
+        - image: "media/000000000103.png"
+          label: airplane
+        - image: "media/000000000102.png"
+          label: ship
+        - image: "media/000000000100.png"
+          label: cat
+        - image: "media/000000000101.png"
+          label: ship
+        - image: "media/000000000104.png"
+          label: frog
+        - image: "media/000000000109.png"
+          label: cat
+        - image: "media/000000000106.png"
+          label: frog
+        - image: "media/000000000110.png"
+          label: automobile
+        - image: "media/000000000108.png"
+          label: airplane
+        - image: "media/000000000105.png"
+          label: automobile
+        - image: "media/000000000113.png"
+          label: dog
+        - image: "media/000000000107.png"
+          label: frog
+        - image: "media/000000000111.png"
+          label: truck
+        - image: "media/000000000112.png"
+          label: horse
+        - image: "media/000000000114.png"
+          label: truck
+        - image: "media/000000000116.png"
+          label: ship
+        - image: "media/000000000117.png"
+          label: horse
+        - image: "media/000000000118.png"
+          label: ship
+        - image: "media/000000000115.png"
+          label: dog
+        - image: "media/000000000119.png"
+          label: frog

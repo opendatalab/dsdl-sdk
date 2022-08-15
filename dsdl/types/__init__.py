@@ -9,6 +9,7 @@ from .special import (
     PolygonField,
     DateField,
     TimeField,
+    AttributesField,
 )
 from .unstructure import ImageField
 from .registry import registry
@@ -30,4 +31,5 @@ __all__ = [
     "DateField",
     "TimeField",
     "registry",
+    "AttributesField",
 ]
