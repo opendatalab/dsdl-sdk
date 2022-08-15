@@ -3,7 +3,7 @@ import numpy as np
 from PIL import ImageDraw, Image
 
 
-class Polygon:
+class PolygonItem:
 
     def __init__(
             self,
@@ -29,8 +29,38 @@ class Polygon:
         p = [int(_) for _ in p]
         return p
 
+    @property
+    def openmmlabformat(self) -> List[float]:
+        return self._flatten()
+
     def to_tuple(self):
         return tuple([(_[0], _[1]) for _ in self._data])
+
+    def _flatten(self) -> List[float]:
+        return [_ for point in self._data for _ in point]
+
+    def __repr__(self):
+        return str(self._data)
+
+
+class Polygon:
+
+    def __init__(self, polygons: List[PolygonItem]):
+        self._data = polygons
+
+    @property
+    def polygons(self):
+        return self._data
+
+    @property
+    def openmmlabformat(self) -> List[List[float]]:
+        return [_.openmmlabformat for _ in self._data]
+
+    @property
+    def point_for_draw(self) -> [int, int]:
+        p = min(self._data, key=lambda x: x.point_for_draw[0] + x.point_for_draw[1])
+        p = [int(_) for _ in p.point_for_draw]
+        return p
 
     def visualize(self, image, palette, **kwargs):
         color = (0, 255, 0)
@@ -43,7 +73,8 @@ class Polygon:
 
         poly = Image.new('RGBA', image.size[:2])
         pdraw = ImageDraw.Draw(poly)
-        pdraw.polygon(self.to_tuple(), fill=(*color, 127), outline=(*color, 255))
+        for polygon_item in self.polygons:
+            pdraw.polygon(polygon_item.to_tuple(), fill=(*color, 127), outline=(*color, 255))
         image.paste(poly, mask=poly)
         del pdraw
         return image

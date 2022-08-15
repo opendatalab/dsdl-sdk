@@ -26,9 +26,9 @@ class StructMetaclass(type):
 
 
 class Struct(dict, metaclass=StructMetaclass):
-    def __init__(self, dataset=None, **kwargs):
+    def __init__(self, file_reader=None, **kwargs):
         super().__init__()
-        self._dataset = dataset
+        self.file_reader = file_reader
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -44,8 +44,8 @@ class Struct(dict, metaclass=StructMetaclass):
             self[key] = value
             return
 
-        if hasattr(self.__mappings__[key], "set_dataset"):
-            self.__mappings__[key].set_dataset(self._dataset)
+        if hasattr(self.__mappings__[key], "set_file_reader"):
+            self.__mappings__[key].set_file_reader(self.file_reader)
         try:
             self[key] = self.__mappings__[key].validate(value)
         except ValidationError as error:
