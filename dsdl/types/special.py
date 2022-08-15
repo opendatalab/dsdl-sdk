@@ -1,6 +1,6 @@
 import re
 from .field import Field
-from ..geometry import BBox, Label, Polygon
+from ..geometry import BBox, Label, Polygon, PolygonItem
 from ..exception import ValidationError
 from ..warning import InvalidLabelWarning
 from datetime import date, time, datetime
@@ -44,9 +44,12 @@ class BBoxField(Field):
 
 class PolygonField(Field):
     def validate(self, value):
-        for idx, item in enumerate(value):
-            value[idx] = validate_list_of_number(item, 2, float)
-        return Polygon(value)
+        polygon_lst = []
+        for idx, points in enumerate(value):
+            for point in points:
+                validate_list_of_number(point, 2, float)
+            polygon_lst.append(PolygonItem(points))
+        return Polygon(polygon_lst)
 
 
 class LabelField(Field):
