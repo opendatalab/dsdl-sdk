@@ -19,6 +19,10 @@ class Label:
         return self._id
 
     @property
+    def openmmlabformat(self):
+        return self._name
+
+    @property
     def class_domain(self):
         return self._dom
 

@@ -7,6 +7,13 @@
 
 from setuptools import setup, find_packages
 
+
+def readme():
+    with open('README.md', encoding='utf-8') as f:
+        content = f.read()
+    return content
+
+
 version = {}
 with open("dsdl/__version__.py") as version_file:
     exec(version_file.read(), version)
@@ -15,6 +22,8 @@ setup(
     name="dsdl",
     version=version["__version__"],
     description="Python SDK for DSDL",
+    long_description=readme(),
+    long_description_content_type='text/markdown',
     author="DSDL team",
     author_email="dsdl-team@pjlab.org.cn",
     packages=find_packages(),

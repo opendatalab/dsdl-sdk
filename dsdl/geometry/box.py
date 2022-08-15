@@ -59,6 +59,9 @@ class BBox:
     @property
     def xywh(self) -> List[_ELE_TYPE]:
         return [self.xmin, self.ymin, self.width, self.height]
+    @property
+    def openmmlabformat(self) -> List[_ELE_TYPE]:
+        return [self.xmin, self.ymin, self.xmax, self.ymax]
 
     def to_int(self):
         self._data = [int(_) for _ in self._data]

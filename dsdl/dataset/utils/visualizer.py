@@ -23,7 +23,8 @@ class VisualizerUtil:
     @staticmethod
     def sort_field(field_lst):
         field_lst = list(field_lst)
-        field_order = {"bbox": 0, "polygon": 1, "label": 10, "others": -1}
+        # 定义画图时的先后顺序，数值越小的越先画
+        field_order = {"bbox": 1, "polygon": 0, "label": 10, "others": -1}
 
         field_lst = sorted(field_lst, key=lambda k: field_order.get(k, -1))
         return field_lst
