@@ -1,0 +1,214 @@
+$dsdl-version: "0.5.0"
+$import:
+    - class/cifar10-class-dom
+    - task/classification-template
+
+meta:
+    name: "CIFAR10"
+    creator: "MSRA"
+    dataset-version: "1.0.0"
+    subdata-name: "train"
+
+data:
+    sample-type: Cifar10Sample[cdom=Cifar10ImageClassificationClassDom]
+    samples:
+        - image: "media/000000000000.png"
+          label: truck
+        - image: "media/000000000002.png"
+          label: frog
+        - image: "media/000000000001.png"
+          label: cat
+        - image: "media/000000000006.png"
+          label: horse
+        - image: "media/000000000003.png"
+          label: truck
+        - image: "media/000000000008.png"
+          label: ship
+        - image: "media/000000000005.png"
+          label: bird
+        - image: "media/000000000004.png"
+          label: automobile
+        - image: "media/000000000009.png"
+          label: deer
+        - image: "media/000000000007.png"
+          label: automobile
+        - image: "media/000000000010.png"
+          label: deer
+        - image: "media/000000000018.png"
+          label: bird
+        - image: "media/000000000015.png"
+          label: truck
+        - image: "media/000000000013.png"
+          label: horse
+        - image: "media/000000000017.png"
+          label: truck
+        - image: "media/000000000011.png"
+          label: horse
+        - image: "media/000000000016.png"
+          label: cat
+        - image: "media/000000000014.png"
+          label: truck
+        - image: "media/000000000012.png"
+          label: bird
+        - image: "media/000000000020.png"
+          label: automobile
+        - image: "media/000000000022.png"
+          label: ship
+        - image: "media/000000000019.png"
+          label: frog
+        - image: "media/000000000024.png"
+          label: frog
+        - image: "media/000000000023.png"
+          label: ship
+        - image: "media/000000000021.png"
+          label: frog
+        - image: "media/000000000025.png"
+          label: cat
+        - image: "media/000000000028.png"
+          label: airplane
+        - image: "media/000000000029.png"
+          label: deer
+        - image: "media/000000000026.png"
+          label: frog
+        - image: "media/000000000027.png"
+          label: frog
+        - image: "media/000000000032.png"
+          label: airplane
+        - image: "media/000000000031.png"
+          label: cat
+        - image: "media/000000000033.png"
+          label: frog
+        - image: "media/000000000030.png"
+          label: frog
+        - image: "media/000000000035.png"
+          label: deer
+        - image: "media/000000000037.png"
+          label: cat
+        - image: "media/000000000036.png"
+          label: ship
+        - image: "media/000000000040.png"
+          label: ship
+        - image: "media/000000000041.png"
+          label: dog
+        - image: "media/000000000039.png"
+          label: frog
+        - image: "media/000000000042.png"
+          label: airplane
+        - image: "media/000000000034.png"
+          label: dog
+        - image: "media/000000000038.png"
+          label: bird
+        - image: "media/000000000044.png"
+          label: frog
+        - image: "media/000000000043.png"
+          label: truck
+        - image: "media/000000000045.png"
+          label: bird
+        - image: "media/000000000047.png"
+          label: frog
+        - image: "media/000000000046.png"
+          label: ship
+        - image: "media/000000000051.png"
+          label: horse
+        - image: "media/000000000049.png"
+          label: bird
+        - image: "media/000000000048.png"
+          label: deer
+        - image: "media/000000000050.png"
+          label: cat
+        - image: "media/000000000054.png"
+          label: airplane
+        - image: "media/000000000053.png"
+          label: truck
+        - image: "media/000000000052.png"
+          label: frog
+        - image: "media/000000000055.png"
+          label: horse
+        - image: "media/000000000058.png"
+          label: cat
+        - image: "media/000000000057.png"
+          label: horse
+        - image: "media/000000000059.png"
+          label: bird
+        - image: "media/000000000061.png"
+          label: airplane
+        - image: "media/000000000056.png"
+          label: airplane
+        - image: "media/000000000060.png"
+          label: frog
+        - image: "media/000000000062.png"
+          label: airplane
+        - image: "media/000000000064.png"
+          label: horse
+        - image: "media/000000000065.png"
+          label: bird
+        - image: "media/000000000063.png"
+          label: bird
+        - image: "media/000000000066.png"
+          label: automobile
+        - image: "media/000000000067.png"
+          label: deer
+        - image: "media/000000000069.png"
+          label: bird
+        - image: "media/000000000068.png"
+          label: automobile
+        - image: "media/000000000071.png"
+          label: frog
+        - image: "media/000000000075.png"
+          label: dog
+        - image: "media/000000000074.png"
+          label: cat
+        - image: "media/000000000076.png"
+          label: dog
+        - image: "media/000000000070.png"
+          label: dog
+        - image: "media/000000000072.png"
+          label: frog
+        - image: "media/000000000073.png"
+          label: automobile
+        - image: "media/000000000077.png"
+          label: cat
+        - image: "media/000000000078.png"
+          label: ship
+        - image: "media/000000000082.png"
+          label: horse
+        - image: "media/000000000079.png"
+          label: automobile
+        - image: "media/000000000081.png"
+          label: automobile
+        - image: "media/000000000085.png"
+          label: dog
+        - image: "media/000000000083.png"
+          label: dog
+        - image: "media/000000000080.png"
+          label: ship
+        - image: "media/000000000086.png"
+          label: deer
+        - image: "media/000000000088.png"
+          label: bird
+        - image: "media/000000000087.png"
+          label: ship
+        - image: "media/000000000092.png"
+          label: airplane
+        - image: "media/000000000091.png"
+          label: horse
+        - image: "media/000000000084.png"
+          label: automobile
+        - image: "media/000000000090.png"
+          label: cat
+        - image: "media/000000000089.png"
+          label: bird
+        - image: "media/000000000093.png"
+          label: automobile
+        - image: "media/000000000095.png"
+          label: truck
+        - image: "media/000000000096.png"
+          label: frog
+        - image: "media/000000000094.png"
+          label: dog
+        - image: "media/000000000098.png"
+          label: ship
+        - image: "media/000000000099.png"
+          label: airplane
+        - image: "media/000000000097.png"
+          label: bird
