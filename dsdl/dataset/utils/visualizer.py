@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from .parser import Parser
 from ...geometry import LabelList, BBox
+from copy import deepcopy
 
 
 class VisualizerUtil:
@@ -124,15 +125,15 @@ class ImageVisualizePipeline(VisualizerUtil):
     def __init__(self, field_list: List[str], sample, palette: Optional[Dict[str, Tuple]] = None):
         self.field_list = field_list
         self.palette = self.PALETTE
-        if palette:  # 如果用户自己定义了label调色盘，则更新默认的调色盘
-            self.palette.update(palette)
+        if palette is not None:  # 如果用户自己定义了label调色盘，则更新默认的调色盘
+            self.palette = palette
         if "image" not in field_list:  # 因为是imagevisualizer类，所以field_list中必须包含image字段
             raise ValueError("'image' field not found in the field list to be visualized.")
         self.data_dic = self.whole_pipeline(field_list, sample)
         self.visualize_result = self.group_media_and_ann()
 
     def group_media_and_ann(self):
-        data_dic = self.data_dic.copy()
+        data_dic = deepcopy(self.data_dic)
         image_dic = data_dic.pop("image")
         image_paths = list(image_dic.keys())
         # 将图像按照路径进行从长到短排序
