@@ -2,11 +2,11 @@ class ValidationError(RuntimeError):
     pass
 
 
-class StructHasDefinedError(RuntimeError):
+class ClassHasDefinedError(RuntimeError):
     pass
 
 
-class StructNotFoundError(RuntimeError):
+class ClassNotFoundError(RuntimeError):
     pass
 
 
@@ -16,3 +16,4 @@ class DefineSyntaxError(SyntaxError):
 
 class DefineTypeError(TypeError):
     pass
+

@@ -1,22 +1,50 @@
 import numpy as np
 from PIL import ImageFont, ImageDraw
+from ..types.registry import CLASSDOMAIN
 
 
 class Label:
+    def __init__(self, name, supercategories=(), domain_name=None):
+        self._name = name
+        self._supercategories = [_ for _ in supercategories if isinstance(_, Label)]
+        self._domain_name = domain_name
+        self._registry_name = f"{domain_name}__{name}"
 
-    def __init__(self, category_id, category_name, class_domain):
+    @property
+    def supercategories(self):
+        return self._supercategories
 
-        self._id = category_id
-        self._name = category_name
-        self._dom = class_domain
+    @property
+    def supercategories_names(self):
+        return [_.name for _ in self._supercategories]
+
+    @property
+    def parent_names(self):
+        return [_.name for _ in self._supercategories]
+
+    @property
+    def domain_name(self):
+        return self._domain_name
+
+    @property
+    def parents(self):
+        return self._supercategories
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def registry_name(self):
+        return self._registry_name
+
+    def set_domain(self, domain_name):
+        if self._domain_name is None:
+            self._domain_name = domain_name
 
     @property
     def category_name(self):
         return self._name
-
-    @property
-    def category_id(self):
-        return self._id
 
     @property
     def openmmlabformat(self):
@@ -24,7 +52,20 @@ class Label:
 
     @property
     def class_domain(self):
-        return self._dom
+        return CLASSDOMAIN.get(self.domain_name)
+
+    def __eq__(self, other):
+        if self.domain_name != other.domain_name:
+            return False
+        if self.name != other.name:
+            return False
+        if len(self.parents) != len(self.parents):
+            return False
+        for p1 in self.parents:
+            for p2 in other.parents:
+                if p1 != p2:
+                    return False
+        return True
 
     def visualize(self, image, palette, **kwargs):
         draw_obj = ImageDraw.Draw(image)
@@ -56,12 +97,12 @@ class LabelList:
         self._label_list = list(label_list)
 
     @property
-    def category_names(self):
+    def names(self):
         return [label.category_name for label in self._label_list]
 
     @property
-    def category_ids(self):
-        return [label.category_id for label in self._label_list]
+    def category_names(self):
+        return [label.category_name for label in self._label_list]
 
     @property
     def label_list(self):
