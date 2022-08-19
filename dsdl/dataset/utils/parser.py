@@ -10,6 +10,7 @@ class Parser:
     objects: []
     }
     """
+
     @staticmethod
     def flatten_sample(sample, field_name, parse_method=lambda _: _):
         result_dic = {}
@@ -32,20 +33,18 @@ class Parser:
                         Parser._helper(value, field_name, result_dic, prefix=k_, parse_method=parse_method)
 
         elif isinstance(sample, list):
-            for id, item in enumerate(sample):
-                k_ = f"{prefix}/{id}"
+            for id_, item in enumerate(sample):
+                k_ = f"{prefix}/{id_}"
                 Parser._helper(item, field_name, result_dic, prefix=k_, parse_method=parse_method)
 
 
 if __name__ == '__main__':
     sample = {
-        "$image": {"img2": None, "img1":None},
+        "$image": {"img2": None, "img1": None},
         "$list": {"objects": [{"$image": {"img1": None}, "$bbox": {"box": None}}],
-                  "object2": [{"$bbox":{"box":None}}, {"$bbox":{"box": 1}}], }
+                  "object2": [{"$bbox": {"box": None}}, {"$bbox": {"box": 1}}], }
     }
 
-
     from collections import defaultdict
+
     dic = defaultdict(defaultdict)
-
-

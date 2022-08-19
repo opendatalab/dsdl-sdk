@@ -1,8 +1,6 @@
-import re
 from .field import Field
-from ..geometry import BBox, Label, Polygon, PolygonItem
+from ..geometry import BBox, Polygon, PolygonItem
 from ..exception import ValidationError
-from ..warning import InvalidLabelWarning
 from datetime import date, time, datetime
 
 
@@ -53,33 +51,23 @@ class PolygonField(Field):
 
 
 class LabelField(Field):
-    def __init__(self, dom):
-        super(LabelField, self).__init__()
+    def __init__(self, dom, *args, **kwargs):
+        super(LabelField, self).__init__(*args, **kwargs)
         self.dom = dom
 
     def validate(self, value):
         try:
-            if isinstance(value, int):
-                category_name = self.dom(value).name
-                return Label(category_name=category_name, category_id=value, class_domain=self.dom)
-            elif isinstance(value, str):
-                category_id = getattr(self.dom, self.clean(value)).value
-                return Label(category_name=value, category_id=category_id, class_domain=self.dom)
+            if isinstance(value, (int, str)):
+                return self.dom.get_label(value)
             else:
                 raise TypeError("invalid class label type.")
         except:
-            InvalidLabelWarning(f"The label {value} is not valid.")
-            return Label(category_name="invalid", category_id=-1, class_domain=self.dom)
-
-    @staticmethod
-    def clean(varStr):
-        return re.sub('\W|^(?=\d)', '_', varStr).lower()
-
+            raise RuntimeError(f"The label {value} is not valid.")
 
 
 class DateField(Field):
-    def __init__(self, fmt: str = ""):
-        super(DateField, self).__init__()
+    def __init__(self, fmt: str = "", *args, **kwargs):
+        super(DateField, self).__init__(*args, **kwargs)
         self.fmt = fmt
 
     def validate(self, value):
@@ -89,8 +77,8 @@ class DateField(Field):
 
 
 class TimeField(Field):
-    def __init__(self, fmt: str = ""):
-        super(TimeField, self).__init__()
+    def __init__(self, fmt: str = "", *args, **kwargs):
+        super(TimeField, self).__init__(*args, **kwargs)
         self.fmt = fmt
 
     def validate(self, value):
@@ -98,11 +86,3 @@ class TimeField(Field):
             return time.fromisoformat(value)
         return datetime.strptime(value, self.fmt).time()
 
-
-class AttributesField(Field):
-    def __init__(self, content: Field):
-        super(AttributesField).__init__()
-        self._content_type = content
-
-    def validate(self, value):
-        return self._content_type.validate(value)

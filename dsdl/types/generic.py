@@ -35,11 +35,11 @@ class StrField(Field):
 
 
 class ListField(Field):
-    def __init__(self, ele_type, ordered=False):
+    def __init__(self, ele_type, ordered=False, *args, **kwargs):
         self.ordered = ordered
         self.ele_type = ele_type
         self.file_reader = None
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
     def validate(self, value):
         if hasattr(self.ele_type, "set_file_reader"):

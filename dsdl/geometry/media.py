@@ -23,4 +23,4 @@ class ImageMedia:
         return np.array(self.to_image())
 
     def __repr__(self):
-        return f"path:{self.location} size:{self.to_image().size}"
+        return f"path:{self.location}"

@@ -9,10 +9,10 @@ from .special import (
     PolygonField,
     DateField,
     TimeField,
-    AttributesField,
 )
 from .unstructure import ImageField
-from .registry import registry
+from .registry import STRUCT, CLASSDOMAIN, LABEL
+from .class_domain import ClassDomain
 
 __all__ = [
     "Struct",
@@ -30,6 +30,8 @@ __all__ = [
     "PolygonField",
     "DateField",
     "TimeField",
-    "registry",
-    "AttributesField",
+    "STRUCT",
+    "CLASSDOMAIN",
+    "ClassDomain",
+    "LABEL",
 ]

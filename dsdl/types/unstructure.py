@@ -14,8 +14,8 @@ class FileReader(object):
 
 
 class UnstructuredObjectField(Field):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._file_reader = None
 
     def set_file_reader(self, file_reader):
@@ -27,8 +27,8 @@ class UnstructuredObjectField(Field):
 
 
 class ImageField(UnstructuredObjectField):
-    def __init__(self):
-        super(ImageField, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(ImageField, self).__init__(*args, **kwargs)
 
     def validate(self, value):
         if isinstance(value, str):

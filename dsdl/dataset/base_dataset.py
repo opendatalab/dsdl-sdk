@@ -1,7 +1,7 @@
 import torch.utils.data
 from yaml import load as yaml_load
 from typing import Callable, Dict, Optional
-from ..types import Struct, registry
+from ..types import Struct, STRUCT
 from dsdl.dataset.utils import Util
 import dsdl.objectio as objectio
 
@@ -47,7 +47,7 @@ class Dataset(torch.utils.data.Dataset):
         with open(self.sample_file, "r") as f:
             data = yaml_load(f, Loader=YAMLSafeLoader)["data"]
             sample_type = Util.extract_sample_type(data["sample-type"])
-            cls = registry.get_struct(sample_type)
+            cls = STRUCT.get(sample_type)
             for item in data.items():
                 if item[0] == "samples":
                     for sample in item[1]:
@@ -56,13 +56,16 @@ class Dataset(torch.utils.data.Dataset):
 
     def _parse_struct(self, sample):
         if isinstance(sample, Struct):
-            data_item = {"$extra": {}}
+            data_item = {}
             struct_mapping = sample.get_mapping()
             for key in sample.keys():
-                if key.startswith("_"):
-                    continue
-                if key not in struct_mapping:
-                    data_item["$extra"][key] = sample[key]
+                if key.startswith("$"):  # attributes
+                    field_key = key
+                    key = key.replace("$", "")
+                    if field_key in data_item:
+                        data_item[field_key][key] = getattr(sample, field_key)
+                    else:
+                        data_item[field_key] = {key: getattr(sample, field_key)}
                 else:
                     field_key = Util.extract_key(struct_mapping[key])
                     if field_key in data_item:
