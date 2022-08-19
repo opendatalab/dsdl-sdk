@@ -2,7 +2,7 @@ from .utils import *
 from dsdl.exception import DefineSyntaxError
 from dataclasses import dataclass, field
 import re
-from typing import Optional
+from typing import Optional, Tuple
 
 
 @dataclass()
@@ -24,14 +24,15 @@ class EleClass:
 
 
 class ParserClass:
-    def __init__(self, class_name: str, class_value: List):
+    def __init__(self, class_name: str, class_value: List[str]):
         self.class_name, self.super_class_list = self._parse_class_name(
             raw_name=class_name
         )
         self.class_field_detail = self._parse_class_value(class_value=class_value)
         self.class_field = self._parse_super_categories()
 
-    def _parse_class_name(self, raw_name):
+    @staticmethod
+    def _parse_class_name(raw_name: str) -> Tuple[str, Optional[List[str]]]:
         super_class = re.findall(r"\[(.*)\]", raw_name)
         if len(super_class) >= 2:
             raise DefineSyntaxError(f"Error in definition of {raw_name} in DSDL.")
@@ -44,7 +45,7 @@ class ParserClass:
             super_class_list = super_class_list.strip().split(",")
         return class_name, super_class_list
 
-    def _parse_class_value(self, class_value):
+    def _parse_class_value(self, class_value: List[str]) -> List[EleClassDetail]:
         class_field = list()
         if self.super_class_list:
             for value in class_value:
@@ -75,7 +76,7 @@ class ParserClass:
                 class_field.append(ele_class)
         return class_field
 
-    def _parse_super_categories(self):
+    def _parse_super_categories(self) -> List[EleClass]:
         class_field = list()
         for ele in self.class_field_detail:
             ele_class = EleClass(label_value=ele.label_value)

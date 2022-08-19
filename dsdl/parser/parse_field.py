@@ -174,7 +174,7 @@ class ParserField:
             return raw_field_type + "()"
             # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
 
-    def pre_parse_struct_field(self, field_name, raw_field_type: str) -> str:
+    def pre_parse_struct_field(self, field_name: str, raw_field_type: str) -> str:
         raw_field_type = raw_field_type.replace(" ", "")
         fixed_params = re.findall(r"\[(.*)\]", raw_field_type)
         if len(fixed_params) >= 2:
@@ -187,9 +187,9 @@ class ParserField:
             k_v_list = k_v_list.split(",")
             other_filed = set()
             for k_v in k_v_list:
-                if k_v.startswith("is_attr="):
+                if k_v.startswith("is_attr=True"):
                     self.is_attr.add(field_name)
-                elif k_v.startswith("optional="):
+                elif k_v.startswith("optional=True"):
                     self.optional.add(field_name)
                 else:
                     other_filed.add(k_v)
