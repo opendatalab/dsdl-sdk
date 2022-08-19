@@ -19,7 +19,6 @@ from .commons import OptionEatAll
 @click.option("-f", "--fields", cls=OptionEatAll, type=str, help="the task to visualize")
 @click.option("-t", "--task", type=str, help="the task to visualize")
 def view(dsdl_yaml, config, location, num, random, visualize, fields, task):
-
     dsdl_py = os.path.splitext(dsdl_yaml)[0] + ".py"
     with open(dsdl_py, encoding='utf-8') as dsdl_file:
         exec(dsdl_file.read(), {})
