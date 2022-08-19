@@ -1,4 +1,4 @@
-from typing import Set, List, Dict
+from typing import Set, List, Dict, Optional
 from dataclasses import dataclass, field
 import re
 from dsdl.exception import DefineSyntaxError
@@ -18,30 +18,30 @@ class StructParams:
     params_list: List[SingleStructParam] = field(default_factory=list)
 
 
-def _parse_param_sample_type(raw: str):
-    """
-    raw: ObjectDetectionSample[cdom=COCOClassFullDom]
-    """
-    c_dom = re.findall(r"\[(.*)\]", raw)
-    if c_dom:
-        data_sample_type = raw.replace("[" + c_dom[0] + "]", "", 1).strip()
-        sample_param_map = SingleStructParam(struct_name=data_sample_type)
-        temp = c_dom[0].split(",")
-        for param in temp:
-            param = param.strip()
-            temp = param.split("=")
-            sample_param_map.params_dict.update({temp[0].strip(): temp[1].strip()})
-        return sample_param_map
-    else:
-        return None
-
-
 class ParserParam:
     def __init__(self, data_type, struct_defi):
-        self.sample_param_map = _parse_param_sample_type(raw=data_type)
+        self.sample_param_map = self._parse_param_sample_type(raw=data_type)
         self.general_param_map = self._get_params(class_defi=struct_defi)
 
-    def _get_params(self, class_defi):
+    @staticmethod
+    def _parse_param_sample_type(raw: str) -> Optional[SingleStructParam]:
+        """
+        raw: ObjectDetectionSample[cdom=COCOClassFullDom]
+        """
+        c_dom = re.findall(r"\[(.*)\]", raw)
+        if c_dom:
+            data_sample_type = raw.replace("[" + c_dom[0] + "]", "", 1).strip()
+            sample_param_map = SingleStructParam(struct_name=data_sample_type)
+            temp = c_dom[0].split(",")
+            for param in temp:
+                param = param.strip()
+                temp = param.split("=")
+                sample_param_map.params_dict.update({temp[0].strip(): temp[1].strip()})
+            return sample_param_map
+        else:
+            return None
+
+    def _get_params(self, class_defi: Dict[str, Dict]) -> Dict[str, SingleStructParam]:
         self.general_param_map = defaultdict(SingleStructParam)
         ###################################################################################
         # 1。对class_defi循环，先拿到每个struct的params(self.general_param_map), 需要一个单独的循环，因为定义的顺序不一定
@@ -172,7 +172,7 @@ class ParserParam:
                         ]
         return self.general_param_map
 
-    def validate_params(self, struct_params_field: Set, struct_name: str):
+    def validate_params(self, struct_params_field: Set, struct_name: str) -> Set:
         input_params = set(self.general_param_map[struct_name].params_dict.keys())
         if input_params != struct_params_field:
             raise DefineSyntaxError(
