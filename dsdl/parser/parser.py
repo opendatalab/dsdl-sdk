@@ -8,11 +8,12 @@ import os
 import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Set
+from typing import List, Set, Union
 from collections import defaultdict
 from .utils import *
 from .parse_params import ParserParam
-from .parse_field import ParserField
+from .parse_field import ParserField, EleStruct
+from .parse_class import ParserClass, EleClass
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -59,7 +60,7 @@ class TypeEnum(Enum):
 class StructORClassDomain:
     name: str
     type: TypeEnum = TypeEnum.STRUCT
-    field_list: List[Dict[str, str]] = field(default_factory=list)
+    field_list: List[Union[EleStruct, EleClass]] = field(default_factory=list)
 
 
 class DSDLParser(Parser):
@@ -67,7 +68,6 @@ class DSDLParser(Parser):
         self.define_map = defaultdict(StructORClassDomain)
         self.dsdl_version = None
         self.meta = dict()
-        self.field_parser = ParserField()
 
     def parse(self, data_file: str, library_path: str):
         """
@@ -129,7 +129,7 @@ class DSDLParser(Parser):
 
         # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
         for define_name, define_value in class_defi.items():
-            if not define_name.isidentifier():
+            if define_name.startswith("$"):
                 continue  # 类似$dsdl-version就会continue掉
             if define_name in self.define_map:
                 DuplicateDefineWarning(f"{define_name} has defined.")
@@ -141,8 +141,11 @@ class DSDLParser(Parser):
                 raise DefineSyntaxError(
                     f"{define_name} section must contains {e} sub-section"
                 )
-            define_info = StructORClassDomain(name=define_name)
+
+
             if define_type == "struct":
+                define_info = StructORClassDomain(name=define_name)
+                FIELD_PARSER = ParserField()
                 # 对class_defi中struct类型的ele做校验并存入define_info
                 define_info.type = TypeEnum.STRUCT
                 struct_params = define_value.get("$params", None)
@@ -158,33 +161,40 @@ class DSDLParser(Parser):
                             define_name
                         ].params_dict.items():
                             field_type = field_type.replace("$" + param, value)
-                    field_list[field_name] = {
-                        "name": field_name,
-                        "type": self.field_parser.parse_struct_field(field_type),
-                    }
+                    field_list[field_name] = EleStruct(
+                        name = field_name,
+                        type = FIELD_PARSER.pre_parse_struct_field(field_name, field_type),
+                    )
                 # $optional字段在$fields字段之后处理，因为需要判断optional里面的字段必须是field字段里面的filed_name
-                if "$optional" in define_value:
-                    for optional_name in define_value["$optional"]:
+                if "$optional" in define_value or FIELD_PARSER.optional:
+                    optional_set = set(define_value["$optional"]) | FIELD_PARSER.optional
+                    for optional_name in optional_set:
                         if optional_name in field_list:
-                            temp_type = field_list[optional_name]["type"]
+                            temp_type = field_list[optional_name].type
                             temp_type = add_key_value_2_struct_field(
                                 temp_type, "optional", True
                             )
-                            field_list[optional_name]["type"] = temp_type
+                            field_list[optional_name].type = temp_type
                         else:
                             raise DefineSyntaxError(f"{optional_name} is not in $field")
+                for attr_name in FIELD_PARSER.is_attr:
+                    temp_type = field_list[attr_name].type
+                    temp_type = add_key_value_2_struct_field(
+                        temp_type, "is_attr", True
+                    )
+                    field_list[attr_name].type = temp_type
+
                 # 得到处理好的struct的field字段
                 define_info.field_list = list(field_list.values())
 
-            if define_type == "class_domain":
+            elif define_type == "class_domain":
+                CLASS_PARSER = ParserClass(define_name, define_value["classes"])
+                define_info = StructORClassDomain(name=CLASS_PARSER.class_name)
                 # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
-                for class_name in define_value["classes"]:
-                    define_info.field_list.append(
-                        {
-                            "name": sanitize_variable_name(class_name),
-                        }
-                    )
+                define_info.field_list = CLASS_PARSER.class_field
+            else:
+                raise DefineSyntaxError(f"error type {define_type} in yaml, type must be class_dom or struct.")
 
             self.define_map[define_info.name] = define_info
 
@@ -200,7 +210,7 @@ class DSDLParser(Parser):
                 continue
             for field in val.field_list:
                 for k in self.define_map.keys():  # MyEntry
-                    if k in field["type"]:
+                    if k in field.type:
                         define_graph.add_edge(k, key)
         if not nx.is_directed_acyclic_graph(define_graph):
             raise "define cycle found."
@@ -216,13 +226,17 @@ class DSDLParser(Parser):
                 if val.type == TypeEnum.STRUCT:
                     print(f"class {key}(Struct):", file=of)
                     for field in val.field_list:
-                        print(f"""    {field["name"]} = {field["type"]}""", file=of)
+                        print(f"""    {field.name} = {field.type}""", file=of)
                 if val.type == TypeEnum.CLASS_DOMAIN:
-                    print("@unique", file=of)
-                    print(f"class {key}(Enum):", file=of)
-                    for class_id, item in enumerate(val.field_list, start=1):
-                        class_name = item["name"]
-                        print(f"""    {class_name.lower()} = {class_id}""", file=of)
+                    print(f"class {key}(ClassDomain):", file=of)
+                    print("    Classes = [", file=of)
+                    for ele_class in val.field_list:
+                        if ele_class.super_categories:
+                            temp = ", ".join(ele_class.super_categories)
+                            print(f"""        Label({ele_class.label_value}, supercategories=[{temp}]),""", file=of)
+                        else:
+                            print(f"""        Label({ele_class.label_value}),""", file=of)
+                    print("    ]", file=of)
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
 

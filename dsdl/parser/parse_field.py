@@ -1,5 +1,12 @@
 from dsdl.exception import DefineSyntaxError
 from .utils import *
+from dataclasses import dataclass, field
+
+
+@dataclass()
+class EleStruct:
+    name: str
+    type: str
 
 
 class ParserField:
@@ -15,10 +22,11 @@ class ParserField:
             "BBox",
             "Polygon",
             "Image",
-            "Dict",
         ]
         self.TYPES_WITH_PARS = ["Date", "Label", "Time"]
         self.TYPES_WITH_PARS_SP = ["List"]
+        self.is_attr = set()
+        self.optional = set()
 
     def parse_list_filed(self, raw: str) -> str:
         """
@@ -165,3 +173,31 @@ class ParserField:
                 ).strip()
             return raw_field_type + "()"
             # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
+
+    def pre_parse_struct_field(self, field_name, raw_field_type: str) -> str:
+        raw_field_type = raw_field_type.replace(" ", "")
+        fixed_params = re.findall(r"\[(.*)\]", raw_field_type)
+        if len(fixed_params) >= 2:
+            raise DefineSyntaxError(f"Error in definition of {raw_field_type} in DSDL.")
+        elif len(fixed_params) == 0:
+            field_type = self.parse_struct_field(raw_field_type=raw_field_type)
+        else:
+            k_v_list = fixed_params[0]
+            field_type = raw_field_type.replace("[" + k_v_list + "]", "")
+            k_v_list = k_v_list.split(",")
+            other_filed = set()
+            for k_v in k_v_list:
+                if k_v.startswith("is_attr="):
+                    self.is_attr.add(field_name)
+                elif k_v.startswith("optional="):
+                    self.optional.add(field_name)
+                else:
+                    other_filed.add(k_v)
+            if other_filed:
+                if field_type in self.TYPES_WITHOUT_PARS:
+                    raise DefineSyntaxError(
+                        f"Error in definition of {raw_field_type} in DSDL."
+                    )
+                field_type = field_type + "[" + ", ".join(other_filed) + "]"
+            field_type = self.parse_struct_field(raw_field_type=field_type)
+        return field_type
