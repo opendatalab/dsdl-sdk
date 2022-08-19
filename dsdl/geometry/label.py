@@ -8,7 +8,6 @@ class Label:
         self._name = name
         self._supercategories = [_ for _ in supercategories if isinstance(_, Label)]
         self._domain_name = domain_name
-        self._registry_name = f"{domain_name}__{name}"
 
     @property
     def supercategories(self):
@@ -36,7 +35,7 @@ class Label:
 
     @property
     def registry_name(self):
-        return self._registry_name
+        return f"{self._domain_name}__{self._name}"
 
     def set_domain(self, domain_name):
         if self._domain_name is None:
