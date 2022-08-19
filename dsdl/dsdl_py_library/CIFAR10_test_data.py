@@ -6,16 +6,16 @@ from enum import Enum, unique
 
 class Cifar10ImageClassificationClassDom(ClassDomain):
     Classes = [
-        Label(airplane),
-        Label(automobile),
-        Label(bird),
-        Label(cat),
-        Label(deer),
-        Label(dog),
-        Label(frog),
-        Label(horse),
-        Label(ship),
-        Label(truck),
+        Label("airplane"),
+        Label("automobile"),
+        Label("bird"),
+        Label("cat"),
+        Label("deer"),
+        Label("dog"),
+        Label("frog"),
+        Label("horse"),
+        Label("ship"),
+        Label("truck"),
     ]
 
 

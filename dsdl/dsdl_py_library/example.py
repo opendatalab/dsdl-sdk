@@ -6,26 +6,26 @@ from enum import Enum, unique
 
 class COCO2017ClassFatherDom(ClassDomain):
     Classes = [
-        Label(food),
-        Label(tool),
+        Label("food"),
+        Label("tool"),
     ]
 
 
 class COCO2017ClassFatherDom1(ClassDomain):
     Classes = [
-        Label(fruit, supercategories=[COCO2017ClassFatherDom.get_label("food")]),
-        Label(sports tool, supercategories=[COCO2017ClassFatherDom.get_label("tool")]),
+        Label("fruit", supercategories=[COCO2017ClassFatherDom.get_label("food")]),
+        Label("sports tool", supercategories=[COCO2017ClassFatherDom.get_label("tool")]),
     ]
 
 
 class COCO2017ClassDom(ClassDomain):
     Classes = [
-        Label(airplane, supercategories=[COCO2017ClassFatherDom1.get_label("sports tool")]),
-        Label(apple, supercategories=[COCO2017ClassFatherDom1.get_label("fruit")]),
-        Label(backpack, supercategories=[COCO2017ClassFatherDom1.get_label("")]),
-        Label(banana, supercategories=[COCO2017ClassFatherDom1.get_label("fruit")]),
-        Label(baseball bat, supercategories=[COCO2017ClassFatherDom1.get_label("sports tool")]),
-        Label(baseball glove, supercategories=[COCO2017ClassFatherDom1.get_label("sports tool")]),
+        Label("airplane", supercategories=[COCO2017ClassFatherDom1.get_label("sports tool")]),
+        Label("apple", supercategories=[COCO2017ClassFatherDom1.get_label("fruit")]),
+        Label("backpack", supercategories=[COCO2017ClassFatherDom1.get_label("")]),
+        Label("banana", supercategories=[COCO2017ClassFatherDom1.get_label("fruit")]),
+        Label("baseball bat", supercategories=[COCO2017ClassFatherDom1.get_label("sports tool")]),
+        Label("baseball glove", supercategories=[COCO2017ClassFatherDom1.get_label("sports tool")]),
     ]
 
 

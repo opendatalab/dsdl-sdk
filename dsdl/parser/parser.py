@@ -233,9 +233,9 @@ class DSDLParser(Parser):
                     for ele_class in val.field_list:
                         if ele_class.super_categories:
                             temp = ", ".join(ele_class.super_categories)
-                            print(f"""        Label({ele_class.label_value}, supercategories=[{temp}]),""", file=of)
+                            print(f"""        Label("{ele_class.label_value}", supercategories=[{temp}]),""", file=of)
                         else:
-                            print(f"""        Label({ele_class.label_value}),""", file=of)
+                            print(f"""        Label("{ele_class.label_value}"),""", file=of)
                     print("    ]", file=of)
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
