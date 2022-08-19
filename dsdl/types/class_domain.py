@@ -46,7 +46,7 @@ class ClassDomain(metaclass=ClassDomainMeta):
         elif isinstance(name, int):
             container = getattr(cls, "__list__")
             if 1 <= name <= len(container):
-                return [name-1]
+                return container[name-1]
             else:
                 raise IndexError(f"There are only {len(container)} categories in `{cls.__name__}` domain.")
         else:
