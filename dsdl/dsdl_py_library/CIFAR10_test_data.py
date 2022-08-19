@@ -4,26 +4,23 @@ from dsdl.types import *
 from enum import Enum, unique
 
 
-@unique
-class Cifar10ImageClassificationClassDom(Enum):
-    airplane = 1
-    automobile = 2
-    bird = 3
-    cat = 4
-    deer = 5
-    dog = 6
-    frog = 7
-    horse = 8
-    ship = 9
-    truck = 10
-
-
-class AttributeStruct(Struct):
-    is_crowd = BoolField()
+class Cifar10ImageClassificationClassDom(ClassDomain):
+    Classes = [
+        Label(airplane),
+        Label(automobile),
+        Label(bird),
+        Label(cat),
+        Label(deer),
+        Label(dog),
+        Label(frog),
+        Label(horse),
+        Label(ship),
+        Label(truck),
+    ]
 
 
 class TemplateClassification(Struct):
     image = ImageField()
     label = LabelField(dom=Cifar10ImageClassificationClassDom, optional=True)
     confidence = NumField(optional=True)
-    attributes = AttributeStruct(optional=True)
+    is_crowd = BoolField(optional=True, is_attr=True)
