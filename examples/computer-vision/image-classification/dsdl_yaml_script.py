@@ -7,9 +7,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 import itertools
-
-# from pydantic import BaseModel
-from typing import Set, List, Dict
+from typing import List, Dict
 
 
 @dataclass()
@@ -26,7 +24,6 @@ class EleClassDom:
     classes: Dict[int, str] = field(default_factory=dict)
     param: str = None
     label: str = None
-    # super_categories: Optional[List[SuperCategories]] = field(default_factory=list)
 
 
 TAB_SPACE = "    "
@@ -112,11 +109,15 @@ class ConvertV3toDsdlYaml:
                     dict_id_class[c["category_id"]] = self.clean(c["category_name"])
                     supercategories = c.get("supercategories", None)
                     if supercategories:
-                        super_cate_name = self.camel_case(task["name"])+"FatherDom"
+                        super_cate_name = self.camel_case(task["name"]) + "FatherDom"
                         self.class_dom[task["name"]].super_cate = super_cate_name
                         self.class_dom[task["name"]].super_cate_class += supercategories
-                        supercategories = ",".join([self.clean(i) for i in supercategories])
-                        dict_id_class[c["category_id"]] = self.clean(c["category_name"]) + "[" + supercategories + "]"
+                        supercategories = ",".join(
+                            [self.clean(i) for i in supercategories]
+                        )
+                        dict_id_class[c["category_id"]] = (
+                            self.clean(c["category_name"]) + "[" + supercategories + "]"
+                        )
                     self.class_dom[task["name"]].classes = dict_id_class
 
             else:
@@ -130,7 +131,7 @@ class ConvertV3toDsdlYaml:
         else:
             params = ["cdom" + str(i) for i in range(len(self.class_dom))]
             for name, param, i in zip(
-                    self.class_dom, params, range(len(self.class_dom))
+                self.class_dom, params, range(len(self.class_dom))
             ):
                 label = "label" + str(i)
                 # label_content = "Label[dom=" + param + "]"
@@ -210,8 +211,7 @@ class ConvertV3toDsdlYaml:
             fp.writelines("\n")
             fp.writelines("data:\n")
             cdom_temp = [
-                struct.param + "=" + struct.name
-                for struct in self.class_dom.values()
+                struct.param + "=" + struct.name for struct in self.class_dom.values()
             ]
             fp.writelines(
                 f"{TAB_SPACE}sample-type: {self.struct_sample_name}[{','.join(cdom_temp)}]\n"
@@ -256,15 +256,11 @@ class ConvertV3toDsdlYaml:
                 attributes = gt.get("attributes", None)
                 confidence = gt.get("confidence", None)
                 # eg. label: _9
-                file_point.writelines(
-                    f"{TAB_SPACE * 2}  {label}: {cls_name}\n"
-                )
+                file_point.writelines(f"{TAB_SPACE * 2}  {label}: {cls_name}\n")
                 # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
-                    file_point.writelines(
-                        f"{TAB_SPACE * 2}  attributes: \n"
-                    )
+                    file_point.writelines(f"{TAB_SPACE * 2}  attributes: \n")
                     for attribute_name, attribute_value in attributes.items():
                         file_point.writelines(
                             f"{TAB_SPACE * 3}  {attribute_name}: {attribute_value}\n"
@@ -278,7 +274,7 @@ class ConvertV3toDsdlYaml:
                         f"{TAB_SPACE * 2}  confidence: {confidence}\n"
                     )
                     self.confidence = confidence.__class__.__name__
-                    self.optional.add('confidence')
+                    self.optional.add("confidence")
 
             else:
                 pass
