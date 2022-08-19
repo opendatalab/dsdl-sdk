@@ -317,13 +317,13 @@ class ConvertV3toDsdlYaml:
 
 
 if __name__ == "__main__":
-    # args = parse_args()
-    # print(f"Called with args: \n{args}")
-    # src_file = args.src_dir
-    # out_file = args.out_dir
-    # print(f"your input source dictionary: {src_file}")
-    # print(f"your input destination dictionary: {out_file}")
-    src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
-    out_file = None
+    args = parse_args()
+    print(f"Called with args: \n{args}")
+    src_file = args.src_dir
+    out_file = args.out_dir
+    print(f"your input source dictionary: {src_file}")
+    print(f"your input destination dictionary: {out_file}")
+    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
+    # out_file = None
     v3toyaml = ConvertV3toDsdlYaml(src_file, out_file)
     v3toyaml.convert_pipeline()
