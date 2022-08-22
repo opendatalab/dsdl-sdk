@@ -20,6 +20,7 @@ from .commons import OptionEatAll
 @click.option("-t", "--task", type=str, help="the task to visualize")
 def view(dsdl_yaml, config, location, num, random, visualize, fields, task):
     dsdl_py = os.path.splitext(dsdl_yaml)[0] + ".py"
+    print(dsdl_py)
     with open(dsdl_py, encoding='utf-8') as dsdl_file:
         exec(dsdl_file.read(), {})
 
@@ -34,9 +35,9 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task):
         assert task in ["detection",
                         "segmentation"], "invalid task, you can only choose in ['detection', 'segmentation']"
         if task == "detection":
-            fields = ["image", "bool", "label", "bbox", "polygon"]
+            fields = ["image", "label", "bbox", "polygon", "attributes"]
         else:
-            fields = ["image", "bool", "label"]
+            fields = ["image", "label", "attributes"]
     else:
 
         if fields is None:
@@ -45,7 +46,7 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task):
             local_dic = {}
             exec(f"f = list({fields})", {}, local_dic)
             fields = local_dic['f']
-        fields = list(set(fields + ["image", "bool"]))
+        fields = list(set(fields + ["image", "attributes"]))
     fields = [_.lower() for _ in fields]
 
     num = min(num, len(dataset))
