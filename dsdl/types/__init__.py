@@ -12,7 +12,7 @@ from .special import (
 )
 from .unstructure import ImageField
 from .registry import STRUCT, CLASSDOMAIN, LABEL
-from .class_domain import ClassDomain
+from .class_domain import ClassDomain, Label
 
 __all__ = [
     "Struct",
@@ -34,4 +34,5 @@ __all__ = [
     "CLASSDOMAIN",
     "ClassDomain",
     "LABEL",
+    "Label",
 ]

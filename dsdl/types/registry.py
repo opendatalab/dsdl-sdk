@@ -34,7 +34,7 @@ class LabelRegistry:
     def registry(self, label):
         registry_name = label.registry_name
         if registry_name in self._labels:
-            raise ClassHasDefinedError
+            raise ClassHasDefinedError(f"The label {label.registry_name} has been registered.")
         self._labels[registry_name] = label
 
     def get(self, registry_name):
