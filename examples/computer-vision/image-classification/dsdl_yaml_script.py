@@ -11,11 +11,6 @@ from typing import List, Dict
 
 
 @dataclass()
-class SuperCategories:
-    classes: List[str] = field(default_factory=list)
-
-
-@dataclass()
 class EleClassDom:
     name: str
     super_cate: str = None
@@ -92,7 +87,6 @@ class ConvertV3toDsdlYaml:
             dataset_info = json.load(fp)
         self.dataset_name = dataset_info["dataset_name"]
         self.struct_sample_name = self.camel_case(self.dataset_name) + "Sample"
-        ann_id_gen = itertools.count()
         for task in dataset_info["tasks"]:
             if task["type"] == "classification":
                 dict_id_class = {}
@@ -151,7 +145,15 @@ class ConvertV3toDsdlYaml:
             fp.writelines('$dsdl-version: "0.5.0"\n')
             fp.writelines("\n")
             for struct in self.class_dom.values():
+                # if has supercategories, first write class_dom of super_categories
                 if struct.super_cate:
+                    fp.writelines(f"{struct.super_cate}:\n")
+                    fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
+                    fp.writelines(f"{TAB_SPACE}classes:\n")
+                    for super_name in struct.super_cate_class:
+                        fp.writelines(f"{TAB_SPACE * 2}- {super_name}\n")
+                    fp.writelines("\n")
+                    # then, write child_categories
                     fp.writelines(f"{struct.name}[{struct.super_cate}]:\n")
                 else:
                     fp.writelines(f"{struct.name}:\n")
