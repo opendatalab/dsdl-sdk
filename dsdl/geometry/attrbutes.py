@@ -10,6 +10,9 @@ class Attributes:
     def __getitem__(self, item):
         return self.container[item]
 
+    def __contains__(self, item):
+        return item in self.container
+
     def keys(self):
         return self.container.keys()
 
