@@ -5,9 +5,20 @@ import json
 import argparse
 import re
 from collections import defaultdict
+from dataclasses import dataclass, field
+import itertools
+from typing import List, Dict
 
-# from pydantic import BaseModel
-# from typing import Optional, List, Dict
+
+@dataclass()
+class EleClassDom:
+    name: str
+    super_cate: str = None
+    super_cate_class: List[str] = field(default_factory=list)
+    _def: str = "class_domain"
+    classes: Dict[int, str] = field(default_factory=dict)
+    param: str = None
+    label: str = None
 
 
 TAB_SPACE = "    "
@@ -21,7 +32,7 @@ def parse_args():
     parser.add_argument(
         "-s" "--src_dir",
         dest="src_dir",
-        help="source file path: eg./Users/jiangyiying/sherry/tunas_data_demo/MNIST-tunas",
+        help="source file path: eg./Users/jiangyiying/sherry/tunas_data_demo/CIFAR10-tunas",
         required=True,
         type=str,
     )
@@ -29,7 +40,7 @@ def parse_args():
         "-o" "--out_dir",
         dest="out_dir",
         default=None,
-        help="out file path: eg./Users/jiangyiying/sherry/tunas_data_demo/MNIST-dsdl",
+        help="out file path: eg./Users/jiangyiying/sherry/tunas_data_demo/CIFAR10-dsdl",
         type=str,
     )
 
@@ -55,12 +66,10 @@ class ConvertV3toDsdlYaml:
         self.output_path = output_path
         self.dataset_name = None
         self.struct_sample_name = None  # data里面的sample_type, 也是struct里面那个关键的Sample的名字
-        self.dataset_info = dict()
-        # 用来定义数据模型，就是.yaml的class_dom部分 {"name": struct_name: XXClassDom, "$def": struct_def, "classes":
-        # dict_id_class, "param": param, "label": label}
-        self.class_dom = dict()
+        # 用来定义数据模型，就是.yaml的class_dom部分 {"name": {struct_name: XXClassDom, "$def": struct_def, "classes":
+        # dict_id_class, "param": param, "label": label},...}
+        self.class_dom = defaultdict(EleClassDom)
         # 数据部分
-        self.sample = dict()
         self.sub_dataset_name = None
         self.attributes = dict()  # {attribute_name: type}
         self.confidence = None  # confidence_type
@@ -83,6 +92,10 @@ class ConvertV3toDsdlYaml:
                 dict_id_class = {}
                 struct_name = self.camel_case(task["name"]) + "ClassDom"
                 struct_def = "class_domain"
+                self.class_dom[task["name"]] = EleClassDom(
+                    name=struct_name,
+                    _def=struct_def,
+                )
                 for c in task["catalog"]:
                     # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
                     # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
@@ -90,31 +103,35 @@ class ConvertV3toDsdlYaml:
                     dict_id_class[c["category_id"]] = self.clean(c["category_name"])
                     supercategories = c.get("supercategories", None)
                     if supercategories:
-                        supercategories = ".".join([self.clean(i) for i in supercategories])
-                        dict_id_class[c["category_id"]] = self.clean(c["category_name"]) + "." + supercategories
-                self.class_dom[task["name"]] = {
-                    "name": struct_name,
-                    "$def": struct_def,
-                    "classes": dict_id_class,
-                }
+                        super_cate_name = self.camel_case(task["name"]) + "FatherDom"
+                        self.class_dom[task["name"]].super_cate = super_cate_name
+                        self.class_dom[task["name"]].super_cate_class += supercategories
+                        supercategories = ",".join(
+                            [self.clean(i) for i in supercategories]
+                        )
+                        dict_id_class[c["category_id"]] = (
+                            self.clean(c["category_name"]) + "[" + supercategories + "]"
+                        )
+                    self.class_dom[task["name"]].classes = dict_id_class
+
             else:
                 continue
 
         if len(self.class_dom) == 1:
-            self.class_dom[list(self.class_dom.keys())[0]]["param"] = "cdom"
-            self.class_dom[list(self.class_dom.keys())[0]]["label"] = "label"
+            self.class_dom[list(self.class_dom.keys())[0]].param = "cdom"
+            self.class_dom[list(self.class_dom.keys())[0]].label = "label"
             self.optional.add("label")
         # 需要考虑有多个任务的情况，也就是不止一个分类任务，这时候参数也不只cdom一个。。我们分别命名为cdom1, cdom2...
         else:
             params = ["cdom" + str(i) for i in range(len(self.class_dom))]
             for name, param, i in zip(
-                    self.class_dom, params, range(len(self.class_dom))
+                self.class_dom, params, range(len(self.class_dom))
             ):
                 label = "label" + str(i)
                 # label_content = "Label[dom=" + param + "]"
                 # fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
-                self.class_dom[name]["param"] = param
-                self.class_dom[name]["label"] = label
+                self.class_dom[name].param = param
+                self.class_dom[name].label = label
                 self.optional.add(label)
 
     def get_sample_data(self, file_name):
@@ -128,10 +145,21 @@ class ConvertV3toDsdlYaml:
             fp.writelines('$dsdl-version: "0.5.0"\n')
             fp.writelines("\n")
             for struct in self.class_dom.values():
-                fp.writelines(f"{struct['name']}:\n")
+                # if has supercategories, first write class_dom of super_categories
+                if struct.super_cate:
+                    fp.writelines(f"{struct.super_cate}:\n")
+                    fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
+                    fp.writelines(f"{TAB_SPACE}classes:\n")
+                    for super_name in struct.super_cate_class:
+                        fp.writelines(f"{TAB_SPACE * 2}- {super_name}\n")
+                    fp.writelines("\n")
+                    # then, write child_categories
+                    fp.writelines(f"{struct.name}[{struct.super_cate}]:\n")
+                else:
+                    fp.writelines(f"{struct.name}:\n")
                 fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
                 fp.writelines(f"{TAB_SPACE}classes:\n")
-                for class_name in struct["classes"].values():
+                for class_name in struct.classes.values():
                     fp.writelines(f"{TAB_SPACE * 2}- {class_name}\n")
                     # try:
                     #     int(class_name)
@@ -148,23 +176,22 @@ class ConvertV3toDsdlYaml:
             fp.writelines("\n")
             fp.writelines(f"{self.struct_sample_name}:\n")
             fp.writelines(f"{TAB_SPACE}$def: struct\n")
-            params = [i["param"] for i in self.class_dom.values()]
+            params = [i.param for i in self.class_dom.values()]
             fp.writelines(f"{TAB_SPACE}$params: {params}\n")
             # $field 部分
             fp.writelines(f"{TAB_SPACE}$fields: \n")
             fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
             for sample_struct in self.class_dom.values():
-                label = sample_struct["label"]
-                label_content = "Label[dom=$" + sample_struct["param"] + "]"
+                label = sample_struct.label
+                label_content = "Label[dom=$" + sample_struct.param + "]"
                 fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
-            # if self.attributes:
-            fp.writelines(f"{TAB_SPACE * 2}attributes: Dict\n")
-            # for attr_name, attr_type in self.attributes.items():
-            #     fp.writelines(
-            #         f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}\n"
-            #     )
-            # if self.confidence:
-            fp.writelines(f"{TAB_SPACE * 2}confidence: Num\n")
+            if self.attributes:
+                for attr_name, attr_type in self.attributes.items():
+                    fp.writelines(
+                        f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}[is_attr=True]\n"
+                    )
+            if self.confidence:
+                fp.writelines(f"{TAB_SPACE * 2}confidence: Num\n")
             # $optional 部分
             fp.writelines(f"{TAB_SPACE}$optional: {list(self.optional)}\n")
 
@@ -186,8 +213,7 @@ class ConvertV3toDsdlYaml:
             fp.writelines("\n")
             fp.writelines("data:\n")
             cdom_temp = [
-                struct["param"] + "=" + struct["name"]
-                for struct in self.class_dom.values()
+                struct.param + "=" + struct.name for struct in self.class_dom.values()
             ]
             fp.writelines(
                 f"{TAB_SPACE}sample-type: {self.struct_sample_name}[{','.join(cdom_temp)}]\n"
@@ -227,20 +253,16 @@ class ConvertV3toDsdlYaml:
             if gt["type"] == "classification":
                 name = gt["name"]
                 cls_id = gt["category_id"]
-                cls_name = self.class_dom[name]["classes"][cls_id]
-                label = self.class_dom[name]["label"]
+                cls_name = self.class_dom[name].classes[cls_id]
+                label = self.class_dom[name].label
                 attributes = gt.get("attributes", None)
                 confidence = gt.get("confidence", None)
                 # eg. label: _9
-                file_point.writelines(
-                    f"{TAB_SPACE * 2}  {label}: {cls_name}\n"
-                )
+                file_point.writelines(f"{TAB_SPACE * 2}  {label}: {cls_name}\n")
                 # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
-                    file_point.writelines(
-                        f"{TAB_SPACE * 2}  attributes: \n"
-                    )
+                    file_point.writelines(f"{TAB_SPACE * 2}  attributes: \n")
                     for attribute_name, attribute_value in attributes.items():
                         file_point.writelines(
                             f"{TAB_SPACE * 3}  {attribute_name}: {attribute_value}\n"
@@ -248,13 +270,13 @@ class ConvertV3toDsdlYaml:
                         self.attributes.update(
                             {attribute_name: attribute_value.__class__.__name__}
                         )
-                self.optional.add('attributes')
+                        self.optional.add(attribute_name)
                 if confidence:
                     file_point.writelines(
                         f"{TAB_SPACE * 2}  confidence: {confidence}\n"
                     )
                     self.confidence = confidence.__class__.__name__
-                self.optional.add('confidence')
+                    self.optional.add("confidence")
 
             else:
                 pass
