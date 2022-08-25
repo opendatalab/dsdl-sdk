@@ -292,7 +292,7 @@ class ConvertV3toDsdlYaml:
         file_name = os.path.join(self.dataset_path, "annotations", "json")
         file_list = os.listdir(path=file_name)
         # 1. generate data yaml file
-        import_file_list = ["class_dom", "struct_sample"]
+        import_file_list = ["class-dom", "struct"]
         for file in file_list:
             self.get_sample_data(os.path.join(file_name, file))
             out_file = os.path.join(
