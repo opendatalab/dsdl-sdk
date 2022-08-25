@@ -1,6 +1,6 @@
 from dsdl.exception import DefineSyntaxError
 from .utils import *
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass()
