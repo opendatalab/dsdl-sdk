@@ -45,9 +45,9 @@ class Parser(ABC):
         self.parse(data_file, library_path)
         self.generate(output_file)
         print(
-            f"Convert Yaml File to Python Code Successfully!\n \
-            Yaml file (source): {data_file}\n \
-            Output file (output): {output_file}"
+            f"Convert Yaml File to Python Code Successfully!\n"
+            f"Yaml file (source): {data_file}\n"
+            f"Output file (output): {output_file}"
         )
 
 
