@@ -150,7 +150,7 @@ class ConvertV3toDsdlYaml:
                     fp.writelines(f"{struct.super_cate}:\n")
                     fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
                     fp.writelines(f"{TAB_SPACE}classes:\n")
-                    for super_name in struct.super_cate_class:
+                    for super_name in set(struct.super_cate_class):
                         fp.writelines(f"{TAB_SPACE * 2}- {super_name}\n")
                     fp.writelines("\n")
                     # then, write child_categories
@@ -159,15 +159,8 @@ class ConvertV3toDsdlYaml:
                     fp.writelines(f"{struct.name}:\n")
                 fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
                 fp.writelines(f"{TAB_SPACE}classes:\n")
-                for class_name in struct.classes.values():
+                for class_name in set(struct.classes.values()):
                     fp.writelines(f"{TAB_SPACE * 2}- {class_name}\n")
-                    # try:
-                    #     int(class_name)
-                    #     fp.writelines(
-                    #         f"{TAB_SPACE * 2}- {self.dataset_name}_{class_name}\n"
-                    #     )
-                    # except ValueError:
-                    #     fp.writelines(f"{TAB_SPACE*2}- {class_name}\n")
                 fp.writelines("\n")
 
     def write_struct_yaml(self, out_file):
