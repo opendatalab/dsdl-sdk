@@ -38,7 +38,7 @@ class ParserClass:
             raise DefineSyntaxError(f"Error in definition of {raw_name} in DSDL.")
         elif len(super_class) == 0:
             class_name = raw_name
-            super_class_list = None
+            super_class_list = []
         else:
             super_class_list = super_class[0]
             class_name = raw_name.replace("[" + super_class_list + "]", "")

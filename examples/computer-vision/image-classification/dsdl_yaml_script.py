@@ -43,6 +43,14 @@ def parse_args():
         help="out file path: eg./Users/jiangyiying/sherry/tunas_data_demo/CIFAR10-dsdl",
         type=str,
     )
+    parser.add_argument(
+        "-c" "--unique_cate",
+        dest="unique_cate",
+        default="category_name",
+        help="use which field as unique category name, default is 'category_name', "
+             "if 'category_name' has duplicated value, you need to change it. Else leave it alone.",
+        type=str,
+    )
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -61,7 +69,7 @@ class ConvertV3toDsdlYaml:
         "bool": "Bool",
     }
 
-    def __init__(self, dataset_path, output_path=None):
+    def __init__(self, dataset_path, output_path=None, unique_cate="category_name"):
         self.dataset_path = dataset_path
         self.output_path = output_path
         self.dataset_name = None
@@ -100,7 +108,7 @@ class ConvertV3toDsdlYaml:
                     # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
                     # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
                     # 所以现在遇到这种情况我们统一将类别名变成'_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成'_0'...
-                    dict_id_class[c["category_id"]] = self.clean(c["category_name"])
+                    dict_id_class[c["category_id"]] = self.clean(c[unique_cate])
                     supercategories = c.get("supercategories", None)
                     if supercategories:
                         super_cate_name = self.camel_case(task["name"]) + "FatherDom"
@@ -110,7 +118,7 @@ class ConvertV3toDsdlYaml:
                             [self.clean(i) for i in supercategories]
                         )
                         dict_id_class[c["category_id"]] = (
-                            self.clean(c["category_name"]) + "[" + supercategories + "]"
+                            self.clean(c[unique_cate]) + "[" + supercategories + "]"
                         )
                     self.class_dom[task["name"]].classes = dict_id_class
 
@@ -150,7 +158,7 @@ class ConvertV3toDsdlYaml:
                     fp.writelines(f"{struct.super_cate}:\n")
                     fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
                     fp.writelines(f"{TAB_SPACE}classes:\n")
-                    for super_name in struct.super_cate_class:
+                    for super_name in set(struct.super_cate_class):
                         fp.writelines(f"{TAB_SPACE * 2}- {super_name}\n")
                     fp.writelines("\n")
                     # then, write child_categories
@@ -159,15 +167,8 @@ class ConvertV3toDsdlYaml:
                     fp.writelines(f"{struct.name}:\n")
                 fp.writelines(f"{TAB_SPACE}$def: class_domain\n")
                 fp.writelines(f"{TAB_SPACE}classes:\n")
-                for class_name in struct.classes.values():
+                for class_name in set(struct.classes.values()):
                     fp.writelines(f"{TAB_SPACE * 2}- {class_name}\n")
-                    # try:
-                    #     int(class_name)
-                    #     fp.writelines(
-                    #         f"{TAB_SPACE * 2}- {self.dataset_name}_{class_name}\n"
-                    #     )
-                    # except ValueError:
-                    #     fp.writelines(f"{TAB_SPACE*2}- {class_name}\n")
                 fp.writelines("\n")
 
     def write_struct_yaml(self, out_file):
@@ -319,9 +320,10 @@ if __name__ == "__main__":
     print(f"Called with args: \n{args}")
     src_file = args.src_dir
     out_file = args.out_dir
+    unique_cate = args.unique_cate
     print(f"your input source dictionary: {src_file}")
     print(f"your input destination dictionary: {out_file}")
     # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
     # out_file = None
-    v3toyaml = ConvertV3toDsdlYaml(src_file, out_file)
+    v3toyaml = ConvertV3toDsdlYaml(src_file, out_file, unique_cate)
     v3toyaml.convert_pipeline()

@@ -17,10 +17,26 @@ python setup.py install
    | ----- | ------| :----------------------------------------------------------- |
    | -s   | `--src_dir`  | tunas 0.3版本的文件的路径                                       |
    | -o   | `--out_dir` | 生成的yaml的根路径（可以不写，不写默认为和src_dir为同一个根目录但是文件夹名字加上后缀_dsdl） |
+   | -c   | `--unique_cate` | 这个参数一般不用管，除非你的数据集的category_name是有重复的（目前只有Imagenet是这样的， 所以Imagenet此处要）设置成`wordnet_id` |
 
    然后就会生成yaml文件。
 
-2. 使用DSDL的parser生成demo中的`train_data.py`文件
-```bash
-dsdl parse --yaml examples/computer-vision/image-classification/CIFAR10/train_data.yaml
-```
+4. 使用DSDL的parser生成demo中的`train_data.py`文件
+   ```bash
+   dsdl parse --yaml examples/computer-vision/image-classification/CIFAR10/train_data.yaml
+   ```
+   其他可以尝试的例子, eg：
+   ```bash
+   $ dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml
+   ```
+   ```bash
+   $ dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo2
+   ```
+   | 参数简写 | 参数全写  | 参数解释                                                  |
+   | ----- | ------| :----------------------------------------------------------- |
+   | -y   | `--yaml`  | 数据的yaml文件，一般是train.yaml、test.yaml                                     |
+   | -p   | `--path` | 其他yaml存放路径，默认的其他yaml存放路径是`dsdl/dsdl_library` |
+
+   注意:
+     - 我们只需要传入数据的yaml文件（如果数据和模型啥的都放一起那就传那个）就会生成在同一目录下的`.py`文件
+     - 如果不写`-p`,默认的其他yaml存放路径是`dsdl/dsdl_library`,所以不写`-p`请先把需要import的yaml放进`dsdl/dsdl_library`
