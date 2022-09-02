@@ -1,6 +1,6 @@
 from dsdl.exception import DefineSyntaxError
 from .utils import *
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass()
@@ -60,8 +60,12 @@ class ParserField:
 
         field_type = "List"
 
-        raw = rreplace(raw.replace(f"{field_type}[", "", 1), "]", "", 1)
-        param_list = raw.split(",")
+        raw = re.findall(r"\[(.*)\]", raw)
+        if not raw:
+            raise DefineSyntaxError("List must contains other data type")
+        if len(raw) > 1:
+            raise DefineSyntaxError("error writing in List definition")
+        param_list = raw[0].split(",")
         ele_type, ordered = None, None
         if len(param_list) == 2:
             ele_type = param_list[0]

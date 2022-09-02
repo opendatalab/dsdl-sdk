@@ -45,9 +45,9 @@ class Parser(ABC):
         self.parse(data_file, library_path)
         self.generate(output_file)
         print(
-            f"Convert Yaml File to Python Code Successfully!\n \
-            Yaml file (source): {data_file}\n \
-            Output file (output): {output_file}"
+            f"Convert Yaml File to Python Code Successfully!\n"
+            f"Yaml file (source): {data_file}\n"
+            f"Output file (output): {output_file}"
         )
 
 
@@ -61,6 +61,7 @@ class StructORClassDomain:
     name: str
     type: TypeEnum = TypeEnum.STRUCT
     field_list: List[Union[EleStruct, EleClass]] = field(default_factory=list)
+    parent: List[str] = None
 
 
 class DSDLParser(Parser):
@@ -142,7 +143,6 @@ class DSDLParser(Parser):
                     f"{define_name} section must contains {e} sub-section"
                 )
 
-
             if define_type == "struct":
                 define_info = StructORClassDomain(name=define_name)
                 FIELD_PARSER = ParserField()
@@ -162,12 +162,16 @@ class DSDLParser(Parser):
                         ].params_dict.items():
                             field_type = field_type.replace("$" + param, value)
                     field_list[field_name] = EleStruct(
-                        name = field_name,
-                        type = FIELD_PARSER.pre_parse_struct_field(field_name, field_type),
+                        name=field_name,
+                        type=FIELD_PARSER.pre_parse_struct_field(
+                            field_name, field_type
+                        ),
                     )
                 # $optional字段在$fields字段之后处理，因为需要判断optional里面的字段必须是field字段里面的filed_name
                 if "$optional" in define_value or FIELD_PARSER.optional:
-                    optional_set = set(define_value["$optional"]) | FIELD_PARSER.optional
+                    optional_set = (
+                        set(define_value["$optional"]) | FIELD_PARSER.optional
+                    )
                     for optional_name in optional_set:
                         if optional_name in field_list:
                             temp_type = field_list[optional_name].type
@@ -179,12 +183,14 @@ class DSDLParser(Parser):
                             raise DefineSyntaxError(f"{optional_name} is not in $field")
                 for attr_name in FIELD_PARSER.is_attr:
                     temp_type = field_list[attr_name].type
-                    temp_type = add_key_value_2_struct_field(
-                        temp_type, "is_attr", True
-                    )
+                    temp_type = add_key_value_2_struct_field(temp_type, "is_attr", True)
                     field_list[attr_name].type = temp_type
 
                 # 得到处理好的struct的field字段
+                if not field_list:
+                    raise DefineSyntaxError(
+                        "Struct must have fields more than or equal to 1"
+                    )
                 define_info.field_list = list(field_list.values())
 
             elif define_type == "class_domain":
@@ -193,8 +199,11 @@ class DSDLParser(Parser):
                 # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
                 define_info.field_list = CLASS_PARSER.class_field
+                define_info.parent = CLASS_PARSER.super_class_list
             else:
-                raise DefineSyntaxError(f"error type {define_type} in yaml, type must be class_dom or struct.")
+                raise DefineSyntaxError(
+                    f"error type {define_type} in yaml, type must be class_dom or struct."
+                )
 
             self.define_map[define_info.name] = define_info
 
@@ -206,12 +215,16 @@ class DSDLParser(Parser):
         define_graph = nx.DiGraph()
         define_graph.add_nodes_from(self.define_map.keys())
         for key, val in self.define_map.items():
-            if val.type != TypeEnum.STRUCT:
-                continue
-            for field in val.field_list:
-                for k in self.define_map.keys():  # MyEntry
-                    if k in field.type:
-                        define_graph.add_edge(k, key)
+            if val.type == TypeEnum.STRUCT:
+                for field_list in val.field_list:
+                    for k in self.define_map.keys():
+                        if k in field_list.type:
+                            define_graph.add_edge(k, key)
+            elif val.type == TypeEnum.CLASS_DOMAIN:
+                for field_list in val.parent:
+                    for k in self.define_map.keys():
+                        if k in field_list:
+                            define_graph.add_edge(k, key)
         if not nx.is_directed_acyclic_graph(define_graph):
             raise "define cycle found."
 
@@ -225,17 +238,23 @@ class DSDLParser(Parser):
                 val = self.define_map[key]
                 if val.type == TypeEnum.STRUCT:
                     print(f"class {key}(Struct):", file=of)
-                    for field in val.field_list:
-                        print(f"""    {field.name} = {field.type}""", file=of)
+                    for field_list in val.field_list:
+                        print(f"""    {field_list.name} = {field_list.type}""", file=of)
                 if val.type == TypeEnum.CLASS_DOMAIN:
                     print(f"class {key}(ClassDomain):", file=of)
                     print("    Classes = [", file=of)
                     for ele_class in val.field_list:
                         if ele_class.super_categories:
                             temp = ", ".join(ele_class.super_categories)
-                            print(f"""        Label("{ele_class.label_value}", supercategories=[{temp}]),""", file=of)
+                            print(
+                                f"""        Label("{ele_class.label_value}", supercategories=[{temp}]),""",
+                                file=of,
+                            )
                         else:
-                            print(f"""        Label("{ele_class.label_value}"),""", file=of)
+                            print(
+                                f"""        Label("{ele_class.label_value}"),""",
+                                file=of,
+                            )
                     print("    ]", file=of)
                 if idx != len(ordered_keys) - 1:
                     print("\n", file=of)
