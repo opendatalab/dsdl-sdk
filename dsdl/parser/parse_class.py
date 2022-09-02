@@ -59,10 +59,11 @@ class ParserClass:
                 for super_class_name, label_value in zip(
                     self.super_class_list, super_class_value
                 ):
-                    temp_super = SuperCategories(
-                        class_dom=super_class_name, label_value=label_value
-                    )
-                    ele_class.super_categories.append(temp_super)
+                    if label_value:
+                        temp_super = SuperCategories(
+                            class_dom=super_class_name, label_value=label_value
+                        )
+                        ele_class.super_categories.append(temp_super)
                 class_field.append(ele_class)
         else:
             for value in class_value:

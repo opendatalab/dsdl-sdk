@@ -6,7 +6,7 @@ import argparse
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
-import itertools
+import copy
 from typing import List, Dict
 
 
@@ -16,7 +16,8 @@ class EleClassDom:
     super_cate: str = None
     super_cate_class: List[str] = field(default_factory=list)
     _def: str = "class_domain"
-    classes: Dict[int, str] = field(default_factory=dict)
+    classes: Dict[int, str] = field(default_factory=dict)  # like {0: 'apple[fruit_and_vegetables]',...}
+    classes_raw: Dict[int, str] = field(default_factory=dict) # like {0: 'apple',...}
     param: str = None
     label: str = None
 
@@ -104,23 +105,27 @@ class ConvertV3toDsdlYaml:
                     name=struct_name,
                     _def=struct_def,
                 )
+                flag_super = False
+                for c in task["catalog"]:
+                    temp = True if c.get("supercategories", None) else False
+                    flag_super = (temp or flag_super)
                 for c in task["catalog"]:
                     # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
                     # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
                     # 所以现在遇到这种情况我们统一将类别名变成'_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成'_0'...
                     dict_id_class[c["category_id"]] = self.clean(c[unique_cate])
-                    supercategories = c.get("supercategories", None)
-                    if supercategories:
+                    self.class_dom[task["name"]].classes_raw[c["category_id"]] = self.clean(c[unique_cate])
+                    if flag_super:
+                        supercategories = c.get("supercategories", [])
+                        supercategories = [self.clean(i) for i in supercategories]
                         super_cate_name = self.camel_case(task["name"]) + "FatherDom"
                         self.class_dom[task["name"]].super_cate = super_cate_name
                         self.class_dom[task["name"]].super_cate_class += supercategories
-                        supercategories = ",".join(
-                            [self.clean(i) for i in supercategories]
-                        )
+                        supercategories = ",".join(supercategories)
                         dict_id_class[c["category_id"]] = (
                             self.clean(c[unique_cate]) + "[" + supercategories + "]"
                         )
-                    self.class_dom[task["name"]].classes = dict_id_class
+                self.class_dom[task["name"]].classes = copy.deepcopy(dict_id_class)
 
             else:
                 continue
@@ -254,7 +259,7 @@ class ConvertV3toDsdlYaml:
             if gt["type"] == "classification":
                 name = gt["name"]
                 cls_id = gt["category_id"]
-                cls_name = self.class_dom[name].classes[cls_id]
+                cls_name = self.class_dom[name].classes_raw[cls_id]
                 label = self.class_dom[name].label
                 attributes = gt.get("attributes", None)
                 confidence = gt.get("confidence", None)
@@ -316,14 +321,15 @@ class ConvertV3toDsdlYaml:
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    print(f"Called with args: \n{args}")
-    src_file = args.src_dir
-    out_file = args.out_dir
-    unique_cate = args.unique_cate
-    print(f"your input source dictionary: {src_file}")
-    print(f"your input destination dictionary: {out_file}")
-    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
-    # out_file = None
+    # args = parse_args()
+    # print(f"Called with args: \n{args}")
+    # src_file = args.src_dir
+    # out_file = args.out_dir
+    # unique_cate = args.unique_cate
+    # print(f"your input source dictionary: {src_file}")
+    # print(f"your input destination dictionary: {out_file}")
+    src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
+    out_file = None
+    unique_cate = "category_name"
     v3toyaml = ConvertV3toDsdlYaml(src_file, out_file, unique_cate)
     v3toyaml.convert_pipeline()
