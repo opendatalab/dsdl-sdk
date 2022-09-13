@@ -270,10 +270,9 @@ class ConvertV3toDsdlYaml:
                 # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
-                    file_point.writelines(f"{TAB_SPACE * 2}  attributes: \n")
                     for attribute_name, attribute_value in attributes.items():
                         file_point.writelines(
-                            f"{TAB_SPACE * 3}  {attribute_name}: {attribute_value}\n"
+                            f"{TAB_SPACE * 2}  {attribute_name}: {attribute_value}\n"
                         )
                         self.attributes.update(
                             {attribute_name: attribute_value.__class__.__name__}
