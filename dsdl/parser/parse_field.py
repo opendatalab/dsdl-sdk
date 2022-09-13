@@ -1,4 +1,4 @@
-from dsdl.exception import DefineSyntaxError
+from dsdl.exception import DefineSyntaxError, DefineTypeError
 from .utils import *
 from dataclasses import dataclass
 
@@ -10,7 +10,7 @@ class EleStruct:
 
 
 class ParserField:
-    def __init__(self):
+    def __init__(self, struct_name):
         self.TYPES_WITHOUT_PARS = [
             "Bool",
             "Num",
@@ -28,7 +28,7 @@ class ParserField:
         self.TYPES_LIST = ["List"]
         self.is_attr = set()
         self.optional = set()
-        self.struct = set()  # field 中包含的struct，后续校验用
+        self.struct = struct_name  # field 中包含的struct，后续校验用
 
     def parse_list_filed(self, raw: str) -> str:
         """
@@ -131,14 +131,21 @@ class ParserField:
                 raise DefineSyntaxError(f"invalid parameters {param} in {field_type}.")
 
             if field_para != "fmt":
-                raise DefineSyntaxError(f"invalid parameters {field_para} in {field_type}.")
+                raise DefineSyntaxError(
+                    f"invalid parameters {field_para} in {field_type}."
+                )
 
             if field_para in param_dict:
                 raise ValueError(f"duplicated param {param} in {field_type}.")
             else:
                 param_dict[field_para] = sanitize_fmt(field_var)
 
-        return field_type + "Field(" + ", ".join([f"{k}={v}" for k, v in param_dict.items()]) + ")"
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
 
     @staticmethod
     def parse_label_field(field_type: str, param_list: List[str]) -> str:
@@ -169,18 +176,27 @@ class ParserField:
                 field_para = "dom"
                 field_var = parts[0]
             else:
-                raise DefineSyntaxError(f"invalid parameters {param_list} in {field_type}.")
+                raise DefineSyntaxError(
+                    f"invalid parameters {param_list} in {field_type}."
+                )
             if field_para != "dom":
-                raise DefineSyntaxError(f"invalid parameters {field_para} in {field_type}.")
+                raise DefineSyntaxError(
+                    f"invalid parameters {field_para} in {field_type}."
+                )
 
             if field_para in param_dict:
                 raise ValueError(f"duplicated param {param} in {field_type}.")
             else:
                 param_dict[field_para] = sanitize_dom(field_var)
 
-        return field_type + "Field(" + ", ".join([f"{k}={v}" for k, v in param_dict.items()]) + ")"
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
 
-    def parse_struct_field(self, field_type: str, params_list: List[str] = None) -> str:
+    def parse_field(self, field_type: str, params_list: List[str] = None) -> str:
         """
         校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
             raw_field_type: like: Int, Image, Label[dom=MyClassDom], List[List[Int], ordered = True], ....
@@ -205,9 +221,9 @@ class ParserField:
             return self.parse_label_field(field_type, params_list)
         else:
             # Struct类型的字段的校验
-            self.struct.add(field_type)
+            if field_type not in self.struct:
+                raise DefineTypeError(f"No type {field_type} in DSDL.")
             return field_type + "()"
-            # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
 
     def pre_parse_struct_field(self, field_name: str, raw_field_type: str) -> str:
         # 将所有field可能都有的一些参数提取出来，类似is_attr、optional等
@@ -216,7 +232,7 @@ class ParserField:
         if len(fixed_params) >= 2:
             raise DefineSyntaxError(f"Error in definition of {raw_field_type} in DSDL.")
         elif len(fixed_params) == 0:
-            field_type = self.parse_struct_field(field_type=raw_field_type)
+            field_type = self.parse_field(field_type=raw_field_type)
         else:
             k_v_list = fixed_params[0]
             field_type = raw_field_type.replace("[" + k_v_list + "]", "")
@@ -232,5 +248,7 @@ class ParserField:
                         self.optional.add(field_name)
                 else:
                     other_filed.add(k_v)
-            field_type = self.parse_struct_field(field_type=field_type, params_list=list(other_filed))
+            field_type = self.parse_field(
+                field_type=field_type, params_list=list(other_filed)
+            )
         return field_type
