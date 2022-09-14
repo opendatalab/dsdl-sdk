@@ -8,7 +8,7 @@
 1. 安装DSDL sdk
 
 ```bash
-python setup.py install
+pip install dsdl
 ```
 
 2. 使用DSDL的parser生成demo3中的`data_samples.py`文件
@@ -19,8 +19,8 @@ dsdl parse --yaml examples/computer-vision/object-detection/VOC2012Detection/dem
 
 3. 在执行代码之前，需要代码做出一些修改，在`examples/computer-vision/object-detection/VOC2012Detection/demo3/config.py`中，需要修改其中的
 
-   1. `ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）
-   2. `coco_config`中的参数`working_dir`（本地数据所在的目录）
+   1. `ali_oss`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）
+   2. `local`中的参数`working_dir`（本地数据所在的目录）
 
 4. 执行命令：
 

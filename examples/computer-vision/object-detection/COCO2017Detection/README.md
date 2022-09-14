@@ -8,7 +8,7 @@
 
 1. 安装DSDL sdk
 ```bash
-python setup.py install
+pip install dsdl
 ```
 
 2. 使用DSDL的parser生成demo中的`coco_val_demo.py`文件
@@ -21,9 +21,9 @@ or (dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detectio
 
 3. 在执行代码之前，需要对文件定位符文件做出一些修改，`examples/computer-vision/object-detection/COCO2017Detection/demo?/config.py`（根据想演示的demo将?替换为1-3具体数字）中，需要修改其中的  
 
-   1. 本地读取：`local_config`中的参数`working_dir`  
+   1. 本地读取：`local`中的参数`working_dir`  
 
-   2. 阿里云OSS读取：`ali_oss_kwargs`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）  
+   2. 阿里云OSS读取：`ali_oss`中的参数（阿里云OSS的配置`access_key_secret`, `endpoint`, `access_key_id`；桶名称`bucket_name`，数据在桶中的目录`working_dir`）  
 
 4. 执行命令：
 
