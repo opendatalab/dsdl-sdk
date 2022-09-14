@@ -1,16 +1,13 @@
-from dsdl.objectio import LocalFileReader, AliOSSFileReader
-
-local_config = dict(
-    UnstructuredObjectFileReader=LocalFileReader(working_dir=""),
+local = dict(
+    type="LocalFileReader",
+    working_dir="",
 )
 
-ali_oss_kwargs = dict(access_key_secret="9Gh6sZIQGlNCrjrIxdJFfWqc78VceS",
-                      endpoint="http://oss-cn-shanghai.aliyuncs.com",
-                      access_key_id="LTAI5t7nbhDigaSxs1sGVer8",
-                      bucket_name="shlab-open",
-                      working_dir="PASCALVOC2012Detection/standard/0.3/")
-
-# 阿里云OSS读取的配置字典
-ali_oss_config = dict(
-    UnstructuredObjectFileReader=AliOSSFileReader(**ali_oss_kwargs)
-)
+# 阿里云OSS配置字典
+ali_oss = dict(
+    type="AliOSSFileReader",
+    access_key_secret="your secret key of aliyun oss",
+    endpoint="your endpoint of aliyun oss",
+    access_key_id="your access key of aliyun oss",
+    bucket_name="your bucket name of aliyun oss",
+    working_dir="the relative path of your media dir in the bucket")
