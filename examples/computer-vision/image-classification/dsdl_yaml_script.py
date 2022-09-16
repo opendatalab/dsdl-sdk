@@ -189,7 +189,7 @@ class ConvertV3toDsdlYaml:
             # $field 部分
             fp.writelines(f"{TAB_SPACE}$fields: \n")
             fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
-            fp.writelines(f"{TAB_SPACE * 2}image_tunas: Image\n")
+            fp.writelines(f"{TAB_SPACE * 2}source: Str[is_attr=True]\n")
             for sample_struct in self.class_dom.values():
                 label = sample_struct.label
                 label_content = "Label[dom=$" + sample_struct.param + "]"
@@ -249,13 +249,13 @@ class ConvertV3toDsdlYaml:
             },...]
         }
         """
-        image_path = sample["media"]["source"]
+        image_path = sample["media"]["path"]
         # eg. - image: "val/ILSVRC2012_val_00000034.JPEG"
         file_point.writelines(f'{TAB_SPACE * 2}- image: "{image_path}"\n')
 
-        image_path_tunas = sample["media"]["path"]
+        image_source = sample["media"]["source"]
         # eg. - image_tunas: "media/000000000007.png"
-        file_point.writelines(f'{TAB_SPACE * 2}- image_tunas: "{image_path_tunas}"\n')
+        file_point.writelines(f'{TAB_SPACE * 2}  source: "{image_source}"\n')
 
         if "ground_truth" in sample.keys():
             gts = sample["ground_truth"]
@@ -276,6 +276,7 @@ class ConvertV3toDsdlYaml:
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
                     for attribute_name, attribute_value in attributes.items():
+                        attribute_name = self.clean(attribute_name)
                         self.attributes.update(
                             {attribute_name: attribute_value.__class__.__name__}
                         )
@@ -339,7 +340,7 @@ if __name__ == "__main__":
     unique_cate = args.unique_cate
     print(f"your input source dictionary: {src_file}")
     print(f"your input destination dictionary: {out_file}")
-    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/CIFAR100-tunas"
+    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/ImageNet_O_tunas"
     # out_file = None
     # unique_cate = "category_name"
     v3toyaml = ConvertV3toDsdlYaml(src_file, out_file, unique_cate)

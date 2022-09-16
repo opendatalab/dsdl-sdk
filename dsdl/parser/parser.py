@@ -156,10 +156,14 @@ class DSDLParser(Parser):
                 # struct_params = self.validate_params(set(struct_params), define_name)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
-                    field_name = raw_field[0].replace(" ", "")
+                    field_name = raw_field[0]
                     field_type = raw_field[1].strip()
                     if not field_name.isidentifier():
-                        continue
+                        err = f"'{field_name}' must be a a valid identifier. " \
+                              f"Field name is considered a valid identifier if " \
+                              f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). " \
+                              f"A valid identifier cannot start with a number, or contain any spaces."
+                        raise DefineSyntaxError(err)
                     if struct_params:
                         for param, value in PARAMS.general_param_map[
                             define_name
