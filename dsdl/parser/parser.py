@@ -3,12 +3,10 @@ from abc import ABC, abstractmethod
 from yaml import load as yaml_load
 from dsdl.exception import DefineSyntaxError
 from dsdl.warning import DuplicateDefineWarning
-import networkx as nx
 import os
-import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Set, Union
+from typing import Union
 from collections import defaultdict
 from .utils import *
 from .parse_params import ParserParam
@@ -66,6 +64,7 @@ class StructORClassDomain:
 
 class DSDLParser(Parser):
     def __init__(self):
+        self.struct_name = set()
         self.define_map = defaultdict(StructORClassDomain)
         self.dsdl_version = None
         self.meta = dict()
@@ -124,38 +123,47 @@ class DSDLParser(Parser):
         # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
         class_defi.update(root_class_defi)
 
-        # self.general_param_map = self.get_params(class_defi)
         # 获取 self.data_sample_type和self.sample_param_map
         PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
-
-        # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
         for define_name, define_value in class_defi.items():
             if define_name.startswith("$"):
-                continue  # 类似$dsdl-version就会continue掉
-            if define_name in self.define_map:
-                DuplicateDefineWarning(f"{define_name} has defined.")
-
-            # 每个定义的数据结构里面必须有$def
+                continue
             try:
                 define_type = define_value["$def"]
             except KeyError as e:
                 raise DefineSyntaxError(
                     f"{define_name} section must contains {e} sub-section"
                 )
+            if define_type == "struct" or define_type == "class_domain":
+                if define_name in self.struct_name:
+                    raise DuplicateDefineWarning(f"{define_name} has defined.")
+                self.struct_name.add(define_name)
+
+        # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
+        for define_name, define_value in class_defi.items():
+            if define_name.startswith("$"):
+                continue  # 类似$dsdl-version就会continue掉
+
+            # 每个定义的数据结构里面必须有$def
+            define_type = define_value["$def"]
 
             if define_type == "struct":
                 define_info = StructORClassDomain(name=define_name)
-                FIELD_PARSER = ParserField()
-                # 对class_defi中struct类型的ele做校验并存入define_info
                 define_info.type = TypeEnum.STRUCT
+                FIELD_PARSER = ParserField(self.struct_name)
+                # 对class_defi中struct类型的ele做校验并存入define_info
                 struct_params = define_value.get("$params", None)
                 # struct_params = self.validate_params(set(struct_params), define_name)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
-                    field_name = raw_field[0].replace(" ", "")
-                    field_type = raw_field[1].replace(" ", "")
+                    field_name = raw_field[0].strip()
+                    field_type = raw_field[1].strip()
                     if not field_name.isidentifier():
-                        continue
+                        err = f"'{field_name}' must be a a valid identifier. " \
+                              f"Field name is considered a valid identifier if " \
+                              f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). " \
+                              f"A valid identifier cannot start with a number, or contain any spaces."
+                        raise DefineSyntaxError(err)
                     if struct_params:
                         for param, value in PARAMS.general_param_map[
                             define_name
@@ -173,6 +181,7 @@ class DSDLParser(Parser):
                         set(define_value["$optional"]) | FIELD_PARSER.optional
                     )
                     for optional_name in optional_set:
+                        optional_name = optional_name.strip()
                         if optional_name in field_list:
                             temp_type = field_list[optional_name].type
                             temp_type = add_key_value_2_struct_field(
