@@ -3,12 +3,10 @@ from abc import ABC, abstractmethod
 from yaml import load as yaml_load
 from dsdl.exception import DefineSyntaxError
 from dsdl.warning import DuplicateDefineWarning
-import networkx as nx
 import os
-import re
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Set, Union
+from typing import Union
 from collections import defaultdict
 from .utils import *
 from .parse_params import ParserParam
@@ -125,7 +123,6 @@ class DSDLParser(Parser):
         # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
         class_defi.update(root_class_defi)
 
-        # self.general_param_map = self.get_params(class_defi)
         # 获取 self.data_sample_type和self.sample_param_map
         PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
         for define_name, define_value in class_defi.items():
