@@ -156,7 +156,7 @@ class DSDLParser(Parser):
                 # struct_params = self.validate_params(set(struct_params), define_name)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
-                    field_name = raw_field[0]
+                    field_name = raw_field[0].strip()
                     field_type = raw_field[1].strip()
                     if not field_name.isidentifier():
                         err = f"'{field_name}' must be a a valid identifier. " \
@@ -181,6 +181,7 @@ class DSDLParser(Parser):
                         set(define_value["$optional"]) | FIELD_PARSER.optional
                     )
                     for optional_name in optional_set:
+                        optional_name = optional_name.strip()
                         if optional_name in field_list:
                             temp_type = field_list[optional_name].type
                             temp_type = add_key_value_2_struct_field(

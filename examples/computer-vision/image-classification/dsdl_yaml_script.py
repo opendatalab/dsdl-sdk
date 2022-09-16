@@ -340,8 +340,5 @@ if __name__ == "__main__":
     unique_cate = args.unique_cate
     print(f"your input source dictionary: {src_file}")
     print(f"your input destination dictionary: {out_file}")
-    # src_file = "/Users/jiangyiying/sherry/tunas_data_demo/ImageNet_O_tunas"
-    # out_file = None
-    # unique_cate = "category_name"
     v3toyaml = ConvertV3toDsdlYaml(src_file, out_file, unique_cate)
     v3toyaml.convert_pipeline()
