@@ -11,7 +11,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;
   </div>
   <div>&nbsp;</div>
-
+</div>
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl)](https://pypi.org/project/dsdl/)
 [![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl)
 [![docs](https://img.shields.io/badge/docs-latest-blue)](http://research.pages.shlab.tech/dataset_standard/dsdl-docs/)
