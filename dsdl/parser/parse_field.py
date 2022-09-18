@@ -1,4 +1,4 @@
-from dsdl.exception import DefineSyntaxError
+from dsdl.exception import DefineSyntaxError, DefineTypeError
 from .utils import *
 from dataclasses import dataclass
 
@@ -10,7 +10,7 @@ class EleStruct:
 
 
 class ParserField:
-    def __init__(self):
+    def __init__(self, struct_name):
         self.TYPES_WITHOUT_PARS = [
             "Bool",
             "Num",
@@ -23,10 +23,12 @@ class ParserField:
             "Polygon",
             "Image",
         ]
-        self.TYPES_WITH_PARS = ["Date", "Label", "Time"]
-        self.TYPES_WITH_PARS_SP = ["List"]
+        self.TYPES_TIME = ["Date", "Time"]
+        self.TYPES_LABEL = ["Label"]
+        self.TYPES_LIST = ["List"]
         self.is_attr = set()
         self.optional = set()
+        self.struct = struct_name  # field 中包含的struct，后续校验用
 
     def parse_list_filed(self, raw: str) -> str:
         """
@@ -101,9 +103,54 @@ class ParserField:
         return res + ")"
 
     @staticmethod
-    def parse_struct_field_with_params(raw: str) -> str:
+    def parse_time_field(field_type: str, param_list: List[str]) -> str:
         """
-        解析处理Label, Time, Date类型的field
+        解析处理Time, Date类型的field
+        """
+
+        def sanitize_fmt(val: str) -> str:
+            """
+            Date, Time中对ftm部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            val = val.strip("\"'")
+            return f'"{val}"'
+
+        param_dict = dict()
+        for param in param_list:
+            parts = param.split("=")
+            parts = [i.strip() for i in parts]
+            # 需要考虑参数省略的情况，因为dom经常省略
+            if len(parts) == 2:
+                field_para = parts[0]
+                field_var = parts[1]
+            elif len(parts) == 1:
+                field_para = "fmt"
+                field_var = parts[0]
+            else:
+                raise DefineSyntaxError(f"invalid parameters {param} in {field_type}.")
+
+            if field_para != "fmt":
+                raise DefineSyntaxError(
+                    f"invalid parameters {field_para} in {field_type}."
+                )
+
+            if field_para in param_dict:
+                raise ValueError(f"duplicated param {param} in {field_type}.")
+            else:
+                param_dict[field_para] = sanitize_fmt(field_var)
+
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
+
+    @staticmethod
+    def parse_label_field(field_type: str, param_list: List[str]) -> str:
+        """
+        解析处理Label类型的field
         """
 
         def sanitize_dom(val: str) -> str:
@@ -115,93 +162,93 @@ class ParserField:
                 raise DefineSyntaxError(f"invalid dom: {val}")
             return val
 
-        def sanitize_fmt(val: str) -> str:
-            """
-            Date, Time中对ftm部分的校验，是用来严格限制特定格式或者字符。
-            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
-            """
-            val = val.strip("\"'")
-            return f'"{val}"'
-
-        field_map = {
-            "Label": {"dom": sanitize_dom},
-            "Date": {"fmt": sanitize_fmt},
-            "Time": {"fmt": sanitize_fmt},
-        }
-        field_type = ""
-        for k in field_map.keys():
-            if raw.startswith(k):
-                field_type = k
-        if field_type == "":
-            raise "Unknown field"
-
-        raw = raw.replace(f"{field_type}[", "").replace("]", "")
-        param_list = raw.split(",")
-        valid_param_list = []
+        param_dict = dict()
+        if not param_list:
+            raise DefineSyntaxError(f"{field_type} must contains parameter `dom`")
         for param in param_list:
             parts = param.split("=")
+            parts = [i.strip() for i in parts]
             # 需要考虑参数省略的情况，因为dom经常省略
             if len(parts) == 2:
                 field_para = parts[0]
                 field_var = parts[1]
             elif len(parts) == 1:
-                field_para = next(iter(field_map[field_type]))
+                field_para = "dom"
                 field_var = parts[0]
             else:
-                raise DefineSyntaxError(f"invalid parameters {raw} in List.")
-            sanitized = field_map[field_type][field_para](field_var)
-            valid_param_list.append(f"{field_para}={sanitized}")
-        return field_type + "Field(" + ", ".join(valid_param_list) + ")"
+                raise DefineSyntaxError(
+                    f"invalid parameters {param_list} in {field_type}."
+                )
+            if field_para != "dom":
+                raise DefineSyntaxError(
+                    f"invalid parameters {field_para} in {field_type}."
+                )
 
-    def parse_struct_field(self, raw_field_type: str) -> str:
+            if field_para in param_dict:
+                raise ValueError(f"duplicated param {param} in {field_type}.")
+            else:
+                param_dict[field_para] = sanitize_dom(field_var)
+
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
+
+    def parse_field(self, field_type: str, params_list: List[str] = None) -> str:
         """
         校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
             raw_field_type: like: Int, Image, Label[dom=MyClassDom], List[List[Int], ordered = True], ....
         """
-        if raw_field_type in self.TYPES_WITHOUT_PARS:
+        if field_type in self.TYPES_WITHOUT_PARS:
             # 不带参数的不需要校验，直接可以转化为python代码（注意区分yaml中的模型部分到ORM的校验和通过ORM读入数据的校验，
             # 后者在dataset.py中定义，你脑子里想的Int也需要校验是数据的校验。）
-            return raw_field_type + "Field()"
-        elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS_SP)):
-            # 带参数的Date, Time, Label类型的字段的校验
-            return self.parse_list_filed(raw_field_type)
-        elif raw_field_type.startswith(tuple(self.TYPES_WITH_PARS)):
+            if params_list:
+                raise DefineSyntaxError(f"{field_type} should not contains parameters.")
+            return field_type + "Field()"
+        elif field_type in self.TYPES_LIST:
             # 带参数的List类型的字段的校验
             # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
-            return self.parse_struct_field_with_params(raw_field_type)
+            if params_list:
+                raise DefineSyntaxError(f"{field_type} must contains parameters.")
+            return self.parse_list_filed(field_type)
+        elif field_type in self.TYPES_TIME:
+            # 带参数的Date, Time类型的字段的校验
+            return self.parse_time_field(field_type, params_list)
+        elif field_type in self.TYPES_LABEL:
+            # 带参数的Label类型的字段的校验
+            return self.parse_label_field(field_type, params_list)
         else:
-            c_dom = re.findall(r"\[(.*)\]", raw_field_type)
-            if c_dom:
-                raw_field_type = raw_field_type.replace(
-                    "[" + c_dom[0] + "]", "", 1
-                ).strip()
-            return raw_field_type + "()"
-            # raise DefineTypeError(f"No type {raw_field_type} in DSDL.")
+            # Struct类型的字段的校验
+            if field_type not in self.struct:
+                raise DefineTypeError(f"No type {field_type} in DSDL.")
+            return field_type + "()"
 
     def pre_parse_struct_field(self, field_name: str, raw_field_type: str) -> str:
-        raw_field_type = raw_field_type.replace(" ", "")
+        # 将所有field可能都有的一些参数提取出来，类似is_attr、optional等
+        raw_field_type = raw_field_type.strip()
         fixed_params = re.findall(r"\[(.*)\]", raw_field_type)
         if len(fixed_params) >= 2:
             raise DefineSyntaxError(f"Error in definition of {raw_field_type} in DSDL.")
         elif len(fixed_params) == 0:
-            field_type = self.parse_struct_field(raw_field_type=raw_field_type)
+            field_type = self.parse_field(field_type=raw_field_type)
         else:
             k_v_list = fixed_params[0]
             field_type = raw_field_type.replace("[" + k_v_list + "]", "")
             k_v_list = k_v_list.split(",")
+            k_v_list = [i.strip() for i in k_v_list]
             other_filed = set()
             for k_v in k_v_list:
-                if k_v.startswith("is_attr=True"):
-                    self.is_attr.add(field_name)
-                elif k_v.startswith("optional=True"):
-                    self.optional.add(field_name)
+                if k_v.startswith("is_attr"):
+                    if k_v.endswith("=True"):
+                        self.is_attr.add(field_name)
+                elif k_v.startswith("optional"):
+                    if k_v.endswith("=True"):
+                        self.optional.add(field_name)
                 else:
                     other_filed.add(k_v)
-            if other_filed:
-                if field_type in self.TYPES_WITHOUT_PARS:
-                    raise DefineSyntaxError(
-                        f"Error in definition of {raw_field_type} in DSDL."
-                    )
-                field_type = field_type + "[" + ", ".join(other_filed) + "]"
-            field_type = self.parse_struct_field(raw_field_type=field_type)
+            field_type = self.parse_field(
+                field_type=field_type, params_list=list(other_filed)
+            )
         return field_type
