@@ -12,11 +12,11 @@
   </div>
   <div>&nbsp;</div>
 </div>
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl)](https://pypi.org/project/dsdl/)
-[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl)
-[![docs](https://img.shields.io/badge/docs-latest-blue)](http://research.pages.shlab.tech/dataset_standard/dsdl-docs/)
 
-[📘使用文档](http://research.pages.shlab.tech/dataset_standard/dsdl-docs/) |
+
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)
+
+[📘使用文档](https://opendatalab.github.io/dsdl-docs/) |
 
 ## 简介
 
@@ -121,7 +121,7 @@ ali_oss = dict(
 
 ## 开源许可证
 
-`DSDL` 目前以 Apache 2.0 的许可证发布，但是其中有一部分功能并不是使用的 Apache2.0 许可证，我们在 [许可证](LICENSES.md) 中详细地列出了这些功能以及他们对应的许可证，如果您正在从事盈利性活动，请谨慎参考此文档。
+`DSDL` 采用 [Apache 2.0 开源许可证](LICENSE)。
 
 ## 声明
 
