@@ -1,4 +1,5 @@
-from ..exception import ClassHasDefinedError, ClassNotFoundError
+from ..exception import ClassNotFoundError
+from ..warning import ClassHasDefinedWarning
 
 
 class Registry:
@@ -14,12 +15,13 @@ class Registry:
         # NOTICE: Since this method is called when models are imported,
         # it cannot perform imports because of the risk of import loops.
         if name in self._map:
-            raise ClassHasDefinedError
+            # raise ClassHasDefinedError
+            ClassHasDefinedWarning(f"Class '{name}' has been registered, it will be replaced by this updated one.")
         self._map[name] = cls
 
     def get(self, name):
         if name not in self._map:
-            raise ClassNotFoundError
+            raise ClassNotFoundError(f"Class '{name}' is not defined.")
         return self._map[name]
 
 
@@ -34,7 +36,9 @@ class LabelRegistry:
     def registry(self, label):
         registry_name = label.registry_name
         if registry_name in self._labels:
-            raise ClassHasDefinedError(f"The label {label.registry_name} has been registered.")
+            # raise ClassHasDefinedError(f"The label {label.registry_name} has been registered.")
+            ClassHasDefinedWarning(
+                f"The label {label.registry_name} has been registered, it will be replaced bt this updated one.")
         self._labels[registry_name] = label
 
     def get(self, registry_name):

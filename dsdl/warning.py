@@ -8,3 +8,7 @@ class InvalidLabelWarning(SyntaxWarning):
 
 class FieldNotFoundWarning(SyntaxWarning):
     pass
+
+
+class ClassHasDefinedWarning(SyntaxWarning):
+    pass
