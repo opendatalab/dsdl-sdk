@@ -26,20 +26,21 @@ class ParserField:
         self.TYPES_TIME = ["Date", "Time"]
         self.TYPES_LABEL = ["Label"]
         self.TYPES_LIST = ["List"]
+        self.TYPES_ALL = self.TYPES_WITHOUT_PARS + self.TYPES_TIME + self.TYPES_LABEL + self.TYPES_LIST
         self.is_attr = set()
         self.optional = set()
         self.struct = struct_name  # field 中包含的struct，后续校验用
 
-    def parse_list_filed(self, raw: str) -> str:
+    def parse_list_filed(self, field_name: str, field_type: str, param_list: List[str]) -> str:
         """
         解析处理List类型的field
         """
 
-        def sanitize_etype(val: str) -> str:
+        def sanitize_etype(field_name, val: str) -> str:
             """
             验证List类型中的etype是否存在（必须存在）且是否为合法类型
             """
-            return self.parse_struct_field(val)
+            return self.pre_parse_struct_field(field_name, val)
 
         def all_subclasses(cls):
             """
@@ -57,42 +58,33 @@ class ParserField:
                     return "False"
             else:
                 raise DefineSyntaxError(
-                    f"invalid value {val} in ordered of List {raw}."
+                    f"invalid value {val} in ordered of List {field_name}."
                 )
 
         field_type = "List"
 
-        raw = re.findall(r"\[(.*)\]", raw)
-        if not raw:
-            raise DefineSyntaxError("List must contains other data type")
-        if len(raw) > 1:
-            raise DefineSyntaxError("error writing in List definition")
-        param_list = raw[0].split(",")
         ele_type, ordered = None, None
         if len(param_list) == 2:
-            ele_type = param_list[0]
-            ordered = param_list[1]
+            ele_type = param_list[0].strip()
+            ordered = param_list[1].strip()
         elif len(param_list) == 1:
-            ele_type = param_list[0]
+            ele_type = param_list[0].strip()
         else:
-            raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+            raise DefineSyntaxError(f"invalid parameters {param_list} in List.")
 
         ele_type = ele_type.split("=", 1)
         if len(ele_type) == 2:
             if ele_type[0].strip() != "etype":
                 raise DefineSyntaxError(f"List types must contains parameters `etype`.")
-            ele_type = ele_type[1]
-            c_dom = re.findall(r"\[(.*)\]", ele_type)
-            if c_dom:
-                ele_type = ele_type.replace("[" + c_dom[0] + "]", "", 1).strip()
+            ele_type = ele_type[1].strip()
         else:
-            ele_type = ele_type[0]
+            ele_type = ele_type[0].strip()
         # else:
         #     raise DefineSyntaxError(f"invalid parameters {raw} in List.")
 
         res = field_type + "Field("
         if ele_type:
-            ele_type = sanitize_etype(ele_type)
+            ele_type = sanitize_etype(field_name, ele_type)
             res += "ele_type=" + ele_type
         else:
             raise DefineSyntaxError(f"List types must contains parameters `etype`.")
@@ -196,7 +188,7 @@ class ParserField:
             + ")"
         )
 
-    def parse_field(self, field_type: str, params_list: List[str] = None) -> str:
+    def parse_field(self, field_name: str, field_type: str, params_list: List[str] = None) -> str:
         """
         校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
             raw_field_type: like: Int, Image, Label[dom=MyClassDom], List[List[Int], ordered = True], ....
@@ -210,9 +202,9 @@ class ParserField:
         elif field_type in self.TYPES_LIST:
             # 带参数的List类型的字段的校验
             # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
-            if params_list:
+            if not params_list:
                 raise DefineSyntaxError(f"{field_type} must contains parameters.")
-            return self.parse_list_filed(field_type)
+            return self.parse_list_filed(field_name, field_type, params_list)
         elif field_type in self.TYPES_TIME:
             # 带参数的Date, Time类型的字段的校验
             return self.parse_time_field(field_type, params_list)
@@ -232,7 +224,7 @@ class ParserField:
         if len(fixed_params) >= 2:
             raise DefineSyntaxError(f"Error in definition of {raw_field_type} in DSDL.")
         elif len(fixed_params) == 0:
-            field_type = self.parse_field(field_type=raw_field_type)
+            field_type = self.parse_field(field_name=field_name, field_type=raw_field_type)
         else:
             k_v_list = fixed_params[0]
             field_type = raw_field_type.replace("[" + k_v_list + "]", "")
@@ -249,6 +241,6 @@ class ParserField:
                 else:
                     other_filed.add(k_v)
             field_type = self.parse_field(
-                field_type=field_type, params_list=list(other_filed)
+                field_type=field_type, params_list=list(other_filed), field_name=field_name
             )
         return field_type
