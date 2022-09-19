@@ -154,7 +154,7 @@ class ParserParam:
                 parent_struct = self.general_param_map[struct].parents_struct
                 if not parent_struct:
                     raise DefineSyntaxError(
-                        f"each struct must have one parent struct, but can {struct} have no"
+                        f"each struct must have one parent struct, but {struct} can have no"
                     )
                 if len(parent_struct) > 1:
                     raise DefineSyntaxError(

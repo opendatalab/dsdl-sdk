@@ -22,7 +22,12 @@ def rreplace(s, old, new, occurrence):
     return new.join(li)
 
 
-def add_key_value_2_struct_field(field: str, key, value):
+def add_key_value_2_struct_field(field: str, key: str, value) -> str:
+    """
+    add key, value to field in struct,
+    eg: key: optional, value: True, field: NumField(is_attr=True)
+    return: NumField(optional=True, is_attr=True)
+    """
     p = re.compile(r"[(](.*)[)]", re.S)  # 贪婪匹配
     k_v_list = re.findall(p, field)[0].strip()
     if k_v_list:
