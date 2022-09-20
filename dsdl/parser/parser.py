@@ -155,7 +155,6 @@ class DSDLParser(Parser, ABC):
                 FIELD_PARSER = ParserField(self.struct_name)
                 # verify each ele of `struct` in `class_defi`, and save in define_info
                 struct_params = define_value.get("$params", None)
-                # struct_params = self.validate_params(set(struct_params), define_name)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
                     field_name = raw_field[0].strip()
@@ -200,7 +199,7 @@ class DSDLParser(Parser, ABC):
                     temp_type = add_key_value_2_struct_field(temp_type, "is_attr", True)
                     field_list[attr_name].type = temp_type
 
-                # 得到处理好的struct的field字段
+                # get processed struct filed and save it in define_info
                 if not field_list:
                     raise DefineSyntaxError(
                         "Struct must have fields more than or equal to 1"
@@ -210,7 +209,7 @@ class DSDLParser(Parser, ABC):
             elif define_type == "class_domain":
                 CLASS_PARSER = ParserClass(define_name, define_value["classes"])
                 define_info = StructORClassDomain(name=CLASS_PARSER.class_name)
-                # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
+                # verify each ele (in other words: each label) of `class_domain`, and save in define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
                 define_info.field_list = CLASS_PARSER.class_field
                 define_info.parent = CLASS_PARSER.super_class_list
