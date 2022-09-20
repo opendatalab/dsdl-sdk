@@ -61,8 +61,6 @@ class ParserField:
                     f"invalid value {val} in ordered of List {field_name}."
                 )
 
-        field_type = "List"
-
         ele_type, ordered = None, None
         if len(param_list) == 2:
             ele_type = param_list[0].strip()
@@ -72,15 +70,16 @@ class ParserField:
         else:
             raise DefineSyntaxError(f"invalid parameters {param_list} in List.")
 
-        ele_type = ele_type.split("=", 1)
-        if len(ele_type) == 2:
-            if ele_type[0].strip() != "etype":
-                raise DefineSyntaxError(f"List types must contains parameters `etype`.")
-            ele_type = ele_type[1].strip()
-        else:
-            ele_type = ele_type[0].strip()
-        # else:
-        #     raise DefineSyntaxError(f"invalid parameters {raw} in List.")
+        if ele_type.startswith("etype"):
+            # if ele_type like "etype=LocalObjectEntry[cdom=$objectdom]", split by "="
+            # else if ele_type like "LocalObjectEntry[cdom=$objectdom]", do nothing.
+            ele_type = ele_type.split("=", 1)
+            if len(ele_type) == 2:
+                if ele_type[0].strip() != "etype":
+                    raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+                ele_type = ele_type[1].strip()
+            else:
+                raise DefineSyntaxError(f"invalid parameters {', '.join(param_list)} in {field_type} {field_name}.")
 
         res = field_type + "Field("
         if ele_type:
@@ -228,7 +227,9 @@ class ParserField:
         else:
             k_v_list = fixed_params[0]
             field_type = raw_field_type.replace("[" + k_v_list + "]", "")
-            k_v_list = k_v_list.split(",")
+            # below can split 'etype=LocalObjectEntry[cdom=COCO2017ClassDom, optional=True], optional=True' to
+            # ['etype=LocalObjectEntry[cdom=COCO2017ClassDom', 'optional=True]', 'optional=True']
+            k_v_list = re.split(r',\s*(?![^\[]*\])', k_v_list)
             k_v_list = [i.strip() for i in k_v_list]
             other_filed = set()
             for k_v in k_v_list:
