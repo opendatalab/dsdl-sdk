@@ -124,7 +124,7 @@ class DSDLParser(Parser, ABC):
         # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
         class_defi.update(root_class_defi)
 
-        # 获取 self.data_sample_type和self.sample_param_map
+        # get self.data_sample_type and self.sample_param_map
         PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
         for define_name, define_value in class_defi.items():
             if define_name.startswith("$"):
@@ -140,19 +140,20 @@ class DSDLParser(Parser, ABC):
                     raise DuplicateDefineWarning(f"{define_name} has defined.")
                 self.struct_name.add(define_name)
 
-        # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
+        # loop for `class_defi` section，deal with each `struct` and `class_domain`
         for define_name, define_value in class_defi.items():
             if define_name.startswith("$"):
-                continue  # 类似$dsdl-version就会continue掉
+                # skip section like: $dsdl-version
+                continue
 
-            # 每个定义的数据结构里面必须有$def
+            # each yaml file must contain '$def' section
             define_type = define_value["$def"]
 
             if define_type == "struct":
                 define_info = StructORClassDomain(name=define_name)
                 define_info.type = TypeEnum.STRUCT
                 FIELD_PARSER = ParserField(self.struct_name)
-                # 对class_defi中struct类型的ele做校验并存入define_info
+                # verify each ele of `struct` in `class_defi`, and save in define_info
                 struct_params = define_value.get("$params", None)
                 # struct_params = self.validate_params(set(struct_params), define_name)
                 field_list = dict()
@@ -178,7 +179,8 @@ class DSDLParser(Parser, ABC):
                             field_name, field_type
                         ),
                     )
-                # $optional字段在$fields字段之后处理，因为需要判断optional里面的字段必须是field字段里面的filed_name
+                # deal with `$optional` section after `$fields` section，
+                # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
                 if "$optional" in define_value or FIELD_PARSER.optional:
                     optional_set = (
                         set(define_value["$optional"]) | FIELD_PARSER.optional
