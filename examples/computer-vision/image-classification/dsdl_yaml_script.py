@@ -70,9 +70,10 @@ class ConvertV3toDsdlYaml:
         "bool": "Bool",
     }
 
-    def __init__(self, dataset_path, output_path=None, unique_cate="category_name"):
+    def __init__(self, dataset_path, output_path=None, unique_category="category_name"):
         self.dataset_path = dataset_path
         self.output_path = output_path
+        self.unique_category = unique_category
         self.dataset_name = None
         self.struct_sample_name = None  # data里面的sample_type, 也是struct里面那个关键的Sample的名字
         # 用来定义数据模型，就是.yaml的class_dom部分 {"name": {struct_name: XXClassDom, "$def": struct_def, "classes":
@@ -113,10 +114,10 @@ class ConvertV3toDsdlYaml:
                     # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
                     # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
                     # 所以现在遇到这种情况我们统一将类别名变成'_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成'_0'...
-                    dict_id_class[c["category_id"]] = self.clean(c[unique_cate])
+                    dict_id_class[c["category_id"]] = self.clean(c[self.unique_category])
                     self.class_dom[task["name"]].classes_raw[
                         c["category_id"]
-                    ] = self.clean(c[unique_cate])
+                    ] = self.clean(c[self.unique_category])
                     if flag_super:
                         supercategories = c.get("supercategories", [])
                         supercategories = [self.clean(i) for i in supercategories]
@@ -125,7 +126,7 @@ class ConvertV3toDsdlYaml:
                         self.class_dom[task["name"]].super_cate_class += supercategories
                         supercategories = ",".join(supercategories)
                         dict_id_class[c["category_id"]] = (
-                                self.clean(c[unique_cate]) + "[" + supercategories + "]"
+                                self.clean(c[self.unique_category]) + "[" + supercategories + "]"
                         )
                 self.class_dom[task["name"]].classes = copy.deepcopy(dict_id_class)
 

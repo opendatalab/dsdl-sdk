@@ -6,7 +6,7 @@ from dsdl.warning import DuplicateDefineWarning
 import os
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Union
+from typing import Union, Optional
 from collections import defaultdict
 from .utils import *
 from .parse_params import ParserParam
@@ -26,27 +26,28 @@ class Parser(ABC):
     """
 
     @abstractmethod
-    def parse(self, data_file: str, library_path: str):
+    def _parse(self, data_file: str, library_path: str):
         """
         将yaml文件中的模型（struct）和标签(label)部分校验之后读入某个变量中
         """
         pass
 
     @abstractmethod
-    def generate(self, output_file):
+    def _generate(self, output_file: str) -> Optional[str]:
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
         pass
 
     def process(self, data_file, library_path, output_file):
-        self.parse(data_file, library_path)
-        self.generate(output_file)
+        self._parse(data_file, library_path)
+        dsdl_py = self._generate(output_file)
         print(
             f"Convert Yaml File to Python Code Successfully!\n"
             f"Yaml file (source): {data_file}\n"
             f"Output file (output): {output_file}"
         )
+        return dsdl_py
 
 
 class TypeEnum(Enum):
@@ -62,14 +63,14 @@ class StructORClassDomain:
     parent: List[str] = None
 
 
-class DSDLParser(Parser):
+class DSDLParser(Parser, ABC):
     def __init__(self):
         self.struct_name = set()
         self.define_map = defaultdict(StructORClassDomain)
         self.dsdl_version = None
         self.meta = dict()
 
-    def parse(self, data_file: str, library_path: str):
+    def _parse(self, data_file: str, library_path: str):
         """
         将yaml文件中的模型（struct）和标签(label)部分校验之后读入变量self.define_map中
             input_file_list: 读入的yaml文件
@@ -123,7 +124,7 @@ class DSDLParser(Parser):
         # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
         class_defi.update(root_class_defi)
 
-        # 获取 self.data_sample_type和self.sample_param_map
+        # get self.data_sample_type and self.sample_param_map
         PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
         for define_name, define_value in class_defi.items():
             if define_name.startswith("$"):
@@ -139,30 +140,32 @@ class DSDLParser(Parser):
                     raise DuplicateDefineWarning(f"{define_name} has defined.")
                 self.struct_name.add(define_name)
 
-        # 对class_defi循环，处理里面的每一个struct或者label(class_domain)
+        # loop for `class_defi` section，deal with each `struct` and `class_domain`
         for define_name, define_value in class_defi.items():
             if define_name.startswith("$"):
-                continue  # 类似$dsdl-version就会continue掉
+                # skip section like: $dsdl-version
+                continue
 
-            # 每个定义的数据结构里面必须有$def
+            # each yaml file must contain '$def' section
             define_type = define_value["$def"]
 
             if define_type == "struct":
                 define_info = StructORClassDomain(name=define_name)
                 define_info.type = TypeEnum.STRUCT
                 FIELD_PARSER = ParserField(self.struct_name)
-                # 对class_defi中struct类型的ele做校验并存入define_info
+                # verify each ele of `struct` in `class_defi`, and save in define_info
                 struct_params = define_value.get("$params", None)
-                # struct_params = self.validate_params(set(struct_params), define_name)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
                     field_name = raw_field[0].strip()
                     field_type = raw_field[1].strip()
                     if not field_name.isidentifier():
-                        err = f"'{field_name}' must be a a valid identifier. " \
-                              f"Field name is considered a valid identifier if " \
-                              f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). " \
-                              f"A valid identifier cannot start with a number, or contain any spaces."
+                        err = (
+                            f"'{field_name}' must be a a valid identifier. "
+                            f"Field name is considered a valid identifier if "
+                            f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). "
+                            f"A valid identifier cannot start with a number, or contain any spaces."
+                        )
                         raise DefineSyntaxError(err)
                     if struct_params:
                         for param, value in PARAMS.general_param_map[
@@ -175,7 +178,8 @@ class DSDLParser(Parser):
                             field_name, field_type
                         ),
                     )
-                # $optional字段在$fields字段之后处理，因为需要判断optional里面的字段必须是field字段里面的filed_name
+                # deal with `$optional` section after `$fields` section，
+                # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
                 if "$optional" in define_value or FIELD_PARSER.optional:
                     optional_set = (
                         set(define_value["$optional"]) | FIELD_PARSER.optional
@@ -195,7 +199,7 @@ class DSDLParser(Parser):
                     temp_type = add_key_value_2_struct_field(temp_type, "is_attr", True)
                     field_list[attr_name].type = temp_type
 
-                # 得到处理好的struct的field字段
+                # get processed struct filed and save it in define_info
                 if not field_list:
                     raise DefineSyntaxError(
                         "Struct must have fields more than or equal to 1"
@@ -205,7 +209,7 @@ class DSDLParser(Parser):
             elif define_type == "class_domain":
                 CLASS_PARSER = ParserClass(define_name, define_value["classes"])
                 define_info = StructORClassDomain(name=CLASS_PARSER.class_name)
-                # 对class_defi中class_domain类型的ele（也就是定义的label）做校验并存入define_info
+                # verify each ele (in other words: each label) of `class_domain`, and save in define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
                 define_info.field_list = CLASS_PARSER.class_field
                 define_info.parent = CLASS_PARSER.super_class_list
@@ -216,7 +220,7 @@ class DSDLParser(Parser):
 
             self.define_map[define_info.name] = define_info
 
-    def generate(self, output_file):
+    def _generate(self, output_file: str = None) -> Optional[str]:
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
@@ -237,36 +241,55 @@ class DSDLParser(Parser):
         if not nx.is_directed_acyclic_graph(define_graph):
             raise "define cycle found."
 
-        with open(output_file, "w") as of:
-            print("# Generated by the dsdl parser. DO NOT EDIT!\n", file=of)
-            print(
-                "from dsdl.types import *\nfrom enum import Enum, unique\n\n", file=of
-            )
-            ordered_keys = list(nx.topological_sort(define_graph))
-            for idx, key in enumerate(ordered_keys):
-                val = self.define_map[key]
-                if val.type == TypeEnum.STRUCT:
-                    print(f"class {key}(Struct):", file=of)
-                    for field_list in val.field_list:
-                        print(f"""    {field_list.name} = {field_list.type}""", file=of)
-                if val.type == TypeEnum.CLASS_DOMAIN:
-                    print(f"class {key}(ClassDomain):", file=of)
-                    print("    Classes = [", file=of)
-                    for ele_class in val.field_list:
-                        if ele_class.super_categories:
-                            temp = ", ".join(ele_class.super_categories)
-                            print(
-                                f"""        Label("{ele_class.label_value}", supercategories=[{temp}]),""",
-                                file=of,
-                            )
-                        else:
-                            print(
-                                f"""        Label("{ele_class.label_value}"),""",
-                                file=of,
-                            )
-                    print("    ]", file=of)
-                if idx != len(ordered_keys) - 1:
-                    print("\n", file=of)
+        dsdl_py = "# Generated by the dsdl parser. DO NOT EDIT!\n"
+        dsdl_py += "from dsdl.types import *\n\n\n"
+        ordered_keys = list(nx.topological_sort(define_graph))
+        for idx, key in enumerate(ordered_keys):
+            val = self.define_map[key]
+            if val.type == TypeEnum.STRUCT:
+                dsdl_py += f"class {key}(Struct):\n"
+                for field_list in val.field_list:
+                    dsdl_py += f"""    {field_list.name} = {field_list.type}\n"""
+            if val.type == TypeEnum.CLASS_DOMAIN:
+                dsdl_py += f"class {key}(ClassDomain):\n"
+                dsdl_py += "    Classes = [\n"
+                for ele_class in val.field_list:
+                    if ele_class.super_categories:
+                        temp = ", ".join(ele_class.super_categories)
+                        dsdl_py += f"""        Label("{ele_class.label_value}", supercategories=[{temp}]),\n"""
+                    else:
+                        dsdl_py += f"""        Label("{ele_class.label_value}"),\n"""
+                dsdl_py += "    ]\n"
+            if idx != len(ordered_keys) - 1:
+                dsdl_py += "\n\n"
+
+        if output_file:
+            with open(output_file, "w") as of:
+                print(dsdl_py, file=of)
+        else:
+            return dsdl_py
+
+
+def dsdl_parse(
+    dsdl_yaml: str,
+    dsdl_library_path: str = "dsdl/dsdl_library",
+    output_file: str = None,
+) -> Optional[str]:
+    """
+    Main function of parser yaml files to .py dsdl struct definition code.
+
+    Arguments:
+        dsdl_yaml: file path of `data definition yaml file`;
+        dsdl_library_path: file path of '`$import` path' in `dsdl_yaml` file.
+        output_file: output file path. if None, return string, else, generate .py file in output file path.
+
+    Returns:
+        Optional[str]: if output_file=None, return string of dsdl definition .py file;
+                       else generate a .py file in the same folder of `dsdl_yaml` file.
+    """
+    dsdl_parser = DSDLParser()
+    res = dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
+    return res
 
 
 @click.command()
@@ -284,8 +307,17 @@ class DSDLParser(Parser):
     type=str,
     default="dsdl/dsdl_library",
 )
-def parse(dsdl_yaml, dsdl_library_path):
+def parse(dsdl_yaml: str, dsdl_library_path: str):
+    """
+    a separate cli tool function for user to parser yaml files to .py dsdl struct definition code.
+
+    Arguments:
+        dsdl_yaml: file path of `data definition yaml file`;
+        dsdl_library_path: file path of '`$import` path' in `dsdl_yaml` file.
+
+    Returns:
+        None: generate a .py file in the same folder of `dsdl_yaml` file.
+    """
     dsdl_name = os.path.splitext(os.path.basename(dsdl_yaml))[0]
     output_file = os.path.join(os.path.dirname(dsdl_yaml), f"{dsdl_name}.py")
-    dsdl_parser = DSDLParser()
-    dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
+    dsdl_parse(dsdl_yaml, dsdl_library_path, output_file)
