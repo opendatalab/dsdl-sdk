@@ -306,7 +306,7 @@ def dsdl_parse(
     type=str,
     default="dsdl/dsdl_library",
 )
-def parse(dsdl_yaml, dsdl_library_path):
+def parse(dsdl_yaml: str, dsdl_library_path: str):
     """
     a separate cli tool function for user to parser yaml files to .py dsdl struct definition code.
 
