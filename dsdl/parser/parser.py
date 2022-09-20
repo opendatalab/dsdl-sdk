@@ -269,7 +269,23 @@ class DSDLParser(Parser, ABC):
             return dsdl_py
 
 
-def dsdl_parse(dsdl_yaml: str, dsdl_library_path: str = "dsdl/dsdl_library", output_file: str = None) -> Optional[str]:
+def dsdl_parse(
+    dsdl_yaml: str,
+    dsdl_library_path: str = "dsdl/dsdl_library",
+    output_file: str = None,
+) -> Optional[str]:
+    """
+    Main function of parser yaml files to .py dsdl struct definition code.
+
+    Arguments:
+        dsdl_yaml: file path of `data definition yaml file`;
+        dsdl_library_path: file path of '`$import` path' in `dsdl_yaml` file.
+        output_file: output file path. if None, return string, else, generate .py file in output file path.
+
+    Returns:
+        Optional[str]: if output_file=None, return string of dsdl definition .py file;
+                       else generate a .py file in the same folder of `dsdl_yaml` file.
+    """
     dsdl_parser = DSDLParser()
     res = dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
     return res
@@ -291,7 +307,16 @@ def dsdl_parse(dsdl_yaml: str, dsdl_library_path: str = "dsdl/dsdl_library", out
     default="dsdl/dsdl_library",
 )
 def parse(dsdl_yaml, dsdl_library_path):
+    """
+    a separate cli tool function for user to parser yaml files to .py dsdl struct definition code.
+
+    Arguments:
+        dsdl_yaml: file path of `data definition yaml file`;
+        dsdl_library_path: file path of '`$import` path' in `dsdl_yaml` file.
+
+    Returns:
+        None: generate a .py file in the same folder of `dsdl_yaml` file.
+    """
     dsdl_name = os.path.splitext(os.path.basename(dsdl_yaml))[0]
     output_file = os.path.join(os.path.dirname(dsdl_yaml), f"{dsdl_name}.py")
     dsdl_parse(dsdl_yaml, dsdl_library_path, output_file)
-
