@@ -285,7 +285,7 @@ def dsdl_parse(
 
     Returns:
         Optional[str]: if output_file=None, return string of dsdl definition .py file;
-                       else generate a .py file in the same folder of `dsdl_yaml` file.
+                       else generate a .py file in `output_file` path.
     """
     dsdl_parser = DSDLParser()
     res = dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
