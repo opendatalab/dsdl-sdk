@@ -23,7 +23,9 @@ class Field:
         "category": f"Label",
     }
 
-    def __init__(self, name, field_value=None, field_type=None, is_attr=None, param=None):
+    def __init__(
+        self, name, field_value=None, field_type=None, is_attr=None, param=None
+    ):
         self._name = name
         self._is_attr = is_attr
         self.param = param
@@ -63,14 +65,15 @@ class Field:
             return f"{self._name}: {self.field_type}[{self.arg}={self.param}, is_attr=True]"
 
 
-
 @dataclass()
 class EleClassDom:
     name: str
     super_cate: str = None
     super_cate_class: List[str] = field(default_factory=list)
     _def: str = "class_domain"
-    classes: Dict[int, str] = field(default_factory=dict)  # like {0: 'apple[fruit_and_vegetables]',...}
+    classes: Dict[int, str] = field(
+        default_factory=dict
+    )  # like {0: 'apple[fruit_and_vegetables]',...}
     classes_raw: Dict[int, str] = field(default_factory=dict)  # like {0: 'apple',...}
     param: str = None
     label: str = None
@@ -103,15 +106,15 @@ def parse_args():
         dest="unique_cate",
         default="category_name",
         help="use which field as unique category name, default is 'category_name', "
-             "if 'category_name' has duplicated value, you need to change it. Else leave it alone.",
+        "if 'category_name' has duplicated value, you need to change it. Else leave it alone.",
         type=str,
     )
     parser.add_argument(
         "-l" "--local",
         dest="local",
-        action='store_true',
+        action="store_true",
         help="bool type: use where to put samples, default is sample.json, "
-             "if you use `-l` will put samples in the same file of definition file",
+        "if you use `-l` will put samples in the same file of definition file",
     )
 
     if len(sys.argv) == 1:
@@ -123,7 +126,13 @@ def parse_args():
 
 
 class ConvertV3toDsdlYaml:
-    def __init__(self, dataset_path, output_path=None, unique_category="category_name", is_local=True):
+    def __init__(
+        self,
+        dataset_path,
+        output_path=None,
+        unique_category="category_name",
+        is_local=True,
+    ):
         self.dataset_path = dataset_path
         self.output_path = output_path
         self.unique_category = unique_category
@@ -168,7 +177,9 @@ class ConvertV3toDsdlYaml:
                     # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
                     # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
                     # 所以现在遇到这种情况我们统一将类别名变成'_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成'_0'...
-                    dict_id_class[c["category_id"]] = self._clean(c[self.unique_category])
+                    dict_id_class[c["category_id"]] = self._clean(
+                        c[self.unique_category]
+                    )
                     self.class_dom[task["name"]].classes_raw[
                         c["category_id"]
                     ] = self._clean(c[self.unique_category])
@@ -180,7 +191,10 @@ class ConvertV3toDsdlYaml:
                         self.class_dom[task["name"]].super_cate_class += supercategories
                         supercategories = ",".join(supercategories)
                         dict_id_class[c["category_id"]] = (
-                                self._clean(c[self.unique_category]) + "[" + supercategories + "]"
+                            self._clean(c[self.unique_category])
+                            + "["
+                            + supercategories
+                            + "]"
                         )
                 self.class_dom[task["name"]].classes = copy.deepcopy(dict_id_class)
 
@@ -195,7 +209,7 @@ class ConvertV3toDsdlYaml:
         else:
             params = ["cdom" + str(i) for i in range(len(self.class_dom))]
             for name, param, i in zip(
-                    self.class_dom, params, range(len(self.class_dom))
+                self.class_dom, params, range(len(self.class_dom))
             ):
                 label = "label" + str(i)
                 self.class_dom[name].param = param
@@ -249,9 +263,7 @@ class ConvertV3toDsdlYaml:
                 fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
             if self.attributes:
                 for _, attr_field in self.attributes.items():
-                    fp.writelines(
-                        f"{TAB_SPACE * 2}{attr_field.format()}\n"
-                    )
+                    fp.writelines(f"{TAB_SPACE * 2}{attr_field.format()}\n")
             if self.confidence:
                 fp.writelines(f"{TAB_SPACE * 2}confidence: Num\n")
             # $optional 部分
@@ -292,7 +304,6 @@ class ConvertV3toDsdlYaml:
                     sample_list.append(self.write_json_sample(sample))
                 with open(out_file + "_sample.json", "w") as f:
                     json.dump(sample_list, f)
-
 
     def write_single_sample(self, sample, file_point):
         """提取sample信息，并格式化写入yaml文件
@@ -342,7 +353,13 @@ class ConvertV3toDsdlYaml:
                         attribute_name = self._clean(attribute_name)
                         try:
                             self.attributes.update(
-                                {attribute_name: Field(attribute_name, field_value=attribute_value, is_attr=True)}
+                                {
+                                    attribute_name: Field(
+                                        attribute_name,
+                                        field_value=attribute_value,
+                                        is_attr=True,
+                                    )
+                                }
                             )
                         except KeyError:
                             continue
@@ -359,7 +376,6 @@ class ConvertV3toDsdlYaml:
             else:
                 pass
 
-
     def write_json_sample(self, sample):
         """
         提取sample信息，并格式化写入json文件
@@ -367,11 +383,11 @@ class ConvertV3toDsdlYaml:
         sample_dict = dict()
         image_path = sample["media"]["path"]
         # eg. - image: "val/ILSVRC2012_val_00000034.JPEG"
-        sample_dict['image'] = image_path
+        sample_dict["image"] = image_path
 
         image_source = sample["media"]["source"]
         # eg. - image_tunas: "media/000000000007.png"
-        sample_dict['source'] = image_source
+        sample_dict["source"] = image_source
 
         if "ground_truth" in sample.keys():
             gts = sample["ground_truth"]
@@ -394,12 +410,18 @@ class ConvertV3toDsdlYaml:
                     for attribute_name, attribute_value in attributes.items():
                         attribute_name = self._clean(attribute_name)
                         self.attributes.update(
-                            {attribute_name: Field(attribute_name, field_value=attribute_value, is_attr=True)}
+                            {
+                                attribute_name: Field(
+                                    attribute_name,
+                                    field_value=attribute_value,
+                                    is_attr=True,
+                                )
+                            }
                         )
-                        sample_dict[attribute_name]= self._add_quotes(attribute_value)
+                        sample_dict[attribute_name] = self._add_quotes(attribute_value)
                         self.optional.add(attribute_name)
                 if confidence:
-                    sample_dict['confidence'] = confidence
+                    sample_dict["confidence"] = confidence
                     self.confidence = confidence.__class__.__name__
                     self.optional.add("confidence")
             else:
@@ -420,9 +442,7 @@ class ConvertV3toDsdlYaml:
         import_file_list = ["class-dom", "struct"]
         for file in file_list:
             self.get_sample_data(os.path.join(file_name, file))
-            out_file = os.path.join(
-                self.output_path, self.sub_dataset_name
-            )
+            out_file = os.path.join(self.output_path, self.sub_dataset_name)
             self.write_data_yaml(import_file_list, out_file)
             print(f"generate data yaml file: {out_file}")
         # 2. generate class yaml file
@@ -440,7 +460,7 @@ class ConvertV3toDsdlYaml:
 
     def _add_quotes(self, sample):
         if isinstance(sample, str):
-            sample = f"\"{sample}\""
+            sample = f'"{sample}"'
         return sample
 
 
