@@ -294,7 +294,6 @@ class ConvertV3toDsdlYaml:
                     json.dump(sample_list, f)
 
 
-
     def write_single_sample(self, sample, file_point):
         """提取sample信息，并格式化写入yaml文件
         sample = {
@@ -341,9 +340,12 @@ class ConvertV3toDsdlYaml:
                 if attributes:
                     for attribute_name, attribute_value in attributes.items():
                         attribute_name = self._clean(attribute_name)
-                        self.attributes.update(
-                            {attribute_name: Field(attribute_name, field_value=attribute_value, is_attr=True)}
-                        )
+                        try:
+                            self.attributes.update(
+                                {attribute_name: Field(attribute_name, field_value=attribute_value, is_attr=True)}
+                            )
+                        except KeyError:
+                            continue
                         file_point.writelines(
                             f"{TAB_SPACE * 2}  {attribute_name}: {self._add_quotes(attribute_value)}\n"
                         )
@@ -397,7 +399,7 @@ class ConvertV3toDsdlYaml:
                         sample_dict[attribute_name]= self._add_quotes(attribute_value)
                         self.optional.add(attribute_name)
                 if confidence:
-                    sample_dict['confidence'] =  confidence
+                    sample_dict['confidence'] = confidence
                     self.confidence = confidence.__class__.__name__
                     self.optional.add("confidence")
             else:
