@@ -8,6 +8,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 import copy
 from typing import List, Dict
+import warnings
 
 
 class Field:
@@ -131,7 +132,7 @@ class ConvertV3toDsdlYaml:
         dataset_path,
         output_path=None,
         unique_category="category_name",
-        is_local=True,
+        is_local=False,
     ):
         self.dataset_path = dataset_path
         self.output_path = output_path
@@ -296,17 +297,19 @@ class ConvertV3toDsdlYaml:
                 fp.writelines(f"{TAB_SPACE}sample-path: $local\n")
                 fp.writelines(f"{TAB_SPACE}samples:\n")
                 for sample in self.samples:
-                    self.write_single_sample(sample, fp)
+                    sample, _ = self.write_single_sample(sample)
+                    fp.writelines(f"{sample}")
             else:
-                fp.writelines(f"{TAB_SPACE}sample-path: {out_file + '_sample.json'} \n")
+                fp.writelines(f"{TAB_SPACE}sample-path: {out_file + '_samples.json'} \n")
                 sample_list = []
                 for sample in self.samples:
-                    sample_list.append(self.write_json_sample(sample))
-                with open(out_file + "_sample.json", "w") as f:
+                    _, sample = self.write_single_sample(sample)
+                    sample_list.append(sample)
+                with open(out_file + "_samples.json", "w") as f:
                     json.dump(sample_list, f)
 
-    def write_single_sample(self, sample, file_point):
-        """提取sample信息，并格式化写入yaml文件
+    def write_single_sample(self, sample):
+        """提取sample信息，并格式化写入yaml或json文件
         sample = {
             'media': {'path':xxx, 'source':xxx, 'type':'image', 'height':xxx, 'width: xxx'},
             'ground_truth': [{
@@ -323,13 +326,21 @@ class ConvertV3toDsdlYaml:
             },...]
         }
         """
+        local_yaml = ""
+        sample_dict = dict()
         image_path = sample["media"]["path"]
         # eg. - image: "val/ILSVRC2012_val_00000034.JPEG"
-        file_point.writelines(f'{TAB_SPACE * 2}- image: "{image_path}"\n')
+        if self.is_local:
+            local_yaml += f'{TAB_SPACE * 2}- image: "{image_path}"\n'
+        else:
+            sample_dict["image"] = image_path
 
         image_source = sample["media"]["source"]
         # eg. - image_tunas: "media/000000000007.png"
-        file_point.writelines(f'{TAB_SPACE * 2}  source: "{image_source}"\n')
+        if self.is_local:
+            local_yaml += f'{TAB_SPACE * 2}  source: "{image_source}"\n'
+        else:
+            sample_dict["source"] = image_source
 
         if "ground_truth" in sample.keys():
             gts = sample["ground_truth"]
@@ -345,7 +356,10 @@ class ConvertV3toDsdlYaml:
                 attributes = gt.get("attributes", None)
                 confidence = gt.get("confidence", None)
                 # eg. label: _9
-                file_point.writelines(f"{TAB_SPACE * 2}  {label}: {cls_name}\n")
+                if self.is_local:
+                    local_yaml += f"{TAB_SPACE * 2}  {label}: {cls_name}\n"
+                else:
+                    sample_dict[label] = cls_name
                 # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
@@ -361,72 +375,24 @@ class ConvertV3toDsdlYaml:
                                     )
                                 }
                             )
-                        except KeyError:
+                        except KeyError as e:
+                            warnings.warn(f"error of {e} in attribute, skipped", DeprecationWarning)
                             continue
-                        file_point.writelines(
-                            f"{TAB_SPACE * 2}  {attribute_name}: {self._add_quotes(attribute_value)}\n"
-                        )
+                        if self.is_local:
+                            local_yaml += f"{TAB_SPACE * 2}  {attribute_name}: {self._add_quotes(attribute_value)}\n"
+                        else:
+                            sample_dict[attribute_name] = self._add_quotes(attribute_value)
                         self.optional.add(attribute_name)
                 if confidence:
-                    file_point.writelines(
-                        f"{TAB_SPACE * 2}  confidence: {confidence}\n"
-                    )
+                    if self.is_local:
+                        local_yaml += f"{TAB_SPACE * 2}  confidence: {confidence}\n"
+                    else:
+                        sample_dict["confidence"] = confidence
                     self.confidence = confidence.__class__.__name__
                     self.optional.add("confidence")
             else:
                 pass
-
-    def write_json_sample(self, sample):
-        """
-        提取sample信息，并格式化写入json文件
-        """
-        sample_dict = dict()
-        image_path = sample["media"]["path"]
-        # eg. - image: "val/ILSVRC2012_val_00000034.JPEG"
-        sample_dict["image"] = image_path
-
-        image_source = sample["media"]["source"]
-        # eg. - image_tunas: "media/000000000007.png"
-        sample_dict["source"] = image_source
-
-        if "ground_truth" in sample.keys():
-            gts = sample["ground_truth"]
-        else:
-            gts = []
-
-        for gt in gts:
-            if gt["type"] == "classification":
-                name = gt["name"]
-                cls_id = gt["category_id"]
-                cls_name = self.class_dom[name].classes_raw[cls_id]
-                label = self.class_dom[name].label
-                attributes = gt.get("attributes", None)
-                confidence = gt.get("confidence", None)
-                # eg. label: _9
-                sample_dict[label] = cls_name
-                # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
-                # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
-                if attributes:
-                    for attribute_name, attribute_value in attributes.items():
-                        attribute_name = self._clean(attribute_name)
-                        self.attributes.update(
-                            {
-                                attribute_name: Field(
-                                    attribute_name,
-                                    field_value=attribute_value,
-                                    is_attr=True,
-                                )
-                            }
-                        )
-                        sample_dict[attribute_name] = self._add_quotes(attribute_value)
-                        self.optional.add(attribute_name)
-                if confidence:
-                    sample_dict["confidence"] = confidence
-                    self.confidence = confidence.__class__.__name__
-                    self.optional.add("confidence")
-            else:
-                pass
-        return sample_dict
+        return local_yaml, sample_dict
 
     def convert_pipeline(self):
         if not self.output_path:
@@ -444,7 +410,9 @@ class ConvertV3toDsdlYaml:
             self.get_sample_data(os.path.join(file_name, file))
             out_file = os.path.join(self.output_path, self.sub_dataset_name)
             self.write_data_yaml(import_file_list, out_file)
-            print(f"generate data yaml file: {out_file}")
+            print(f"generate data yaml file: {out_file+'_data.yaml'}")
+            if not self.is_local:
+                print(f"generate data yaml file: {out_file + '_samples.json'}")
         # 2. generate class yaml file
         out_file = os.path.join(self.output_path, "class-dom.yaml")
         self.write_class_yaml(out_file)
@@ -468,10 +436,10 @@ if __name__ == "__main__":
     args = parse_args()
     print(f"Called with args: \n{args}")
     src_file = args.src_dir
-    out_file = args.out_dir
+    des_file = args.out_dir
     unique_cate = args.unique_cate
     is_local = args.local
     print(f"your input source dictionary: {src_file}")
-    print(f"your input destination dictionary: {out_file}")
-    v3toyaml = ConvertV3toDsdlYaml(src_file, out_file, unique_cate, is_local)
+    print(f"your input destination dictionary: {des_file}")
+    v3toyaml = ConvertV3toDsdlYaml(src_file, des_file, unique_cate, is_local)
     v3toyaml.convert_pipeline()
