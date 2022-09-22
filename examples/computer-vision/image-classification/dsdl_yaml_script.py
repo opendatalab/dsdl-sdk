@@ -300,7 +300,9 @@ class ConvertV3toDsdlYaml:
                     sample, _ = self.write_single_sample(sample)
                     fp.writelines(f"{sample}")
             else:
-                fp.writelines(f"{TAB_SPACE}sample-path: {out_file + '_samples.json'} \n")
+                fp.writelines(
+                    f"{TAB_SPACE}sample-path: {out_file + '_samples.json'} \n"
+                )
                 sample_list = []
                 for sample in self.samples:
                     _, sample = self.write_single_sample(sample)
@@ -376,12 +378,17 @@ class ConvertV3toDsdlYaml:
                                 }
                             )
                         except KeyError as e:
-                            warnings.warn(f"error of {e} in attribute, skipped", DeprecationWarning)
+                            warnings.warn(
+                                f"error of {e} in attribute, skipped",
+                                DeprecationWarning,
+                            )
                             continue
                         if self.is_local:
                             local_yaml += f"{TAB_SPACE * 2}  {attribute_name}: {self._add_quotes(attribute_value)}\n"
                         else:
-                            sample_dict[attribute_name] = self._add_quotes(attribute_value)
+                            sample_dict[attribute_name] = self._add_quotes(
+                                attribute_value
+                            )
                         self.optional.add(attribute_name)
                 if confidence:
                     if self.is_local:
