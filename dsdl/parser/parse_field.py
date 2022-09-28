@@ -1,6 +1,7 @@
 from dsdl.exception import DefineSyntaxError, DefineTypeError
 from .utils import *
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass()
@@ -10,7 +11,7 @@ class EleStruct:
 
 
 class ParserField:
-    def __init__(self, struct_name):
+    def __init__(self, struct_name: str):
         self.TYPES_WITHOUT_PARS = [
             "Bool",
             "Num",
@@ -26,21 +27,26 @@ class ParserField:
         self.TYPES_TIME = ["Date", "Time"]
         self.TYPES_LABEL = ["Label"]
         self.TYPES_LIST = ["List"]
-        self.TYPES_ALL = self.TYPES_WITHOUT_PARS + self.TYPES_TIME + self.TYPES_LABEL + self.TYPES_LIST
+        self.TYPES_ALL = (
+            self.TYPES_WITHOUT_PARS
+            + self.TYPES_TIME
+            + self.TYPES_LABEL
+            + self.TYPES_LIST
+        )
         self.is_attr = set()
         self.optional = set()
         self.struct = struct_name  # field 中包含的struct，后续校验用
 
-    def parse_list_filed(self, field_name: str, field_type: str, param_list: List[str]) -> str:
+    def parse_list_filed(self, field_type: str, param_list: List[str]) -> str:
         """
         解析处理List类型的field
         """
 
-        def sanitize_etype(field_name, val: str) -> str:
+        def sanitize_etype(val: str) -> str:
             """
             验证List类型中的etype是否存在（必须存在）且是否为合法类型
             """
-            return self.pre_parse_struct_field(field_name, val)
+            return self.pre_parse_struct_field(field_name=None, raw_field_type=val)
 
         def all_subclasses(cls):
             """
@@ -58,7 +64,7 @@ class ParserField:
                     return "False"
             else:
                 raise DefineSyntaxError(
-                    f"invalid value {val} in ordered of List {field_name}."
+                    f"invalid value {val} in ordered of {field_type}: {','.join(param_list)}."
                 )
 
         ele_type, ordered = None, None
@@ -76,14 +82,18 @@ class ParserField:
             ele_type = ele_type.split("=", 1)
             if len(ele_type) == 2:
                 if ele_type[0].strip() != "etype":
-                    raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+                    raise DefineSyntaxError(
+                        f"List types must contains parameters `etype`."
+                    )
                 ele_type = ele_type[1].strip()
             else:
-                raise DefineSyntaxError(f"invalid parameters {', '.join(param_list)} in {field_type} {field_name}.")
+                raise DefineSyntaxError(
+                    f"invalid parameters {', '.join(param_list)} in {field_type}."
+                )
 
         res = field_type + "Field("
         if ele_type:
-            ele_type = sanitize_etype(field_name, ele_type)
+            ele_type = sanitize_etype(ele_type)
             res += "ele_type=" + ele_type
         else:
             raise DefineSyntaxError(f"List types must contains parameters `etype`.")
@@ -187,7 +197,13 @@ class ParserField:
             + ")"
         )
 
-    def parse_field(self, field_name: str, field_type: str, params_list: List[str] = None) -> str:
+    def parse_field(
+        self,
+        field_type: str,
+        params_list: List[str] = None,
+        attr_flag: bool = False,
+        optional_flag: bool = False,
+    ) -> str:
         """
         校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
             raw_field_type: like: Int, Image, Label[dom=MyClassDom], List[List[Int], ordered = True], ....
@@ -197,51 +213,66 @@ class ParserField:
             # 后者在dataset.py中定义，你脑子里想的Int也需要校验是数据的校验。）
             if params_list:
                 raise DefineSyntaxError(f"{field_type} should not contains parameters.")
-            return field_type + "Field()"
+            field_type = field_type + "Field()"
         elif field_type in self.TYPES_LIST:
             # 带参数的List类型的字段的校验
             # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
             if not params_list:
                 raise DefineSyntaxError(f"{field_type} must contains parameters.")
-            return self.parse_list_filed(field_name, field_type, params_list)
+            field_type = self.parse_list_filed(field_type, params_list)
         elif field_type in self.TYPES_TIME:
             # 带参数的Date, Time类型的字段的校验
-            return self.parse_time_field(field_type, params_list)
+            field_type = self.parse_time_field(field_type, params_list)
         elif field_type in self.TYPES_LABEL:
             # 带参数的Label类型的字段的校验
-            return self.parse_label_field(field_type, params_list)
+            field_type = self.parse_label_field(field_type, params_list)
         else:
             # Struct类型的字段的校验
             if field_type not in self.struct:
                 raise DefineTypeError(f"No type {field_type} in DSDL.")
-            return field_type + "()"
+            field_type = field_type + "()"
+        if attr_flag:
+            field_type = add_key_value_2_struct_field(field_type, "is_attr", True)
+        if optional_flag:
+            field_type = add_key_value_2_struct_field(field_type, "optional", True)
+        return field_type
 
-    def pre_parse_struct_field(self, field_name: str, raw_field_type: str) -> str:
+    def pre_parse_struct_field(
+        self, field_name: Optional[str], raw_field_type: str
+    ) -> str:
         # 将所有field可能都有的一些参数提取出来，类似is_attr、optional等
         raw_field_type = raw_field_type.strip()
         fixed_params = re.findall(r"\[(.*)\]", raw_field_type)
         if len(fixed_params) >= 2:
             raise DefineSyntaxError(f"Error in definition of {raw_field_type} in DSDL.")
         elif len(fixed_params) == 0:
-            field_type = self.parse_field(field_name=field_name, field_type=raw_field_type)
+            field_type = self.parse_field(field_type=raw_field_type)
         else:
             k_v_list = fixed_params[0]
             field_type = raw_field_type.replace("[" + k_v_list + "]", "")
             # below can split 'etype=LocalObjectEntry[cdom=COCO2017ClassDom, optional=True], optional=True' to
             # ['etype=LocalObjectEntry[cdom=COCO2017ClassDom', 'optional=True]', 'optional=True']
-            k_v_list = re.split(r',\s*(?![^\[]*\])', k_v_list)
+            k_v_list = re.split(r",\s*(?![^\[]*\])", k_v_list)
             k_v_list = [i.strip() for i in k_v_list]
             other_filed = set()
+            attr_flag, optional_flag = False, False
             for k_v in k_v_list:
-                if k_v.startswith("is_attr"):
-                    if k_v.endswith("=True"):
+                if k_v.replace(" ", "") == "is_attr=True":
+                    if field_name:
                         self.is_attr.add(field_name)
-                elif k_v.startswith("optional"):
-                    if k_v.endswith("=True"):
+                    else:
+                        attr_flag = True
+                elif k_v.replace(" ", "") == "optional=True":
+                    if field_name:
                         self.optional.add(field_name)
+                    else:
+                        optional_flag = True
                 else:
                     other_filed.add(k_v)
             field_type = self.parse_field(
-                field_type=field_type, params_list=list(other_filed), field_name=field_name
+                field_type=field_type,
+                params_list=list(other_filed),
+                attr_flag=attr_flag,
+                optional_flag=optional_flag,
             )
         return field_type
