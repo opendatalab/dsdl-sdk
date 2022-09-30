@@ -23,6 +23,7 @@ class ParserField:
             "BBox",
             "Polygon",
             "Image",
+            "Video",
         ]
         self.TYPES_TIME = ["Date", "Time"]
         self.TYPES_LABEL = ["Label"]

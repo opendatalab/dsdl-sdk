@@ -9,6 +9,33 @@ from dataclasses import dataclass, field
 import copy
 from typing import List, Dict
 import warnings
+from enum import Enum
+
+
+VIDEO_LIST = [
+    ".avi",
+    ".wmv",
+    ".mpg",
+    ".mpeg",
+    ".mov",
+    ".rm",
+    ".ram",
+    ".rmvb",
+    ".swf",
+    ".flv",
+    ".mp4",
+    ".asf",
+    ".dat",
+    ".asx",
+    ".wvx",
+    ".mpe",
+    ".mpa",
+]
+
+
+class MediaEnum(Enum):
+    IMAGE = "Image"
+    VIDEO = "Video"
 
 
 class Field:
@@ -148,6 +175,7 @@ class ConvertV3toDsdlYaml:
         self.attributes = dict()  # {attribute_name: Field,...}
         self.confidence = None  # confidence_type
         self.optional = set()
+        self.media = MediaEnum.IMAGE  # image or video
 
     @staticmethod
     def camel_case(s):
@@ -256,7 +284,10 @@ class ConvertV3toDsdlYaml:
             fp.writelines(f"{TAB_SPACE}$params: {params}\n")
             # $field 部分
             fp.writelines(f"{TAB_SPACE}$fields: \n")
-            fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
+            if self.media == MediaEnum.IMAGE:
+                fp.writelines(f"{TAB_SPACE * 2}image: {self.media.value}\n")
+            elif self.media == MediaEnum.VIDEO:
+                fp.writelines(f"{TAB_SPACE * 2}video: {self.media.value}\n")
             fp.writelines(f"{TAB_SPACE * 2}source: Str[is_attr=True]\n")
             for sample_struct in self.class_dom.values():
                 label = sample_struct.label
@@ -332,10 +363,18 @@ class ConvertV3toDsdlYaml:
         sample_dict = dict()
         image_path = sample["media"]["path"]
         # eg. - image: "val/ILSVRC2012_val_00000034.JPEG"
-        if self.is_local:
-            local_yaml += f'{TAB_SPACE * 2}- image: "{image_path}"\n'
+        suffix = os.path.splitext(image_path)[-1]
+        if suffix in VIDEO_LIST or suffix in list(map(lambda x: x.upper(), VIDEO_LIST)):
+            self.media = MediaEnum.VIDEO
+            if self.is_local:
+                local_yaml += f'{TAB_SPACE * 2}- video: "{image_path}"\n'
+            else:
+                sample_dict["video"] = image_path
         else:
-            sample_dict["image"] = image_path
+            if self.is_local:
+                local_yaml += f'{TAB_SPACE * 2}- image: "{image_path}"\n'
+            else:
+                sample_dict["image"] = image_path
 
         image_source = sample["media"]["source"]
         # eg. - image_tunas: "media/000000000007.png"
@@ -440,13 +479,15 @@ class ConvertV3toDsdlYaml:
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    print(f"Called with args: \n{args}")
-    src_file = args.src_dir
-    des_file = args.out_dir
-    unique_cate = args.unique_cate
-    is_local = args.local
-    print(f"your input source dictionary: {src_file}")
-    print(f"your input destination dictionary: {des_file}")
-    v3toyaml = ConvertV3toDsdlYaml(src_file, des_file, unique_cate, is_local)
+    # args = parse_args()
+    # print(f"Called with args: \n{args}")
+    # src_file = args.src_dir
+    # des_file = args.out_dir
+    # unique_cate = args.unique_cate
+    # is_local = args.local
+    # print(f"your input source dictionary: {src_file}")
+    # print(f"your input destination dictionary: {des_file}")
+    # v3toyaml = ConvertV3toDsdlYaml(src_file, des_file, unique_cate, is_local)
+    src_file = "/Users/jiangyiying/sherry/tunas_data_demo/UCF101_tunas"
+    v3toyaml = ConvertV3toDsdlYaml(src_file)
     v3toyaml.convert_pipeline()
