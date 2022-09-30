@@ -479,15 +479,13 @@ class ConvertV3toDsdlYaml:
 
 
 if __name__ == "__main__":
-    # args = parse_args()
-    # print(f"Called with args: \n{args}")
-    # src_file = args.src_dir
-    # des_file = args.out_dir
-    # unique_cate = args.unique_cate
-    # is_local = args.local
-    # print(f"your input source dictionary: {src_file}")
-    # print(f"your input destination dictionary: {des_file}")
-    # v3toyaml = ConvertV3toDsdlYaml(src_file, des_file, unique_cate, is_local)
-    src_file = "/Users/jiangyiying/sherry/tunas_data_demo/UCF101_tunas"
-    v3toyaml = ConvertV3toDsdlYaml(src_file)
+    args = parse_args()
+    print(f"Called with args: \n{args}")
+    src_file = args.src_dir
+    des_file = args.out_dir
+    unique_cate = args.unique_cate
+    is_local = args.local
+    print(f"your input source dictionary: {src_file}")
+    print(f"your input destination dictionary: {des_file}")
+    v3toyaml = ConvertV3toDsdlYaml(src_file, des_file, unique_cate, is_local)
     v3toyaml.convert_pipeline()
