@@ -1,9 +1,10 @@
 import numpy as np
 from PIL import ImageFont, ImageDraw
 from ..types.registry import CLASSDOMAIN
+from .base_geometry import BaseGeometry
 
 
-class Label:
+class Label(BaseGeometry):
     def __init__(self, name, supercategories=(), domain_name=None):
         self._name = name
         self._supercategories = [_ for _ in supercategories if isinstance(_, Label)]
@@ -90,7 +91,7 @@ class Label:
         return self.category_name
 
 
-class LabelList:
+class LabelList(BaseGeometry):
 
     def __init__(self, label_list):
         self._label_list = list(label_list)

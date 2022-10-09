@@ -1,11 +1,12 @@
 from typing import TypeVar, List
 import numpy as np
 from PIL import ImageDraw
+from .base_geometry import BaseGeometry
 
 _ELE_TYPE = TypeVar("_ELE_TYPE", int, float)
 
 
-class BBox:
+class BBox(BaseGeometry):
 
     def __init__(
             self,

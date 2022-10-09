@@ -47,13 +47,17 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
     palette = {}
     if task:
         assert task in ["detection",
-                        "segmentation"], "invalid task, you can only choose in ['detection', 'segmentation']"
-        if task == "detection":
+                        "segmentation",
+                        "classification"], "invalid task, you can only choose in ['detection', 'segmentation', 'classification']"
+        if task == "classification":
+            fields = ["image", "label"]
+        elif task == "detection":
             fields = ["image", "label", "bbox", "polygon", "attributes"]
+        elif task == "segmentation":
+            fields = ["image", "segmap", "attributes"]
         else:
             fields = ["image", "label", "attributes"]
     else:
-
         if fields is None:
             fields = []
         else:
