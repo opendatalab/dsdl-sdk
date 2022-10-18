@@ -1,4 +1,14 @@
 import click
+from typing import Sequence, Union
+import os
+try:
+    from yaml import CSafeLoader as YAMLSafeLoader
+except ImportError:
+    from yaml import SafeLoader as YAMLSafeLoader
+from yaml import load as yaml_load
+import json
+
+
 
 class OptionEatAll(click.Option):
     """
@@ -45,3 +55,35 @@ class OptionEatAll(click.Option):
                 our_parser.process = parser_process
                 break
         return retval
+
+
+YAML_VALID_SUFFIX = ('.yaml', '.YAML')
+JSON_VALID_SUFFIX = ('.json', '.JSON')
+VALID_SUFFIX = YAML_VALID_SUFFIX + JSON_VALID_SUFFIX
+
+
+def load_samples(dsdl_path: str, path: Union[str, Sequence[str]]):
+    samples = []
+    paths = []
+    dsdl_dir = os.path.split(dsdl_path)[0]
+    if isinstance(path, str):
+        path = os.path.join(dsdl_dir, path)
+        if os.path.isdir(path):
+            paths = [os.path.join(path, _) for _ in os.listdir(path) if _.endswith(VALID_SUFFIX)]
+        elif os.path.isfile(path):
+            if path.endswith(VALID_SUFFIX):
+                paths = [path]
+    elif isinstance(path, (list, tuple)):
+        paths = [os.path.join(dsdl_dir, _) for _ in path if os.path.isfile(_) and _.endswith(VALID_SUFFIX)]
+    for p in paths:
+        if p.endswith(YAML_VALID_SUFFIX):
+            with open(p, "r") as f:
+                data = yaml_load(f, YAMLSafeLoader)['samples']
+            samples.extend(data)
+        else:
+            with open(p, "r") as f:
+                data = json.load(f)['samples']
+            samples.extend(data)
+    return samples
+
+

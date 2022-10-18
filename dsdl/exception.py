@@ -17,3 +17,8 @@ class DefineSyntaxError(SyntaxError):
 class DefineTypeError(TypeError):
     pass
 
+
+class FileReadError(TypeError):
+    pass
+
+

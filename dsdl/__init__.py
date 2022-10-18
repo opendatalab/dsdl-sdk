@@ -5,3 +5,4 @@
 
 from .parser import parse
 from .dataset import Dataset, ImageVisualizePipeline
+from .__version__ import __version__

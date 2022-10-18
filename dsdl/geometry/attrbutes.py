@@ -1,4 +1,6 @@
-class Attributes:
+from .base_geometry import BaseGeometry
+
+class Attributes(BaseGeometry):
     def __init__(self, **kwargs):
         self.container = {}
         for k, v in kwargs.items():

@@ -10,7 +10,7 @@ from .special import (
     DateField,
     TimeField,
 )
-from .unstructure import ImageField
+from .unstructure import ImageField, SegMapField
 from .registry import STRUCT, CLASSDOMAIN, LABEL
 from .class_domain import ClassDomain, Label
 
@@ -35,4 +35,5 @@ __all__ = [
     "ClassDomain",
     "LABEL",
     "Label",
+    "SegMapField",
 ]

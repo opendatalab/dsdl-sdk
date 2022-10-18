@@ -1,9 +1,8 @@
 import torch.utils.data
-from yaml import load as yaml_load
-from typing import Callable, Dict, Optional
 from ..types import Struct, STRUCT
 from dsdl.dataset.utils import Util
 import dsdl.objectio as objectio
+from typing import List, Dict, Any, Callable, Optional, Union
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -17,13 +16,19 @@ class Dataset(torch.utils.data.Dataset):
 
     def __init__(
             self,
-            sample_file: str,
+            samples: List[Dict[str, Any]],
+            sample_type: Union[str, Struct],
             location_config: dict,
             pipeline: Optional[Callable[[Dict], Dict]] = None,
     ):
         self.location_config = location_config
         self.pipeline = pipeline  # 处理样本的函数
-        self.sample_file = sample_file  # 样本所在的yaml文件路径
+        self.samples = samples  # 样本所在的yaml文件路径
+        sample_type = Util.extract_sample_type(sample_type)
+        if isinstance(sample_type, str):
+            self.sample_type = STRUCT.get(sample_type)
+        else:
+            self.sample_type = sample_type
         self.file_reader = self._load_file_reader(location_config)  # 样本的路径配置（如本地路径或是阿里云路径）
         self.sample_list = self._load_sample()  # 将yaml文件中的样本内容加载到self.sample_list中
 
@@ -44,14 +49,8 @@ class Dataset(torch.utils.data.Dataset):
         该函数的作用是将yaml文件中的样本转换为Struct对象，并存储到sample_list列表中
         """
         sample_list = []
-        with open(self.sample_file, "r") as f:
-            data = yaml_load(f, Loader=YAMLSafeLoader)["data"]
-            sample_type = Util.extract_sample_type(data["sample-type"])
-            cls = STRUCT.get(sample_type)
-            for item in data.items():
-                if item[0] == "samples":
-                    for sample in item[1]:
-                        sample_list.append(self._parse_struct(cls(file_reader=self.file_reader, **sample)))
+        for sample in self.samples:
+            sample_list.append(self._parse_struct(self.sample_type(file_reader=self.file_reader, **sample)))
         return sample_list
 
     def _parse_struct(self, sample):

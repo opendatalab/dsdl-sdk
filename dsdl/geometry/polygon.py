@@ -1,9 +1,10 @@
 from typing import List
 import numpy as np
 from PIL import ImageDraw, Image
+from .base_geometry import BaseGeometry
 
 
-class PolygonItem:
+class PolygonItem(BaseGeometry):
 
     def __init__(
             self,
@@ -43,7 +44,7 @@ class PolygonItem:
         return str(self._data)
 
 
-class Polygon:
+class Polygon(BaseGeometry):
 
     def __init__(self, polygons: List[PolygonItem]):
         self._data = polygons
