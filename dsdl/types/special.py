@@ -1,5 +1,5 @@
 from .field import Field
-from ..geometry import BBox, Polygon, PolygonItem
+from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints
 from ..exception import ValidationError
 from datetime import date, time, datetime
 
@@ -50,6 +50,24 @@ class PolygonField(Field):
         return Polygon(polygon_lst)
 
 
+class KeypointField(Field):
+
+    def __init__(self, dom, *args, **kwargs):
+        super(KeypointField, self).__init__(*args, **kwargs)
+        self.dom = dom
+
+    def validate(self, value):
+        value = validate_list_of_number(value, len(self.dom), list)
+        keypoints = []
+        for class_ind, p in enumerate(value, start=1):
+            p = validate_list_of_number(p, 3, float)
+            label = self.dom.get_label(class_ind)
+            coord2d = Coord2D(x=p[0], y=p[1], visiable=int(p[2]), label=label)
+            keypoints.append(coord2d)
+
+        return KeyPoints(keypoints=keypoints, domain=self.dom)
+
+
 class LabelField(Field):
     def __init__(self, dom, *args, **kwargs):
         super(LabelField, self).__init__(*args, **kwargs)
@@ -85,4 +103,3 @@ class TimeField(Field):
         if self.fmt == "":
             return time.fromisoformat(value)
         return datetime.strptime(value, self.fmt).time()
-

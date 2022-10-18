@@ -3,6 +3,7 @@ import click
 import numpy as np
 from random import randint
 import cv2
+import os
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -24,7 +25,8 @@ from ..parser import dsdl_parse
 @click.option("-f", "--fields", cls=OptionEatAll, type=str, help="the task to visualize")
 @click.option("-t", "--task", type=str, help="the task to visualize")
 @click.option("-p", "--position", type=str, required=False, help='the directory of dsdl define file')
-def view(dsdl_yaml, config, location, num, random, visualize, fields, task, position):
+@click.option("-m", "--multistage", is_flag=True, help="whether to use the generated python file")
+def view(dsdl_yaml, config, location, num, random, visualize, fields, task, position, multistage):
     with open(dsdl_yaml, "r") as f:
         dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
         sample_type = dsdl_info['sample-type']
@@ -33,11 +35,16 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
             samples = dsdl_info['samples']
         else:
             samples = load_samples(dsdl_yaml, sample_path)
-    if position:
-        dsdl_py = dsdl_parse(dsdl_yaml, position)
+    if multistage:
+        dsdl_py = os.path.splitext(dsdl_yaml)[0] + ".py"
+        with open(dsdl_py, encoding='utf-8') as dsdl_file:
+            exec(dsdl_file.read(), {})
     else:
-        dsdl_py = dsdl_parse(dsdl_yaml)
-    exec(dsdl_py, {})
+        if position:
+            dsdl_py = dsdl_parse(dsdl_yaml, position)
+        else:
+            dsdl_py = dsdl_parse(dsdl_yaml)
+        exec(dsdl_py, {})
     config_dic = {}
     with open(config, encoding='utf-8') as config_file:
         exec(config_file.read(), config_dic)
@@ -52,7 +59,7 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
         if task == "classification":
             fields = ["image", "label"]
         elif task == "detection":
-            fields = ["image", "label", "bbox", "polygon", "attributes"]
+            fields = ["image", "label", "bbox", "polygon", "attributes", "keypoint"]
         elif task == "segmentation":
             fields = ["image", "segmap", "attributes"]
         else:
