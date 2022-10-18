@@ -8,6 +8,89 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 import copy
 from typing import List, Dict
+import warnings
+from enum import Enum
+
+
+VIDEO_LIST = [
+    ".avi",
+    ".wmv",
+    ".mpg",
+    ".mpeg",
+    ".mov",
+    ".rm",
+    ".ram",
+    ".rmvb",
+    ".swf",
+    ".flv",
+    ".mp4",
+    ".asf",
+    ".dat",
+    ".asx",
+    ".wvx",
+    ".mpe",
+    ".mpa",
+]
+
+
+class MediaEnum(Enum):
+    IMAGE = "Image"
+    VIDEO = "Video"
+
+
+class Field:
+    FIELD_MAPPING = {
+        "bbox": "BBox",
+        "int": "Int",
+        "float": "Num",
+        "str": "Str",
+        "points": "Polygon",
+        "list": "List",
+        "media": "Image",
+        "bool": "Bool",
+        "category": f"Label",
+    }
+
+    def __init__(
+        self, name, field_value=None, field_type=None, is_attr=None, param=None
+    ):
+        self._name = name
+        self._is_attr = is_attr
+        self.param = param
+        self.arg = None
+        if field_type is not None:
+            self.field_type = self.FIELD_MAPPING[field_type]
+        elif field_value is not None:
+            self.field_type = self.FIELD_MAPPING[field_value.__class__.__name__]
+            if self.field_type == "List":
+                self.arg = "etype"
+                self.param = self.FIELD_MAPPING[field_value[0].__class__.__name__]
+        else:
+            raise RuntimeError("not supported field type")
+        if field_type == "category":
+            self.arg = "dom"
+            assert isinstance(self.param, str)
+        elif field_type == "list":
+            self.arg = "etype"
+            assert isinstance(self.param, str)
+
+    @property
+    def is_attr(self):
+        return self._is_attr
+
+    @property
+    def name(self):
+        return self._name
+
+    def format(self):
+        if not self._is_attr and not self.arg:
+            return f"{self._name}: {self.field_type}"
+        elif self.is_attr and not self.arg:
+            return f"{self._name}: {self.field_type}[is_attr=True]"
+        elif not self.is_attr and self.arg:
+            return f"{self._name}: {self.field_type}[{self.arg}={self.param}]"
+        else:
+            return f"{self._name}: {self.field_type}[{self.arg}={self.param}, is_attr=True]"
 
 
 @dataclass()
@@ -16,7 +99,9 @@ class EleClassDom:
     super_cate: str = None
     super_cate_class: List[str] = field(default_factory=list)
     _def: str = "class_domain"
-    classes: Dict[int, str] = field(default_factory=dict)  # like {0: 'apple[fruit_and_vegetables]',...}
+    classes: Dict[int, str] = field(
+        default_factory=dict
+    )  # like {0: 'apple[fruit_and_vegetables]',...}
     classes_raw: Dict[int, str] = field(default_factory=dict)  # like {0: 'apple',...}
     param: str = None
     label: str = None
@@ -49,8 +134,15 @@ def parse_args():
         dest="unique_cate",
         default="category_name",
         help="use which field as unique category name, default is 'category_name', "
-             "if 'category_name' has duplicated value, you need to change it. Else leave it alone.",
+        "if 'category_name' has duplicated value, you need to change it. Else leave it alone.",
         type=str,
+    )
+    parser.add_argument(
+        "-l" "--local",
+        dest="local",
+        action="store_true",
+        help="bool type: use where to put samples, default is sample.json, "
+        "if you use `-l` will put samples in the same file of definition file",
     )
 
     if len(sys.argv) == 1:
@@ -62,18 +154,17 @@ def parse_args():
 
 
 class ConvertV3toDsdlYaml:
-    FIELD_MAPPING = {
-        "int": "Int",
-        "float": "Num",
-        "str": "Str",
-        "list": "List",
-        "bool": "Bool",
-    }
-
-    def __init__(self, dataset_path, output_path=None, unique_category="category_name"):
+    def __init__(
+        self,
+        dataset_path,
+        output_path=None,
+        unique_category="category_name",
+        is_local=False,
+    ):
         self.dataset_path = dataset_path
         self.output_path = output_path
         self.unique_category = unique_category
+        self.is_local = is_local
         self.dataset_name = None
         self.struct_sample_name = None  # data里面的sample_type, 也是struct里面那个关键的Sample的名字
         # 用来定义数据模型，就是.yaml的class_dom部分 {"name": {struct_name: XXClassDom, "$def": struct_def, "classes":
@@ -81,9 +172,10 @@ class ConvertV3toDsdlYaml:
         self.class_dom = defaultdict(EleClassDom)
         # 数据部分
         self.sub_dataset_name = None
-        self.attributes = dict()  # {attribute_name: type}
+        self.attributes = dict()  # {attribute_name: Field,...}
         self.confidence = None  # confidence_type
         self.optional = set()
+        self.media = MediaEnum.IMAGE  # image or video
 
     @staticmethod
     def camel_case(s):
@@ -114,19 +206,24 @@ class ConvertV3toDsdlYaml:
                     # 当类别名字是整数的时候生成yaml虽然没问题，但是yaml生成py文件的时候会有问题
                     # 因为py文件里面class中是不能出现变量名是int的，也不能是类似这样的字符串"0"（要是合法的str）
                     # 所以现在遇到这种情况我们统一将类别名变成'_XX'。。如MNIST数据集里面的类别是"0"，"1"。。会变成'_0'...
-                    dict_id_class[c["category_id"]] = self.clean(c[self.unique_category])
+                    dict_id_class[c["category_id"]] = self._clean(
+                        c[self.unique_category]
+                    )
                     self.class_dom[task["name"]].classes_raw[
                         c["category_id"]
-                    ] = self.clean(c[self.unique_category])
+                    ] = self._clean(c[self.unique_category])
                     if flag_super:
                         supercategories = c.get("supercategories", [])
-                        supercategories = [self.clean(i) for i in supercategories]
+                        supercategories = [self._clean(i) for i in supercategories]
                         super_cate_name = self.camel_case(task["name"]) + "FatherDom"
                         self.class_dom[task["name"]].super_cate = super_cate_name
                         self.class_dom[task["name"]].super_cate_class += supercategories
                         supercategories = ",".join(supercategories)
                         dict_id_class[c["category_id"]] = (
-                                self.clean(c[self.unique_category]) + "[" + supercategories + "]"
+                            self._clean(c[self.unique_category])
+                            + "["
+                            + supercategories
+                            + "]"
                         )
                 self.class_dom[task["name"]].classes = copy.deepcopy(dict_id_class)
 
@@ -141,11 +238,9 @@ class ConvertV3toDsdlYaml:
         else:
             params = ["cdom" + str(i) for i in range(len(self.class_dom))]
             for name, param, i in zip(
-                    self.class_dom, params, range(len(self.class_dom))
+                self.class_dom, params, range(len(self.class_dom))
             ):
                 label = "label" + str(i)
-                # label_content = "Label[dom=" + param + "]"
-                # fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
                 self.class_dom[name].param = param
                 self.class_dom[name].label = label
                 self.optional.add(label)
@@ -189,17 +284,18 @@ class ConvertV3toDsdlYaml:
             fp.writelines(f"{TAB_SPACE}$params: {params}\n")
             # $field 部分
             fp.writelines(f"{TAB_SPACE}$fields: \n")
-            fp.writelines(f"{TAB_SPACE * 2}image: Image\n")
+            if self.media == MediaEnum.IMAGE:
+                fp.writelines(f"{TAB_SPACE * 2}image: {self.media.value}\n")
+            elif self.media == MediaEnum.VIDEO:
+                fp.writelines(f"{TAB_SPACE * 2}video: {self.media.value}\n")
             fp.writelines(f"{TAB_SPACE * 2}source: Str[is_attr=True]\n")
             for sample_struct in self.class_dom.values():
                 label = sample_struct.label
                 label_content = "Label[dom=$" + sample_struct.param + "]"
                 fp.writelines(f"{TAB_SPACE * 2}{label}: {label_content}\n")
             if self.attributes:
-                for attr_name, attr_type in self.attributes.items():
-                    fp.writelines(
-                        f"{TAB_SPACE * 2}{attr_name}: {self.FIELD_MAPPING[attr_type]}[is_attr=True]\n"
-                    )
+                for _, attr_field in self.attributes.items():
+                    fp.writelines(f"{TAB_SPACE * 2}{attr_field.format()}\n")
             if self.confidence:
                 fp.writelines(f"{TAB_SPACE * 2}confidence: Num\n")
             # $optional 部分
@@ -209,7 +305,7 @@ class ConvertV3toDsdlYaml:
         """
         import_file_list: $import自段段导入文件
         """
-        with open(out_file, "w+") as fp:
+        with open(out_file + "_data.yaml", "w+") as fp:
             fp.writelines('$dsdl-version: "0.5.0"\n')
             fp.writelines("$import:\n")
             for i in import_file_list:
@@ -228,12 +324,25 @@ class ConvertV3toDsdlYaml:
             fp.writelines(
                 f"{TAB_SPACE}sample-type: {self.struct_sample_name}[{','.join(cdom_temp)}]\n"
             )
-            fp.writelines(f"{TAB_SPACE}samples:\n")
-            for sample in self.samples:
-                self.write_single_sample(sample, fp)
+            if self.is_local:
+                fp.writelines(f"{TAB_SPACE}sample-path: $local\n")
+                fp.writelines(f"{TAB_SPACE}samples:\n")
+                for sample in self.samples:
+                    sample, _ = self.write_single_sample(sample)
+                    fp.writelines(f"{sample}")
+            else:
+                fp.writelines(
+                    f"{TAB_SPACE}sample-path: {out_file + '_samples.json'} \n"
+                )
+                sample_list = []
+                for sample in self.samples:
+                    _, sample = self.write_single_sample(sample)
+                    sample_list.append(sample)
+                with open(out_file + "_samples.json", "w") as f:
+                    json.dump(sample_list, f)
 
-    def write_single_sample(self, sample, file_point):
-        """提取sample信息，并格式化写入yaml文件
+    def write_single_sample(self, sample):
+        """提取sample信息，并格式化写入yaml或json文件
         sample = {
             'media': {'path':xxx, 'source':xxx, 'type':'image', 'height':xxx, 'width: xxx'},
             'ground_truth': [{
@@ -250,13 +359,29 @@ class ConvertV3toDsdlYaml:
             },...]
         }
         """
+        local_yaml = ""
+        sample_dict = dict()
         image_path = sample["media"]["path"]
         # eg. - image: "val/ILSVRC2012_val_00000034.JPEG"
-        file_point.writelines(f'{TAB_SPACE * 2}- image: "{image_path}"\n')
+        suffix = os.path.splitext(image_path)[-1]
+        if suffix in VIDEO_LIST or suffix in list(map(lambda x: x.upper(), VIDEO_LIST)):
+            self.media = MediaEnum.VIDEO
+            if self.is_local:
+                local_yaml += f'{TAB_SPACE * 2}- video: "{image_path}"\n'
+            else:
+                sample_dict["video"] = image_path
+        else:
+            if self.is_local:
+                local_yaml += f'{TAB_SPACE * 2}- image: "{image_path}"\n'
+            else:
+                sample_dict["image"] = image_path
 
         image_source = sample["media"]["source"]
         # eg. - image_tunas: "media/000000000007.png"
-        file_point.writelines(f'{TAB_SPACE * 2}  source: "{image_source}"\n')
+        if self.is_local:
+            local_yaml += f'{TAB_SPACE * 2}  source: "{image_source}"\n'
+        else:
+            sample_dict["source"] = image_source
 
         if "ground_truth" in sample.keys():
             gts = sample["ground_truth"]
@@ -272,33 +397,48 @@ class ConvertV3toDsdlYaml:
                 attributes = gt.get("attributes", None)
                 confidence = gt.get("confidence", None)
                 # eg. label: _9
-                file_point.writelines(f"{TAB_SPACE * 2}  {label}: {cls_name}\n")
+                if self.is_local:
+                    local_yaml += f"{TAB_SPACE * 2}  {label}: {cls_name}\n"
+                else:
+                    sample_dict[label] = cls_name
                 # 这边还要考虑一个问题就是不同的task里面的attribute可能还不一样，目前是没有区分的，
                 # 区分的话建议定义：self.attributes = defaultdict(dict), 然后其中的key是每个任务的名字，同self.class_dom
                 if attributes:
                     for attribute_name, attribute_value in attributes.items():
-                        attribute_name = self.clean(attribute_name)
-                        self.attributes.update(
-                            {attribute_name: attribute_value.__class__.__name__}
-                        )
-                        if attribute_value.__class__.__name__ == "str":
-                            file_point.writelines(
-                                f"{TAB_SPACE * 2}  {attribute_name}: \"{attribute_value}\"\n"
+                        attribute_name = self._clean(attribute_name)
+                        try:
+                            self.attributes.update(
+                                {
+                                    attribute_name: Field(
+                                        attribute_name,
+                                        field_value=attribute_value,
+                                        is_attr=True,
+                                    )
+                                }
                             )
+                        except KeyError as e:
+                            warnings.warn(
+                                f"error of {e} in attribute, skipped",
+                                DeprecationWarning,
+                            )
+                            continue
+                        if self.is_local:
+                            local_yaml += f"{TAB_SPACE * 2}  {attribute_name}: {self._add_quotes(attribute_value)}\n"
                         else:
-                            file_point.writelines(
-                                f"{TAB_SPACE * 2}  {attribute_name}: {attribute_value}\n"
+                            sample_dict[attribute_name] = self._add_quotes(
+                                attribute_value
                             )
                         self.optional.add(attribute_name)
                 if confidence:
-                    file_point.writelines(
-                        f"{TAB_SPACE * 2}  confidence: {confidence}\n"
-                    )
+                    if self.is_local:
+                        local_yaml += f"{TAB_SPACE * 2}  confidence: {confidence}\n"
+                    else:
+                        sample_dict["confidence"] = confidence
                     self.confidence = confidence.__class__.__name__
                     self.optional.add("confidence")
-
             else:
                 pass
+        return local_yaml, sample_dict
 
     def convert_pipeline(self):
         if not self.output_path:
@@ -314,11 +454,11 @@ class ConvertV3toDsdlYaml:
         import_file_list = ["class-dom", "struct"]
         for file in file_list:
             self.get_sample_data(os.path.join(file_name, file))
-            out_file = os.path.join(
-                self.output_path, self.sub_dataset_name + "_data.yaml"
-            )
+            out_file = os.path.join(self.output_path, self.sub_dataset_name)
             self.write_data_yaml(import_file_list, out_file)
-            print(f"generate data yaml file: {out_file}")
+            print(f"generate data yaml file: {out_file+'_data.yaml'}")
+            if not self.is_local:
+                print(f"generate data yaml file: {out_file + '_samples.json'}")
         # 2. generate class yaml file
         out_file = os.path.join(self.output_path, "class-dom.yaml")
         self.write_class_yaml(out_file)
@@ -329,17 +469,23 @@ class ConvertV3toDsdlYaml:
         print(f"generate struct sample yaml file: {out_file}")
 
     @staticmethod
-    def clean(varStr):
+    def _clean(varStr):
         return re.sub("\W|^(?=\d)", "_", varStr)
+
+    def _add_quotes(self, sample):
+        if isinstance(sample, str):
+            sample = f'"{sample}"'
+        return sample
 
 
 if __name__ == "__main__":
     args = parse_args()
     print(f"Called with args: \n{args}")
     src_file = args.src_dir
-    out_file = args.out_dir
+    des_file = args.out_dir
     unique_cate = args.unique_cate
+    is_local = args.local
     print(f"your input source dictionary: {src_file}")
-    print(f"your input destination dictionary: {out_file}")
-    v3toyaml = ConvertV3toDsdlYaml(src_file, out_file, unique_cate)
+    print(f"your input destination dictionary: {des_file}")
+    v3toyaml = ConvertV3toDsdlYaml(src_file, des_file, unique_cate, is_local)
     v3toyaml.convert_pipeline()
