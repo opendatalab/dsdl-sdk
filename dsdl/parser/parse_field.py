@@ -1,7 +1,7 @@
 from dsdl.exception import DefineSyntaxError, DefineTypeError
 from .utils import *
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Set
 
 
 @dataclass()
@@ -11,29 +11,12 @@ class EleStruct:
 
 
 class ParserField:
-    def __init__(self, struct_name: str):
-        self.TYPES_WITHOUT_PARS = [
-            "Bool",
-            "Num",
-            "Int",
-            "Str",
-            "Coord",
-            "Coord3D",
-            "Interval",
-            "BBox",
-            "Polygon",
-            "Image",
-            "Video",
-        ]
-        self.TYPES_TIME = ["Date", "Time"]
-        self.TYPES_LABEL = ["Label"]
-        self.TYPES_LIST = ["List"]
-        self.TYPES_ALL = (
-            self.TYPES_WITHOUT_PARS
-            + self.TYPES_TIME
-            + self.TYPES_LABEL
-            + self.TYPES_LIST
-        )
+    def __init__(self, struct_name: Set[str]):
+        self.TYPES_WITHOUT_PARS = TYPES_WITHOUT_PARS
+        self.TYPES_TIME = TYPES_TIME
+        self.TYPES_LABEL = TYPES_LABEL
+        self.TYPES_LIST = TYPES_LIST
+        self.TYPES_ALL = TYPES_ALL
         self.is_attr = set()
         self.optional = set()
         self.struct = struct_name  # field 中包含的struct，后续校验用
@@ -225,7 +208,7 @@ class ParserField:
             # 带参数的Date, Time类型的字段的校验
             field_type = self.parse_time_field(field_type, params_list)
         elif field_type in self.TYPES_LABEL:
-            # 带参数的Label类型的字段的校验
+            # 带参数的Label,SegMap类型的字段的校验
             field_type = self.parse_label_field(field_type, params_list)
         else:
             # Struct类型的字段的校验

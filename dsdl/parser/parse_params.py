@@ -3,7 +3,8 @@ from dataclasses import dataclass, field
 import re
 from dsdl.exception import DefineSyntaxError
 from collections import defaultdict
-from .utils import sort_nx
+from .utils import sort_nx, TYPES_ALL
+from dsdl.exception import ValidationError
 
 
 @dataclass()
@@ -11,6 +12,17 @@ class SingleStructParam:
     struct_name: str
     params_dict: Dict[str, str] = field(default_factory=dict)
     parents_struct: List[str] = field(default_factory=list)
+
+    def __post_init__(self):
+        """
+        按照规定struct和class dom的名字不能是白皮书中已经包含的类型名，如List这些内定的名字
+        """
+        if self.struct_name in TYPES_ALL:
+            raise ValidationError(f"{self.struct_name} is dsdl build-in value name, please rename it. "
+                                  f"Build-in value names are: {','.join(TYPES_ALL)}")
+        if self.struct_name in [i + 'Field' for i in TYPES_ALL]:
+            raise ValidationError(f"{self.struct_name} is dsdl build-in value name, please rename it. "
+                                  f"Build-in value names are: {', '.join(TYPES_ALL)}")
 
 
 @dataclass()
