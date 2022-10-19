@@ -1,7 +1,7 @@
 import click
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from dsdl.exception import DefineSyntaxError
+from dsdl.exception import ValidationError, DefineSyntaxError
 from dsdl.warning import DuplicateDefineWarning
 import os
 from dataclasses import dataclass, field
@@ -60,7 +60,19 @@ class StructORClassDomain:
     name: str
     type: TypeEnum = TypeEnum.STRUCT
     field_list: List[Union[EleStruct, EleClass]] = field(default_factory=list)
-    parent: List[str] = None
+    parent: List[str] = None  # class_dom 特有的super category
+    skeleton: List[List[int]] = None
+
+    def __post_init__(self):
+        """
+        按照规定struct和class dom的名字不能是白皮书中已经包含的类型名，如List这些内定的名字
+        """
+        if self.name in TYPES_ALL:
+            raise ValidationError(f"{self.name} is dsdl build-in value name, please rename it."
+                                  f"Build-in value names are: {','.join(TYPES_ALL)}")
+        if self.name in [i + 'Field' for i in TYPES_ALL]:
+            raise ValidationError(f"{self.name} is dsdl build-in value name, please rename it."
+                                  f"Build-in value names are: {','.join(TYPES_ALL)}")
 
 
 class DSDLParser(Parser, ABC):
@@ -193,7 +205,7 @@ class DSDLParser(Parser, ABC):
                             )
                             field_list[optional_name].type = temp_type
                         else:
-                            raise DefineSyntaxError(f"{optional_name} is not in $field")
+                            raise DefineSyntaxError(f"Error in $optional: {optional_name} is not in $field")
                 for attr_name in FIELD_PARSER.is_attr:
                     temp_type = field_list[attr_name].type
                     temp_type = add_key_value_2_struct_field(temp_type, "is_attr", True)
@@ -207,12 +219,16 @@ class DSDLParser(Parser, ABC):
                 define_info.field_list = list(field_list.values())
 
             elif define_type == "class_domain":
-                CLASS_PARSER = ParserClass(define_name, define_value["classes"])
+                if "skeleton" in define_value:
+                    CLASS_PARSER = ParserClass(define_name, define_value["classes"], define_value["skeleton"])
+                else:
+                    CLASS_PARSER = ParserClass(define_name, define_value["classes"])
                 define_info = StructORClassDomain(name=CLASS_PARSER.class_name)
                 # verify each ele (in other words: each label) of `class_domain`, and save in define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
                 define_info.field_list = CLASS_PARSER.class_field
                 define_info.parent = CLASS_PARSER.super_class_list
+                define_info.skeleton = CLASS_PARSER.skeleton
             else:
                 raise DefineSyntaxError(
                     f"error type {define_type} in yaml, type must be class_dom or struct."
@@ -260,6 +276,8 @@ class DSDLParser(Parser, ABC):
                     else:
                         dsdl_py += f"""        Label("{ele_class.label_value}"),\n"""
                 dsdl_py += "    ]\n"
+                if val.skeleton:
+                    dsdl_py += f"""    Skeleton = {val.skeleton}\n"""
             if idx != len(ordered_keys) - 1:
                 dsdl_py += "\n\n"
 

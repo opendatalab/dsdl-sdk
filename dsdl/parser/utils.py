@@ -3,12 +3,32 @@ import networkx as nx
 from typing import Dict, List
 
 
-def sanitize_variable_name(varStr: str) -> str:
+TYPES_WITHOUT_PARS = [
+    "Bool",
+    "Num",
+    "Int",
+    "Str",
+    "Coord",
+    "Coord3D",
+    "Interval",
+    "BBox",
+    "Polygon",
+    "RlePolygon",
+    "Image",
+    "Video",
+]
+TYPES_TIME = ["Date", "Time"]
+TYPES_LABEL = ["Label", "SegMap"]
+TYPES_LIST = ["List"]
+TYPES_ALL = TYPES_WITHOUT_PARS + TYPES_TIME + TYPES_LABEL + TYPES_LIST
+
+
+def sanitize_variable_name(varstr: str) -> str:
     """
     1. 将`.`替换为`__` 2.将（非字母开头）和（非字母数字及下划线）替换为`_`
     eg. apple.fruit_and_vegetables会转化为apple__fruit_and_vegetables
     """
-    temp = varStr.split(".")
+    temp = varstr.split(".")
     temp = [re.sub("\W|^(?=\d)", "_", i) for i in temp]
     temp = "__".join(temp)
     return temp
