@@ -18,7 +18,7 @@ TYPES_WITHOUT_PARS = [
     "Video",
 ]
 TYPES_TIME = ["Date", "Time"]
-TYPES_LABEL = ["Label", "SegMap"]
+TYPES_LABEL = ["Label", "SegMap", "Keypoint"]
 TYPES_LIST = ["List"]
 TYPES_ALL = TYPES_WITHOUT_PARS + TYPES_TIME + TYPES_LABEL + TYPES_LIST
 
