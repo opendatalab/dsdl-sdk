@@ -1,6 +1,5 @@
 from .field import Field
-from ..geometry import Attributes
-from .registry import STRUCT
+from ..geometry import Attributes, STRUCT
 from ..exception import ValidationError
 from ..warning import FieldNotFoundWarning
 

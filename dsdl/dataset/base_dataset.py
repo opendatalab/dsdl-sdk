@@ -1,5 +1,6 @@
 import torch.utils.data
-from ..types import Struct, STRUCT
+from ..types import Struct
+from ..geometry import STRUCT
 from dsdl.dataset.utils import Util
 import dsdl.objectio as objectio
 from typing import List, Dict, Any, Callable, Optional, Union

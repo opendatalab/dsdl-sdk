@@ -1,6 +1,6 @@
 import numpy as np
 from PIL import ImageFont, ImageDraw
-from ..types.registry import CLASSDOMAIN
+from .registry import CLASSDOMAIN
 from .base_geometry import BaseGeometry
 
 
