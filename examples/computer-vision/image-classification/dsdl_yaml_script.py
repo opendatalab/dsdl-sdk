@@ -440,13 +440,14 @@ class ConvertV3toDsdlYaml:
                 pass
         return local_yaml, sample_dict
 
-    def convert_pipeline(self):
+    def convert_pipeline(self) -> List[str]:
+        out_data_list = []
         if not self.output_path:
             temp = os.path.basename(self.dataset_path)
             root_path = os.path.dirname(self.dataset_path)
             self.output_path = os.path.join(root_path, temp + "_dsdl")
-            if not os.path.exists(self.output_path):
-                os.mkdir(self.output_path)
+        if not os.path.exists(self.output_path):
+            os.mkdir(self.output_path)
         self.get_dataset_info()
         file_name = os.path.join(self.dataset_path, "annotations", "json")
         file_list = os.listdir(path=file_name)
@@ -457,6 +458,7 @@ class ConvertV3toDsdlYaml:
             out_file = os.path.join(self.output_path, self.sub_dataset_name)
             self.write_data_yaml(import_file_list, out_file)
             print(f"generate data yaml file: {out_file+'_data.yaml'}")
+            out_data_list.append(out_file+'_data.yaml')
             if not self.is_local:
                 print(f"generate data yaml file: {out_file + '_samples.json'}")
         # 2. generate class yaml file
@@ -467,6 +469,7 @@ class ConvertV3toDsdlYaml:
         out_file = os.path.join(self.output_path, "struct.yaml")
         self.write_struct_yaml(out_file)
         print(f"generate struct sample yaml file: {out_file}")
+        return out_data_list
 
     @staticmethod
     def _clean(varStr):
