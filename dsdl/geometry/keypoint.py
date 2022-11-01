@@ -92,11 +92,12 @@ class KeyPoints(BaseGeometry):
         line_color = (0, 255, 0)  # green
         point_radius = 3
         skeleton = self._dom.get_attribute("Skeleton")
-        point_pairs = skeleton.get_point_pairs(self)
-        for point_pair in point_pairs:
-            p1, p2 = point_pair[:2]
-            if p1.visiable > 0 and p2.visiable:
-                draw_obj.line([*p1.point, *p2.point], width=2, fill=(*line_color, 255))
+        if skeleton is not None:
+            point_pairs = skeleton.get_point_pairs(self)
+            for point_pair in point_pairs:
+                p1, p2 = point_pair[:2]
+                if p1.visiable > 0 and p2.visiable:
+                    draw_obj.line([*p1.point, *p2.point], width=2, fill=(*line_color, 255))
         for point in self._keypoints:
             if point.visiable > 0:
                 label_ = point.label.category_name
@@ -108,3 +109,6 @@ class KeyPoints(BaseGeometry):
                                  fill=(*point_color, 255))
         del draw_obj
         return image
+
+    def __repr__(self):
+        return str(self.value)
