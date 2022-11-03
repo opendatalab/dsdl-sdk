@@ -68,11 +68,15 @@ class StructORClassDomain:
         按照规定struct和class dom的名字不能是白皮书中已经包含的类型名，如List这些内定的名字
         """
         if self.name in TYPES_ALL:
-            raise ValidationError(f"{self.name} is dsdl build-in value name, please rename it."
-                                  f"Build-in value names are: {','.join(TYPES_ALL)}")
-        if self.name in [i + 'Field' for i in TYPES_ALL]:
-            raise ValidationError(f"{self.name} is dsdl build-in value name, please rename it."
-                                  f"Build-in value names are: {','.join(TYPES_ALL)}")
+            raise ValidationError(
+                f"{self.name} is dsdl build-in value name, please rename it."
+                f"Build-in value names are: {','.join(TYPES_ALL)}"
+            )
+        if self.name in [i + "Field" for i in TYPES_ALL]:
+            raise ValidationError(
+                f"{self.name} is dsdl build-in value name, please rename it."
+                f"Build-in value names are: {','.join(TYPES_ALL)}"
+            )
 
 
 class DSDLParser(Parser, ABC):
@@ -205,7 +209,9 @@ class DSDLParser(Parser, ABC):
                             )
                             field_list[optional_name].type = temp_type
                         else:
-                            raise DefineSyntaxError(f"Error in $optional: {optional_name} is not in $field")
+                            raise DefineSyntaxError(
+                                f"Error in $optional: {optional_name} is not in $field"
+                            )
                 for attr_name in FIELD_PARSER.is_attr:
                     temp_type = field_list[attr_name].type
                     temp_type = add_key_value_2_struct_field(temp_type, "is_attr", True)
@@ -220,7 +226,9 @@ class DSDLParser(Parser, ABC):
 
             elif define_type == "class_domain":
                 if "skeleton" in define_value:
-                    CLASS_PARSER = ParserClass(define_name, define_value["classes"], define_value["skeleton"])
+                    CLASS_PARSER = ParserClass(
+                        define_name, define_value["classes"], define_value["skeleton"]
+                    )
                 else:
                     CLASS_PARSER = ParserClass(define_name, define_value["classes"])
                 define_info = StructORClassDomain(name=CLASS_PARSER.class_name)

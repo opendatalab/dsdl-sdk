@@ -62,7 +62,7 @@ class ParserParam:
         # {SceneAndObjectSample:{struct_name: SceneAndObjectSample
         #     params_dict: {scenedom: None, objectdom: None}
         #     parents_struct: []},
-        # LocalObjectEntry:{struct_name: SceneAndObjectSample
+        # LocalObjectEntry:{struct_name: LocalObjectEntry
         #     cdom: {cdom: None}
         #     parents_struct: []},}
         for define_name, define_value in class_defi.items():
@@ -80,8 +80,8 @@ class ParserParam:
         # {SceneAndObjectSample:{struct_name: SceneAndObjectSample
         #     params_dict: {scenedom: SceneDom, objectdom: ObjectDom}
         #     parents_struct: []},
-        # LocalObjectEntry:{struct_name: SceneAndObjectSample
-        #     cdom: {cdom: $scenedom}
+        # LocalObjectEntry:{struct_name: LocalObjectEntry
+        #     params_dict: {cdom: $scenedom}
         #     parents_struct: [SceneAndObjectSample]},}
         if len(self.general_param_map) == 0:
             return None
@@ -166,7 +166,7 @@ class ParserParam:
                 parent_struct = self.general_param_map[struct].parents_struct
                 if not parent_struct:
                     raise DefineSyntaxError(
-                        f"each struct must have one parent struct, but {struct} can have no"
+                        f"each struct must have one parent struct, but {struct} have no"
                     )
                 if len(parent_struct) > 1:
                     raise DefineSyntaxError(
