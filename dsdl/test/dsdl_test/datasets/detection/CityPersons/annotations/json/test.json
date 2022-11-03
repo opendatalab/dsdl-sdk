@@ -1,0 +1,167 @@
+{
+    "sub_dataset_name": "test",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000003475.png",
+                "source": "leftImg8bit/test/berlin/berlin_000510_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003478.png",
+                "source": "leftImg8bit/test/berlin/berlin_000519_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003476.png",
+                "source": "leftImg8bit/test/berlin/berlin_000491_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003477.png",
+                "source": "leftImg8bit/test/berlin/berlin_000381_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003479.png",
+                "source": "leftImg8bit/test/berlin/berlin_000400_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003482.png",
+                "source": "leftImg8bit/test/berlin/berlin_000036_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003484.png",
+                "source": "leftImg8bit/test/berlin/berlin_000146_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003481.png",
+                "source": "leftImg8bit/test/berlin/berlin_000476_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003480.png",
+                "source": "leftImg8bit/test/berlin/berlin_000409_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003483.png",
+                "source": "leftImg8bit/test/berlin/berlin_000256_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003486.png",
+                "source": "leftImg8bit/test/berlin/berlin_000366_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003485.png",
+                "source": "leftImg8bit/test/berlin/berlin_000012_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003491.png",
+                "source": "leftImg8bit/test/berlin/berlin_000088_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003492.png",
+                "source": "leftImg8bit/test/berlin/berlin_000198_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003487.png",
+                "source": "leftImg8bit/test/berlin/berlin_000342_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003489.png",
+                "source": "leftImg8bit/test/berlin/berlin_000232_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003488.png",
+                "source": "leftImg8bit/test/berlin/berlin_000452_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000003490.png",
+                "source": "leftImg8bit/test/berlin/berlin_000122_000019_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            }
+        }
+    ]
+}

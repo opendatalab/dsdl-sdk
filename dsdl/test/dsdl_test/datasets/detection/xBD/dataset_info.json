@@ -1,0 +1,63 @@
+{
+    "dataset_name": "xBD",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "xBD Polygon Segmentation",
+            "type": "polygon",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "no-damage"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "minor-damage"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "destroyed"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "major-damage"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "un-classified"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 5598,
+                "annotated_media_num": 4566
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 1866,
+                "annotated_media_num": 1504
+            }
+        ],
+        "hold": [
+            {
+                "media_type": "image",
+                "media_num": 1866,
+                "annotated_media_num": 1526
+            }
+        ],
+        "tier3": [
+            {
+                "media_type": "image",
+                "media_num": 12738,
+                "annotated_media_num": 6756
+            }
+        ]
+    }
+}

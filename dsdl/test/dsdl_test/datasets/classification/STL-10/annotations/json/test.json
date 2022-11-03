@@ -1,0 +1,365 @@
+{
+    "sub_dataset_name": "test",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000000000.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000006",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000004.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000001",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 8
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000009.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000002",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 6
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000005.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000008",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000003.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000004",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000007.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000005",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000002.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000009",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000001.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000000",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000008.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000007",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000006.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000003",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000011.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000011",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000015.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000015",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 6
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000014.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000014",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000016.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000016",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000017.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000017",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 10
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000010.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000010",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000013.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000013",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000012.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000012",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000018.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000018",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000023.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/test_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000023",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                }
+            ]
+        }
+    ]
+}
