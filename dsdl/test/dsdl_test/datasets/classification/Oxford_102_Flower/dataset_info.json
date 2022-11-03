@@ -1,0 +1,444 @@
+{
+    "dataset_name": "Oxford 102 Flower",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "Oxford 102 Flower Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 1,
+                    "category_name": "pink primrose"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "hard-leaved pocket orchid"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "canterbury bells"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "sweet pea"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "english marigold"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "tiger lily"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "moon orchid"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "bird of paradise"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "monkshood"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "globe thistle"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "snapdragon"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "colt's foot"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "king protea"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "spear thistle"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "yellow iris"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "globe-flower"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "purple coneflower"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "peruvian lily"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "balloon flower"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "giant white arum lily"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "fire lily"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "pincushion flower"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "fritillary"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "red ginger"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "grape hyacinth"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "corn poppy"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "prince of wales feathers"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "stemless gentian"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "artichoke"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "sweet william"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "carnation"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "garden phlox"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "love in the mist"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "mexican aster"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "alpine sea holly"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "ruby-lipped cattleya"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "cape flower"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "great masterwort"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "siam tulip"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "lenten rose"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "barbeton daisy"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "daffodil"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "sword lily"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "poinsettia"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "bolero deep blue"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "wallflower"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "marigold"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "buttercup"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "oxeye daisy"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "common dandelion"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "petunia"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "wild pansy"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "primula"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "sunflower"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "pelargonium"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "bishop of llandaff"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "gaura"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "geranium"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "orange dahlia"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "pink-yellow dahlia?"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "cautleya spicata"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "japanese anemone"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "black-eyed susan"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "silverbush"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "californian poppy"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "osteospermum"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "spring crocus"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "bearded iris"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "windflower"
+                },
+                {
+                    "category_id": 70,
+                    "category_name": "tree poppy"
+                },
+                {
+                    "category_id": 71,
+                    "category_name": "gazania"
+                },
+                {
+                    "category_id": 72,
+                    "category_name": "azalea"
+                },
+                {
+                    "category_id": 73,
+                    "category_name": "water lily"
+                },
+                {
+                    "category_id": 74,
+                    "category_name": "rose"
+                },
+                {
+                    "category_id": 75,
+                    "category_name": "thorn apple"
+                },
+                {
+                    "category_id": 76,
+                    "category_name": "morning glory"
+                },
+                {
+                    "category_id": 77,
+                    "category_name": "passion flower"
+                },
+                {
+                    "category_id": 78,
+                    "category_name": "lotus"
+                },
+                {
+                    "category_id": 79,
+                    "category_name": "toad lily"
+                },
+                {
+                    "category_id": 80,
+                    "category_name": "anthurium"
+                },
+                {
+                    "category_id": 81,
+                    "category_name": "frangipani"
+                },
+                {
+                    "category_id": 82,
+                    "category_name": "clematis"
+                },
+                {
+                    "category_id": 83,
+                    "category_name": "hibiscus"
+                },
+                {
+                    "category_id": 84,
+                    "category_name": "columbine"
+                },
+                {
+                    "category_id": 85,
+                    "category_name": "desert-rose"
+                },
+                {
+                    "category_id": 86,
+                    "category_name": "tree mallow"
+                },
+                {
+                    "category_id": 87,
+                    "category_name": "magnolia"
+                },
+                {
+                    "category_id": 88,
+                    "category_name": "cyclamen "
+                },
+                {
+                    "category_id": 89,
+                    "category_name": "watercress"
+                },
+                {
+                    "category_id": 90,
+                    "category_name": "canna lily"
+                },
+                {
+                    "category_id": 91,
+                    "category_name": "hippeastrum "
+                },
+                {
+                    "category_id": 92,
+                    "category_name": "bee balm"
+                },
+                {
+                    "category_id": 93,
+                    "category_name": "ball moss"
+                },
+                {
+                    "category_id": 94,
+                    "category_name": "foxglove"
+                },
+                {
+                    "category_id": 95,
+                    "category_name": "bougainvillea"
+                },
+                {
+                    "category_id": 96,
+                    "category_name": "camellia"
+                },
+                {
+                    "category_id": 97,
+                    "category_name": "mallow"
+                },
+                {
+                    "category_id": 98,
+                    "category_name": "mexican petunia"
+                },
+                {
+                    "category_id": 99,
+                    "category_name": "bromelia"
+                },
+                {
+                    "category_id": 100,
+                    "category_name": "blanket flower"
+                },
+                {
+                    "category_id": 101,
+                    "category_name": "trumpet creeper"
+                },
+                {
+                    "category_id": 102,
+                    "category_name": "blackberry lily"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 1020,
+                "annotated_media_num": 1020
+            }
+        ],
+        "val": [
+            {
+                "media_type": "image",
+                "media_num": 1020,
+                "annotated_media_num": 1020
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 6149,
+                "annotated_media_num": 6149
+            }
+        ]
+    }
+}

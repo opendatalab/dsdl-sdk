@@ -1,0 +1,1046 @@
+{
+    "dataset_name": "Caltech-256",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "Caltech-256 Images Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 1,
+                    "category_name": "ak47"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "american-flag"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "backpack"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "baseball-bat"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "baseball-glove"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "basketball-hoop"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "bat"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "bathtub"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "bear"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "beer-mug"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "billiards"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "binoculars"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "birdbath"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "blimp"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "bonsai-101"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "boom-box"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "bowling-ball"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "bowling-pin"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "boxing-glove"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "brain-101"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "breadmaker"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "buddha-101"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "bulldozer"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "butterfly"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "cactus"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "cake"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "calculator"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "camel"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "cannon"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "canoe"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "car-tire"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "cartman"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "cd"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "centipede"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "cereal-box"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "chandelier-101"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "chess-board"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "chimp"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "chopsticks"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "cockroach"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "coffee-mug"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "coffin"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "coin"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "comet"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "computer-keyboard"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "computer-monitor"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "computer-mouse"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "conch"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "cormorant"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "covered-wagon"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "cowboy-hat"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "crab-101"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "desk-globe"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "diamond-ring"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "dice"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "dog"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "dolphin-101"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "doorknob"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "drinking-straw"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "duck"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "dumb-bell"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "eiffel-tower"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "electric-guitar-101"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "elephant-101"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "elk"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "ewer-101"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "eyeglasses"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "fern"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "fighter-jet"
+                },
+                {
+                    "category_id": 70,
+                    "category_name": "fire-extinguisher"
+                },
+                {
+                    "category_id": 71,
+                    "category_name": "fire-hydrant"
+                },
+                {
+                    "category_id": 72,
+                    "category_name": "fire-truck"
+                },
+                {
+                    "category_id": 73,
+                    "category_name": "fireworks"
+                },
+                {
+                    "category_id": 74,
+                    "category_name": "flashlight"
+                },
+                {
+                    "category_id": 75,
+                    "category_name": "floppy-disk"
+                },
+                {
+                    "category_id": 76,
+                    "category_name": "football-helmet"
+                },
+                {
+                    "category_id": 77,
+                    "category_name": "french-horn"
+                },
+                {
+                    "category_id": 78,
+                    "category_name": "fried-egg"
+                },
+                {
+                    "category_id": 79,
+                    "category_name": "frisbee"
+                },
+                {
+                    "category_id": 80,
+                    "category_name": "frog"
+                },
+                {
+                    "category_id": 81,
+                    "category_name": "frying-pan"
+                },
+                {
+                    "category_id": 82,
+                    "category_name": "galaxy"
+                },
+                {
+                    "category_id": 83,
+                    "category_name": "gas-pump"
+                },
+                {
+                    "category_id": 84,
+                    "category_name": "giraffe"
+                },
+                {
+                    "category_id": 85,
+                    "category_name": "goat"
+                },
+                {
+                    "category_id": 86,
+                    "category_name": "golden-gate-bridge"
+                },
+                {
+                    "category_id": 87,
+                    "category_name": "goldfish"
+                },
+                {
+                    "category_id": 88,
+                    "category_name": "golf-ball"
+                },
+                {
+                    "category_id": 89,
+                    "category_name": "goose"
+                },
+                {
+                    "category_id": 90,
+                    "category_name": "gorilla"
+                },
+                {
+                    "category_id": 91,
+                    "category_name": "grand-piano-101"
+                },
+                {
+                    "category_id": 92,
+                    "category_name": "grapes"
+                },
+                {
+                    "category_id": 93,
+                    "category_name": "grasshopper"
+                },
+                {
+                    "category_id": 94,
+                    "category_name": "guitar-pick"
+                },
+                {
+                    "category_id": 95,
+                    "category_name": "hamburger"
+                },
+                {
+                    "category_id": 96,
+                    "category_name": "hammock"
+                },
+                {
+                    "category_id": 97,
+                    "category_name": "harmonica"
+                },
+                {
+                    "category_id": 98,
+                    "category_name": "harp"
+                },
+                {
+                    "category_id": 99,
+                    "category_name": "harpsichord"
+                },
+                {
+                    "category_id": 100,
+                    "category_name": "hawksbill-101"
+                },
+                {
+                    "category_id": 101,
+                    "category_name": "head-phones"
+                },
+                {
+                    "category_id": 102,
+                    "category_name": "helicopter-101"
+                },
+                {
+                    "category_id": 103,
+                    "category_name": "hibiscus"
+                },
+                {
+                    "category_id": 104,
+                    "category_name": "homer-simpson"
+                },
+                {
+                    "category_id": 105,
+                    "category_name": "horse"
+                },
+                {
+                    "category_id": 106,
+                    "category_name": "horseshoe-crab"
+                },
+                {
+                    "category_id": 107,
+                    "category_name": "hot-air-balloon"
+                },
+                {
+                    "category_id": 108,
+                    "category_name": "hot-dog"
+                },
+                {
+                    "category_id": 109,
+                    "category_name": "hot-tub"
+                },
+                {
+                    "category_id": 110,
+                    "category_name": "hourglass"
+                },
+                {
+                    "category_id": 111,
+                    "category_name": "house-fly"
+                },
+                {
+                    "category_id": 112,
+                    "category_name": "human-skeleton"
+                },
+                {
+                    "category_id": 113,
+                    "category_name": "hummingbird"
+                },
+                {
+                    "category_id": 114,
+                    "category_name": "ibis-101"
+                },
+                {
+                    "category_id": 115,
+                    "category_name": "ice-cream-cone"
+                },
+                {
+                    "category_id": 116,
+                    "category_name": "iguana"
+                },
+                {
+                    "category_id": 117,
+                    "category_name": "ipod"
+                },
+                {
+                    "category_id": 118,
+                    "category_name": "iris"
+                },
+                {
+                    "category_id": 119,
+                    "category_name": "jesus-christ"
+                },
+                {
+                    "category_id": 120,
+                    "category_name": "joy-stick"
+                },
+                {
+                    "category_id": 121,
+                    "category_name": "kangaroo-101"
+                },
+                {
+                    "category_id": 122,
+                    "category_name": "kayak"
+                },
+                {
+                    "category_id": 123,
+                    "category_name": "ketch-101"
+                },
+                {
+                    "category_id": 124,
+                    "category_name": "killer-whale"
+                },
+                {
+                    "category_id": 125,
+                    "category_name": "knife"
+                },
+                {
+                    "category_id": 126,
+                    "category_name": "ladder"
+                },
+                {
+                    "category_id": 127,
+                    "category_name": "laptop-101"
+                },
+                {
+                    "category_id": 128,
+                    "category_name": "lathe"
+                },
+                {
+                    "category_id": 129,
+                    "category_name": "leopards-101"
+                },
+                {
+                    "category_id": 130,
+                    "category_name": "license-plate"
+                },
+                {
+                    "category_id": 131,
+                    "category_name": "lightbulb"
+                },
+                {
+                    "category_id": 132,
+                    "category_name": "light-house"
+                },
+                {
+                    "category_id": 133,
+                    "category_name": "lightning"
+                },
+                {
+                    "category_id": 134,
+                    "category_name": "llama-101"
+                },
+                {
+                    "category_id": 135,
+                    "category_name": "mailbox"
+                },
+                {
+                    "category_id": 136,
+                    "category_name": "mandolin"
+                },
+                {
+                    "category_id": 137,
+                    "category_name": "mars"
+                },
+                {
+                    "category_id": 138,
+                    "category_name": "mattress"
+                },
+                {
+                    "category_id": 139,
+                    "category_name": "megaphone"
+                },
+                {
+                    "category_id": 140,
+                    "category_name": "menorah-101"
+                },
+                {
+                    "category_id": 141,
+                    "category_name": "microscope"
+                },
+                {
+                    "category_id": 142,
+                    "category_name": "microwave"
+                },
+                {
+                    "category_id": 143,
+                    "category_name": "minaret"
+                },
+                {
+                    "category_id": 144,
+                    "category_name": "minotaur"
+                },
+                {
+                    "category_id": 145,
+                    "category_name": "motorbikes-101"
+                },
+                {
+                    "category_id": 146,
+                    "category_name": "mountain-bike"
+                },
+                {
+                    "category_id": 147,
+                    "category_name": "mushroom"
+                },
+                {
+                    "category_id": 148,
+                    "category_name": "mussels"
+                },
+                {
+                    "category_id": 149,
+                    "category_name": "necktie"
+                },
+                {
+                    "category_id": 150,
+                    "category_name": "octopus"
+                },
+                {
+                    "category_id": 151,
+                    "category_name": "ostrich"
+                },
+                {
+                    "category_id": 152,
+                    "category_name": "owl"
+                },
+                {
+                    "category_id": 153,
+                    "category_name": "palm-pilot"
+                },
+                {
+                    "category_id": 154,
+                    "category_name": "palm-tree"
+                },
+                {
+                    "category_id": 155,
+                    "category_name": "paperclip"
+                },
+                {
+                    "category_id": 156,
+                    "category_name": "paper-shredder"
+                },
+                {
+                    "category_id": 157,
+                    "category_name": "pci-card"
+                },
+                {
+                    "category_id": 158,
+                    "category_name": "penguin"
+                },
+                {
+                    "category_id": 159,
+                    "category_name": "people"
+                },
+                {
+                    "category_id": 160,
+                    "category_name": "pez-dispenser"
+                },
+                {
+                    "category_id": 161,
+                    "category_name": "photocopier"
+                },
+                {
+                    "category_id": 162,
+                    "category_name": "picnic-table"
+                },
+                {
+                    "category_id": 163,
+                    "category_name": "playing-card"
+                },
+                {
+                    "category_id": 164,
+                    "category_name": "porcupine"
+                },
+                {
+                    "category_id": 165,
+                    "category_name": "pram"
+                },
+                {
+                    "category_id": 166,
+                    "category_name": "praying-mantis"
+                },
+                {
+                    "category_id": 167,
+                    "category_name": "pyramid"
+                },
+                {
+                    "category_id": 168,
+                    "category_name": "raccoon"
+                },
+                {
+                    "category_id": 169,
+                    "category_name": "radio-telescope"
+                },
+                {
+                    "category_id": 170,
+                    "category_name": "rainbow"
+                },
+                {
+                    "category_id": 171,
+                    "category_name": "refrigerator"
+                },
+                {
+                    "category_id": 172,
+                    "category_name": "revolver-101"
+                },
+                {
+                    "category_id": 173,
+                    "category_name": "rifle"
+                },
+                {
+                    "category_id": 174,
+                    "category_name": "rotary-phone"
+                },
+                {
+                    "category_id": 175,
+                    "category_name": "roulette-wheel"
+                },
+                {
+                    "category_id": 176,
+                    "category_name": "saddle"
+                },
+                {
+                    "category_id": 177,
+                    "category_name": "saturn"
+                },
+                {
+                    "category_id": 178,
+                    "category_name": "school-bus"
+                },
+                {
+                    "category_id": 179,
+                    "category_name": "scorpion-101"
+                },
+                {
+                    "category_id": 180,
+                    "category_name": "screwdriver"
+                },
+                {
+                    "category_id": 181,
+                    "category_name": "segway"
+                },
+                {
+                    "category_id": 182,
+                    "category_name": "self-propelled-lawn-mower"
+                },
+                {
+                    "category_id": 183,
+                    "category_name": "sextant"
+                },
+                {
+                    "category_id": 184,
+                    "category_name": "sheet-music"
+                },
+                {
+                    "category_id": 185,
+                    "category_name": "skateboard"
+                },
+                {
+                    "category_id": 186,
+                    "category_name": "skunk"
+                },
+                {
+                    "category_id": 187,
+                    "category_name": "skyscraper"
+                },
+                {
+                    "category_id": 188,
+                    "category_name": "smokestack"
+                },
+                {
+                    "category_id": 189,
+                    "category_name": "snail"
+                },
+                {
+                    "category_id": 190,
+                    "category_name": "snake"
+                },
+                {
+                    "category_id": 191,
+                    "category_name": "sneaker"
+                },
+                {
+                    "category_id": 192,
+                    "category_name": "snowmobile"
+                },
+                {
+                    "category_id": 193,
+                    "category_name": "soccer-ball"
+                },
+                {
+                    "category_id": 194,
+                    "category_name": "socks"
+                },
+                {
+                    "category_id": 195,
+                    "category_name": "soda-can"
+                },
+                {
+                    "category_id": 196,
+                    "category_name": "spaghetti"
+                },
+                {
+                    "category_id": 197,
+                    "category_name": "speed-boat"
+                },
+                {
+                    "category_id": 198,
+                    "category_name": "spider"
+                },
+                {
+                    "category_id": 199,
+                    "category_name": "spoon"
+                },
+                {
+                    "category_id": 200,
+                    "category_name": "stained-glass"
+                },
+                {
+                    "category_id": 201,
+                    "category_name": "starfish-101"
+                },
+                {
+                    "category_id": 202,
+                    "category_name": "steering-wheel"
+                },
+                {
+                    "category_id": 203,
+                    "category_name": "stirrups"
+                },
+                {
+                    "category_id": 204,
+                    "category_name": "sunflower-101"
+                },
+                {
+                    "category_id": 205,
+                    "category_name": "superman"
+                },
+                {
+                    "category_id": 206,
+                    "category_name": "sushi"
+                },
+                {
+                    "category_id": 207,
+                    "category_name": "swan"
+                },
+                {
+                    "category_id": 208,
+                    "category_name": "swiss-army-knife"
+                },
+                {
+                    "category_id": 209,
+                    "category_name": "sword"
+                },
+                {
+                    "category_id": 210,
+                    "category_name": "syringe"
+                },
+                {
+                    "category_id": 211,
+                    "category_name": "tambourine"
+                },
+                {
+                    "category_id": 212,
+                    "category_name": "teapot"
+                },
+                {
+                    "category_id": 213,
+                    "category_name": "teddy-bear"
+                },
+                {
+                    "category_id": 214,
+                    "category_name": "teepee"
+                },
+                {
+                    "category_id": 215,
+                    "category_name": "telephone-box"
+                },
+                {
+                    "category_id": 216,
+                    "category_name": "tennis-ball"
+                },
+                {
+                    "category_id": 217,
+                    "category_name": "tennis-court"
+                },
+                {
+                    "category_id": 218,
+                    "category_name": "tennis-racket"
+                },
+                {
+                    "category_id": 219,
+                    "category_name": "theodolite"
+                },
+                {
+                    "category_id": 220,
+                    "category_name": "toaster"
+                },
+                {
+                    "category_id": 221,
+                    "category_name": "tomato"
+                },
+                {
+                    "category_id": 222,
+                    "category_name": "tombstone"
+                },
+                {
+                    "category_id": 223,
+                    "category_name": "top-hat"
+                },
+                {
+                    "category_id": 224,
+                    "category_name": "touring-bike"
+                },
+                {
+                    "category_id": 225,
+                    "category_name": "tower-pisa"
+                },
+                {
+                    "category_id": 226,
+                    "category_name": "traffic-light"
+                },
+                {
+                    "category_id": 227,
+                    "category_name": "treadmill"
+                },
+                {
+                    "category_id": 228,
+                    "category_name": "triceratops"
+                },
+                {
+                    "category_id": 229,
+                    "category_name": "tricycle"
+                },
+                {
+                    "category_id": 230,
+                    "category_name": "trilobite-101"
+                },
+                {
+                    "category_id": 231,
+                    "category_name": "tripod"
+                },
+                {
+                    "category_id": 232,
+                    "category_name": "t-shirt"
+                },
+                {
+                    "category_id": 233,
+                    "category_name": "tuning-fork"
+                },
+                {
+                    "category_id": 234,
+                    "category_name": "tweezer"
+                },
+                {
+                    "category_id": 235,
+                    "category_name": "umbrella-101"
+                },
+                {
+                    "category_id": 236,
+                    "category_name": "unicorn"
+                },
+                {
+                    "category_id": 237,
+                    "category_name": "vcr"
+                },
+                {
+                    "category_id": 238,
+                    "category_name": "video-projector"
+                },
+                {
+                    "category_id": 239,
+                    "category_name": "washing-machine"
+                },
+                {
+                    "category_id": 240,
+                    "category_name": "watch-101"
+                },
+                {
+                    "category_id": 241,
+                    "category_name": "waterfall"
+                },
+                {
+                    "category_id": 242,
+                    "category_name": "watermelon"
+                },
+                {
+                    "category_id": 243,
+                    "category_name": "welding-mask"
+                },
+                {
+                    "category_id": 244,
+                    "category_name": "wheelbarrow"
+                },
+                {
+                    "category_id": 245,
+                    "category_name": "windmill"
+                },
+                {
+                    "category_id": 246,
+                    "category_name": "wine-bottle"
+                },
+                {
+                    "category_id": 247,
+                    "category_name": "xylophone"
+                },
+                {
+                    "category_id": 248,
+                    "category_name": "yarmulke"
+                },
+                {
+                    "category_id": 249,
+                    "category_name": "yo-yo"
+                },
+                {
+                    "category_id": 250,
+                    "category_name": "zebra"
+                },
+                {
+                    "category_id": 251,
+                    "category_name": "airplanes-101"
+                },
+                {
+                    "category_id": 252,
+                    "category_name": "car-side-101"
+                },
+                {
+                    "category_id": 253,
+                    "category_name": "faces-easy-101"
+                },
+                {
+                    "category_id": 254,
+                    "category_name": "greyhound"
+                },
+                {
+                    "category_id": 255,
+                    "category_name": "tennis-shoes"
+                },
+                {
+                    "category_id": 256,
+                    "category_name": "toad"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "_default": [
+            {
+                "media_type": "image",
+                "media_num": 30607,
+                "annotated_media_num": 29780
+            }
+        ]
+    }
+}

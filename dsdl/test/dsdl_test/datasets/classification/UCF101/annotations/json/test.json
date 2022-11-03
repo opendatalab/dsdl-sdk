@@ -1,0 +1,413 @@
+{
+    "sub_dataset_name": "test",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000000000.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c02.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 4.92
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000001",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "01",
+                        "clip": "02"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000001.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g02_c02.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 5.84
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000007",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "02",
+                        "clip": "02"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000002.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 6.56
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000000",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "01",
+                        "clip": "01"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000003.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c03.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 10.36
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000002",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "01",
+                        "clip": "03"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000004.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c05.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 11.84
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000004",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "01",
+                        "clip": "05"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000005.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g02_c01.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 6.8
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000006",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "02",
+                        "clip": "01"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000006.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g02_c04.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 6.8
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000009",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "02",
+                        "clip": "04"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000007.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g02_c03.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 8.64
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000008",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "02",
+                        "clip": "03"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000008.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c01.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 8.36
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000010",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "03",
+                        "clip": "01"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000009.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c06.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 4.88
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000005",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "01",
+                        "clip": "06"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000010.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c02.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 5.36
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000011",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "03",
+                        "clip": "02"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000011.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c04.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 4.32
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000013",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "03",
+                        "clip": "04"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000012.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c03.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 4.6
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000012",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "03",
+                        "clip": "03"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000013.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c05.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 5.84
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000014",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "03",
+                        "clip": "05"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000014.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c06.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 6.08
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000015",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "03",
+                        "clip": "06"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000015.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g04_c01.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 5.04
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000016",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "04",
+                        "clip": "01"
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000016.avi",
+                "source": "UCF-101/ApplyEyeMakeup/v_ApplyEyeMakeup_g04_c05.avi",
+                "type": "video",
+                "height": 240,
+                "width": 320,
+                "fps": 25,
+                "duration": 4.24
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000020",
+                    "name": "UCF101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "group": "04",
+                        "clip": "05"
+                    },
+                    "category_id": 1
+                }
+            ]
+        }
+    ]
+}
