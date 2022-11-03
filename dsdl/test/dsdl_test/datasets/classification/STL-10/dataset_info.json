@@ -1,0 +1,76 @@
+{
+    "dataset_name": "stl10",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "STL-10 Images Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 1,
+                    "category_name": "airplane"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "bird"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "car"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "cat"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "deer"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "dog"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "horse"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "monkey"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "ship"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "truck"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 8000,
+                "annotated_media_num": 8000
+            }
+        ],
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 5000,
+                "annotated_media_num": 5000
+            }
+        ],
+        "unlabeled": [
+            {
+                "media_type": "image",
+                "media_num": 100000,
+                "annotated_media_num": 0
+            }
+        ]
+    }
+}

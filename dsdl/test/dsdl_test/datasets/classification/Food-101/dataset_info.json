@@ -1,0 +1,433 @@
+{
+    "dataset_name": "Food 101",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "Food 101 Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 1,
+                    "category_name": "Apple pie"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "Baby back ribs"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "Baklava"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "Beef carpaccio"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "Beef tartare"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "Beet salad"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "Beignets"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "Bibimbap"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "Bread pudding"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "Breakfast burrito"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "Bruschetta"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "Caesar salad"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "Cannoli"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "Caprese salad"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "Carrot cake"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "Ceviche"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "Cheesecake"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "Cheese plate"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "Chicken curry"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "Chicken quesadilla"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "Chicken wings"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "Chocolate cake"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "Chocolate mousse"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "Churros"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "Clam chowder"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "Club sandwich"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "Crab cakes"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "Creme brulee"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "Croque madame"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "Cup cakes"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "Deviled eggs"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "Donuts"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "Dumplings"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "Edamame"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "Eggs benedict"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "Escargots"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "Falafel"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "Filet mignon"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "Fish and chips"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "Foie gras"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "French fries"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "French onion soup"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "French toast"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "Fried calamari"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "Fried rice"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "Frozen yogurt"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "Garlic bread"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "Gnocchi"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "Greek salad"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "Grilled cheese sandwich"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "Grilled salmon"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "Guacamole"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "Gyoza"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "Hamburger"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "Hot and sour soup"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "Hot dog"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "Huevos rancheros"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "Hummus"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "Ice cream"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "Lasagna"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "Lobster bisque"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "Lobster roll sandwich"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "Macaroni and cheese"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "Macarons"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "Miso soup"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "Mussels"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "Nachos"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "Omelette"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "Onion rings"
+                },
+                {
+                    "category_id": 70,
+                    "category_name": "Oysters"
+                },
+                {
+                    "category_id": 71,
+                    "category_name": "Pad thai"
+                },
+                {
+                    "category_id": 72,
+                    "category_name": "Paella"
+                },
+                {
+                    "category_id": 73,
+                    "category_name": "Pancakes"
+                },
+                {
+                    "category_id": 74,
+                    "category_name": "Panna cotta"
+                },
+                {
+                    "category_id": 75,
+                    "category_name": "Peking duck"
+                },
+                {
+                    "category_id": 76,
+                    "category_name": "Pho"
+                },
+                {
+                    "category_id": 77,
+                    "category_name": "Pizza"
+                },
+                {
+                    "category_id": 78,
+                    "category_name": "Pork chop"
+                },
+                {
+                    "category_id": 79,
+                    "category_name": "Poutine"
+                },
+                {
+                    "category_id": 80,
+                    "category_name": "Prime rib"
+                },
+                {
+                    "category_id": 81,
+                    "category_name": "Pulled pork sandwich"
+                },
+                {
+                    "category_id": 82,
+                    "category_name": "Ramen"
+                },
+                {
+                    "category_id": 83,
+                    "category_name": "Ravioli"
+                },
+                {
+                    "category_id": 84,
+                    "category_name": "Red velvet cake"
+                },
+                {
+                    "category_id": 85,
+                    "category_name": "Risotto"
+                },
+                {
+                    "category_id": 86,
+                    "category_name": "Samosa"
+                },
+                {
+                    "category_id": 87,
+                    "category_name": "Sashimi"
+                },
+                {
+                    "category_id": 88,
+                    "category_name": "Scallops"
+                },
+                {
+                    "category_id": 89,
+                    "category_name": "Seaweed salad"
+                },
+                {
+                    "category_id": 90,
+                    "category_name": "Shrimp and grits"
+                },
+                {
+                    "category_id": 91,
+                    "category_name": "Spaghetti bolognese"
+                },
+                {
+                    "category_id": 92,
+                    "category_name": "Spaghetti carbonara"
+                },
+                {
+                    "category_id": 93,
+                    "category_name": "Spring rolls"
+                },
+                {
+                    "category_id": 94,
+                    "category_name": "Steak"
+                },
+                {
+                    "category_id": 95,
+                    "category_name": "Strawberry shortcake"
+                },
+                {
+                    "category_id": 96,
+                    "category_name": "Sushi"
+                },
+                {
+                    "category_id": 97,
+                    "category_name": "Tacos"
+                },
+                {
+                    "category_id": 98,
+                    "category_name": "Takoyaki"
+                },
+                {
+                    "category_id": 99,
+                    "category_name": "Tiramisu"
+                },
+                {
+                    "category_id": 100,
+                    "category_name": "Tuna tartare"
+                },
+                {
+                    "category_id": 101,
+                    "category_name": "Waffles"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 75750,
+                "annotated_media_num": 75750
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 25250,
+                "annotated_media_num": 25250
+            }
+        ]
+    }
+}

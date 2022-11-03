@@ -1,0 +1,509 @@
+{
+    "sub_dataset_name": "train",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000000000.jpg",
+                "source": "images/100k/train/012979cd-e13274a9.jpg",
+                "type": "image",
+                "height": 720,
+                "width": 1280,
+                "timestamp": "10000"
+            },
+            "ground_truth": [
+                {
+                    "bbox": [
+                        835.011253,
+                        351.972391,
+                        59.30846299999996,
+                        108.73218299999996
+                    ],
+                    "ann_id": "000000007675",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 6
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        833.912948,
+                        406.887635,
+                        73.58642699999996,
+                        98.84743800000001
+                    ],
+                    "ann_id": "000000007676",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 6
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        800.252374,
+                        379.856591,
+                        19.769486999999913,
+                        39.53897600000005
+                    ],
+                    "ann_id": "000000007677",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        821.120166,
+                        384.249811,
+                        8.786437999999976,
+                        29.654229999999984
+                    ],
+                    "ann_id": "000000007678",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        535.560899,
+                        336.708893,
+                        12.081352000000038,
+                        18.671181999999988
+                    ],
+                    "ann_id": "000000007679",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 8
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "green",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        457.581252,
+                        345.338427,
+                        61.505071999999984,
+                        35.14575599999995
+                    ],
+                    "ann_id": "000000007680",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        505.906667,
+                        375.306466,
+                        34.04745099999997,
+                        32.94914699999998
+                    ],
+                    "ann_id": "000000007681",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        470.760911,
+                        369.814942,
+                        38.440669999999955,
+                        45.03050000000002
+                    ],
+                    "ann_id": "000000007682",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        414.747362,
+                        364.323418,
+                        69.19320699999997,
+                        59.308464000000015
+                    ],
+                    "ann_id": "000000007683",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        288.442301,
+                        361.185408,
+                        143.87793900000003,
+                        97.74913500000002
+                    ],
+                    "ann_id": "000000007684",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        502.611752,
+                        354.595579,
+                        249.315207,
+                        197.69487799999996
+                    ],
+                    "ann_id": "000000007685",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        720.076118,
+                        378.601381,
+                        45.03050100000007,
+                        40.63728099999997
+                    ],
+                    "ann_id": "000000007686",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        640.998167,
+                        345.338427,
+                        20.86779200000001,
+                        7.6881329999999934
+                    ],
+                    "ann_id": "000000007687",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 9
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000003.jpg",
+                "source": "images/100k/train/0000f77c-cb820c98.jpg",
+                "type": "image",
+                "height": 720,
+                "width": 1280,
+                "timestamp": "10000"
+            },
+            "ground_truth": [
+                {
+                    "bbox": [
+                        581.938239,
+                        301.360875,
+                        59.38145300000008,
+                        48.98969899999997
+                    ],
+                    "ann_id": "000000000023",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        697.732074,
+                        299.876337,
+                        25.237117000000012,
+                        31.17526300000003
+                    ],
+                    "ann_id": "000000000024",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        715.546509,
+                        302.845412,
+                        53.443308,
+                        41.567016999999964
+                    ],
+                    "ann_id": "000000000025",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        760.082601,
+                        292.453655,
+                        103.91754200000003,
+                        83.13403499999998
+                    ],
+                    "ann_id": "000000000026",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        801.649616,
+                        299.876337,
+                        95.01032499999997,
+                        93.52579000000003
+                    ],
+                    "ann_id": "000000000027",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": true,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        853.311509,
+                        283.546439,
+                        222.68044900000007,
+                        152.907241
+                    ],
+                    "ann_id": "000000000028",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": false,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                },
+                {
+                    "bbox": [
+                        1135.373409,
+                        301.063972,
+                        142.5154869999999,
+                        237.52581200000003
+                    ],
+                    "ann_id": "000000000029",
+                    "name": "BDD100K Images Object Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "occluded": false,
+                        "truncated": true,
+                        "trafficLightColor": "none",
+                        "manualShape": true,
+                        "manualAttributes": true
+                    }
+                }
+            ]
+        }
+    ]
+}

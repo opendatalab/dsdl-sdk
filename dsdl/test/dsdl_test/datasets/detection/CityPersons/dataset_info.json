@@ -1,0 +1,78 @@
+{
+    "dataset_name": "CityPersons",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "CityPersons Detection",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "ignore regions",
+                    "supercategories": [
+                        "person"
+                    ]
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "pedestrians",
+                    "supercategories": [
+                        "person"
+                    ]
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "riders",
+                    "supercategories": [
+                        "person"
+                    ]
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "sitting persons",
+                    "supercategories": [
+                        "person"
+                    ]
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "other persons with unusual postures",
+                    "supercategories": [
+                        "person"
+                    ]
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "group of people",
+                    "supercategories": [
+                        "person"
+                    ]
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 2975,
+                "annotated_media_num": 2778
+            }
+        ],
+        "val": [
+            {
+                "media_type": "image",
+                "media_num": 500,
+                "annotated_media_num": 487
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 1525,
+                "annotated_media_num": 0
+            }
+        ]
+    }
+}

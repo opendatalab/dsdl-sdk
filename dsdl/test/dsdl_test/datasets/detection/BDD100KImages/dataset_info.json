@@ -1,0 +1,76 @@
+{
+    "dataset_name": "BDD100KImages",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "BDD100K Images Object Detection",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "person"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "rider"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "car"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "truck"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "bus"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "train"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "motor"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "bike"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "traffic light"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "traffic sign"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 69863,
+                "annotated_media_num": 69863
+            }
+        ],
+        "val": [
+            {
+                "media_type": "image",
+                "media_num": 10000,
+                "annotated_media_num": 10000
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 20000,
+                "annotated_media_num": 0
+            }
+        ]
+    }
+}
