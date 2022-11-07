@@ -1,0 +1,6 @@
+site_name: DSDL SDK documentation
+site_author: OpenDataLab
+
+
+theme:
+  name: material
