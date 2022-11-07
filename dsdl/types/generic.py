@@ -52,3 +52,10 @@ class ListField(Field):
 
     def set_file_reader(self, file_reader):
         self.file_reader = file_reader
+
+
+class DictField(Field):
+    def validate(self, value):
+        if not isinstance(value, dict):
+            raise ValidationError(f"expect dict value, got {value.__class__}")
+        return value
