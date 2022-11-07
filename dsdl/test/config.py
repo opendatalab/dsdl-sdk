@@ -7,11 +7,11 @@ local = dict(
 
 ali_oss = dict(
     type="AliOSSFileReader",
-    access_key_secret='QpxveFyLTMfmSqzfR5hMlTFBLNvhPL',
-    endpoint='http://oss-cn-shanghai.aliyuncs.com',
-    access_key_id='LTAI5tFoE1wtBG8DK16B1zGs',
-    bucket_name='odl-standard',
-    working_dir="cifar10/standard/0.3/")
+    access_key_secret="your secret key of aliyun oss",
+    endpoint="your endpoint of aliyun oss",
+    access_key_id="your access key of aliyun oss",
+    bucket_name="your bucket name of aliyun oss",
+    working_dir="the relative path of your media dir in the bucket")
 
 
 class Config:
