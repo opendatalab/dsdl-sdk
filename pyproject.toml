@@ -1,0 +1,122 @@
+[tool]
+[tool.poetry]
+name = "dsdlsdk"
+version = "0.1.0"
+homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev"
+description = "opendatalab dsdl-sdk dev branch."
+authors = ["suizhihao <suizhihao@pjlab.org.cn>"]
+readme = "README.md"
+license = "Apache-2.0"
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+]
+packages = [{ include = "dsdlsdk" }, { include = "tests", format = "sdist" }]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pyyaml = { version = "^6.0", optional = true}
+click = { version = "^8.1.3", optional = true }
+networkx = { version = "^2.8.4", optional = true }
+Pillow = { version = "^9.1.0", optional = true }
+oss2 = { version = "^2.15.0", optional = true }
+prettytable = { version = "^3.3.0", optional = true }
+opencv-python = { version = "^4.6.0.66", optional = true }
+jinja2 = { version = "^2.11.3", optional = true }
+markupsafe = { version = "2.0.1", optional = false }
+black = { version = "^22.3.0", optional = true }
+isort = { version = "^5.8.0", optional = true }
+flake8 = { version = "^3.9.2", optional = true }
+flake8-docstrings = { version = "^1.6.0", optional = true }
+mypy = { version = "^0.900", optional = true }
+pytest = { version = "^6.2.4", optional = true }
+pytest-cov = { version = "^2.12.0", optional = true }
+tox = { version = "^3.20.1", optional = true }
+virtualenv = { version = "^20.2.2", optional = true }
+pip = { version = "^20.3.1", optional = true }
+mkdocs = { version = "^1.1.2", optional = true }
+mkdocs-include-markdown-plugin = { version = "^1.0.0", optional = true }
+mkdocs-material = { version = "^6.1.7", optional = true }
+mkdocstrings = { version = "^0.15.2", optional = true }
+mkdocs-material-extensions = { version = "^1.0.1", optional = true }
+mkdocs-autorefs = { version = "^0.2.1", optional = true }
+twine = { version = "^3.3.0", optional = true }
+pre-commit = { version = "^2.12.0", optional = true }
+toml = { version = "^0.10.2", optional = true }
+bump2version = { version = "^1.0.1", optional = true }
+
+[tool.poetry.extras]
+test = [
+    "pytest",
+    "black",
+    "isort",
+    "mypy",
+    "flake8",
+    "flake8-docstrings",
+    "pytest-cov",
+]
+
+dev = [
+    "tox",
+    "pre-commit",
+    "virtualenv",
+    "pip",
+    "twine",
+    "toml",
+    "bump2version",
+]
+
+doc = [
+    "mkdocs",
+    "mkdocs-include-markdown-plugin",
+    "mkdocs-material",
+    "mkdocstrings",
+    "mkdocs-material-extension",
+    "mkdocs-autorefs",
+    "jinja2",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "serial",
+]
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+target-version = ['py38', 'py39', 'py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 120
+skip_gitignore = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
