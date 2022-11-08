@@ -59,11 +59,11 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
         if task == "classification":
             fields = ["image", "label"]
         elif task == "detection":
-            fields = ["image", "label", "bbox", "polygon", "attributes", "keypoint"]
+            fields = ["image", "label", "bbox", "polygon", "dict", "keypoint"]
         elif task == "segmentation":
-            fields = ["image", "segmap", "attributes"]
+            fields = ["image", "segmap", "dict"]
         else:
-            fields = ["image", "label", "attributes"]
+            fields = ["image", "label", "dict"]
     else:
         if fields is None:
             fields = []
@@ -71,7 +71,7 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
             local_dic = {}
             exec(f"f = list({fields})", {}, local_dic)
             fields = local_dic['f']
-        fields = list(set(fields + ["image", "attributes"]))
+        fields = list(set(fields + ["image", "dict"]))
     fields = [_.lower() for _ in fields]
 
     num = min(num, len(dataset))
