@@ -15,7 +15,7 @@
 
 English | [简体中文](README_zh-CN.md)
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)[![dev workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml)[![stage & preview workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml)
 
 [📘Documentation](https://opendatalab.github.io/dsdl-docs/) |
 

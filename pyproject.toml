@@ -3,7 +3,7 @@
 name = "dsdlsdk"
 version = "0.1.0"
 homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev"
-description = "opendatalab dsdl-sdk dev branch."
+description = "made for opendatalab dsdl-sdk dev branch(ignore other branches)."
 authors = ["suizhihao <suizhihao@pjlab.org.cn>"]
 readme = "README.md"
 license = "Apache-2.0"

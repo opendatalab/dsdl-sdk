@@ -49,3 +49,16 @@ jobs:
       #   with:
       #     fail_ci_if_error: true
       #     files: coverage.xml
+      
+      - name: Send email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Github Actions job result
+          to: ${{secrets.MAIL_TOUSERNAME}}
+          from: suizhihao 
+          body: Build job of ${{github.repository}} completed successfully! ${{steps.git_log.outputs.log}}
+
