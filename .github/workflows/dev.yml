@@ -60,5 +60,5 @@ jobs:
           subject: Github Actions job result
           to: ${{secrets.MAIL_TOUSERNAME}}
           from: suizhihao 
-          body: Build job of ${{github.repository}} completed successfully! ${{steps.git_log.outputs.log}}
+          body: Test job of ${{github.repository}} completed successfully! ${{steps.git_log.outputs.log}}
 
