@@ -7,6 +7,10 @@
 
 from setuptools import setup, find_packages
 
+if __name__ == '__main__':
+    setup()
+
+'''
 
 def readme():
     with open('README.md', encoding='utf-8') as f:
@@ -50,3 +54,5 @@ setup(
         ],
     },
 )
+
+'''
