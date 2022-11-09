@@ -29,17 +29,17 @@ class Example(CmdBase):
         status_parser.add_argument("-s", '--show', nargs='+', default='SHOW', help='show example', metavar='METAVAR')
         return status_parser
 
-    def cmd_entry(self, args, config):
+    def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """
         Entry point for the command
 
         Args:
             self:
-            args:
+            cmdargs:
             config:
 
         Returns:
 
         """
-        print(args)
-        print(f"{args.show}")
+        print(cmdargs)
+        print(f"{cmdargs.show}")

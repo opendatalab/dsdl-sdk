@@ -29,7 +29,7 @@ class CmdBase(ABC):
     """
 
     @abstractmethod
-    def cmd_entry(self, args, config):
+    def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """
         Entry point for the command
 
