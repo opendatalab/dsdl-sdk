@@ -1,5 +1,5 @@
 from .struct import Struct
-from .generic import StrField, IntField, BoolField, NumField, ListField
+from .generic import StrField, IntField, BoolField, NumField, ListField, DictField
 from .special import (
     LabelField,
     CoordField,
@@ -22,6 +22,7 @@ __all__ = [
     "ImageField",
     "LabelField",
     "ListField",
+    "DictField",
     "CoordField",
     "Coord3DField",
     "IntervalField",
