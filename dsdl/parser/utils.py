@@ -1,6 +1,7 @@
 import re
 import networkx as nx
 from typing import Dict, List
+from jsonmodels import models, fields, errors, validators
 
 
 TYPES_WITHOUT_PARS = [
@@ -16,11 +17,25 @@ TYPES_WITHOUT_PARS = [
     "RlePolygon",
     "Image",
     "Video",
+    "Dict",
 ]
 TYPES_TIME = ["Date", "Time"]
 TYPES_LABEL = ["Label", "SegMap", "Keypoint"]
 TYPES_LIST = ["List"]
 TYPES_ALL = TYPES_WITHOUT_PARS + TYPES_TIME + TYPES_LABEL + TYPES_LIST
+
+
+class CheckLogItem(models.Base):
+    def_name = fields.StringField(required=True, validators=validators.Enum("class_domain", "struct", "all"))
+    yaml = fields.StringField(nullable=True)
+    flag = fields.IntField(required=True, validators=validators.Enum(0, 1), default=0)  # 0:error, 1: right
+    msg = fields.StringField(nullable=True)
+
+
+class CheckLog(models.Base):
+    def_name = fields.StringField(required=True, validators=validators.Enum("class_domain", "struct", "all"))
+    flag = fields.IntField(required=True, validators=validators.Enum(0, 1), default=0)  # 0:error, 1: right
+    sub_struct = fields.ListField([CheckLogItem], nullable=True)
 
 
 def sanitize_variable_name(varstr: str) -> str:
