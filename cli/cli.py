@@ -32,7 +32,7 @@ class DSDLClient(object):
             metavar='command')
         self.__init_subcommand_parser()
 
-        self.__init_global_flags() # 初始化全局参数
+        self.__init_global_flags()  # 初始化全局参数
         self.__args = self.__parser.parse_args()
 
     def execute(self):

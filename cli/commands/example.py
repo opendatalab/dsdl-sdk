@@ -6,7 +6,10 @@ Examples:
     >> Namespace(show=["'tell", 'me', 'the', "truth'"], command_handler=<bound method Example.cmd_entry of <commands.example.Example object at 0x0000017E6FD1DB40>>)
     >> ["'tell", 'me', 'the', "truth'"]
 """
+
 from commands.cmdbase import CmdBase
+
+from commons.argument_parser import EnvDefaultVar
 
 
 class Example(CmdBase):
@@ -27,6 +30,7 @@ class Example(CmdBase):
         """
         status_parser = subparsers.add_parser('example', help='Show the working tree status')
         status_parser.add_argument("-s", '--show', nargs='+', default='SHOW', help='show example', metavar='METAVAR')
+        status_parser.add_argument("--dataset-name", required=True, action=EnvDefaultVar, envvar='DSDL_CLI_DATASET_NAME', nargs='?', type=str, help='dataset name', metavar='openmmlab/Flying3DThings')
         return status_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
