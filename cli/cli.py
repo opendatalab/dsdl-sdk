@@ -11,6 +11,7 @@ from commands.cmdbase import CmdBase
 import importlib
 import inspect
 from pathlib import Path
+from commands.__version__ import __version__
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,6 +31,8 @@ class DSDLClient(object):
             title='These are common DSDL commands used in various situations',
             metavar='command')
         self.__init_subcommand_parser()
+
+        self.__init_global_flags() # 初始化全局参数
         self.__args = self.__parser.parse_args()
 
     def execute(self):
@@ -51,6 +54,14 @@ class DSDLClient(object):
 
         """
         return None
+
+    def __init_global_flags(self):
+        """
+        初始化默认参数
+        Returns:
+
+        """
+        self.__parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
 
     def __init_subcommand_parser(self):
         """
