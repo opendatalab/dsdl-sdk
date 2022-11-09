@@ -26,7 +26,7 @@ class Example(CmdBase):
 
         """
         status_parser = subparsers.add_parser('example', help='Show the working tree status')
-        status_parser.add_argument('--show', nargs='+', default='SHOW', help='show example')
+        status_parser.add_argument("-s", '--show', nargs='+', default='SHOW', help='show example', metavar='METAVAR')
         return status_parser
 
     def cmd_entry(self, args, config):

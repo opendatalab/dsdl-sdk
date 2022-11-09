@@ -1,3 +1,9 @@
+"""
+
+References:
+    https://developer.aliyun.com/article/740160
+    https://docs.python.org/zh-cn/3/library/argparse.html
+"""
 import argparse
 import os.path
 import sys
@@ -59,9 +65,9 @@ class DSDLClient(object):
 
         """
         import commands
-        pkgs = [module for module in Path(commands.__path__[0]).iterdir() if module.is_file() and module.suffix == '.py' and module.name != '__init__.py']
+        pkgs = [module.stem for module in Path(commands.__path__[0]).iterdir() if module.is_file() and module.suffix == '.py' and not module.name.startswith('_')]  # 获取commands目录下的所有py文件
         for pkg in pkgs:
-            module = importlib.import_module(f'commands.{pkg.stem}')
+            module = importlib.import_module(f'commands.{pkg}')
             for clz_name, clz_obj in inspect.getmembers(module):
                 if inspect.isclass(clz_obj) and issubclass(clz_obj, CmdBase) and not inspect.isabstract(clz_obj):
                     cmd_clz = clz_obj()
