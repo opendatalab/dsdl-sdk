@@ -8,7 +8,7 @@ Examples:
 """
 
 from commands.cmdbase import CmdBase
-
+from commands.const import DSDL_CLI_DATASET_NAME
 from commons.argument_parser import EnvDefaultVar
 
 
@@ -29,8 +29,8 @@ class Example(CmdBase):
 
         """
         status_parser = subparsers.add_parser('example', help='Show the working tree status')
-        status_parser.add_argument("-s", '--show', nargs='+', default='SHOW', help='show example', metavar='METAVAR')
-        status_parser.add_argument("--dataset-name", required=True, action=EnvDefaultVar, envvar='DSDL_CLI_DATASET_NAME', nargs='?', type=str, help='dataset name', metavar='openmmlab/Flying3DThings')
+        status_parser.add_argument("-s", '--show', nargs='?', default='SHOW', help='show example', metavar='METAVAR')
+        status_parser.add_argument("dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME, nargs=1, type=str, help='dataset name', metavar='[dataset name]')
         return status_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
@@ -47,3 +47,4 @@ class Example(CmdBase):
         """
         print(cmdargs)
         print(f"{cmdargs.show}")
+        print(cmdargs.dataset_name)
