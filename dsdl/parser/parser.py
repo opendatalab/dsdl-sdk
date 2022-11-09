@@ -471,6 +471,7 @@ def check_dsdl_parser(
     res = {"dsdl_py": dsdl_py}
     if report_flag:
         res["check_log"] = json.dumps(CHECK_LOG.to_struct())
+    return res
 
 
 @click.command()
