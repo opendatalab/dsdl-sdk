@@ -14,6 +14,7 @@ class Example(CmdBase):
 
 """
 from abc import ABC, abstractmethod
+from argparse import _SubParsersAction, ArgumentParser
 
 
 class CmdBase(ABC):
@@ -28,7 +29,7 @@ class CmdBase(ABC):
     """
 
     @abstractmethod
-    def cmd_entry(self, args, config):
+    def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """
         Entry point for the command
 
@@ -43,7 +44,7 @@ class CmdBase(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def init_parser(self, subparsers):
+    def init_parser(self, subparsers: _SubParsersAction) -> ArgumentParser:
         """
         Initialize the parser for the command
 
@@ -55,4 +56,3 @@ class CmdBase(ABC):
 
         """
         raise NotImplementedError
-
