@@ -1,13 +1,11 @@
 # This is a basic workflow to help you get started with Actions
 
-name: dev workflow
+name: stage & preview workflow
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events for the dev branch
+  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ dev ]
-  pull_request:
     branches: [ dev ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -15,18 +13,14 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "test"
-  test:
-    # The type of runner that the job will run on
+  publish_dev_build:
+    runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        python-versions: [ '3.8', '3.9', '3.10']
-        os: [ubuntu-18.04, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        python-versions: [ 3.8 ]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
@@ -41,14 +35,27 @@ jobs:
         continue-on-error: true
         run:
           tox
+      
+      # - name: Check if 'Lint with flake8' step failed
+      #   if: steps.flake8.outcome != 'success'
+      #     run: |
+      #       echo "flake8 fails"
+      #       exit 
 
-      - name: list files
-        run: ls -l .
+      - name: Build wheels and source tarball
+        run: |
+          poetry version $(poetry version --short)-dev.$GITHUB_RUN_NUMBER
+          poetry version --short
+          poetry build
 
-      # - uses: codecov/codecov-action@v1
-      #   with:
-      #     fail_ci_if_error: true
-      #     files: coverage.xml
+      - name: publish to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TEST_TOKEN}}
+          repository_url: https://test.pypi.org/legacy/
+          # repository_url: https://pypi.org/
+          skip_existing: true
       
       - name: Send email
         uses: dawidd6/action-send-mail@v3
@@ -60,5 +67,4 @@ jobs:
           subject: Github Actions job result
           to: ${{secrets.MAIL_TOUSERNAME}}
           from: suizhihao 
-          body: Test job of ${{github.repository}} completed successfully! ${{steps.git_log.outputs.log}}
-
+          body: Build and publish job of ${{github.repository}} completed successfully! ${{steps.git_log.outputs.log}}
