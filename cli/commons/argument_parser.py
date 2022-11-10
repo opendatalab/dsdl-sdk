@@ -10,13 +10,12 @@ class EnvDefaultVar(Action):
     """
 
     def __init__(self, envvar, required=False, default=None, **kwargs):
-        if not default and envvar: # 没有默认值，但是给了环境变量key
+        if not default and envvar:  # 没有默认值，但是给了环境变量key
             if envvar in os.environ:
                 default = os.environ[envvar]
         if required and default:  # 一旦得到了默认值，那么改变required的值为False, 这样用户不必一定要在命令行显式敲出来--dataset-name这个选项
             required = False
-        super(EnvDefaultVar, self).__init__(default=default, required=required,
-                                            **kwargs)
+        super(EnvDefaultVar, self).__init__(default=default, required=required, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
