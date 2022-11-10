@@ -4,3 +4,7 @@ site_author: OpenDataLab
 
 theme:
   name: material
+
+plugins:
+- search
+- mkdocstrings

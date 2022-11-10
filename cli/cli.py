@@ -12,6 +12,7 @@ import importlib
 import inspect
 from pathlib import Path
 from commands.__version__ import __version__
+from commons.argument_parser import CustomHelpFormatter
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -26,10 +27,17 @@ class DSDLClient(object):
         初始化命令行客户端
         """
         self.__config = self.__init_cli_config()
-        self.__parser = argparse.ArgumentParser(prog='dsdl')
+        self.__parser = argparse.ArgumentParser(prog='dsdl',
+                                                description="""
+                                                
+            Use 'dsdl <command>' to access/load datasets either from local 
+            file system or remote cloud storage, can also perform data-preprocessing
+            including filtering, visualization, etc.
+                                                """,
+                                                formatter_class=CustomHelpFormatter)
         self.__subparsers = self.__parser.add_subparsers(
-            title='These are common DSDL commands used in various situations',
-            metavar='command')
+            title="Commands",
+            )
         self.__init_subcommand_parser()
 
         self.__init_global_flags()  # 初始化全局参数
@@ -53,6 +61,10 @@ class DSDLClient(object):
         Returns:
 
         """
+        # 检查配置文件是否存在，如果没有则创建一个
+        # 检查sqlite数据库是否存在，如果没有则创建一个
+        # 检查sqlite数据库是否有表，如果没有则创建表
+
         return None
 
     def __init_global_flags(self):
@@ -61,7 +73,9 @@ class DSDLClient(object):
         Returns:
 
         """
-        self.__parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
+        self.__parser._optionals.title = "Global flags"
+        self.__parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}', help='show the DSDL cli version and exit.')
+        pass
 
     def __init_subcommand_parser(self):
         """
