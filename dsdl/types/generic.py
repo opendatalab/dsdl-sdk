@@ -6,7 +6,7 @@ from ..exception import ValidationError
 class BoolField(Field):
     def validate(self, value):
         if value not in [True, False]:
-            raise ValidationError(f"expect True/False, got {value}")
+            raise ValidationError(f"BoolField Error: expect True/False, got {value}")
         return value
 
 
@@ -15,7 +15,7 @@ class IntField(Field):
         try:
             return int(value)
         except (ValueError, TypeError) as _:
-            raise ValidationError(f"expect int, got {value}")
+            raise ValidationError(f"IntField Error: expect int, got {value}")
 
 
 class NumField(Field):
@@ -23,7 +23,7 @@ class NumField(Field):
         try:
             return float(value)
         except (ValueError, TypeError) as _:
-            raise ValidationError(f"expect num, got {value}")
+            raise ValidationError(f"NumField Error: expect num, got {value}")
 
 
 class StrField(Field):
@@ -31,7 +31,7 @@ class StrField(Field):
         try:
             return "" + value
         except TypeError as _:
-            raise ValidationError(f"expect str, got {value}")
+            raise ValidationError(f"StrField Error: expect str value, got {value}")
 
 
 class ListField(Field):
@@ -52,3 +52,10 @@ class ListField(Field):
 
     def set_file_reader(self, file_reader):
         self.file_reader = file_reader
+
+
+class DictField(Field):
+    def validate(self, value):
+        if not isinstance(value, dict):
+            raise ValidationError(f"DictField Error: expect dict value, got {value.__class__}")
+        return value

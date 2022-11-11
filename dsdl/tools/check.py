@@ -1,9 +1,9 @@
-from dsdl.dataset import Dataset, ImageVisualizePipeline, Util
+import os.path
+
+from dsdl.dataset import CheckDataset, ImageVisualizePipeline, Util, Report
 import click
-import numpy as np
+import json
 from random import randint
-import cv2
-import os
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -11,7 +11,7 @@ except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 from yaml import load as yaml_load
 from .commons import OptionEatAll, load_samples
-from ..parser import dsdl_parse
+from ..parser import check_dsdl_parser
 
 
 @click.command()
@@ -21,12 +21,15 @@ from ..parser import dsdl_parse
               help="the path of the config file")
 @click.option("-n", "--num", "num", type=int, default=5, help="how many samples sampled from the dataset")
 @click.option("-r", "--random", is_flag=True, help="whether to sample randomly")
-@click.option("-v", "--visualize", is_flag=True, help="whether to visualize the sample selected")
 @click.option("-f", "--fields", cls=OptionEatAll, type=str, help="the task to visualize")
 @click.option("-t", "--task", type=str, help="the task to visualize")
 @click.option("-p", "--position", type=str, required=False, help='the directory of dsdl define file')
-@click.option("-m", "--multistage", is_flag=True, help="whether to use the generated python file")
-def view(dsdl_yaml, config, location, num, random, visualize, fields, task, position, multistage):
+@click.option("-o", "--output", type=str, help="the dir to output the check report")
+def check(dsdl_yaml, config, location, num, random, fields, task, position, output):
+    assert os.path.isdir(output), "Please use '-o' to specify a existing working dir to generate the log files."
+    log_dir = os.path.join(output, "log")
+    os.makedirs(log_dir, exist_ok=True)
+    report_obj = Report(os.path.join(log_dir, "output.md"))
     with open(dsdl_yaml, "r") as f:
         dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
         sample_type = dsdl_info['sample-type']
@@ -35,21 +38,23 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
             samples = dsdl_info['samples']
         else:
             samples = load_samples(dsdl_yaml, sample_path)
-    if multistage:
-        dsdl_py = os.path.splitext(dsdl_yaml)[0] + ".py"
-        with open(dsdl_py, encoding='utf-8') as dsdl_file:
-            exec(dsdl_file.read(), {})
+    if position:
+        parse_report = check_dsdl_parser(dsdl_yaml, position, report_flag=True)
     else:
-        if position:
-            dsdl_py = dsdl_parse(dsdl_yaml, position)
-        else:
-            dsdl_py = dsdl_parse(dsdl_yaml)
-        exec(dsdl_py, {})
+        parse_report = check_dsdl_parser(dsdl_yaml, report_flag=True)
+    dsdl_py = parse_report["dsdl_py"]
+    parse_report = json.loads(parse_report["check_log"])
+    report_obj.set_parser_info(parse_report)
+    if parse_report['flag'] == 0:
+        report_obj.generate()
+        return
+
+    exec(dsdl_py, {})
     config_dic = {}
     with open(config, encoding='utf-8') as config_file:
         exec(config_file.read(), config_dic)
     location_config = config_dic["local" if location == "local" else "ali_oss"]
-    dataset = Dataset(samples, sample_type, location_config)
+    dataset = CheckDataset(report_obj, samples, sample_type, location_config)
 
     palette = {}
     if task:
@@ -87,9 +92,13 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
 
     print(Util.format_sample([s.format() for s in samples]))
     # 将读取的样本进行可视化
-    if visualize:
-        for sample in samples:
+    for sample in samples:
+        try:
             vis_sample = sample.visualize()
             for vis_name, vis_item in vis_sample.items():
-                cv2.imshow(vis_name, cv2.cvtColor(np.array(vis_item), cv2.COLOR_BGR2RGB))
-                cv2.waitKey(0)
+                report_obj.add_image_info({"img": vis_item, "status": "success"})
+
+        except Exception as e:
+            report_obj.add_image_info({"img": None, "status": "fail", "msg": repr(e)})
+
+    report_obj.generate()

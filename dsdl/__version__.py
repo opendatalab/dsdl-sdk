@@ -3,4 +3,4 @@
 # Copyright DSDL Team of OpenDatalab. All rights reserved.
 #
 
-__version__ = "0.1.9.4"
+__version__ = "0.1.10.1"

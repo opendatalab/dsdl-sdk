@@ -4,40 +4,41 @@ from ..exception import ValidationError
 from datetime import date, time, datetime
 
 
-def validate_list_of_number(value, size_limit, item_type):
+def validate_list_of_number(value, size_limit, item_type, field_name):
     if type(value) is not list:
-        raise ValidationError(f"expect list of num, got {value}")
+        raise ValidationError(f"{field_name} Error: expect list of num, got {value}")
     if len(value) != size_limit:
-        raise ValidationError(f"expect size of list is {size_limit}, got {len(value)}")
+        raise ValidationError(f"{field_name} Error: expect size of list is {size_limit}, got {len(value)}")
     try:
         return [item_type(item) for item in value]
     except (TypeError, ValueError) as _:
-        raise ValidationError(f"expect type of list item is float, got {value}")
+        raise ValidationError(f"{field_name} Error: expect type of list item is float, got {value}")
 
 
 class CoordField(Field):
     def validate(self, value):
-        return validate_list_of_number(value, 2, float)
+        return validate_list_of_number(value, 2, float, "CoordField")
 
 
 class Coord3DField(Field):
     def validate(self, value):
-        return validate_list_of_number(value, 3, float)
+        return validate_list_of_number(value, 3, float, "Coord3DField")
 
 
 class IntervalField(Field):
     def validate(self, value):
-        value = validate_list_of_number(value, 2, float)
+        value = validate_list_of_number(value, 2, float, "IntervalField")
         if value[0] > value[1]:
             raise ValidationError(
-                f"expect |begin| less than or equal to |end|, got {value}"
+                f"IntervalField Error: expect |begin| less than or equal to |end|, got {value}"
             )
         return value
 
 
 class BBoxField(Field):
     def validate(self, value):
-        return BBox(*validate_list_of_number(value, 4, float))
+        x, y, w, h = validate_list_of_number(value, 4, float, "BBoxField")
+        return BBox(x, y, w, h)
 
 
 class PolygonField(Field):
@@ -45,7 +46,7 @@ class PolygonField(Field):
         polygon_lst = []
         for idx, points in enumerate(value):
             for point in points:
-                validate_list_of_number(point, 2, float)
+                validate_list_of_number(point, 2, float, "PolygonField")
             polygon_lst.append(PolygonItem(points))
         return Polygon(polygon_lst)
 
@@ -57,10 +58,10 @@ class KeypointField(Field):
         self.dom = dom
 
     def validate(self, value):
-        value = validate_list_of_number(value, len(self.dom), list)
+        value = validate_list_of_number(value, len(self.dom), list, "KeypointField")
         keypoints = []
         for class_ind, p in enumerate(value, start=1):
-            p = validate_list_of_number(p, 3, float)
+            p = validate_list_of_number(p, 3, float, "KeypointField")
             label = self.dom.get_label(class_ind)
             coord2d = Coord2D(x=p[0], y=p[1], visiable=int(p[2]), label=label)
             keypoints.append(coord2d)
@@ -78,9 +79,9 @@ class LabelField(Field):
             if isinstance(value, (int, str)):
                 return self.dom.get_label(value)
             else:
-                raise TypeError("invalid class label type.")
+                raise TypeError(f"LabelField Error: invalid class label type. Expected 'int' or 'str' value, got '{value.__class__.__name__}'.")
         except:
-            raise RuntimeError(f"The label {value} is not valid.")
+            raise RuntimeError(f"LabelField Error: The label '{value}' is not valid.")
 
 
 class DateField(Field):
@@ -89,9 +90,12 @@ class DateField(Field):
         self.fmt = fmt
 
     def validate(self, value):
-        if self.fmt == "":
-            return date.fromisoformat(value)
-        return datetime.strptime(value, self.fmt).date()
+        try:
+            if self.fmt == "":
+                return date.fromisoformat(value)
+            return datetime.strptime(value, self.fmt).date()
+        except Exception as e:
+            raise RuntimeError(f"DateField Error: {e}")
 
 
 class TimeField(Field):
@@ -100,6 +104,10 @@ class TimeField(Field):
         self.fmt = fmt
 
     def validate(self, value):
-        if self.fmt == "":
-            return time.fromisoformat(value)
-        return datetime.strptime(value, self.fmt).time()
+        try:
+            if self.fmt == "":
+                return time.fromisoformat(value)
+            return datetime.strptime(value, self.fmt).time()
+        except Exception as e:
+            raise RuntimeError(f"TimeField Error: {e}")
+
