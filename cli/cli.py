@@ -36,8 +36,8 @@ class DSDLClient(object):
                                                 """,
                                                 formatter_class=CustomHelpFormatter)
         self.__subparsers = self.__parser.add_subparsers(
-            title="Commands",
-            )
+            title='These are common DSDL commands used in various situations', metavar='command'
+        )
         self.__init_subcommand_parser()
 
         self.__init_global_flags()  # 初始化全局参数
@@ -90,7 +90,12 @@ class DSDLClient(object):
 
         """
         import commands
-        pkgs = [module.stem for module in Path(commands.__path__[0]).iterdir() if module.is_file() and module.suffix == '.py' and not module.name.startswith('_')]  # 获取commands目录下的所有py文件
+
+        pkgs = [
+            module.stem
+            for module in Path(commands.__path__[0]).iterdir()
+            if module.is_file() and module.suffix == '.py' and not module.name.startswith('_')
+        ]  # 获取commands目录下的所有py文件
         for pkg in pkgs:
             module = importlib.import_module(f'commands.{pkg}')
             for clz_name, clz_obj in inspect.getmembers(module):

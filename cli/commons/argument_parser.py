@@ -16,8 +16,7 @@ class EnvDefaultVar(Action):
                 default = os.environ[envvar]
         if required and default:  # 一旦得到了默认值，那么改变required的值为False, 这样用户不必一定要在命令行显式敲出来--dataset-name这个选项
             required = False
-        super(EnvDefaultVar, self).__init__(default=default, required=required,
-                                            **kwargs)
+        super(EnvDefaultVar, self).__init__(default=default, required=required, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
