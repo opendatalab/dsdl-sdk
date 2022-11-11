@@ -37,6 +37,8 @@ setup(
         "oss2>=2.15.0",
         "prettytable>=3.3.0",
         "opencv-python>=4.6.0.66",
+        "jsonmodels==2.6.0",
+        "environs==9.5.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
