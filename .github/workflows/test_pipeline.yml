@@ -1,6 +1,10 @@
 name: 'run test pipeline'
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ sherry_dev ]
+  pull_request:
+    branches: [ sherry_dev ]
 
 jobs:
   test:
@@ -14,7 +18,7 @@ jobs:
     steps:
         # Checkout the latest code from the repo
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@sherry_dev
         # Setup which version of Python to use
       - name: Set Up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
