@@ -1,6 +1,10 @@
 name: 'run test pipeline'
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ sherry_dev ]
+  pull_request:
+    branches: [ sherry_dev ]
 
 jobs:
   test:
