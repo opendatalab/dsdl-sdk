@@ -41,4 +41,5 @@ jobs:
           cd dsdl/test
           pwd
           ls
-          pytest test_pipeline.py::TestPipe
+          vim test_pipeline.py
+#          pytest test_pipeline.py::TestPipe
