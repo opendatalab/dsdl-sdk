@@ -45,4 +45,4 @@ jobs:
           cd dsdl/test
           pwd
           ls
-          python -m config.py
+          python -m dsdl/test/config.py
