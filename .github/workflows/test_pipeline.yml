@@ -32,9 +32,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
         # Run the tests. I'm using pytest and the file is in the tests directory.
-      - name: Cd test dir
+      - name: Run tests
+        env:
+          ALI_OSS_DICT: ${{ secrets.ALI_OSS_DICT }}
         run: |
           cd dsdl/test
           pwd
-      - name: Run tests
-        run: pytest test_pipeline.py
+          ls
+          pytest test_pipeline.py
