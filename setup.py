@@ -39,7 +39,6 @@ setup(
         "opencv-python>=4.6.0.66",
         "jsonmodels==2.6.0",
         "environs==9.5.0",
-        "torch>=1.12.1",
         "oss2==2.16.0",
         "pylint>=2.15.5",
     ],
