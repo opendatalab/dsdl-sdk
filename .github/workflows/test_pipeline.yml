@@ -32,7 +32,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
         # Run the tests. I'm using pytest and the file is in the tests directory.
-      - name: Run tests
+      - name: Cd test dir
         run: |
           cd dsdl/test
-          pytest test_pipeline.py
+          pwd
+      - name: Run tests
+        run: pytest test_pipeline.py
