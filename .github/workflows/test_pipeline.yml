@@ -37,7 +37,7 @@ jobs:
           pip install pytest
           pip install tunas2dsdl
           pip install tunas2dsdl_c
-          conda install cudatoolkit>=11.0
+          pip install torch
         # Run the tests. I'm using pytest and the file is in the tests directory.
       - name: Run tests
         env:
