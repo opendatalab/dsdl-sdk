@@ -8,7 +8,7 @@ local = dict(
 
 env = Env()
 ali_oss = env.dict('ALI_OSS_DICT')
-
+print(ali_oss)
 
 class Config:
     project_path = os.getcwd()
