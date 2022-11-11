@@ -45,4 +45,4 @@ jobs:
           cd dsdl/test
           pwd
           ls
-          python -m config
+          python -m pytest test_pipeline.py
