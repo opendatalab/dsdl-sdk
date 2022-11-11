@@ -1,5 +1,6 @@
 from commands.cmdbase import CmdBase
 
+
 class Config(CmdBase):
     """Set dsdl configuration {file path, user login info}.
 
@@ -42,7 +43,7 @@ class Config(CmdBase):
         
         return config_parser
     
-    def cmd_entry(self, args, config):
+    def cmd_entry(self, cmdargs, config):
         """
         Entry point for the command.
 
@@ -54,5 +55,5 @@ class Config(CmdBase):
         Returns:
 
         """
-        print(args)
-        print(f"{args.setvalue}")
+        print(cmdargs)
+        print(f"{cmdargs.setvalue}")
