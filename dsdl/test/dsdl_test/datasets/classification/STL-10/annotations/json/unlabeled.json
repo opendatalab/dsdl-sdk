@@ -1,0 +1,239 @@
+{
+    "sub_dataset_name": "unlabeled",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000013002.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013007.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013054.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013047.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013016.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013010.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013046.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013070.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013039.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013063.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013053.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013021.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013051.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013033.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013077.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013026.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013073.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013061.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013020.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013037.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013041.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013006.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013032.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013066.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013079.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        },
+        {
+            "media": {
+                "path": "media/000000013028.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/unlabeled_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            }
+        }
+    ]
+}

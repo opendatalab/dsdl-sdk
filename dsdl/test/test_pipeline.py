@@ -8,15 +8,16 @@ import oss2
 from enum import Enum
 from tunas2dsdl.cli import convert
 from tunas2dsdl_c.dsdl_yaml_script import ConvertV3toDsdlYaml
-from ..parser import dsdl_parse
-from ..tools import view
+from dsdl.parser import dsdl_parse
+from dsdl.tools import view
 from pylint import epylint as lint
-from ..test.config import config, ali_oss
+from dsdl.test.config import Config, ali_oss
 import pathlib
 from collections import defaultdict
 import shutil
 import sys
 
+config = Config()
 
 class TaskEnum(Enum):
     CLS = "classification"
@@ -82,7 +83,7 @@ def _validate_view(yaml_path: str, task_type: TaskEnum, logger: TextIO):
                 "-l",
                 "ali-oss",
                 "-n",
-                5,
+                2,
                 "-f",
                 "Label",
                 "-p",
@@ -192,6 +193,7 @@ class TestPipe:
                                     dst_tunas, "/".join(obj.key.split("/")[-3:])
                                 ),
                             )
+                        self.logger.write(f"success.\n")
                     except Exception as err:
                         print(err)
                         self.logger.write(f"{err}\n")
@@ -220,6 +222,8 @@ class TestPipe:
     )
     def test_det_tunas2dsdl(self, tunas_dir, dsdl_dir):
         self.logger.write(f"Test {TaskEnum.DETE.value} tunas2dsdl\n")
+        if not os.path.exists(dsdl_dir):
+            os.makedirs(dsdl_dir)
         runner = CliRunner()
         result = runner.invoke(
             convert,
@@ -283,4 +287,5 @@ class TestPipe:
                     _validate_view(file, TaskEnum.DETE, self.logger)
 
     def teardown_class(self):
+
         self.logger.close()

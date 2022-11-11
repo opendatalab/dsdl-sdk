@@ -1,0 +1,347 @@
+{
+    "sub_dataset_name": "train",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000010000.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010000",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010030.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010030",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 3
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010031.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010034",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010039.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010041",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 8
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010013.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010014",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010010.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010011",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010021.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010021",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010027.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010028",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010004.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010004",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010002.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010002",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010024.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010022",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010035.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010035",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010011.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010010",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 3
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010015.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010015",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010043.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010042",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010020.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010019",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010001.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010001",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010042.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010043",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000010029.png",
+                "source": "/mnt/datasets/demo/MNIST/train-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000010029",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 7
+                }
+            ]
+        }
+    ]
+}
