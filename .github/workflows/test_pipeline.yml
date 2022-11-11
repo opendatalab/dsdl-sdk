@@ -1,4 +1,4 @@
-name: 'GitHub Actions LeetCode Weekly Bot'
+name: 'run test pipeline'
 
 on: [push, pull_request]
 
@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         # Run in all these versions of Python
-        python-version: "3.9"
+        python-version: [ 3.9 ]
 
     steps:
         # Checkout the latest code from the repo
