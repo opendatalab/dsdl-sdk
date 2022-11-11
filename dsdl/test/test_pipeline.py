@@ -18,6 +18,8 @@ import shutil
 import sys
 
 config = Config()
+print(ali_oss)
+print(config)
 
 class TaskEnum(Enum):
     CLS = "classification"
