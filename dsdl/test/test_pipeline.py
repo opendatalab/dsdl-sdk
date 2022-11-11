@@ -115,7 +115,7 @@ def test_python_file(temp_file: Union[str, pathlib.Path], logger: TextIO):
 def _validate_parser(yaml_path: Union[str, pathlib.Path], logger: TextIO):
     logger.write(f"Test parse {yaml_path}: \n")
     try:
-        temp_file_path = "temp.py"
+        temp_file_path = config.temp_file_path
         library_path = os.path.dirname(yaml_path)
         dsdl_parse(yaml_path, library_path, temp_file_path)
         test_python_file(temp_file_path, logger)

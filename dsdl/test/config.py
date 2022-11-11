@@ -13,6 +13,7 @@ ali_oss = env.dict('ALI_OSS_DICT')
 class Config:
     project_path = os.getcwd()
     root_path = os.path.join(project_path, "dsdl_test")
+    temp_file_path = os.path.join(project_path, "temp.py")
     logger_path = os.path.join(project_path, "log_1030.txt")  # logger文件保存路径
     config_path = os.path.join(project_path, "config.py")   # dsdl view命令使用的配置文件路径
     v3_folder = os.path.join(root_path, "datasets")  # 存放v0.3格式的文件夹，会从oss下载到这个文件夹下
