@@ -22,10 +22,67 @@ class EnvDefaultVar(Action):
         setattr(namespace, self.dest, values)
 
 
+class DsdlArgumentParser(argparse.ArgumentParser):
+    """
+    重写ArgumentParser的format_usage方法，使得usage信息可以自动换行。
+    """
+
+    def __init__(self, example='',  *args, **kwargs):
+        self.__example = example
+        super(DsdlArgumentParser, self).__init__(*args, **kwargs)
+
+    def format_usage(self):
+        if self.usage:
+            return f"usage: {self.usage}"
+        else:
+            formatter = self._get_formatter()
+            formatter.add_usage(self.usage, self._actions,
+                                self._mutually_exclusive_groups)
+            return formatter.format_help()
+
+    def add_subparsers(self, **kwargs):
+        """
+        重写add_subparsers方法，使得help信息可以自动换行。
+        """
+        kwargs.setdefault('prog', self.prog)
+        return super(DsdlArgumentParser, self).add_subparsers(**kwargs)
+
+
+    def format_help(self) -> str:
+        formatter = self._get_formatter()
+
+        # usage
+        formatter.add_usage(self.usage, self._actions,
+                            self._mutually_exclusive_groups)
+
+        # description
+        formatter.add_text(self.description)
+
+        # positionals, optionals and user-defined groups
+        for action_group in self._action_groups:
+            formatter.start_section(action_group.title)
+            formatter.add_text(action_group.description)
+            formatter.add_arguments(action_group._group_actions)
+            formatter.end_section()
+
+        # example
+        if self.__example:
+            formatter.start_section("Examples")
+            formatter.add_text(self.__example)
+            formatter.end_section()
+
+        # epilog
+        formatter.add_text(self.epilog)
+
+        # determine help from format above
+        return formatter.format_help()
+
+
 class CustomHelpFormatter(HelpFormatter):
     """
     自定义命令输出格式
     """
+
     def _format_action(self, action):
         if type(action) == argparse._SubParsersAction:
             # inject new class variable for subcommand formatting
@@ -50,3 +107,6 @@ class CustomHelpFormatter(HelpFormatter):
             return msg
         else:
             return super(CustomHelpFormatter, self)._format_action(action)
+
+    def format_help(self):
+        return super().format_help()

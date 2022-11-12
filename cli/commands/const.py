@@ -8,3 +8,4 @@ __SQLITE_DB_NAME = "dsdl_cli.db" # sqlite数据库文件
 
 SQLITE_DB_PATH = os.path.join(DEFAULT_CONFIG_DIR, __SQLITE_DB_NAME) # sqlite数据库文件路径
 
+PROG_NAME = "dsdl" # 程序名称

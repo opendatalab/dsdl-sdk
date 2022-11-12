@@ -28,17 +28,11 @@ class Example(CmdBase):
         Returns:
 
         """
-        status_parser = subparsers.add_parser('example', help='Show the working tree status')
-        status_parser.add_argument("-s", '--show', nargs='?', default='SHOW', help='show example', metavar='METAVAR')
-        status_parser.add_argument(
-            "dataset_name",
-            action=EnvDefaultVar,
-            envvar=DSDL_CLI_DATASET_NAME,
-            nargs=1,
-            type=str,
-            help='dataset name',
-            metavar='[dataset name]',
-        )
+        status_parser = subparsers.add_parser('example', help='Show the working tree status', example="dsdl example --show tell me the truth")
+        status_parser.add_argument("-s", '--show', nargs='?', default='SHOW', help='show example string.....', metavar='METAVAR')
+        status_parser.add_argument('--test1', nargs='?', default='SHOW', help='show test1', metavar='METAVAR')
+        status_parser.add_argument('--test-1234', nargs='?', default='SHOW', help='show test-1234', metavar='METAVAR')
+        status_parser.add_argument("dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME, nargs=1, type=str, help='dataset name', metavar='[dataset name]')
         return status_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
