@@ -2,9 +2,9 @@ name: 'run test pipeline'
 
 on:
   push:
-    branches: [ sherry_dev ]
+    branches: [ sherry_dev , sdk-dev ]
   pull_request:
-    branches: [ sherry_dev ]
+    branches: [ sherry_dev , sdk-dev ]
 
 jobs:
   test:
