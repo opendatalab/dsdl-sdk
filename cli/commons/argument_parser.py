@@ -47,6 +47,17 @@ class DsdlArgumentParser(argparse.ArgumentParser):
         kwargs.setdefault('prog', self.prog)
         return super(DsdlArgumentParser, self).add_subparsers(**kwargs)
 
+    def add_example(self, formatter):
+        # example
+        if self.__example:
+            # read txt from resources/example.txt
+            example_file = os.path.join(os.path.dirname(__file__), '../resources', self.__example)
+            if os.path.exists(example_file):
+                with open(example_file, 'r') as f:
+                    example_str = f.read()
+                    formatter.start_section("Examples")
+                    formatter.add_raw_text(example_str)
+                    formatter.end_section()
 
     def format_help(self) -> str:
         formatter = self._get_formatter()
@@ -66,10 +77,7 @@ class DsdlArgumentParser(argparse.ArgumentParser):
             formatter.end_section()
 
         # example
-        if self.__example:
-            formatter.start_section("Examples")
-            formatter.add_text(self.__example)
-            formatter.end_section()
+        self.add_example(formatter)
 
         # epilog
         formatter.add_text(self.epilog)
@@ -110,3 +118,10 @@ class CustomHelpFormatter(HelpFormatter):
 
     def format_help(self):
         return super().format_help()
+
+    def add_raw_text(self, text):
+        if text is not None:
+            if '%(prog)' in text:
+                text = text % dict(prog=self._prog)
+            self._add_item(lambda t : t, [text])
+

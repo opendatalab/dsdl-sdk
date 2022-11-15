@@ -28,7 +28,7 @@ class Example(CmdBase):
         Returns:
 
         """
-        status_parser = subparsers.add_parser('example', help='Show the working tree status')
+        status_parser = subparsers.add_parser('select', help='Show the working tree status')
         status_parser.add_argument("-s", '--show', nargs='?', default='SHOW', help='show example', metavar='METAVAR')
         status_parser.add_argument("dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME, nargs=1, type=str, help='dataset name', metavar='[dataset name]')
         return status_parser

@@ -1,0 +1,6 @@
+  01. show somothing
+     $dsdl example --show tell me the truth
+  02. show test
+    $dsdl example --show test
+  03. show test123
+    $dsdl example --show test123

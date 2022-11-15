@@ -1,0 +1,14 @@
+{
+    "repo":{
+        "central":{
+            "user":"readdonly",
+            "passwd":"readdonly",
+            "service":" http://10.140.0.94:9889"
+        }
+    },
+    "storage":{
+        "default":{
+            "path":"C://user/cxu"
+        }
+    }
+}
