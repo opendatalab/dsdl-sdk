@@ -1,14 +1,19 @@
 {
-    "repo":{
-        "central":{
-            "user":"readdonly",
-            "passwd":"readdonly",
-            "service":" http://10.140.0.94:9889"
+    "repo": {
+        "central": {
+            "user": "weixingjian",
+            "passwd": "wxj123456",
+            "service": " http://10.140.0.94:9889"
         }
     },
-    "storage":{
-        "default":{
-            "path":"C://user/cxu"
+    "storage": {
+        "default": {
+            "path": "/home/PJLAB/weixingjian/.dsdl/datasets"
+        },
+        "mys3": {
+            "path": "s3://weixingjian/data/waymo",
+            "ak": "asd",
+            "sk": "qwe"
         }
     }
 }

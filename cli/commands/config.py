@@ -2,7 +2,7 @@ import json
 import os
 
 from .cmdbase import CmdBase
-from .const import DEFAULT_CONFIG_DIR
+from .const import DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR, DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH
 
 
 class Config(CmdBase):
@@ -43,7 +43,11 @@ class Config(CmdBase):
         config_parser.add_argument('-l',
                                    '--list',
                                    help='show all key value pairs')
-
+        config_parser.add_argument('-c',
+                                   '--credentials',
+                                   type=str,
+                                   nargs=2,
+                                   metavar = 'ak & sk')
         return config_parser
 
     def cmd_entry(self, args, config):
@@ -60,26 +64,33 @@ class Config(CmdBase):
         """
         # print(args)
         # print(f"{args.keys}")
-        
+        # type(config) is dict
+
         # print(f"{args.setvalue}")
-        
         # command handler
         setvalue_list = args.setvalue
-        # max length of setvalue list is 4
-        user_dict = {}
-        user_dict['storage.name'] = 'default'
-        user_dict['storage.loc'] = DEFAULT_CONFIG_DIR
-        for idx, element in enumerate(setvalue_list):
-            if element[0] == 'auth.username':
-                user_dict['auth.username'] = element[1]
-            elif element[0] == 'auth.password':
-                user_dict['auth.password'] = element[1]
+        credentials = args.credentials
+
+        #update user input of auth.xx & storage.xx
+        if setvalue_list is not None:
+            for idx, element in enumerate(setvalue_list):
+                if element[0] == 'auth.username':
+                    config['repo']['central']['user'] = element[1]
+                elif element[0] == 'auth.password':
+                    config['repo']['central']['passwd'] = element[1]
+                elif element[0] == 'storage.name':
+                    config['storage'][element[1]] = {}
+                elif element[0] == 'storage.loc':
+                    config['storage'][list(config['storage'].keys())[1]]['path'] = element[1]
         
-        if os.path.exists(DEFAULT_CONFIG_DIR):
-            with open(os.path.join(DEFAULT_CONFIG_DIR, 'config.json'), 'w') as file:
-                json.dump(user_dict, file, indent=4)
-            
-            
-        print(f"{args.__dict__}")
-
-
+        #update credentials
+        # print(config['storage'].keys)
+        if credentials is not None:
+            # print(config['storage'].keys())
+            config['storage'][list(config['storage'].keys())[1]]['ak'] = credentials[0]
+            config['storage'][list(config['storage'].keys())[1]]['sk'] = credentials[1]
+        
+        with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
+            return json.dump(config,file, indent=4)
+        # print(f"{args.__dict__}")
+        # print(f"{args.credentials}")
