@@ -5,20 +5,24 @@ References:
     https://docs.python.org/zh-cn/3/library/argparse.html
 """
 import argparse
+import importlib
+import inspect
 import json
 import os.path
 import sys
-from commands.cmdbase import CmdBase
-import importlib
-import inspect
 from pathlib import Path
+
 from commands.__version__ import __version__
-from commands.const import PROG_NAME
-from commons.argument_parser import DsdlArgumentParser as ArgumentParser
-from commands.const import DEFAULT_CONFIG_DIR, SQLITE_DB_PATH, DEFAULT_CLI_CONFIG_FILE,DEFAULT_LOCAL_STORAGE_PATH
-
-
+from commands.cmdbase import CmdBase
+from commands.const import (
+    DEFAULT_CLI_CONFIG_FILE,
+    DEFAULT_CONFIG_DIR,
+    DEFAULT_LOCAL_STORAGE_PATH,
+    PROG_NAME,
+    SQLITE_DB_PATH,
+)
 from commons.argument_parser import CustomHelpFormatter
+from commons.argument_parser import DsdlArgumentParser as ArgumentParser
 from utils.admin import initialize_db
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))

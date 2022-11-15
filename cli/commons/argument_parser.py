@@ -1,6 +1,7 @@
-import os, sys
-from argparse import Action, HelpFormatter
 import argparse
+import os
+import sys
+from argparse import Action, HelpFormatter
 
 
 class EnvDefaultVar(Action):

@@ -14,7 +14,7 @@ class Example(CmdBase):
 
 """
 from abc import ABC, abstractmethod
-from argparse import _SubParsersAction, ArgumentParser
+from argparse import ArgumentParser, _SubParsersAction
 
 
 class CmdBase(ABC):

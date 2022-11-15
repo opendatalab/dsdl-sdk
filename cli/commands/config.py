@@ -1,7 +1,10 @@
-from commands.cmdbase import CmdBase
-from commands.const import DEFAULT_CONFIG_DIR
 import json
 import os
+
+from .cmdbase import CmdBase
+from .const import DEFAULT_CONFIG_DIR
+
+
 class Config(CmdBase):
     """Set dsdl configuration {file path, user login info}.
 
