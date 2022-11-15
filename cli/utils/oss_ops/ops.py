@@ -88,8 +88,9 @@ class OSS_OPS:
             file_list = self.list_object(bucket, remote_directory)
             for file in file_list:
                 if file.startswith(remote_directory):
-                    file_name = file.replace(remote_directory, "")
-                    self.download_file(bucket, file, os.path.join(local_directory, file_name))
+                    file_name = file.replace(remote_directory, "").replace("/", "")
+                    local_file = os.path.join(local_directory, file_name)
+                    self.download_file(bucket, file, local_file)
         except ClientError as e:
             logging.error(e)
             return False
