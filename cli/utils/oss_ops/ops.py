@@ -46,7 +46,7 @@ class OSS_OPS:
             return False
         return True
 
-    def list_object(self, bucket):
+    def list_object(self, bucket, remote_directory=None):
         """
         list objects in a bucket
         :param bucket:
@@ -55,6 +55,7 @@ class OSS_OPS:
         file_list = []
         response = self.s3_client.list_objects_v2(
             Bucket=bucket,
+            Prefix=remote_directory
         )
         file_desc = response["Contents"]
         for f in file_desc:
@@ -84,7 +85,7 @@ class OSS_OPS:
         :return:
         """
         try:
-            file_list = self.list_object(bucket)
+            file_list = self.list_object(bucket, remote_directory)
             for file in file_list:
                 if file.startswith(remote_directory):
                     file_name = file.replace(remote_directory, "")
