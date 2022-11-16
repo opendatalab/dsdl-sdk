@@ -134,7 +134,6 @@ class DSDLClient(object):
                     subcmd_parser._positionals.title = "Positional arguments"
                     subcmd_parser.formatter_class = CustomHelpFormatter
 
-
 def main():
     DSDLClient().execute()
 
