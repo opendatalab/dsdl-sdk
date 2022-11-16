@@ -81,14 +81,14 @@ class Config(CmdBase):
                 elif element[0] == 'storage.name':
                     config['storage'][element[1]] = {}
                 elif element[0] == 'storage.loc':
-                    config['storage'][list(config['storage'].keys())[1]]['path'] = element[1]
+                    config['storage'][list(config['storage'].keys())[-1]]['path'] = element[1]
         
         #update credentials
         # print(config['storage'].keys)
         if credentials is not None:
             # print(config['storage'].keys())
-            config['storage'][list(config['storage'].keys())[1]]['ak'] = credentials[0]
-            config['storage'][list(config['storage'].keys())[1]]['sk'] = credentials[1]
+            config['storage'][list(config['storage'].keys())[-1]]['ak'] = credentials[0]
+            config['storage'][list(config['storage'].keys())[-1]]['sk'] = credentials[1]
         
         with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
             return json.dump(config,file, indent=4)
