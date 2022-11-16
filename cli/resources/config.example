@@ -1,0 +1,11 @@
+  01. show all the available keys
+     $dsdl config -k
+
+  02. set user name & password
+    $dsdl config -s auth.username ODL_test -s auth.password mysecret
+    
+  03. set storage name & location
+    $dsdl config -s storage.name mynewS3 -s storage.loc s3://myspace/waymo
+
+  04. set access key and secret key(only available when storage name and loc is specified)
+    $dsdl config -c myak mysk
