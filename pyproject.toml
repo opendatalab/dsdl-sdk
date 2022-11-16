@@ -4,9 +4,10 @@ name = "dsdlsdk"
 version = "0.1.0"
 homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev"
 description = "made for opendatalab dsdl-sdk dev branch(ignore other branches)."
-authors = ["suizhihao <suizhihao@pjlab.org.cn>"]
+authors = ["dsdl-team <dsdl-team@pjlab.org.cn>", "suizhihao <suizhihao@pjlab.org.cn>"]
 readme = "README.md"
 license = "Apache-2.0"
+keywords = ['dsdl-sdk', 'opendatalab', 'pjlab']
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Intended Audience :: Developers',
@@ -17,10 +18,11 @@ classifiers = [
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
 ]
-packages = [{ include = "dsdlsdk" }, { include = "tests", format = "sdist" }]
+packages = [{ include = "dsdlsdk" }, { include = "*", from='cli' }, { include = "dsdl" }, ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+#=============================================================
 pyyaml = { version = "^6.0", optional = true}
 click = { version = "^8.1.3", optional = true }
 networkx = { version = "^2.8.4", optional = true }
@@ -28,6 +30,7 @@ Pillow = { version = "^9.1.0", optional = true }
 oss2 = { version = "^2.15.0", optional = true }
 prettytable = { version = "^3.3.0", optional = true }
 opencv-python = { version = "^4.6.0.66", optional = true }
+#=============================================================
 jinja2 = { version = "^2.11.3", optional = true }
 markupsafe = { version = "2.0.1", optional = false }
 black = { version = "^22.3.0", optional = true }
@@ -50,6 +53,9 @@ twine = { version = "^3.3.0", optional = true }
 pre-commit = { version = "^2.12.0", optional = true }
 toml = { version = "^0.10.2", optional = true }
 bump2version = { version = "^1.0.1", optional = true }
+loguru = "^0.6.0"
+tabulate = "^0.9.0"
+pandas = "^1.5.1"
 
 [tool.poetry.extras]
 test = [
@@ -81,6 +87,9 @@ doc = [
     "mkdocs-autorefs",
     "jinja2",
 ]
+[tool.poetry.scripts]
+dsdl-cli = 'cli:main'
+dsdl = 'dsdl.cli:cli'
 
 [tool.pytest.ini_options]
 markers = [
