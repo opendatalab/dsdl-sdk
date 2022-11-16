@@ -46,22 +46,37 @@ class OSS_OPS:
             return False
         return True
 
-    def list_object(self, bucket, remote_directory=None):
+    def list_objects(self, bucket, remote_directory=None):
         """
         list objects in a bucket
         :param bucket:
-        :return:
+        :return: file list
         """
         file_list = []
-        response = self.s3_client.list_objects_v2(
-            Bucket=bucket,
-            Prefix=remote_directory
-        )
-        file_desc = response["Contents"]
-        for f in file_desc:
-            print("file_name:{},file_size:{}".format(f["Key"], f["Size"]))
-            file_list.append(f["Key"])
+        response_generator = self._list_obj_scluster(bucket, remote_directory)
+        for content in response_generator:
+            file_list.append(content["Key"])
         return file_list
+
+    def _list_obj_scluster(self, bucket, remote_directory=None):
+        """
+        list objects in a bucket
+        :param bucket:
+        :return: file_list [file_name]
+        """
+        marker = None
+        file_list = []
+        
+        while True:
+            list_kwargs = dict(MaxKeys=1000, Bucket=bucket, Prefix=remote_directory)
+            if marker:
+                list_kwargs['Marker'] = marker
+            response = self.s3_client.list_objects(**list_kwargs)
+            file_desc = response.get("Contents", [])
+            yield from file_desc
+            if not response.get("IsTruncated") or len(file_desc)==0:
+                break
+            marker = file_desc[-1]['Key']
 
     def obj_is_exist(self, bukcet, obj_name):
         '''
@@ -84,8 +99,12 @@ class OSS_OPS:
         :param local_directory: local directory name
         :return:
         """
+        
+        if not os.path.exists(local_directory):
+            os.makedirs(local_directory)
+            
         try:
-            file_list = self.list_object(bucket, remote_directory)
+            file_list = self.list_objects(bucket, remote_directory)
             for file in file_list:
                 if file.startswith(remote_directory):
                     file_name = file.replace(remote_directory, "").replace("/", "")
