@@ -27,7 +27,7 @@ class Config(CmdBase):
             storage.name              # storage name
             storage.loc               # storage path
         '''
-        config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example="dsdl config -s auth.username  admin",)
+        config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example="config.example",)
         config_parser.add_argument('-k',
                                    '--keys',
                                    action='store_const',
