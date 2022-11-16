@@ -9,11 +9,6 @@
     "storage": {
         "default": {
             "path": "/home/PJLAB/weixingjian/.dsdl/datasets"
-        },
-        "mys3": {
-            "path": "s3://weixingjian/data/waymo",
-            "ak": "asd",
-            "sk": "qwe"
         }
     }
 }
