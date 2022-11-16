@@ -37,14 +37,14 @@ class DSDLClient(object):
         self.__config = self.__init_cli_config()
         self.__parser = ArgumentParser(prog=PROG_NAME,
                                        description="""
-            Use 'dsdl <command>' to access/load datasets either from local 
+            Use '%(prog)s <command>' to access/load datasets either from local 
             file system or remote cloud storage, can also perform data-preprocessing
             including filtering, visualization, etc.
                                                 """,
                                        epilog="Report bugs to https://github.com/opendatalab/dsdl-sdk/issues",
                                        usage=f"{PROG_NAME} GLOBAL_FLAGS | COMMAND [COMMAND_ARGS] [DATASET_NAME]",
                                        formatter_class=CustomHelpFormatter,
-                                       example="dsdl -h",
+
                                        )
         self.__subparsers = self.__parser.add_subparsers(
             title="Commands",
@@ -103,7 +103,7 @@ class DSDLClient(object):
 
         """
         self.__parser._optionals.title = "Global flags"
-        self.__parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}', help='show the DSDL cli version and exit.')
+        self.__parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}', help='show the %(prog)s version and exit.')
 
     def __init_subcommand_parser(self):
         """
