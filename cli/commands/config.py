@@ -1,6 +1,10 @@
 import json
 import os
 
+from rich.console import Console
+from rich.syntax import Syntax
+from tabulate import tabulate
+
 from .cmdbase import CmdBase
 from .const import DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR, DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH
 
@@ -20,13 +24,7 @@ class Config(CmdBase):
             subparsers (_type_): _description_
         """
 
-        available_keys ='''
-        The available keys are:
-            auth.username             # central repo username
-            auth.password             # central repo password
-            storage.name              # storage name
-            storage.loc               # storage path
-        '''
+        available_keys ='The available keys are:'
         config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example='config.example')
         config_parser.add_argument('-k',
                                    '--keys',
@@ -63,13 +61,25 @@ class Config(CmdBase):
 
         """
         # print(args)
-        # print(f"{args.keys}")
-        # type(config) is dict
-
-        # print(f"{args.setvalue}")
-        # command handler
         setvalue_list = args.setvalue
         credentials = args.credentials
+        
+        if args.keys is not None:
+            key_str = args.keys
+            # type(config) is dict
+            snippet_keys = ''' 
+                auth.username             # central repo username
+                auth.password             # central repo password
+                storage.name              # storage name
+                storage.loc               # storage path
+            '''
+            syntax = Syntax(key_str+snippet_keys, 'pyhton')
+            console = Console()
+            console.print(syntax)
+        
+        # print(f"{args.setvalue}")
+        # command handler
+        
 
         #update user input of auth.xx & storage.xx
         if setvalue_list is not None:
@@ -81,14 +91,14 @@ class Config(CmdBase):
                 elif element[0] == 'storage.name':
                     config['storage'][element[1]] = {}
                 elif element[0] == 'storage.loc':
-                    config['storage'][list(config['storage'].keys())[-1]]['path'] = element[1]
+                    config['storage'][list(config['storage'].keys())[1]]['path'] = element[1]
         
         #update credentials
         # print(config['storage'].keys)
         if credentials is not None:
             # print(config['storage'].keys())
-            config['storage'][list(config['storage'].keys())[-1]]['ak'] = credentials[0]
-            config['storage'][list(config['storage'].keys())[-1]]['sk'] = credentials[1]
+            config['storage'][list(config['storage'].keys())[1]]['ak'] = credentials[0]
+            config['storage'][list(config['storage'].keys())[1]]['sk'] = credentials[1]
         
         with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
             return json.dump(config,file, indent=4)
