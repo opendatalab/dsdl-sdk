@@ -104,3 +104,4 @@ class Config(CmdBase):
             return json.dump(config,file, indent=4)
         # print(f"{args.__dict__}")
         # print(f"{args.credentials}")
+        # FIX multiinput
