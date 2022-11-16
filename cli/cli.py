@@ -11,13 +11,14 @@ import sys
 import importlib
 import inspect
 from pathlib import Path
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from commands.cmdbase import CmdBase
 from commands.__version__ import __version__
 from commands.const import PROG_NAME
 from commons.argument_parser import DsdlArgumentParser as ArgumentParser
-from commands.const import DEFAULT_CONFIG_DIR, SQLITE_DB_PATH, DEFAULT_CLI_CONFIG_FILE,DEFAULT_LOCAL_STORAGE_PATH
+from commands.const import DEFAULT_CONFIG_DIR, SQLITE_DB_PATH, DEFAULT_CLI_CONFIG_FILE, DEFAULT_LOCAL_STORAGE_PATH
 from commons.argument_parser import CustomHelpFormatter
 from utils.admin import initialize_db
 
@@ -43,11 +44,11 @@ class DSDLClient(object):
                                        epilog="Report bugs to https://github.com/opendatalab/dsdl-sdk/issues",
                                        usage=f"{PROG_NAME} GLOBAL_FLAGS | COMMAND [COMMAND_ARGS] [DATASET_NAME]",
                                        formatter_class=CustomHelpFormatter,
-                                       example = "dsdl -h",
+                                       example="dsdl -h",
                                        )
         self.__subparsers = self.__parser.add_subparsers(
             title="Commands",
-            )
+        )
         self.__init_subcommand_parser()
 
         self.__init_global_flags()  # 初始化全局参数
@@ -74,17 +75,17 @@ class DSDLClient(object):
         # 检查配置文件是否存在，如果没有则创建一个
         # 检查sqlite数据库是否存在，如果没有则创建一个
         # 检查sqlite数据库是否有表，如果没有则创建表
-        if os.path.exists(DEFAULT_CONFIG_DIR) is False:# 配置目录
+        if os.path.exists(DEFAULT_CONFIG_DIR) is False:  # 配置目录
             os.makedirs(DEFAULT_CONFIG_DIR)
-        if os.path.exists(SQLITE_DB_PATH) is False: # sqlite数据库,并初始化table
+        if os.path.exists(SQLITE_DB_PATH) is False:  # sqlite数据库,并初始化table
             initialize_db(SQLITE_DB_PATH)
-        if os.path.exists(DEFAULT_CLI_CONFIG_FILE) is False: # 默认配置文件
+        if os.path.exists(DEFAULT_CLI_CONFIG_FILE) is False:  # 默认配置文件
             with open(DEFAULT_CLI_CONFIG_FILE, 'w') as f:
                 with open(os.path.join(os.path.dirname(__file__), 'resources/default_cli_cfg.json'), 'r') as f2:
                     x = json.loads(f2.read())
                     x["storage"]['default']['path'] = DEFAULT_LOCAL_STORAGE_PATH
                     f.write(json.dumps(x, ensure_ascii=False, indent=4))
-        if os.path.exists(DEFAULT_LOCAL_STORAGE_PATH) is False: # 默认存放数据的目录
+        if os.path.exists(DEFAULT_LOCAL_STORAGE_PATH) is False:  # 默认存放数据的目录
             os.makedirs(DEFAULT_LOCAL_STORAGE_PATH)
 
         #########################################################
@@ -134,9 +135,10 @@ class DSDLClient(object):
                     subcmd_parser._positionals.title = "Positional arguments"
                     subcmd_parser.formatter_class = CustomHelpFormatter
 
+
 def main():
     DSDLClient().execute()
 
 
 if __name__ == '__main__':
-    DSDLClient().execute()
+    main()
