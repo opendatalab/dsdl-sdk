@@ -11,7 +11,11 @@ Examples:
 
 """
 from commands.cmdbase import CmdBase
+from commands.const import DSDL_CLI_DATASET_NAME
 from commons.argument_parser import EnvDefaultVar
+from tabulate import tabulate
+from utils import admin
+
 
 class Ls(CmdBase):
     """Show all the available datasets and its storage path.
@@ -26,9 +30,14 @@ class Ls(CmdBase):
             subparsers (_type_): _description_
         """
         
-        config_parser = subparsers.add_parser('ls', help = 'Show available datasets')
+        status_parser = subparsers.add_parser('ls', help = 'Show available datasets')
         
-        return config_parser
+        return status_parser
+    
+    def get_dataset_df(self):
+        sql = 'select * from dataset'
+        dataset = admin.get_sqlite_dict_list(sql,admin.get_sqlite_table_header('dataset'))
+        return dataset
     
     def cmd_entry(self, cmdargs, config):
         """
@@ -42,4 +51,5 @@ class Ls(CmdBase):
         Returns:
 
         """
-        print(cmdargs)
+        dataset = self.get_dataset_df()
+        print(tabulate(dataset, headers='keys', tablefmt='psql'))
