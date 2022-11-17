@@ -1,5 +1,5 @@
   01. show all the available keys
-     $dsdl config -k
+     $%(prog)s config -k
 
   02. set user name & password
     $dsdl config -s auth.username ODL_test -s auth.password mysecret
