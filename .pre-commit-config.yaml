@@ -34,4 +34,4 @@ repos:
     hooks:
     -   id: isort
         files: "\\.(py)$"
-        args: [--settings-path=pyproject.toml]
+        args: [--settings-path=isort.toml]
