@@ -101,7 +101,7 @@ class CustomHelpFormatter(HelpFormatter):
 
         if type(action) == argparse._SubParsersAction._ChoicesPseudoAction:
             # format subcommand help line
-            subcommand = self._format_action_invocation(action)  # type: str
+            subcommand = self._format_action_invocation(action)
             width = self._subcommand_max_length
             help_text = ""
             if action.help:
@@ -125,4 +125,3 @@ class CustomHelpFormatter(HelpFormatter):
             if '%(prog)' in text:
                 text = text % dict(prog=self._prog)
             self._add_item(lambda t : t, [text])
-

@@ -1,5 +1,6 @@
-import os
 import logging
+import os
+
 from boto3.session import Session
 from botocore.exceptions import ClientError
 
@@ -66,7 +67,7 @@ class OSS_OPS:
         """
         marker = None
         file_list = []
-        
+
         while True:
             list_kwargs = dict(MaxKeys=1000, Bucket=bucket, Prefix=remote_directory)
             if marker:
@@ -99,10 +100,10 @@ class OSS_OPS:
         :param local_directory: local directory name
         :return:
         """
-        
+
         if not os.path.exists(local_directory):
             os.makedirs(local_directory)
-            
+
         try:
             file_list = self.list_objects(bucket, remote_directory)
             for file in file_list:
