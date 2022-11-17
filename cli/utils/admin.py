@@ -164,6 +164,24 @@ def delete_dataset(dataset_name):
     cursor.commit()
 
 
+class DBClient:
+    def __init__(self):
+        self.cursor = sqlite3.connect(database=DB_PATH)
+
+    def get_local_dataset_path(self, dataset_name: str):
+        res = self.cursor.execute("select dataset_path from dataset where dataset_name=?", [dataset_name]).fetchone()
+        if res:
+            return res[0]
+        else:
+            return None
+
+    def is_dataset_local_exist(self, dataset_name: str) -> bool:
+        if self.get_local_dataset_path(dataset_name):
+            return True
+        else:
+            return False
+
+
 if __name__ == '__main__':
     print(DB_PATH)
     print(DB_DIR_PATH)
