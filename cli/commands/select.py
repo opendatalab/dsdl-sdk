@@ -87,12 +87,14 @@ class Select(CmdBase):
         random = cmdargs.random
         export_name = cmdargs.export_name
 
+        db_client = admin.DBClient()
+
         df = query.split_filter(dataset_name=dataset_name, split_name=split_name, select_cols=fields,
                                 filter_cond=filter, limit=limit, offset=offset, samples=random)
         print(df)
 
         if export_name is not None:
-            dataset_path = admin.get_local_dataset_path(dataset_name)
+            dataset_path = db_client.get_local_dataset_path(dataset_name)
             parquet_path = os.path.join(dataset_path, 'parquet', export_name + '.parquet')
             question = 'The split "%s" has already existed. Do you want to replace it? (y/n)' % export_name
             if os.path.exists(parquet_path):
@@ -110,7 +112,7 @@ class Select(CmdBase):
 
             schema = query.get_schema(dataset_name, split_name)
             query.save_parquet(df, parquet_path, schema, statistics=stat)
-            admin.register_split(dataset_name, export_name, media_num, media_size)
+            db_client.register_split(dataset_name, export_name, media_num, media_size)
             print("The parquet has exported to %s" % parquet_path)
 
             # to do operations about fields

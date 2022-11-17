@@ -1,10 +1,13 @@
 """
 admin module handles sqlite operations
 """
-import sqlite3
+import logging
 import os
+import sqlite3
+
 import pandas as pd
 from tabulate import tabulate
+
 from commands import const
 
 # get const path
@@ -81,103 +84,18 @@ def initialize_db(db_file):
     conn.close()
 
 
-# get table header in sqlite
-def get_sqlite_table_header(table):
-    cursor = sqlite3.connect(database=DB_PATH)
-    res = cursor.execute("PRAGMA table_info('%s')" % table).fetchall()
-    cursor.close()
-    return [x[1] for x in res]
-
-
-# get sqlite table data in a list of dict
-def get_sqlite_dict_list(sql, header):
-    res_list = []
-    cursor = sqlite3.connect(database=DB_PATH).cursor()
-    res = cursor.execute(sql).fetchall()
-    # print(cursor.description)
-    for r in res:
-        res_list.append(dict(zip(header, r)))
-    return res_list
-
-
-# get sqlite table data in a dataframe
-def get_sqlite_dataframe(sql, header):
-    dict_list = get_sqlite_dict_list(sql, header)
-    dataframe = pd.DataFrame.from_dict(data=dict_list, )
-    return dataframe
-
-
-# sum file size of file list
-def get_size_sum(file_list):
+def get_size_sum(file_list: list[str]):
     sum_size = 0
     for f in file_list:
         sum_size += os.path.getsize(f)
     return sum_size
 
 
-# get dataset local storage path
-def get_local_dataset_path(dataset_name):
-    cursor = sqlite3.connect(database=DB_PATH)
-    res = cursor.execute("select dataset_path from dataset where dataset_name=?", [dataset_name]).fetchone()
-    cursor.close()
-    if res:
-        return res[0]
-    else:
-        raise Exception('There is no dataset named %s' % dataset_name)
-
-
-def get_local_split_path(dataset_name, split_name):
-    dataset_path = get_local_dataset_path(dataset_name)
-    cursor = sqlite3.connect(database=DB_PATH)
-    split_data = cursor.execute("select * from split where dataset_name=? and split_name=?",
-                                [dataset_name, split_name]).fetchone()
-    split_path = os.path.join(dataset_path, 'parquet', '%s.parquet' % split_name)
-    if split_data and os.path.exists(split_path):
-        return split_path
-    else:
-        raise Exception('There is no split named %s in dataset %s or the file is lost' % (split_name, dataset_name))
-
-
-# split register in sqlite
-def register_split(dataset_name, split_name, media_num, media_size):
-    cursor = sqlite3.connect(database=DB_PATH)
-    cursor.execute(
-        "insert or replace into split values (?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-        [dataset_name, split_name, media_num, media_size])
-    cursor.commit()
-
-
-# dataset register in sqlite
-def register_dataset(dataset_name, dataset_path, label, media, media_num, media_size):
-    cursor = sqlite3.connect(database=DB_PATH)
-    cursor.execute(
-        "insert or replace into dataset values (?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-        [dataset_name, dataset_path, label, media, media_num, media_size])
-    cursor.commit()
-
-
-# delete split register in sqlite
-def delete_split(dataset_name, split_name):
-    cursor = sqlite3.connect(database=DB_PATH)
-    cursor.execute(
-        "delete from split where dataset_name=? and split_name=?",
-        [dataset_name, split_name])
-    cursor.commit()
-
-
-# delete dataset register in sqlite
-def delete_dataset(dataset_name):
-    cursor = sqlite3.connect(database=DB_PATH)
-    cursor.execute(
-        "delete from split where dataset_name=?",
-        [dataset_name])
-    cursor.execute(
-        "delete from dataset where dataset_name=?",
-        [dataset_name])
-    cursor.commit()
-
-
 class DBClient:
+    """
+    This class handles operations on DSDL local db
+    """
+
     def __init__(self):
         """
         create connection and cursor to link sqlite
@@ -185,13 +103,38 @@ class DBClient:
         self.conn = sqlite3.connect(database=DB_PATH)
         self.cursor = self.conn.cursor()
 
-    def __del__(self):
+    # def __del__(self):
+    #     """
+    #     close connection and cursor
+    #     @return:
+    #     """
+    #     self.cursor.close()
+    #     self.conn.close()
+    def get_sqlite_dict_list(self, sql) -> list:
         """
-        close connection and cursor
-        @return:
+        Get sql query result as a list of dicts
+        @param cursor: a cursor of a db connection
+        @param sql: query sql
+        @return: the query result as a list of dicts
         """
-        self.cursor.close()
-        self.conn.close()
+        cursor = self.cursor
+        res_list = []
+        res = cursor.execute(sql).fetchall()
+        header = [x[0] for x in cursor.description]
+        for r in res:
+            res_list.append(dict(zip(header, r)))
+        return res_list
+
+    def get_sqlite_dataframe(self, sql) -> pd.DataFrame:
+        """
+        Get sql query result as a pandas dataframe
+        @param cursor: a cursor of a db connection
+        @param sql: query sql
+        @return: the query result as a pandas dataframe
+        """
+        dict_list = self.get_sqlite_dict_list(sql)
+        dataframe = pd.DataFrame.from_dict(data=dict_list)
+        return dataframe
 
     def get_local_dataset_path(self, dataset_name: str):
         """
@@ -207,6 +150,23 @@ class DBClient:
         else:
             return None
 
+    def get_local_split_path(self, dataset_name, split_name):
+        """
+        Get the local path from sqlite for the given dataset name and split name
+        @param dataset_name: the formal dataset name
+        @param split_name: the split of the dataset, such as train/test
+        @return: the split local path get from sqlite db
+                 return None if there is no record in database for the given dataset name
+        """
+        dataset_path = self.get_local_dataset_path(dataset_name)
+        split_data = self.cursor.execute("select * from split where dataset_name=? and split_name=?",
+                                         [dataset_name, split_name]).fetchone()
+        split_path = os.path.join(dataset_path, 'parquet', '%s.parquet' % split_name)
+        if split_data and os.path.exists(split_path):
+            return split_path
+        else:
+            return None
+
     def is_dataset_local_exist(self, dataset_name: str) -> bool:
         """
         Check the given dataset if exists locally
@@ -219,6 +179,62 @@ class DBClient:
         else:
             return False
 
+    def register_dataset(self, dataset_name, dataset_path, label, media, media_num, media_size):
+        """
+        Register a dataset in database
+        @param dataset_name: the dataset name
+        @param dataset_path: the dataset storage path
+        @param label: 1 or 0, whether the label data of dataset is downloaded
+        @param media: 1 or 0, whether the media data of dataset is downloaded
+        @param media_num: the number of media files
+        @param media_size: the number of total media file size
+        @return:
+        """
+        self.cursor.execute(
+            "insert or replace into dataset values (?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+            [dataset_name, dataset_path, label, media, media_num, media_size])
+        self.conn.commit()
+
+    def register_split(self, dataset_name, split_name, media_num, media_size):
+        """
+        Register a new split in database
+        @param dataset_name: the dataset name
+        @param split_name: a subset of a dataset
+        @param media_num: the number of media files
+        @param media_size: the number of total media file size
+        @return:
+        """
+        self.cursor.execute(
+            "insert or replace into split values (?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+            [dataset_name, split_name, media_num, media_size])
+        self.conn.commit()
+
+    def delete_split(self, dataset_name, split_name):
+        """
+        Delete a split from database after it was deleted
+        @param dataset_name: the dataset name
+        @param split_name: a subset of a dataset
+        @return:
+        """
+        self.cursor.execute(
+            "delete from split where dataset_name=? and split_name=?",
+            [dataset_name, split_name])
+        self.conn.commit()
+
+    def delete_dataset(self, dataset_name):
+        """
+        Delete a dataset from database after it was deleted
+        @param dataset_name: the dataset name
+        @return:
+        """
+        self.cursor.execute(
+            "delete from split where dataset_name=?",
+            [dataset_name])
+        self.cursor.execute(
+            "delete from dataset where dataset_name=?",
+            [dataset_name])
+        self.conn.commit()
+
 
 if __name__ == '__main__':
     print(DB_PATH)
@@ -229,8 +245,8 @@ if __name__ == '__main__':
     print(db_path)
     # print(get_local_dataset_path('CIFAR-10'))
     # print(get_local_split_path('CIFAR-100', 'test'))
-    print(get_sqlite_table_header('dataset'))
-    print(get_sqlite_dict_list('select * from dataset', get_sqlite_table_header('dataset')))
+    db_client = DBClient()
+    print(db_client.get_sqlite_dict_list('select * from dataset'))
     # print(get_sqlite_dataframe('select * from dataset', get_sqlite_table_header('dataset')))
-    df = get_sqlite_dataframe('select * from dataset', get_sqlite_table_header('dataset'))
+    df = db_client.get_sqlite_dataframe('select * from dataset')
     print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))

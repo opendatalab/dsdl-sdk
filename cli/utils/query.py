@@ -50,7 +50,8 @@ def parquet_filter(parquet_path, select_cols='*', filter_cond='', limit=None, of
 
 
 def split_filter(dataset_name, split_name, select_cols, filter_cond, limit, offset, samples):
-    parquet_path = admin.get_local_split_path(dataset_name, split_name)
+    db_client = admin.DBClient()
+    parquet_path = db_client.get_local_split_path(dataset_name, split_name)
     return parquet_filter(parquet_path=parquet_path, select_cols=select_cols, filter_cond=filter_cond, limit=limit,
                           offset=offset, samples=samples)
 
@@ -67,7 +68,8 @@ def get_parquet_metadata(parquet_path):
 
 
 def get_metadata(dataset_name, split_name):
-    parquet_path = admin.get_local_split_path(dataset_name, split_name)
+    db_client = admin.DBClient()
+    parquet_path = db_client.get_local_split_path(dataset_name, split_name)
     return get_parquet_metadata(parquet_path)
 
 
@@ -80,7 +82,8 @@ def get_parquet_schema(parquet_path):
 
 
 def get_schema(dataset_name, split_name):
-    parquet_path = admin.get_local_split_path(dataset_name, split_name)
+    db_client = admin.DBClient()
+    parquet_path = db_client.get_local_split_path(dataset_name, split_name)
     return get_parquet_schema(parquet_path)
 
 
@@ -99,13 +102,15 @@ def save_parquet(dataframe, parquet_path, schema, dsdl_meta=None, statistics=Non
     table_write = pa.Table.from_pandas(dataframe, schema=schema, preserve_index=False)
     pq.write_table(table_write, parquet_path)
 
+
 # def save_split(dataset_name, split_name, dataframe, parquet_path, schema, dsdl_meta=None, statistics=None):
 #     meta_dict = schema.metadata
 #     dsdl_meta_dict = meta_dict[b'dsdl_meta'] if dsdl_meta is None else dsdl_meta
 #     stat_meta_dict = meta_dict[b'statistics'] if statistics is None else statistics
 
 if __name__ == '__main__':
-    path = admin.get_local_split_path('CIFAR-10', 'train')
+    db_client = admin.DBClient()
+    path = db_client.get_local_split_path('CIFAR-10', 'train')
     print(path)
     print(parquet_filter(parquet_path=path, filter_cond="label='bird'", select_cols="image,label", samples=1500,
                          limit=800, offset=100))

@@ -80,6 +80,7 @@ class Get(CmdBase):
 
         minio_client = ops.OSS_OPS(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
                                    aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+        db_client = admin.DBClient()
 
         remote_dataset_list = [x.object_name.replace('/', '') for x in minio_client.list_objects(default_bucket) if
                                x.is_dir]
@@ -87,16 +88,14 @@ class Get(CmdBase):
             print("there is no dataset named %s in remote repo" % dataset_name)
             exit()
 
-        try:
-            dataset_dir = admin.get_local_dataset_path(dataset_name)
+        if db_client.is_dataset_local_exist(dataset_name):
+            dataset_dir = db_client.get_local_dataset_path(dataset_name)
             question = 'The dataset "%s" has already existed in %s. Do you want to replace it? (y/n)' % (
                 dataset_name, dataset_dir)
             if not input(question) in ("y", "Y"):
                 exit()
-        except Exception as e:
-            pass
 
-        admin.delete_dataset(dataset_name)
+        db_client.delete_dataset(dataset_name)
         dataset_dir = os.path.join(output_path, dataset_name)
         print("saving to %s" % dataset_dir)
 
@@ -108,9 +107,9 @@ class Get(CmdBase):
         dataset_media_num = stat['dataset_stat']['media_num']
         dataset_media_size = stat['dataset_stat']['media_size']
 
-        admin.register_dataset(dataset_name, dataset_dir, 1, 1, dataset_media_num, dataset_media_size)
+        db_client.register_dataset(dataset_name, dataset_dir, 1, 1, dataset_media_num, dataset_media_size)
         for split in parquet_list:
             _, stat = query.get_parquet_metadata(os.path.join(dataset_dir, 'parquet', split))
             split_media_num = stat['split_stat']['media_num']
             split_media_size = stat['split_stat']['media_size']
-            admin.register_split(dataset_name, split.replace(".parquet", ""), split_media_num, split_media_size)
+            db_client.register_split(dataset_name, split.replace(".parquet", ""), split_media_num, split_media_size)
