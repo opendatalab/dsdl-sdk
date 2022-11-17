@@ -94,7 +94,7 @@ def get_sqlite_dict_list(sql, header):
     res_list = []
     cursor = sqlite3.connect(database=DB_PATH).cursor()
     res = cursor.execute(sql).fetchall()
-    print(cursor.description)
+    # print(cursor.description)
     for r in res:
         res_list.append(dict(zip(header, r)))
     return res_list

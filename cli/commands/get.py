@@ -9,7 +9,7 @@ Examples:
 import os
 
 from commands.cmdbase import CmdBase
-from commands.const import DSDL_CLI_DATASET_NAME
+from commands.const import DSDL_CLI_DATASET_NAME, DEFAULT_LOCAL_STORAGE_PATH
 from commons.argument_parser import EnvDefaultVar
 from utils import admin, query
 from utils.oss_ops import ops
@@ -19,7 +19,8 @@ aws_access_key_id = "ailabminio"
 aws_secret_access_key = "123123123"
 endpoint_url = "10.140.0.94:9800"
 region_name = "ailab"
-default_path = 'D:\\DSDL_DATA'
+# default_path = 'D:\\DSDL_DATA'
+default_path = DEFAULT_LOCAL_STORAGE_PATH
 default_bucket = "dsdldata"
 
 
