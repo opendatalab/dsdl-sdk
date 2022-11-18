@@ -1,19 +1,18 @@
 # import the Package
+import os
+import sys
 import base64
 from io import BytesIO
 import urllib
 
+sys.path.append(f'{os.path.dirname(os.path.abspath(__file__))}/../../../')
+
 import duckdb
-
 import streamlit as st
-
 from PIL import Image
-from tensorflow.keras.models import load_model
-
-import numpy as np
 import pandas as pd
-import altair as alt
 
+from utils.admin import DBClient
 
 class_name = [
     "airplane",
@@ -30,7 +29,6 @@ class_name = [
 
 
 def main():
-
     st.title("CIFAR-10")
     st.sidebar.title("CIFAR-10")
     app_mode = st.sidebar.selectbox(
@@ -81,10 +79,11 @@ def parquet_filter(parquet_path, select_cols="*", filter_cond="", limit=None, of
 
 def explore_app():
     # the following varibles should be read from dsdl database by duckdb
-    dataset_dir_path = '/nvme/data/dsdl_data/CIFAR-10/'
-    parquet_dir_path = '/nvme/data/dsdl_data/CIFAR-10/parquet/'
-    parquet_train_file = parquet_dir_path + 'train.parquet'
-    parquet_test_file = parquet_dir_path + 'test.parquet'
+    dbcli = DBClient()
+    dataset_dir_path = dbcli.get_local_dataset_path('CIFAR-10')
+    parquet_dir_path = os.path.join(dataset_dir_path, 'parquet')
+    parquet_train_file = os.path.join(parquet_dir_path, 'train.parquet')
+    parquet_test_file = os.path.join(parquet_dir_path, 'test.parquet')
 
     TRAIN_DF = parquet_filter(
         parquet_path=parquet_train_file,
@@ -106,7 +105,8 @@ def explore_app():
     TRAIN_DF['split'] = 'train'
     TEST_DF['split'] = 'test'
     DF = pd.concat([TRAIN_DF, TEST_DF], ignore_index=True)
-    DF['path'] = dataset_dir_path + DF['image']
+    # DF['path'] = dataset_dir_path + DF['image']
+    DF['path'] = DF['image'].apply(lambda x: os.path.join(dataset_dir_path, x))
     DF['thumbnail'] = DF.path.map(lambda x: image_formatter(x))
     DF = pd.DataFrame(
         {
