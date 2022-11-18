@@ -24,28 +24,39 @@ class Config(CmdBase):
             subparsers (_type_): _description_
         """
 
-        available_keys ='The available keys are:'
-        config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example='config.example')
+        # config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example='config.example')
+        config_parser = subparsers.add_parser('config', help='set dsdl configuration.')
+
+        
         config_parser.add_argument('-k',
                                    '--keys',
-                                   action='store_const',
-                                   const=available_keys,
-                                   help='show all the available keys',
-                                   required=False)
+                                   action = 'store_true',
+                                   help = 'show all the available keys',
+                                   required = False)
         config_parser.add_argument('-s',
                                    '--setvalue',
-                                   type=str,
-                                   nargs=2,
-                                   action='append',
-                                   help='Set key-value for a specific configuration.')
+                                   type = str,
+                                   nargs = 2,
+                                   action = 'append',
+                                   help = 'Set key-value for a specific configuration.')
         config_parser.add_argument('-l',
                                    '--list',
-                                   help='show all key value pairs')
+                                   action = 'store_true',
+                                   help = 'show all key value pairs',
+                                   required = False)
         config_parser.add_argument('-c',
                                    '--credentials',
-                                   type=str,
-                                   nargs=2,
+                                   type = str,
+                                   nargs = 2,
                                    metavar = 'ak & sk')
+        
+        sub_config_parser = config_parser.add_subparsers(dest = 'command')
+        repo_parser = sub_config_parser.add_parser('repo', help = 'set dsdl repo configuration')
+        repo_parser.add_argument('--repo-name', help = 'set repo name')
+        
+        storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
+        storage_parser.add_argument('--storage-name', help = 'set storage name')
+        
         return config_parser
 
     def cmd_entry(self, args, config):
@@ -64,20 +75,23 @@ class Config(CmdBase):
         setvalue_list = args.setvalue
         credentials = args.credentials
         
-        if args.keys is not None:
-            key_str = args.keys
-            # type(config) is dict
-            snippet_keys = ''' 
+        if args.keys:
+            snippet_keys = '''
+            The available keys are:
                 auth.username             # central repo username
                 auth.password             # central repo password
                 storage.name              # storage name
                 storage.loc               # storage path
             '''
-            syntax = Syntax(key_str+snippet_keys, 'pyhton')
+            syntax = Syntax(snippet_keys, 'python')
             console = Console()
             console.print(syntax)
         
-        # print(f"{args.setvalue}")
+        if args.list:
+            
+            syntax = Syntax(str(config['repo'].items()) + '\n'+ str(config['storage'].items()), 'python')
+            console = Console()
+            console.print(syntax)        # print(f"{args.setvalue}")
         # command handler
         
 
