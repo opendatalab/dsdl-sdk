@@ -325,7 +325,7 @@ class DSDLParser(Parser, ABC):
                 define_info.parent = CLASS_PARSER.super_class_list
                 define_info.skeleton = CLASS_PARSER.skeleton
             else:
-                err_msg = f"error type {define_type} in yaml, type must be class_dom or struct."
+                err_msg = f"error type {define_type} in yaml, type must be class_domain or struct."
                 if self.report_flag:
                     temp_check_item = CheckLogItem(
                         def_name=TypeEnum.CLASS_DOMAIN.value,
