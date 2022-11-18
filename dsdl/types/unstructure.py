@@ -1,5 +1,5 @@
 from .field import Field
-from ..geometry import ImageMedia, SegmentationMap
+from ..geometry import ImageMedia, SegmentationMap, InstanceMap
 from ..exception import ValidationError
 
 
@@ -39,14 +39,26 @@ class ImageField(UnstructuredObjectField):
         return ImageMedia(value["$loc"], FileReader(self.file_reader, value))
 
 
-class SegMapField(UnstructuredObjectField):
+class LabelMapField(UnstructuredObjectField):
     def __init__(self, dom, *args, **kwargs):
-        super(SegMapField, self).__init__(*args, **kwargs)
+        super(LabelMapField, self).__init__(*args, **kwargs)
         self.dom = dom
 
     def validate(self, value):
         if isinstance(value, str):
             value = {"$loc": value}
         else:
-            raise ValidationError(f"SegMapField Error: expect str, got {value}")
+            raise ValidationError(f"LabelField Error: expect str, got {value}")
         return SegmentationMap(value['$loc'], FileReader(self.file_reader, value), self.dom)
+
+
+class InsMapField(UnstructuredObjectField):
+    def __init__(self, *args, **kwargs):
+        super(InsMapField, self).__init__(*args, **kwargs)
+
+    def validate(self, value):
+        if isinstance(value, str):
+            value = {"$loc": value}
+        else:
+            raise ValidationError(f"InsMapField Error: expect str, got {value}")
+        return InstanceMap(value['$loc'], FileReader(self.file_reader, value))

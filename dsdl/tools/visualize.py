@@ -10,7 +10,7 @@ try:
 except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 from yaml import load as yaml_load
-from .commons import OptionEatAll, load_samples
+from .commons import OptionEatAll, load_samples, TASK_FIELDS
 from ..parser import dsdl_parse
 
 
@@ -53,17 +53,8 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
 
     palette = {}
     if task:
-        assert task in ["detection",
-                        "segmentation",
-                        "classification"], "invalid task, you can only choose in ['detection', 'segmentation', 'classification']"
-        if task == "classification":
-            fields = ["image", "label"]
-        elif task == "detection":
-            fields = ["image", "label", "bbox", "polygon", "dict", "keypoint"]
-        elif task == "segmentation":
-            fields = ["image", "segmap", "dict"]
-        else:
-            fields = ["image", "label", "dict"]
+        assert task in TASK_FIELDS, f"invalid task, you can only choose in {list(TASK_FIELDS.keys())}"
+        fields = TASK_FIELDS[task]
     else:
         if fields is None:
             fields = []
