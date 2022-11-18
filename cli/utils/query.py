@@ -1,8 +1,5 @@
 """
-
-References:
-    https://developer.aliyun.com/article/740160
-    https://docs.python.org/zh-cn/3/library/argparse.html
+admin module handles parquet operations
 """
 import os.path
 import duckdb
@@ -11,119 +8,171 @@ import pyarrow.parquet as pq
 import pyarrow as pa
 
 
-# def get_parquet_path(dataset, split):
-#     dataset_path = admin.get_local_dataset_path(dataset)
-#     file_name = split + '.parquet'
-#     parquet_path = os.path.join(dataset_path, 'parquet', file_name)
-#     return parquet_path
+class ParquetReader:
+    """
+    A Class to read parquet file
+    """
+    def __init__(self, parquet_path):
+        """
+        Construct the parquet reader based on the parquet file path
+        @param parquet_path:
+        """
+        self.parquet_path = parquet_path
+
+    def select(self, select_cols='*', filter_cond='', limit=None, offset=None, samples=None):
+        """
+        Select data from parquet file
+        @param select_cols: columns you want to select
+        @param filter_cond: specify filters to apply to the data
+        @param limit: restrict the amount of rows fetched
+        @param offset: indicate at which position to start reading the values
+        @param samples: query on a sample from the base table
+        @return: a dataframe of data selected from the parquet
+        """
+        cursor = duckdb.connect(database=':memory:')
+        view_sql = """create or replace view dataset as 
+        select * 
+        from parquet_scan('%s');
+        """ % self.parquet_path
+        cursor.execute(view_sql)
+        query_sql = "select {cols} from dataset".format(cols=select_cols)
+
+        # add where condition
+        if filter_cond:
+            query_sql = query_sql + ' where ' + filter_cond
+
+        # add limit
+        if limit:
+            query_sql = query_sql + ' limit ' + str(limit)
+
+        # add offset
+        if offset:
+            query_sql = query_sql + ' offset ' + str(offset)
+
+        # add random samples
+        if samples:
+            # to do: implement %
+            query_sql = 'select * from (' + query_sql + ') using sample %d rows' % samples
+
+        # print(query_sql)
+        df = cursor.execute(query_sql).fetch_df()
+        return df
+
+    def get_metadata(self):
+        """
+        Get metadata from parquet schema
+        @return: 2 dicts of metadata: dsdl meta and statistics
+        """
+        if not os.path.exists(self.parquet_path):
+            raise Exception("parquet file does not exist")
+
+        meta_dict = pq.read_schema(self.parquet_path)
+
+        dsdl_meta = eval(meta_dict.metadata[b'dsdl_meta'])
+        stat_meta = eval(meta_dict.metadata[b'statistics'])
+        return dsdl_meta, stat_meta
+
+    def get_schema(self):
+        """
+        Get the schema of a parquet
+        @return: a parquet schema
+        """
+        if not os.path.exists(self.parquet_path):
+            raise Exception("parquet file does not exist")
+
+        schema = pq.read_schema(self.parquet_path)
+        return schema
 
 
-def parquet_filter(parquet_path, select_cols='*', filter_cond='', limit=None, offset=None, samples=None):
-    cursor = duckdb.connect(database=':memory:')
-    view_sql = """create or replace view dataset as 
-    select * 
-    from parquet_scan('%s');
-    """ % parquet_path
-    cursor.execute(view_sql)
-    query_sql = "select {cols} from dataset".format(cols=select_cols)
-
-    # add where condition
-    if filter_cond:
-        query_sql = query_sql + ' where ' + filter_cond
-
-    # add limit
-    if limit:
-        query_sql = query_sql + ' limit ' + str(limit)
-
-    # add offset
-    if offset:
-        query_sql = query_sql + ' offset ' + str(offset)
-
-    # add random samples
-    if samples:
-        # to do: implement %
-        query_sql = 'select * from (' + query_sql + ') using sample %d rows' % samples
-
-    # print(query_sql)
-    df = cursor.execute(query_sql).fetch_df()
-    return df
+class SplitReader(ParquetReader):
+    """
+    A class to read parquet base on dataset name and split name
+    """
+    def __init__(self, dataset_name, split_name):
+        self.db_client = admin.DBClient()
+        self.parquet_path = self.db_client.get_local_split_path(dataset_name, split_name)
+        super(SplitReader, self).__init__(self.parquet_path)
 
 
-def split_filter(dataset_name, split_name, select_cols, filter_cond, limit, offset, samples):
-    db_client = admin.DBClient()
-    parquet_path = db_client.get_local_split_path(dataset_name, split_name)
-    return parquet_filter(parquet_path=parquet_path, select_cols=select_cols, filter_cond=filter_cond, limit=limit,
-                          offset=offset, samples=samples)
+class DSDLParquet:
+    """
+    A class to handle operations of dsdl parquet file
+    """
+    def __init__(self, dataframe, parquet_path, schema, dsdl_meta=None, statistics=None):
+        self.parquet_path = parquet_path
+        self.meta_dict = schema.metadata
+        if dsdl_meta:
+            self.meta_dict[b'dsdl_meta'] = str(dsdl_meta)
+        if statistics:
+            self.meta_dict[b'statistics'] = str(statistics)
+
+        self.dataframe = dataframe
+        self.schema = schema.with_metadata(self.meta_dict)
+        self.table = pa.Table.from_pandas(self.dataframe, schema=self.schema, preserve_index=False)
+
+    def save(self):
+        """
+        Save the dsdl parquet to a specified path
+        @return:
+        """
+        pq.write_table(self.table, self.parquet_path)
 
 
-def get_parquet_metadata(parquet_path):
-    if not os.path.exists(parquet_path):
-        raise Exception("parquet file does not exist")
+class Split:
+    """
+    A class to handle a split
+    """
+    def __init__(self, dataset_name, split_name):
+        self.db_client = admin.DBClient()
+        if not self.db_client.is_dataset_local_exist(dataset_name):
+            raise Exception('There is no local dataset named %s' % dataset_name)
+        self.dataset_name = dataset_name
+        self.dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
+        self.split_name = split_name
+        self.parquet_path = os.path.join(self.dataset_path, 'parquet', self.split_name + '.parquet')
 
-    meta_dict = pq.read_schema(parquet_path)
+    def is_local_exist(self):
+        """
+        Check whether the split is locally existed
+        @return:
+        """
+        return self.db_client.is_split_local_exist(self.dataset_name, self.split_name)
 
-    dsdl_meta = eval(meta_dict.metadata[b'dsdl_meta'])
-    stat_meta = eval(meta_dict.metadata[b'statistics'])
-    return dsdl_meta, stat_meta
+    def save(self, dataframe, schema, dsdl_meta, statistics):
+        """
+        Save the split
+        @param dataframe: data in dataframe format
+        @param schema:
+        @param dsdl_meta:
+        @param statistics:
+        @return:
+        """
+        media_num = statistics['split_stat']['media_num']
+        media_size = statistics['split_stat']['media_size']
+        dsdl_parquet = DSDLParquet(dataframe, self.parquet_path, schema, dsdl_meta, statistics)
+        dsdl_parquet.save()
+        self.db_client.register_split(self.dataset_name, self.split_name, media_num, media_size)
 
-
-def get_metadata(dataset_name, split_name):
-    db_client = admin.DBClient()
-    parquet_path = db_client.get_local_split_path(dataset_name, split_name)
-    return get_parquet_metadata(parquet_path)
-
-
-def get_parquet_schema(parquet_path):
-    if not os.path.exists(parquet_path):
-        raise Exception("parquet file does not exist")
-
-    schema = pq.read_schema(parquet_path)
-    return schema
-
-
-def get_schema(dataset_name, split_name):
-    db_client = admin.DBClient()
-    parquet_path = db_client.get_local_split_path(dataset_name, split_name)
-    return get_parquet_schema(parquet_path)
-
-
-def save_parquet(dataframe, parquet_path, schema, dsdl_meta=None, statistics=None):
-    meta_dict = schema.metadata
-
-    if dsdl_meta:
-        meta_dict[b'dsdl_meta'] = str(dsdl_meta)
-    if statistics:
-        meta_dict[b'statistics'] = str(statistics)
-
-    schema = schema.with_metadata(meta_dict)
-
-    # output parquet file
-    # print('start writing...')
-    table_write = pa.Table.from_pandas(dataframe, schema=schema, preserve_index=False)
-    pq.write_table(table_write, parquet_path)
-
-
-# def save_split(dataset_name, split_name, dataframe, parquet_path, schema, dsdl_meta=None, statistics=None):
-#     meta_dict = schema.metadata
-#     dsdl_meta_dict = meta_dict[b'dsdl_meta'] if dsdl_meta is None else dsdl_meta
-#     stat_meta_dict = meta_dict[b'statistics'] if statistics is None else statistics
 
 if __name__ == '__main__':
     db_client = admin.DBClient()
     path = db_client.get_local_split_path('CIFAR-10', 'train')
-    print(path)
-    print(parquet_filter(parquet_path=path, filter_cond="label='bird'", select_cols="image,label", samples=1500,
-                         limit=800, offset=100))
-    dsdl_meta, stat_meta = get_metadata('CIFAR-10', 'train')
-    # print(dsdl_meta)
-    # print(stat_meta)
+    split_reader = SplitReader('CIFAR-10', 'train')
 
-    df = parquet_filter(parquet_path=path, filter_cond="label='bird'", select_cols="image,label", samples=1500,
-                        limit=800, offset=100)
-    schema = get_parquet_schema(path)
-    meta = get_parquet_metadata(path)
-    save_parquet(df, 'D:\\DSDL_STORE\\test.parquet', schema, statistics={'test': 'test'})
+    print(split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
+                              limit=800, offset=100))
+    dsdl_meta, stat_meta = split_reader.get_metadata()
+    print(dsdl_meta)
+    print(stat_meta)
+    #
+    df = split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
+                             limit=800, offset=100)
+    schema = split_reader.get_schema()
+    meta = split_reader.get_metadata()
+    split = DSDLParquet(df, 'D:\\DSDL_STORE\\test2.parquet', schema, statistics={'test': 'test'})
+    split.save()
 
-    dsdl_meta, stat_meta = get_parquet_metadata('D:\\DSDL_STORE\\test.parquet')
+    parquet_reader = ParquetReader('D:\\DSDL_STORE\\test2.parquet')
+    dsdl_meta, stat_meta = parquet_reader.get_metadata()
     print(dsdl_meta)
     print(stat_meta)

@@ -87,33 +87,30 @@ class Select(CmdBase):
         random = cmdargs.random
         export_name = cmdargs.export_name
 
-        db_client = admin.DBClient()
-
-        df = query.split_filter(dataset_name=dataset_name, split_name=split_name, select_cols=fields,
-                                filter_cond=filter, limit=limit, offset=offset, samples=random)
+        split_reader = query.SplitReader(dataset_name, split_name)
+        df = split_reader.select(select_cols=fields, filter_cond=filter, limit=limit, offset=offset, samples=random)
         print(df)
 
         if export_name is not None:
-            dataset_path = db_client.get_local_dataset_path(dataset_name)
-            parquet_path = os.path.join(dataset_path, 'parquet', export_name + '.parquet')
+            sub_split = query.Split(dataset_name, export_name)
             question = 'The split "%s" has already existed. Do you want to replace it? (y/n)' % export_name
-            if os.path.exists(parquet_path):
+            if sub_split.is_local_exist():
                 if not input(question) in ("y", "Y"):
                     exit()
 
-            media_path = [os.path.join(dataset_path, x) for x in df['image'].tolist()]
-            media_num = len(media_path)
-            media_size = admin.get_size_sum(media_path)
+            media_path = [os.path.join(sub_split.dataset_path, x) for x in df['image'].tolist()]
+            media_stat = admin.get_media_stat(media_path)
+            media_num = media_stat['media_num']
+            media_size = media_stat['media_size']
 
             split_stat = {'media_num': media_num, 'media_size': media_size}
 
-            _, stat = query.get_metadata(dataset_name, split_name)
+            meta, stat = split_reader.get_metadata()
             stat['split_stat'] = split_stat
 
-            schema = query.get_schema(dataset_name, split_name)
-            query.save_parquet(df, parquet_path, schema, statistics=stat)
-            db_client.register_split(dataset_name, export_name, media_num, media_size)
-            print("The parquet has exported to %s" % parquet_path)
+            schema = split_reader.get_schema()
+            sub_split.save(df, schema, meta, stat)
+            print("The parquet has exported to %s" % sub_split.parquet_path)
 
             # to do operations about fields
             # a, b = query.get_parquet_metadata(parquet_path)

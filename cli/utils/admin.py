@@ -84,11 +84,30 @@ def initialize_db(db_file):
     conn.close()
 
 
-def get_size_sum(file_list: list[str]):
+def get_size_sum(file_list):
+    """
+    Compute total size of a list of files
+    @param file_list: a list of file path
+    @return: the total size of files
+    """
     sum_size = 0
     for f in file_list:
         sum_size += os.path.getsize(f)
     return sum_size
+
+
+def get_media_stat(media_list):
+    """
+    Computer statistics of a list of media files
+    @param media_list:
+    @return: media statistics
+    """
+    media_list = set(media_list)
+    media_num = len(media_list)
+    media_size = get_size_sum(media_list)
+
+    media_stat = {'media_num': media_num, 'media_size': media_size}
+    return media_stat
 
 
 class DBClient:
@@ -169,12 +188,26 @@ class DBClient:
 
     def is_dataset_local_exist(self, dataset_name: str) -> bool:
         """
-        Check the given dataset if exists locally
+        Check whether the given dataset exists locally
 
         @param dataset_name: the formal dataset name which you want to check if exists locally
         @return: if exists, return True, otherwise return False
         """
         if self.get_local_dataset_path(dataset_name):
+            return True
+        else:
+            return False
+
+    def is_split_local_exist(self, dataset_name: str, split_name: str) -> bool:
+        """
+        Check whether the given split exists locally
+        @param dataset_name: the formal dataset name which the target split belong to
+        @param split_name: the split name which you want to check if exists locally
+        @return: if exists, return True, otherwise return False
+        """
+        res = self.cursor.execute("select * from split where dataset_name=? and split_name=?",
+                                  [dataset_name, split_name]).fetchone()
+        if res:
             return True
         else:
             return False
@@ -250,3 +283,4 @@ if __name__ == '__main__':
     # print(get_sqlite_dataframe('select * from dataset', get_sqlite_table_header('dataset')))
     df = db_client.get_sqlite_dataframe('select * from dataset')
     print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+    print(db_client.is_split_local_exist('CIFAR-10', 'test2'))
