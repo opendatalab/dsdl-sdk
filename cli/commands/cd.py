@@ -11,6 +11,8 @@ import platform
 from commands.cmdbase import CmdBase
 from commons.argument_parser import EnvDefaultVar
 
+from utils.admin import DBClient
+
 
 class Cd(CmdBase):
     """
@@ -47,25 +49,23 @@ class Cd(CmdBase):
             config:
         Returns:
         """
-        print("------------cmdargs----------------")
-        print(f"\n {cmdargs} \n ")
-        print("------------cmdargs----------------")
 
         os.environ.setdefault('DATASET_NAME', '')
         os.environ['DATASET_NAME'] = cmdargs.dataset_name[0]
 
         dsname = os.environ.get('DATASET_NAME', "default")
-        print("\n DATASET_NAME : ", dsname)
 
-        if 'DATASET_NAME' in os.environ:
-            print(f"\n Dataset {dsname} exists")
+        dbcli = DBClient()
 
-        sysstr = platform.system()
-        if sysstr == "Windows":
-            print("Call Windows cmd command shell")
-            os.system("\n C:\Windows\System32\cmd.exe")
-        elif sysstr == "Linux":
-            print("\n Call Linux bash command shell")
-            os.system("/usr/bin/env bash ")
+        if 'DATASET_NAME' in os.environ and dbcli.is_dataset_local_exist(dsname):
+            sysstr = platform.system()
+            if sysstr == "Windows":
+                print("Enter new Windows cmd command shell")
+                os.system("C:\Windows\System32\cmd.exe")
+            elif sysstr == "Linux":
+                print("Enter new Linux bash command shell")
+                os.system("/usr/bin/env bash ")
+            else:
+                print("Other System tasks")
         else:
-            print("\n Other System tasks")
+            print("Dataset not exist, please check the dataset name.")
