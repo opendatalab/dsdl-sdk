@@ -126,9 +126,9 @@ if __name__ == '__main__':
     # for obj in objs:
     #     print(obj.object_name, obj.is_dir)
 
-    # dir_list = []
-    # minio_client.get_all_dir(dir_list, 'testdata', 'test_data/')
-    # print(dir_list)
+    dir_list = []
+    minio_client.get_all_dir(dir_list, 'testdata', 'test_data/')
+    print(dir_list)
 
     # for d in dir_list:
     #     path = os.path.join('D:\\', d)
@@ -137,4 +137,4 @@ if __name__ == '__main__':
     #         os.mkdir(path)
 
     # minio_client.download_file('dsdldata', 'CIFAR-10/media/000000042381.png', 'D:\DSDL_DATA\CIFAR-10/media/000000042381.png')
-    minio_client.download_directory('dsdldata', 'CIFAR-10/', 'D:\\DSDL_DATA')
+    # minio_client.download_directory('dsdldata', 'CIFAR-10/', 'D:\\DSDL_DATA')
