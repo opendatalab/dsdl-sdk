@@ -1,6 +1,7 @@
 import click
 from typing import Sequence, Union
 import os
+
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
 except ImportError:
@@ -8,6 +9,12 @@ except ImportError:
 from yaml import load as yaml_load
 import json
 
+TASK_FIELDS = {
+    "detection": ["image", "label", "bbox", "polygon", "keypoint"],
+    "classification": ["image", "label"],
+    "semantic-seg": ["image", "labelmap"],
+    "panoptic-seg": ["image", "labelmap", "insmap"]
+}
 
 
 class OptionEatAll(click.Option):
@@ -85,5 +92,3 @@ def load_samples(dsdl_path: str, path: Union[str, Sequence[str]]):
                 data = json.load(f)['samples']
             samples.extend(data)
     return samples
-
-

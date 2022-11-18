@@ -11,7 +11,7 @@ from .special import (
     TimeField,
     KeypointField,
 )
-from .unstructure import ImageField, SegMapField
+from .unstructure import ImageField, LabelMapField, InsMapField
 
 __all__ = [
     "Struct",
@@ -30,6 +30,7 @@ __all__ = [
     "PolygonField",
     "DateField",
     "TimeField",
-    "SegMapField",
+    "LabelMapField",
+    "InsMapField",
     "KeypointField",
 ]
