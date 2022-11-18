@@ -7,10 +7,6 @@
 
 from setuptools import setup, find_packages
 
-if __name__ == '__main__':
-    setup()
-
-'''
 
 def readme():
     with open('README.md', encoding='utf-8') as f:
@@ -41,6 +37,10 @@ setup(
         "oss2>=2.15.0",
         "prettytable>=3.3.0",
         "opencv-python>=4.6.0.66",
+        "jsonmodels==2.6.0",
+        "environs==9.5.0",
+        "oss2==2.16.0",
+        "pylint>=2.15.5",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
@@ -54,5 +54,3 @@ setup(
         ],
     },
 )
-
-'''

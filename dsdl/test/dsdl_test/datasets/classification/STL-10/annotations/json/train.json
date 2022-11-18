@@ -1,0 +1,560 @@
+{
+    "sub_dataset_name": "train",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000008002.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008000",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            1,
+                            4,
+                            5,
+                            7
+                        ]
+                    },
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008000.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008001",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            2,
+                            8
+                        ]
+                    },
+                    "category_id": 6
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008003.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008003",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            1,
+                            6,
+                            10
+                        ]
+                    },
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008001.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008002",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            6,
+                            7,
+                            8
+                        ]
+                    },
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008005.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008005",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            1
+                        ]
+                    },
+                    "category_id": 10
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008004.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008004",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            7
+                        ]
+                    },
+                    "category_id": 4
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008006.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008008",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            2,
+                            6
+                        ]
+                    },
+                    "category_id": 6
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008007.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008007",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            8,
+                            9
+                        ]
+                    },
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008008.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008006",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            1,
+                            4
+                        ]
+                    },
+                    "category_id": 8
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008009.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008009",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            8
+                        ]
+                    },
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008013.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008010",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            6
+                        ]
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008012.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008013",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            2,
+                            3,
+                            4,
+                            6,
+                            7
+                        ]
+                    },
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008011.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008012",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            1,
+                            5
+                        ]
+                    },
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008010.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008011",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            8
+                        ]
+                    },
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008014.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008014",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            3,
+                            4,
+                            10
+                        ]
+                    },
+                    "category_id": 8
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008016.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008016",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            9,
+                            10
+                        ]
+                    },
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008015.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008015",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ]
+                    },
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008017.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008017",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            8
+                        ]
+                    },
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008020.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008020",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            2
+                        ]
+                    },
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008019.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008019",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            2,
+                            4
+                        ]
+                    },
+                    "category_id": 3
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008018.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008018",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            3
+                        ]
+                    },
+                    "category_id": 3
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008021.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008021",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            10
+                        ]
+                    },
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000008023.png",
+                "source": "/mnt/datasets/STL-10/stl10_binary/train_X.bin",
+                "type": "image",
+                "height": 96,
+                "width": 96
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000008023",
+                    "name": "STL-10 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "attributes": {
+                        "fold": [
+                            3,
+                            5,
+                            7,
+                            8
+                        ]
+                    },
+                    "category_id": 3
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1603 @@
+{
+    "sub_dataset_name": "val",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000002975.png",
+                "source": "leftImg8bit/val/frankfurt/frankfurt_000000_001016_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            },
+            "ground_truth": [
+                {
+                    "bbox": [
+                        719.0,
+                        325.0,
+                        101.0,
+                        245.0
+                    ],
+                    "ann_id": "000000055570",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027785"
+                },
+                {
+                    "bbox": [
+                        719.0,
+                        328.0,
+                        101.0,
+                        242.0
+                    ],
+                    "ann_id": "000000055571",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027785"
+                },
+                {
+                    "bbox": [
+                        923.0,
+                        364.0,
+                        62.0,
+                        151.0
+                    ],
+                    "ann_id": "000000055572",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027786"
+                },
+                {
+                    "bbox": [
+                        923.0,
+                        365.0,
+                        62.0,
+                        150.0
+                    ],
+                    "ann_id": "000000055573",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027786"
+                },
+                {
+                    "bbox": [
+                        1444.0,
+                        300.0,
+                        110.0,
+                        268.0
+                    ],
+                    "ann_id": "000000055574",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027787"
+                },
+                {
+                    "bbox": [
+                        1444.0,
+                        303.0,
+                        110.0,
+                        265.0
+                    ],
+                    "ann_id": "000000055575",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027787"
+                },
+                {
+                    "bbox": [
+                        363.0,
+                        392.0,
+                        48.0,
+                        36.0
+                    ],
+                    "ann_id": "000000055576",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027788"
+                },
+                {
+                    "bbox": [
+                        363.0,
+                        392.0,
+                        48.0,
+                        36.0
+                    ],
+                    "ann_id": "000000055577",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027788"
+                },
+                {
+                    "bbox": [
+                        1270.0,
+                        345.0,
+                        22.0,
+                        31.0
+                    ],
+                    "ann_id": "000000055578",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027789"
+                },
+                {
+                    "bbox": [
+                        1270.0,
+                        345.0,
+                        22.0,
+                        31.0
+                    ],
+                    "ann_id": "000000055579",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027789"
+                },
+                {
+                    "bbox": [
+                        1334.0,
+                        355.0,
+                        26.0,
+                        37.0
+                    ],
+                    "ann_id": "000000055580",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027790"
+                },
+                {
+                    "bbox": [
+                        1334.0,
+                        355.0,
+                        26.0,
+                        37.0
+                    ],
+                    "ann_id": "000000055581",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027790"
+                },
+                {
+                    "bbox": [
+                        1378.0,
+                        339.0,
+                        35.0,
+                        33.0
+                    ],
+                    "ann_id": "000000055582",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027791"
+                },
+                {
+                    "bbox": [
+                        1378.0,
+                        339.0,
+                        35.0,
+                        33.0
+                    ],
+                    "ann_id": "000000055583",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027791"
+                },
+                {
+                    "bbox": [
+                        1549.0,
+                        343.0,
+                        11.0,
+                        14.0
+                    ],
+                    "ann_id": "000000055584",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027792"
+                },
+                {
+                    "bbox": [
+                        1549.0,
+                        343.0,
+                        11.0,
+                        14.0
+                    ],
+                    "ann_id": "000000055585",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027792"
+                },
+                {
+                    "bbox": [
+                        1615.0,
+                        334.0,
+                        8.0,
+                        17.0
+                    ],
+                    "ann_id": "000000055586",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027793"
+                },
+                {
+                    "bbox": [
+                        1615.0,
+                        334.0,
+                        8.0,
+                        17.0
+                    ],
+                    "ann_id": "000000055587",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027793"
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002977.png",
+                "source": "leftImg8bit/val/frankfurt/frankfurt_000000_000576_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            },
+            "ground_truth": [
+                {
+                    "bbox": [
+                        1027.0,
+                        381.0,
+                        18.0,
+                        44.0
+                    ],
+                    "ann_id": "000000055564",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027782"
+                },
+                {
+                    "bbox": [
+                        1027.0,
+                        382.0,
+                        18.0,
+                        43.0
+                    ],
+                    "ann_id": "000000055565",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027782"
+                },
+                {
+                    "bbox": [
+                        1191.0,
+                        359.0,
+                        49.0,
+                        119.0
+                    ],
+                    "ann_id": "000000055566",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027783"
+                },
+                {
+                    "bbox": [
+                        1191.0,
+                        359.0,
+                        49.0,
+                        119.0
+                    ],
+                    "ann_id": "000000055567",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027783"
+                },
+                {
+                    "bbox": [
+                        1583.0,
+                        237.0,
+                        15.0,
+                        19.0
+                    ],
+                    "ann_id": "000000055568",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027784"
+                },
+                {
+                    "bbox": [
+                        1583.0,
+                        237.0,
+                        15.0,
+                        19.0
+                    ],
+                    "ann_id": "000000055569",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027784"
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002976.png",
+                "source": "leftImg8bit/val/frankfurt/frankfurt_000000_000294_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            },
+            "ground_truth": [
+                {
+                    "bbox": [
+                        947.0,
+                        406.0,
+                        17.0,
+                        40.0
+                    ],
+                    "ann_id": "000000055540",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027770"
+                },
+                {
+                    "bbox": [
+                        950.0,
+                        407.0,
+                        14.0,
+                        39.0
+                    ],
+                    "ann_id": "000000055541",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027770"
+                },
+                {
+                    "bbox": [
+                        1157.0,
+                        375.0,
+                        41.0,
+                        99.0
+                    ],
+                    "ann_id": "000000055542",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027771"
+                },
+                {
+                    "bbox": [
+                        1158.0,
+                        375.0,
+                        40.0,
+                        99.0
+                    ],
+                    "ann_id": "000000055543",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027771"
+                },
+                {
+                    "bbox": [
+                        1195.0,
+                        381.0,
+                        35.0,
+                        84.0
+                    ],
+                    "ann_id": "000000055544",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027772"
+                },
+                {
+                    "bbox": [
+                        1198.0,
+                        381.0,
+                        29.0,
+                        84.0
+                    ],
+                    "ann_id": "000000055545",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027772"
+                },
+                {
+                    "bbox": [
+                        1223.0,
+                        379.0,
+                        38.0,
+                        91.0
+                    ],
+                    "ann_id": "000000055546",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027773"
+                },
+                {
+                    "bbox": [
+                        1223.0,
+                        379.0,
+                        35.0,
+                        91.0
+                    ],
+                    "ann_id": "000000055547",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027773"
+                },
+                {
+                    "bbox": [
+                        1839.0,
+                        382.0,
+                        31.0,
+                        71.0
+                    ],
+                    "ann_id": "000000055548",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027774"
+                },
+                {
+                    "bbox": [
+                        1839.0,
+                        382.0,
+                        31.0,
+                        71.0
+                    ],
+                    "ann_id": "000000055549",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027774"
+                },
+                {
+                    "bbox": [
+                        1617.0,
+                        354.0,
+                        24.0,
+                        31.0
+                    ],
+                    "ann_id": "000000055550",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027775"
+                },
+                {
+                    "bbox": [
+                        1617.0,
+                        354.0,
+                        24.0,
+                        31.0
+                    ],
+                    "ann_id": "000000055551",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027775"
+                },
+                {
+                    "bbox": [
+                        1940.0,
+                        455.0,
+                        30.0,
+                        54.0
+                    ],
+                    "ann_id": "000000055552",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027776"
+                },
+                {
+                    "bbox": [
+                        1940.0,
+                        455.0,
+                        30.0,
+                        54.0
+                    ],
+                    "ann_id": "000000055553",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027776"
+                },
+                {
+                    "bbox": [
+                        1150.0,
+                        347.0,
+                        11.0,
+                        14.0
+                    ],
+                    "ann_id": "000000055554",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027777"
+                },
+                {
+                    "bbox": [
+                        1150.0,
+                        347.0,
+                        11.0,
+                        14.0
+                    ],
+                    "ann_id": "000000055555",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027777"
+                },
+                {
+                    "bbox": [
+                        963.0,
+                        378.0,
+                        6.0,
+                        8.0
+                    ],
+                    "ann_id": "000000055556",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027778"
+                },
+                {
+                    "bbox": [
+                        963.0,
+                        378.0,
+                        6.0,
+                        8.0
+                    ],
+                    "ann_id": "000000055557",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027778"
+                },
+                {
+                    "bbox": [
+                        1834.0,
+                        101.0,
+                        65.0,
+                        58.0
+                    ],
+                    "ann_id": "000000055558",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027779"
+                },
+                {
+                    "bbox": [
+                        1834.0,
+                        101.0,
+                        65.0,
+                        58.0
+                    ],
+                    "ann_id": "000000055559",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027779"
+                },
+                {
+                    "bbox": [
+                        1914.0,
+                        73.0,
+                        88.0,
+                        90.0
+                    ],
+                    "ann_id": "000000055560",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027780"
+                },
+                {
+                    "bbox": [
+                        1914.0,
+                        73.0,
+                        88.0,
+                        90.0
+                    ],
+                    "ann_id": "000000055561",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027780"
+                },
+                {
+                    "bbox": [
+                        990.0,
+                        374.0,
+                        14.0,
+                        17.0
+                    ],
+                    "ann_id": "000000055562",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027781"
+                },
+                {
+                    "bbox": [
+                        990.0,
+                        374.0,
+                        14.0,
+                        17.0
+                    ],
+                    "ann_id": "000000055563",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027781"
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002978.png",
+                "source": "leftImg8bit/val/frankfurt/frankfurt_000000_001751_leftImg8bit.png",
+                "type": "image",
+                "height": 1024,
+                "width": 2048
+            },
+            "ground_truth": [
+                {
+                    "bbox": [
+                        936.0,
+                        404.0,
+                        15.0,
+                        35.0
+                    ],
+                    "ann_id": "000000055616",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027808"
+                },
+                {
+                    "bbox": [
+                        936.0,
+                        407.0,
+                        15.0,
+                        32.0
+                    ],
+                    "ann_id": "000000055617",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027808"
+                },
+                {
+                    "bbox": [
+                        1103.0,
+                        391.0,
+                        17.0,
+                        41.0
+                    ],
+                    "ann_id": "000000055618",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027809"
+                },
+                {
+                    "bbox": [
+                        1106.0,
+                        392.0,
+                        11.0,
+                        18.0
+                    ],
+                    "ann_id": "000000055619",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027809"
+                },
+                {
+                    "bbox": [
+                        1112.0,
+                        393.0,
+                        22.0,
+                        54.0
+                    ],
+                    "ann_id": "000000055620",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027810"
+                },
+                {
+                    "bbox": [
+                        1113.0,
+                        394.0,
+                        14.0,
+                        53.0
+                    ],
+                    "ann_id": "000000055621",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027810"
+                },
+                {
+                    "bbox": [
+                        593.0,
+                        398.0,
+                        20.0,
+                        49.0
+                    ],
+                    "ann_id": "000000055622",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027811"
+                },
+                {
+                    "bbox": [
+                        595.0,
+                        399.0,
+                        18.0,
+                        43.0
+                    ],
+                    "ann_id": "000000055623",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027811"
+                },
+                {
+                    "bbox": [
+                        508.0,
+                        385.0,
+                        29.0,
+                        71.0
+                    ],
+                    "ann_id": "000000055624",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027812"
+                },
+                {
+                    "bbox": [
+                        513.0,
+                        386.0,
+                        23.0,
+                        70.0
+                    ],
+                    "ann_id": "000000055625",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 1
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027812"
+                },
+                {
+                    "bbox": [
+                        432.0,
+                        368.0,
+                        51.0,
+                        124.0
+                    ],
+                    "ann_id": "000000055626",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027813"
+                },
+                {
+                    "bbox": [
+                        432.0,
+                        368.0,
+                        51.0,
+                        124.0
+                    ],
+                    "ann_id": "000000055627",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 2
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027813"
+                },
+                {
+                    "bbox": [
+                        325.0,
+                        350.0,
+                        28.0,
+                        36.0
+                    ],
+                    "ann_id": "000000055628",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027814"
+                },
+                {
+                    "bbox": [
+                        325.0,
+                        350.0,
+                        28.0,
+                        36.0
+                    ],
+                    "ann_id": "000000055629",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027814"
+                },
+                {
+                    "bbox": [
+                        615.0,
+                        396.0,
+                        10.0,
+                        6.0
+                    ],
+                    "ann_id": "000000055630",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027815"
+                },
+                {
+                    "bbox": [
+                        615.0,
+                        396.0,
+                        10.0,
+                        6.0
+                    ],
+                    "ann_id": "000000055631",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027815"
+                },
+                {
+                    "bbox": [
+                        638.0,
+                        393.0,
+                        10.0,
+                        7.0
+                    ],
+                    "ann_id": "000000055632",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027816"
+                },
+                {
+                    "bbox": [
+                        638.0,
+                        393.0,
+                        10.0,
+                        7.0
+                    ],
+                    "ann_id": "000000055633",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027816"
+                },
+                {
+                    "bbox": [
+                        1610.0,
+                        202.0,
+                        12.0,
+                        20.0
+                    ],
+                    "ann_id": "000000055634",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027817"
+                },
+                {
+                    "bbox": [
+                        1610.0,
+                        202.0,
+                        12.0,
+                        20.0
+                    ],
+                    "ann_id": "000000055635",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027817"
+                },
+                {
+                    "bbox": [
+                        1166.0,
+                        395.0,
+                        10.0,
+                        15.0
+                    ],
+                    "ann_id": "000000055636",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027818"
+                },
+                {
+                    "bbox": [
+                        1166.0,
+                        395.0,
+                        10.0,
+                        15.0
+                    ],
+                    "ann_id": "000000055637",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027818"
+                },
+                {
+                    "bbox": [
+                        1075.0,
+                        392.0,
+                        7.0,
+                        7.0
+                    ],
+                    "ann_id": "000000055638",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027819"
+                },
+                {
+                    "bbox": [
+                        1075.0,
+                        392.0,
+                        7.0,
+                        7.0
+                    ],
+                    "ann_id": "000000055639",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027819"
+                },
+                {
+                    "bbox": [
+                        1056.0,
+                        393.0,
+                        10.0,
+                        7.0
+                    ],
+                    "ann_id": "000000055640",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "full body"
+                    },
+                    "instance_id": "000000027820"
+                },
+                {
+                    "bbox": [
+                        1056.0,
+                        393.0,
+                        10.0,
+                        7.0
+                    ],
+                    "ann_id": "000000055641",
+                    "name": "CityPersons Detection",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ],
+                    "attributes": {
+                        "box type": "visible part"
+                    },
+                    "instance_id": "000000027820"
+                }
+            ]
+        }
+    ]
+}

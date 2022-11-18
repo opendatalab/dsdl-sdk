@@ -1,0 +1,419 @@
+{
+    "sub_dataset_name": "test",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000075761.jpg",
+                "source": "images/apple_pie/1180600.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075763",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075767.jpg",
+                "source": "images/apple_pie/1269202.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075765",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075765.jpg",
+                "source": "images/apple_pie/1272958.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075766",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075757.jpg",
+                "source": "images/apple_pie/110043.jpg",
+                "type": "image",
+                "height": 358,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075757",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075756.jpg",
+                "source": "images/apple_pie/1068632.jpg",
+                "type": "image",
+                "height": 343,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075756",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075768.jpg",
+                "source": "images/apple_pie/1321400.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075770",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075755.jpg",
+                "source": "images/apple_pie/103801.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 382
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075753",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075750.jpg",
+                "source": "images/apple_pie/1011328.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075750",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075766.jpg",
+                "source": "images/apple_pie/1174330.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075762",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075752.jpg",
+                "source": "images/apple_pie/1034399.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 384
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075752",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075751.jpg",
+                "source": "images/apple_pie/1038694.jpg",
+                "type": "image",
+                "height": 342,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075754",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075759.jpg",
+                "source": "images/apple_pie/116705.jpg",
+                "type": "image",
+                "height": 384,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075760",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075762.jpg",
+                "source": "images/apple_pie/1167170.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075761",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075758.jpg",
+                "source": "images/apple_pie/1106961.jpg",
+                "type": "image",
+                "height": 322,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075758",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075753.jpg",
+                "source": "images/apple_pie/1047447.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075755",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075764.jpg",
+                "source": "images/apple_pie/1235282.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075764",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075760.jpg",
+                "source": "images/apple_pie/1113017.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075759",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075754.jpg",
+                "source": "images/apple_pie/101251.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 384
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075751",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075763.jpg",
+                "source": "images/apple_pie/1295996.jpg",
+                "type": "image",
+                "height": 306,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075768",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075776.jpg",
+                "source": "images/apple_pie/1444702.jpg",
+                "type": "image",
+                "height": 384,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075778",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075771.jpg",
+                "source": "images/apple_pie/129668.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 384
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075769",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075774.jpg",
+                "source": "images/apple_pie/1429866.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075777",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000075773.jpg",
+                "source": "images/apple_pie/1364847.jpg",
+                "type": "image",
+                "height": 512,
+                "width": 512
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000075773",
+                    "name": "Food 101 Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        }
+    ]
+}

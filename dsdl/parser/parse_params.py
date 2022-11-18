@@ -175,6 +175,8 @@ class ParserParam:
                     )
                 parent_struct = parent_struct[0]
                 for key, val in self.general_param_map[struct].params_dict.items():
+                    if val is None:
+                        raise DefineSyntaxError(f"parameter {key} of {struct} must be defined.")
                     if val.startswith("$"):
                         parent_key = val.replace("$", "").strip()
                         self.general_param_map[struct].params_dict[

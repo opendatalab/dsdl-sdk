@@ -1,0 +1,835 @@
+{
+    "sub_dataset_name": "val",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000006667.jpg",
+                "source": "data/images/0481847.jpg",
+                "type": "image",
+                "height": 802,
+                "width": 1200
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040002",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        73.0,
+                        220.0,
+                        1125.0,
+                        288.0
+                    ],
+                    "ann_id": "000000040003",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040004",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        73.0,
+                        220.0,
+                        1125.0,
+                        288.0
+                    ],
+                    "ann_id": "000000040005",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040006",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        73.0,
+                        220.0,
+                        1125.0,
+                        288.0
+                    ],
+                    "ann_id": "000000040007",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006668.jpg",
+                "source": "data/images/0810608.jpg",
+                "type": "image",
+                "height": 745,
+                "width": 1024
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040008",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        19.0,
+                        146.0,
+                        967.0,
+                        297.0
+                    ],
+                    "ann_id": "000000040009",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040010",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        19.0,
+                        146.0,
+                        967.0,
+                        297.0
+                    ],
+                    "ann_id": "000000040011",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040012",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        19.0,
+                        146.0,
+                        967.0,
+                        297.0
+                    ],
+                    "ann_id": "000000040013",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006669.jpg",
+                "source": "data/images/1514481.jpg",
+                "type": "image",
+                "height": 833,
+                "width": 1200
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040014",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        11.0,
+                        206.0,
+                        1183.0,
+                        316.0
+                    ],
+                    "ann_id": "000000040015",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040016",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        11.0,
+                        206.0,
+                        1183.0,
+                        316.0
+                    ],
+                    "ann_id": "000000040017",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040018",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        11.0,
+                        206.0,
+                        1183.0,
+                        316.0
+                    ],
+                    "ann_id": "000000040019",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006670.jpg",
+                "source": "data/images/0887066.jpg",
+                "type": "image",
+                "height": 695,
+                "width": 1024
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040020",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        1.0,
+                        47.0,
+                        1006.0,
+                        484.0
+                    ],
+                    "ann_id": "000000040021",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040022",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        1.0,
+                        47.0,
+                        1006.0,
+                        484.0
+                    ],
+                    "ann_id": "000000040023",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040024",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        1.0,
+                        47.0,
+                        1006.0,
+                        484.0
+                    ],
+                    "ann_id": "000000040025",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006675.jpg",
+                "source": "data/images/1288661.jpg",
+                "type": "image",
+                "height": 826,
+                "width": 1200
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040056",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        1.0,
+                        185.0,
+                        1190.0,
+                        325.0
+                    ],
+                    "ann_id": "000000040057",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040058",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        1.0,
+                        185.0,
+                        1190.0,
+                        325.0
+                    ],
+                    "ann_id": "000000040059",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040060",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        1.0,
+                        185.0,
+                        1190.0,
+                        325.0
+                    ],
+                    "ann_id": "000000040061",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006672.jpg",
+                "source": "data/images/1148180.jpg",
+                "type": "image",
+                "height": 695,
+                "width": 1024
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040044",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        100.0,
+                        238.0,
+                        895.0,
+                        218.0
+                    ],
+                    "ann_id": "000000040045",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040046",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        100.0,
+                        238.0,
+                        895.0,
+                        218.0
+                    ],
+                    "ann_id": "000000040047",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040048",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        100.0,
+                        238.0,
+                        895.0,
+                        218.0
+                    ],
+                    "ann_id": "000000040049",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006671.jpg",
+                "source": "data/images/1318819.jpg",
+                "type": "image",
+                "height": 822,
+                "width": 1200
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040026",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        8.0,
+                        199.0,
+                        1188.0,
+                        326.0
+                    ],
+                    "ann_id": "000000040027",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040028",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        8.0,
+                        199.0,
+                        1188.0,
+                        326.0
+                    ],
+                    "ann_id": "000000040029",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040030",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        8.0,
+                        199.0,
+                        1188.0,
+                        326.0
+                    ],
+                    "ann_id": "000000040031",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006674.jpg",
+                "source": "data/images/0602177.jpg",
+                "type": "image",
+                "height": 757,
+                "width": 1200
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040038",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        25.0,
+                        161.0,
+                        1153.0,
+                        473.0
+                    ],
+                    "ann_id": "000000040039",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040040",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        25.0,
+                        161.0,
+                        1153.0,
+                        473.0
+                    ],
+                    "ann_id": "000000040041",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040042",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        25.0,
+                        161.0,
+                        1153.0,
+                        473.0
+                    ],
+                    "ann_id": "000000040043",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006676.jpg",
+                "source": "data/images/0760910.jpg",
+                "type": "image",
+                "height": 712,
+                "width": 1024
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040062",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        380.0,
+                        225.0,
+                        640.0,
+                        185.0
+                    ],
+                    "ann_id": "000000040063",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040064",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        380.0,
+                        225.0,
+                        640.0,
+                        185.0
+                    ],
+                    "ann_id": "000000040065",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040066",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        380.0,
+                        225.0,
+                        640.0,
+                        185.0
+                    ],
+                    "ann_id": "000000040067",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000006673.jpg",
+                "source": "data/images/0624128.jpg",
+                "type": "image",
+                "height": 695,
+                "width": 1024
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000040032",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                },
+                {
+                    "bbox": [
+                        16.0,
+                        36.0,
+                        1005.0,
+                        509.0
+                    ],
+                    "ann_id": "000000040033",
+                    "name": "FGVC Aircraft manufacturer Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 4
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040034",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 12
+                },
+                {
+                    "bbox": [
+                        16.0,
+                        36.0,
+                        1005.0,
+                        509.0
+                    ],
+                    "ann_id": "000000040035",
+                    "name": "FGVC Aircraft family Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 12
+                        }
+                    ]
+                },
+                {
+                    "ann_id": "000000040036",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                },
+                {
+                    "bbox": [
+                        16.0,
+                        36.0,
+                        1005.0,
+                        509.0
+                    ],
+                    "ann_id": "000000040037",
+                    "name": "FGVC Aircraft variant Classification",
+                    "type": "box2d",
+                    "source": "annotated",
+                    "categories": [
+                        {
+                            "category_id": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

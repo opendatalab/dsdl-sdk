@@ -1,23 +1,21 @@
 import os.path
+from environs import Env
 
 local = dict(
     type="LocalFileReader",
     working_dir="local path of your media",
 )
 
-ali_oss = dict(
-    type="AliOSSFileReader",
-    access_key_secret="your secret key of aliyun oss",
-    endpoint="your endpoint of aliyun oss",
-    access_key_id="your access key of aliyun oss",
-    bucket_name="your bucket name of aliyun oss",
-    working_dir="the relative path of your media dir in the bucket")
+env = Env()
+ali_oss = env.dict('ALI_OSS_DICT')
 
 
 class Config:
-    root_path = "/Users/jiangyiying/sherry/work/dsdl_test/"
-    logger_path = "./log_1030.txt"  # logger文件保存路径
-    config_path = "/Users/jiangyiying/sherry/work/dsdl-sdk/dsdl/test/config.py"  # dsdl view命令使用的配置文件路径
+    project_path = os.getcwd()
+    root_path = os.path.join(project_path, "dsdl_test")
+    temp_file_path = os.path.join(project_path, "temp.py")
+    logger_path = os.path.join(project_path, "log_1030.txt")  # logger文件保存路径
+    config_path = os.path.join(project_path, "config.py")   # dsdl view命令使用的配置文件路径
     v3_folder = os.path.join(root_path, "datasets")  # 存放v0.3格式的文件夹，会从oss下载到这个文件夹下
     dsdl_folder = os.path.join(
         root_path, "datasets_dsdl"
@@ -30,21 +28,19 @@ class Config:
             "Caltech-256",
             "Oxford_102_Flower",
             "Food-101",
-            "cats_vs_dogs",
+            # "cats_vs_dogs",
             "STL-10",
-            "FGVC_Aircraft",
+            # "FGVC_Aircraft",
         ],
         "detection": [
             "FGVC_Aircraft",
             "KITTI_Object",
-            "ILSVRC2015DET",
+            # "ILSVRC2015DET",
             "CityPersons",
-            "CrowdHuman",
-            "DOTA-v1.5",
+            # "CrowdHuman",  # too large
+            # "DOTA-v1.5",
             "xBD",
             "BDD100KImages",
         ],
     }
 
-
-config = Config()
