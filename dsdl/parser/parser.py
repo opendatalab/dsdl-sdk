@@ -2,7 +2,7 @@ import click
 import json
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from dsdl.exception import ValidationError, DefineSyntaxError
+from dsdl.exception import ValidationError, DefineSyntaxError, DSDLImportError
 from dsdl.warning import DuplicateDefineWarning
 import os
 from dataclasses import dataclass, field
@@ -104,9 +104,7 @@ class DSDLParser(Parser, ABC):
         except KeyError as e:
             err_msg = f"data yaml must contains {e} section"
             if self.report_flag:
-                temp_check_item = CheckLogItem(
-                    def_name="all", msg=f"DefineSyntaxError: {err_msg}"
-                )
+                temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise DefineSyntaxError(err_msg)
@@ -115,9 +113,7 @@ class DSDLParser(Parser, ABC):
         except KeyError as e:
             err_msg = f"data yaml must contains {e} section"
             if self.report_flag:
-                temp_check_item = CheckLogItem(
-                    def_name="all", msg=f"DefineSyntaxError: {err_msg}"
-                )
+                temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise DefineSyntaxError(err_msg)
@@ -128,20 +124,40 @@ class DSDLParser(Parser, ABC):
         except KeyError as e:
             err_msg = f"data yaml must contains {e} in `data` section"
             if self.report_flag:
-                temp_check_item = CheckLogItem(
-                    def_name="all", msg=f"DefineSyntaxError: {err_msg}"
-                )
+                temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise DefineSyntaxError(err_msg)
 
+        # import原则：优先import `-p`指定的路径，木有报错；如果`-p`木有指定，先import 本地路径，没有的话import dsdl/library路径
+        import_list = []
         if "$import" in desc:
-            import_list = desc["$import"]
-            import_list = [
-                os.path.join(library_path, p.strip() + ".yaml") for p in import_list
-            ]
-        else:
-            import_list = []
+            _import = desc["$import"]
+            if library_path:
+                for p in _import:
+                    temp_p = os.path.join(library_path, p.strip() + ".yaml")
+                    if os.path.exists(temp_p):
+                        import_list.append(temp_p)
+                    else:
+                        raise DSDLImportError(
+                            f"{p} is not exists in `{library_path}`," f"please given right path using `-p`."
+                        )
+            else:
+                library_path = os.path.dirname(data_file)
+                for p in _import:
+                    temp_p = os.path.join(library_path, p.strip() + ".yaml")
+                    if os.path.exists(temp_p):
+                        import_list.append(temp_p)
+                    else:
+                        temp_p = os.path.join("dsdl", "dsdl_library", p.strip() + ".yaml")
+                        if os.path.exists(temp_p):
+                            import_list.append(temp_p)
+                        else:
+                            raise DSDLImportError(
+                                f"{p} is not exists in neither `{library_path}` nor `dsdl/dsdl_library`,"
+                                f"please given right path using `-p`."
+                            )
+
         if "defs" in desc:
             # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
             # 因为有不同格式的yaml(数据和模型放同一个yaml中或者分开放)，所以用if...else分别做处理
@@ -170,9 +186,7 @@ class DSDLParser(Parser, ABC):
             PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
         except Exception as e:
             if self.report_flag:
-                temp_check_item = CheckLogItem(
-                    def_name=TypeEnum.STRUCT.value, msg=f"{e}"
-                )
+                temp_check_item = CheckLogItem(def_name=TypeEnum.STRUCT.value, msg=f"{e}")
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise Exception(e)
@@ -184,9 +198,7 @@ class DSDLParser(Parser, ABC):
             except KeyError as e:
                 err_msg = f"{define_name} section must contains {e} sub-section"
                 if self.report_flag:
-                    temp_check_item = CheckLogItem(
-                        def_name="all", msg=f"DefineSyntaxError: {err_msg}"
-                    )
+                    temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
                     CHECK_LOG.sub_struct.append(temp_check_item)
                     return
                 raise DefineSyntaxError(err_msg)
@@ -194,9 +206,7 @@ class DSDLParser(Parser, ABC):
                 if define_name in self.struct_name:
                     err_msg = f"{define_name} has defined."
                     if self.report_flag:
-                        temp_check_item = CheckLogItem(
-                            def_name="all", msg=f"DuplicateDefineWarning: {err_msg}"
-                        )
+                        temp_check_item = CheckLogItem(def_name="all", msg=f"DuplicateDefineWarning: {err_msg}")
                         CHECK_LOG.sub_struct.append(temp_check_item)
                         return
                     raise DuplicateDefineWarning(err_msg)
@@ -237,43 +247,31 @@ class DSDLParser(Parser, ABC):
                             return
                         raise DefineSyntaxError(err_msg)
                     if struct_params:
-                        for param, value in PARAMS.general_param_map[
-                            define_name
-                        ].params_dict.items():
+                        for param, value in PARAMS.general_param_map[define_name].params_dict.items():
                             field_type = field_type.replace("$" + param, value)
                     try:
                         field_list[field_name] = EleStruct(
                             name=field_name,
-                            type=FIELD_PARSER.pre_parse_struct_field(
-                                field_name, field_type
-                            ),
+                            type=FIELD_PARSER.pre_parse_struct_field(field_name, field_type),
                         )
                     except Exception as e:
                         if self.report_flag:
-                            temp_check_item = CheckLogItem(
-                                def_name=TypeEnum.STRUCT.value, msg=f"{e}"
-                            )
+                            temp_check_item = CheckLogItem(def_name=TypeEnum.STRUCT.value, msg=f"{e}")
                             CHECK_LOG.sub_struct.append(temp_check_item)
                             return
                         raise Exception(e)
                 # deal with `$optional` section after `$fields` section，
                 # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
                 if "$optional" in define_value or FIELD_PARSER.optional:
-                    optional_set = (
-                        set(define_value["$optional"]) | FIELD_PARSER.optional
-                    )
+                    optional_set = set(define_value["$optional"]) | FIELD_PARSER.optional
                     for optional_name in optional_set:
                         optional_name = optional_name.strip()
                         if optional_name in field_list:
                             temp_type = field_list[optional_name].type
-                            temp_type = add_key_value_2_struct_field(
-                                temp_type, "optional", True
-                            )
+                            temp_type = add_key_value_2_struct_field(temp_type, "optional", True)
                             field_list[optional_name].type = temp_type
                         else:
-                            err_msg = (
-                                f"Error in $optional: {optional_name} is not in $field"
-                            )
+                            err_msg = f"Error in $optional: {optional_name} is not in $field"
                             if self.report_flag:
                                 temp_check_item = CheckLogItem(
                                     def_name=TypeEnum.STRUCT.value,
@@ -312,9 +310,7 @@ class DSDLParser(Parser, ABC):
                         CLASS_PARSER = ParserClass(define_name, define_value["classes"])
                 except Exception as e:
                     if self.report_flag:
-                        temp_check_item = CheckLogItem(
-                            def_name=TypeEnum.CLASS_DOMAIN.value, msg=f"{e}"
-                        )
+                        temp_check_item = CheckLogItem(def_name=TypeEnum.CLASS_DOMAIN.value, msg=f"{e}")
                         CHECK_LOG.sub_struct.append(temp_check_item)
                         return
                     raise e
@@ -397,9 +393,7 @@ class DSDLParser(Parser, ABC):
                 flag=1,
             )
             CHECK_LOG.sub_struct.append(temp_check_item)
-            temp_check_item = CheckLogItem(
-                def_name=TypeEnum.STRUCT.value, msg=f"success parser all strcut", flag=1
-            )
+            temp_check_item = CheckLogItem(def_name=TypeEnum.STRUCT.value, msg=f"success parser all strcut", flag=1)
             CHECK_LOG.sub_struct.append(temp_check_item)
             temp_check_item = CheckLogItem(
                 def_name=TypeEnum.STRUCT.value,
@@ -434,7 +428,7 @@ class DSDLParser(Parser, ABC):
 
 def dsdl_parse(
     dsdl_yaml: str,
-    dsdl_library_path: str = "dsdl/dsdl_library",
+    dsdl_library_path: str,
     output_file: str = None,
     report_flag: bool = False,
 ) -> Optional[str]:
@@ -458,7 +452,7 @@ def dsdl_parse(
 
 def check_dsdl_parser(
     dsdl_yaml: str,
-    dsdl_library_path: str = "dsdl/dsdl_library",
+    dsdl_library_path: str,
     output_file: str = None,
     report_flag: bool = False,
 ):
@@ -487,9 +481,8 @@ def check_dsdl_parser(
     "--path",
     "dsdl_library_path",
     type=str,
-    default="dsdl/dsdl_library",
 )
-def parse(dsdl_yaml: str, dsdl_library_path: str):
+def parse(dsdl_yaml: str, dsdl_library_path: str = None):
     """
     a separate cli tool function for user to parser yaml files to .py dsdl struct definition code.
 

@@ -14,6 +14,10 @@ class DefineSyntaxError(SyntaxError):
     pass
 
 
+class DSDLImportError(ImportError):
+    pass
+
+
 class DefineTypeError(TypeError):
     pass
 
