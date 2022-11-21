@@ -13,11 +13,13 @@ from commands.const import DSDL_CLI_DATASET_NAME, DEFAULT_LOCAL_STORAGE_PATH
 from commons.argument_parser import EnvDefaultVar
 from utils import admin, query
 from utils.oss_ops import ops
-from utils.minio_ops import ops
+
+# from utils.minio_ops import ops
 
 aws_access_key_id = "ailabminio"
 aws_secret_access_key = "123123123"
-endpoint_url = "10.140.0.94:9800"
+# endpoint_url = "10.140.0.94:9800"
+endpoint_url = "https://10.140.0.94:9800"
 region_name = "ailab"
 # default_path = 'D:\\DSDL_DATA'
 default_path = DEFAULT_LOCAL_STORAGE_PATH
@@ -78,12 +80,11 @@ class Get(CmdBase):
         split_name = cmdargs.split_name
         output_path = cmdargs.output if cmdargs.output else default_path
 
-        minio_client = ops.OSS_OPS(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
-                                   aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+        s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
+                                  aws_secret_access_key=aws_secret_access_key, region_name=region_name)
         db_client = admin.DBClient()
 
-        remote_dataset_list = [x.object_name.replace('/', '') for x in minio_client.list_objects(default_bucket) if
-                               x.is_dir]
+        remote_dataset_list = [x.replace('/', '') for x in s3_client.get_dir_list(default_bucket, '')]
         if dataset_name not in remote_dataset_list:
             print("there is no dataset named %s in remote repo" % dataset_name)
             exit()
@@ -99,17 +100,17 @@ class Get(CmdBase):
         dataset_dir = os.path.join(output_path, dataset_name)
         print("saving to %s" % dataset_dir)
 
-        minio_client.download_directory(default_bucket, dataset_name + '/', output_path)
+        s3_client.download_directory(default_bucket, dataset_name + '/', output_path)
         print("register local dataset...")
-        parquet_list = [obj.object_name.split("/")[-1] for obj in
-                        minio_client.list_objects(default_bucket, dataset_name + '/parquet/')]
-        _, stat = query.get_parquet_metadata(os.path.join(dataset_dir, 'parquet', parquet_list[0]))
+        parquet_list = [obj['Key'].split("/")[-1] for obj in
+                        s3_client.list_objects(default_bucket, dataset_name + '/parquet/')]
+        _, stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', parquet_list[0])).get_metadata()
         dataset_media_num = stat['dataset_stat']['media_num']
         dataset_media_size = stat['dataset_stat']['media_size']
 
         db_client.register_dataset(dataset_name, dataset_dir, 1, 1, dataset_media_num, dataset_media_size)
         for split in parquet_list:
-            _, stat = query.get_parquet_metadata(os.path.join(dataset_dir, 'parquet', split))
+            _, stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
             split_media_num = stat['split_stat']['media_num']
             split_media_size = stat['split_stat']['media_size']
             db_client.register_split(dataset_name, split.replace(".parquet", ""), split_media_num, split_media_size)
