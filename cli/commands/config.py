@@ -53,9 +53,16 @@ class Config(CmdBase):
         sub_config_parser = config_parser.add_subparsers(dest = 'command')
         repo_parser = sub_config_parser.add_parser('repo', help = 'set dsdl repo configuration')
         repo_parser.add_argument('--repo-name', help = 'set repo name')
+        # authentication for repo name
+        repo_parser.add_argument('--repo-username', help = 'set repo user name')
+        repo_parser.add_argument('--repo-userpassword', help = 'set repo user password')
+
         
         storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
         storage_parser.add_argument('--storage-name', help = 'set storage name')
+        storage_parser.add_argument('--storage-path', help = 'set storage path')
+        storage_parser.add_argument('--storage-credentials', action = 'extend', nargs = '+', help = 'set credentials' )
+        storage_parser.add_argument('--storage-endpoint', help = 'set storage endpoint')
         
         return config_parser
 
@@ -74,6 +81,14 @@ class Config(CmdBase):
         # print(args)
         setvalue_list = args.setvalue
         credentials = args.credentials
+        # print(args.storage_credentials)
+        # print(args.command == True)
+        if args.command:
+            if args.command == 'repo':
+                pass
+            elif args.command == 'storage':
+                print('yes')
+                # pass
         
         if args.keys:
             snippet_keys = '''
@@ -87,13 +102,14 @@ class Config(CmdBase):
             console = Console()
             console.print(syntax)
         
-        if args.list:
-            
+        if args.list: 
             syntax = Syntax(str(config['repo'].items()) + '\n'+ str(config['storage'].items()), 'python')
             console = Console()
-            console.print(syntax)        # print(f"{args.setvalue}")
-        # command handler
+            console.print(syntax)        
         
+        # print(f"{args.setvalue}")
+        # command handler
+         
 
         #update user input of auth.xx & storage.xx
         if setvalue_list is not None:
