@@ -1,12 +1,15 @@
 import json
 import os
 
+from rich import print as rprint
 from rich.console import Console
+from rich.pretty import pprint
 from rich.syntax import Syntax
 from tabulate import tabulate
 
 from .cmdbase import CmdBase
-from .const import DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR, DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH
+from .const import (DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR,
+                    DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH)
 
 
 class Config(CmdBase):
@@ -33,37 +36,46 @@ class Config(CmdBase):
                                    action = 'store_true',
                                    help = 'show all the available keys',
                                    required = False)
-        config_parser.add_argument('-s',
-                                   '--setvalue',
-                                   type = str,
-                                   nargs = 2,
-                                   action = 'append',
-                                   help = 'Set key-value for a specific configuration.')
+        # config_parser.add_argument('-s',
+        #                            '--setvalue',
+        #                            type = str,
+        #                            nargs = 2,
+        #                            action = 'append',
+        #                            help = 'Set key-value for a specific configuration.')
         config_parser.add_argument('-l',
                                    '--list',
-                                   action = 'store_true',
+                                   action = 'count',
                                    help = 'show all key value pairs',
                                    required = False)
-        config_parser.add_argument('-c',
-                                   '--credentials',
-                                   type = str,
-                                   nargs = 2,
-                                   metavar = 'ak & sk')
+
         
         sub_config_parser = config_parser.add_subparsers(dest = 'command')
         repo_parser = sub_config_parser.add_parser('repo', help = 'set dsdl repo configuration')
-        repo_parser.add_argument('--repo-name', help = 'set repo name')
-        # authentication for repo name
-        repo_parser.add_argument('--repo-username', help = 'set repo user name')
-        repo_parser.add_argument('--repo-userpassword', help = 'set repo user password')
+        repo_parser.add_argument('--repo-name',
+                                 help = 'set repo name')
+        repo_parser.add_argument('--repo-username', 
+                                 help = 'set repo user name')
+        repo_parser.add_argument('--repo-userpswd', 
+                                 help = 'set repo user password')
+        repo_parser.add_argument('--repo-service', 
+                                 help = 'set repo service url')
 
         
         storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
-        storage_parser.add_argument('--storage-name', help = 'set storage name')
-        storage_parser.add_argument('--storage-path', help = 'set storage path')
-        storage_parser.add_argument('--storage-credentials', action = 'extend', nargs = '+', help = 'set credentials' )
-        storage_parser.add_argument('--storage-endpoint', help = 'set storage endpoint')
-        
+        storage_parser.add_argument('--storage-name', 
+                                    help = 'set storage name', 
+                                    required = True)
+        storage_parser.add_argument('--storage-path',
+                                    help = 'set storage path',
+                                    required = True)
+        storage_parser.add_argument('--storage-username', 
+                                    help = 'set storage user name')
+        storage_parser.add_argument('--storage-credentials',
+                                    action = 'extend',
+                                    nargs = '+',
+                                    help = 'set credentials' )
+        storage_parser.add_argument('--storage-endpoint',
+                                    help = 'set storage endpoint')        
         return config_parser
 
     def cmd_entry(self, args, config):
@@ -78,60 +90,90 @@ class Config(CmdBase):
         Returns:
 
         """
-        # print(args)
-        setvalue_list = args.setvalue
-        credentials = args.credentials
-        # print(args.storage_credentials)
-        # print(args.command == True)
         if args.command:
+            # repo command handler
             if args.command == 'repo':
-                pass
+                if not args.repo_name:
+                    rprint('please name a repo using [bold blue]--repo-name [/bold blue]before you can set its info!')
+                else:
+                    if args.repo_name not in config['repo'].keys():
+                        config['repo'][args.repo_name] = {}
+                        if args.repo_username:
+                            config['repo'][args.repo_name]['user'] = args.repo_username
+                        if args.repo_userpswd:
+                            config['repo'][args.repo_name]['passwd'] = args.repo_userpswd
+                        if args.repo_service:
+                            config['repo'][args.repo_name]['service'] = args.repo_service
+                    else:
+                        if args.repo_username:
+                            config['repo'][args.repo_name]['user'] = args.repo_username
+                        if args.repo_userpswd:
+                            config['repo'][args.repo_name]['passwd'] = args.repo_userpswd
+                        if args.repo_service:
+                            config['repo'][args.repo_name]['service'] = args.repo_service
+
+            # storage command handler
             elif args.command == 'storage':
-                print('yes')
-                # pass
+                if not args.storage_name:
+                    rprint('please name a storage using [bold blue]--storage-name [/bold blue]before you can set its info!')
+                else:
+                    if args.storage_name not in config['storage'].keys():
+                        config['storage'][args.storage_name] = {}
+                        if args.storage_username:
+                            config['storage'][args.storage_name]['user'] = args.storage_username
+                        if args.storage_credentials:
+                            if len(args.storage_credentials) > 2:
+                                rprint('credentials requires [red]1 or 2 [/red]input!\n',
+                                       '[yellow]1[/yellow] for password/ssh-key\n', 
+                                       '[yellow]2[/yellow] for access-key & secret-key')
+                            else:
+                                config['storage'][args.storage_name]['credentials'] = args.storage_credentials
+                        if args.storage_endpoint:
+                            config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
+                        if args.storage_path:
+                            config['storage'][args.storage_name]['path'] = args.storage_path
+                    else:
+                        if args.storage_username:
+                            config['storage'][args.storage_name]['user'] = args.storage_username
+                        if args.storage_credentials:
+                            if len(args.storage_credentials) > 2:
+                                rprint('credentials requires [red]1 or 2 [/red]input!\n', 
+                                       '[yellow]1[/yellow] for password/ssh-key\n', 
+                                       '[yellow]2[/yellow] for access-key & secret-key')
+                            else:
+                                config['storage'][args.storage_name]['credentials'] = args.storage_credentials
+                        if args.storage_endpoint:
+                            config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
+                        if args.storage_path:
+                            config['storage'][args.storage_name]['path'] = args.storage_path
+        
         
         if args.keys:
-            snippet_keys = '''
+            snippet_keys = """
             The available keys are:
-                auth.username             # central repo username
-                auth.password             # central repo password
-                storage.name              # storage name
-                storage.loc               # storage path
-            '''
-            syntax = Syntax(snippet_keys, 'python')
-            console = Console()
-            console.print(syntax)
+                repo-name               # set repo name
+                repo-username           # set repo username
+                repo-userpswd           # set repo password
+                repo-service            # set repo service url
+            
+                storage-name            # storage name
+                storage-path            # storage path
+                storage-username        # storage username
+                storage-credentials     # storage credentials (password, ssh-key, access-key, secret-key)
+                storage-endpoint        # storage endpoint
+            """
+            rprint(snippet_keys)
         
-        if args.list: 
-            syntax = Syntax(str(config['repo'].items()) + '\n'+ str(config['storage'].items()), 'python')
-            console = Console()
-            console.print(syntax)        
+        if args.list:
+            if args.list == 1:
+                pprint(config)
+            else:
+                pprint(config, expand_all = True)
         
-        # print(f"{args.setvalue}")
-        # command handler
+        # # print(f"{args.setvalue}")
+        # # command handler
          
 
-        #update user input of auth.xx & storage.xx
-        if setvalue_list is not None:
-            for idx, element in enumerate(setvalue_list):
-                if element[0] == 'auth.username':
-                    config['repo']['central']['user'] = element[1]
-                elif element[0] == 'auth.password':
-                    config['repo']['central']['passwd'] = element[1]
-                elif element[0] == 'storage.name':
-                    config['storage'][element[1]] = {}
-                elif element[0] == 'storage.loc':
-                    config['storage'][list(config['storage'].keys())[1]]['path'] = element[1]
-        
-        #update credentials
-        # print(config['storage'].keys)
-        if credentials is not None:
-            # print(config['storage'].keys())
-            config['storage'][list(config['storage'].keys())[1]]['ak'] = credentials[0]
-            config['storage'][list(config['storage'].keys())[1]]['sk'] = credentials[1]
         
         with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
             return json.dump(config,file, indent=4)
-        # print(f"{args.__dict__}")
-        # print(f"{args.credentials}")
-        # FIX multiinput
