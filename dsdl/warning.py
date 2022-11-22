@@ -12,3 +12,7 @@ class FieldNotFoundWarning(SyntaxWarning):
 
 class ClassHasDefinedWarning(SyntaxWarning):
     pass
+
+
+class ImportWarning(SyntaxWarning):
+    pass

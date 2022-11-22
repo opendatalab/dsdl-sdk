@@ -1,4 +1,17 @@
-import torch.utils.data
+try:
+    from torch.utils.data import Dataset as Dataset_
+except ImportError:
+    from ..warning import ImportWarning
+
+    ImportWarning("'torch' is not installed.")
+
+
+    class Dataset_:
+        def __len__(self):
+            pass
+
+        def __getitem__(self, item):
+            pass
 from ..types import Struct
 from ..geometry import STRUCT
 from dsdl.dataset.utils import Util
@@ -11,7 +24,7 @@ except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 
 
-class Dataset(torch.utils.data.Dataset):
+class Dataset(Dataset_):
     # PALETTE用来存储每个类别的颜色（用于可视化）
     PALETTE = {}
 
