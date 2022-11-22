@@ -39,9 +39,9 @@ def check(dsdl_yaml, config, location, num, random, fields, task, position, outp
         else:
             samples = load_samples(dsdl_yaml, sample_path)
     if position:
-        parse_report = check_dsdl_parser(dsdl_yaml, position, report_flag=True)
+        parse_report = check_dsdl_parser(dsdl_yaml, dsdl_library_path=position, report_flag=True)
     else:
-        parse_report = check_dsdl_parser(dsdl_yaml, report_flag=True)
+        parse_report = check_dsdl_parser(dsdl_yaml, dsdl_library_path="", report_flag=True)
     dsdl_py = parse_report["dsdl_py"]
     parse_report = json.loads(parse_report["check_log"])
     report_obj.set_parser_info(parse_report)
