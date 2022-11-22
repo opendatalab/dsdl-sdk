@@ -51,6 +51,9 @@ class Report:
     def add_sample_info(self, item):
         self.sample_info.append(item)
 
+    def set_sample_info(self, info):
+        self.sample_info = info
+
     def add_image_info(self, item):
         self.image_info.append(item)
 
@@ -128,6 +131,11 @@ class Report:
         if not self.sample_info:
             return False
         file_handler.write("## 2.样本验证结果" + os.linesep)
+
+        if len(self.sample_info) == 0:
+            file_handler.write("数据集中无样本，请检查`sample-path`字段路径是否有效或`samples`字段是否正确" + os.linesep)
+            return False
+
         res = self.parse_sample_info()
         total_num, normal_num, warn_num, error_num = res["total"], res["normal"], res["warn"], res["error"]
         file_handler.write("samples验证结果如下：" + os.linesep)
@@ -162,8 +170,7 @@ class Report:
             f.write("# 数据集验证报告" + os.linesep)
             if self.parser_info:
                 self.generate_parser_info(f)
-            if self.sample_info:
-                self.generate_sample_info(f)
+            self.generate_sample_info(f)
             if self.image_info:
                 self.generate_image_info(f)
         return
