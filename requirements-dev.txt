@@ -1,3 +1,4 @@
 poetry
 pre-commit
 tox
+yapf

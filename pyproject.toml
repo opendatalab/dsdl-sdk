@@ -24,7 +24,7 @@ dsdl-cli = 'cli.cli:main'
 dsdl = 'dsdl.cli:cli'
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 pyyaml = { version = "^6.0" }
 click = { version = "^8.1.3" }
 networkx = { version = "^2.8.4" }
@@ -34,12 +34,17 @@ prettytable = { version = "^3.3.0" }
 opencv-python = { version = "^4.6.0.66" }
 loguru = "^0.6.0"
 tabulate = "^0.9.0"
-pandas = "^1.5.1"
+
 jsonmodels = "^2.6.0"
 rich = "^12.6.0"
 jinja2 = { version = "^2.11.3" }
 toml = { version = "^0.10.2" }
 tqdm = "^4.64.1"
+duckdb = "^0.6.0"
+pyarrow = "^10.0.0"
+boto3 = "^1.26.14"
+smart-open = {extras = ["all"], version = "^6.2.0"}
+pandas = "^1.5.1"
 
 [tool.poetry.group.test]
 optional = true
@@ -60,13 +65,6 @@ mkdocs-material-extensions = { version = "^1.0.1" }
 mkdocs-autorefs = { version = "^0.2.1" }
 twine = { version = "^3.3.0" }
 bump2version = { version = "^1.0.1" }
-
-
-#[tool.pytest.ini_options]
-#markers = [
-#    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-#    "serial",
-#]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
