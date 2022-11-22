@@ -1,4 +1,9 @@
+import os
+import sys
+import sqlite3
 from typing import List
+
+sys.path.append(f'{os.path.dirname(os.path.abspath(__file__))}/../../../')
 
 import pandas as pd
 import streamlit as st
@@ -6,6 +11,8 @@ from stqdm import stqdm
 
 from src.constants.colors import COLOR_MAP
 from src.utils.display import load_and_annotate_image
+import utils.admin as admin
+
 
 st.set_page_config(
     # Change the title of the web page
@@ -14,9 +21,35 @@ st.set_page_config(
     page_icon=":mag_right:",
 )
 
+# download the dataset to specified location and unzip it
+
+
+conn = sqlite3.connect(admin.DB_PATH)
+
+# show all records of dataset which already stored in local
+print(conn.execute('select * from dataset').fetchall())
+
+dbclient = admin.DBClient()
+
+dbclient.register_dataset(
+    dataset_name='coco-demo',
+    dataset_path='/root/.dsdl/datasets/coco_demo/data/annotations',
+    label=1,
+    media=1,
+    media_num=300,
+    media_size=1000,
+)
+# fetch the newly inserted record of this dataset
+dbclient.get_local_dataset_path('coco-demo')
+
+data_dir_path = dbclient.get_local_dataset_path('coco-demo')
+train_data_file_path = os.path.join(data_dir_path, 'coco_train_2020.parquet.gzip')
+val_data_file_path = os.path.join(data_dir_path, 'coco_val_2020.parquet.gzip')
+
 
 def load_all_annotations() -> pd.DataFrame:
-    return pd.read_parquet("/nvme/data/coco_demo/data/annotations/coco_val_2020.parquet.gzip")
+    return pd.read_parquet(train_data_file_path)
+    # return pd.read_parquet(val_data_file_path)
 
 
 # Cache the result to avoid reloading the full dataset
