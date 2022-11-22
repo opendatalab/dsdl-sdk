@@ -41,9 +41,9 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
             exec(dsdl_file.read(), {})
     else:
         if position:
-            dsdl_py = dsdl_parse(dsdl_yaml, position)
+            dsdl_py = dsdl_parse(dsdl_yaml, dsdl_library_path=position)
         else:
-            dsdl_py = dsdl_parse(dsdl_yaml)
+            dsdl_py = dsdl_parse(dsdl_yaml, dsdl_library_path="")
         exec(dsdl_py, {})
     config_dic = {}
     with open(config, encoding='utf-8') as config_file:
