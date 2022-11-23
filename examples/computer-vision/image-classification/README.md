@@ -33,11 +33,11 @@ python setup.py install
    ```bash
    $ dsdl parse --yaml examples/computer-vision/object-detection/COCO2017Detection/demo2/coco_val_demo.yaml -p examples/computer-vision/object-detection/COCO2017Detection/demo2
    ```
-   | 参数简写 | 参数全写  | 参数解释                                                  |
-   | ----- | ------| :----------------------------------------------------------- |
-   | -y   | `--yaml`  | 数据的yaml文件，一般是train.yaml、test.yaml                                     |
-   | -p   | `--path` | 其他yaml存放路径，默认的其他yaml存放路径是`dsdl/dsdl_library` |
+   | 参数简写 | 参数全写  | 参数解释                                               |
+   | ----- |----------------------------------------------------| :----------------------------------------------------------- |
+   | -y   | `--yaml`  | 数据的yaml文件，一般是train.yaml、test.yaml                  |
+   | -p   | `--path` | 其他yaml存放路径，默认的其他yaml存放路径是先本地，然后`dsdl/dsdl_library` |
 
    注意:
      - 我们只需要传入数据的yaml文件（如果数据和模型啥的都放一起那就传那个）就会生成在同一目录下的`.py`文件
-     - 如果不写`-p`,默认的其他yaml存放路径是`dsdl/dsdl_library`,所以不写`-p`请先把需要import的yaml放进`dsdl/dsdl_library`
+     - 如果不写`-p`,默认的其他yaml存放路径是先查询本地然后查询`dsdl/dsdl_library`,所以不写`-p`请先把需要import的yaml放在本地或者`dsdl/dsdl_library`
