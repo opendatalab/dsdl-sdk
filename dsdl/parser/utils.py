@@ -1,7 +1,7 @@
 import re
 import networkx as nx
 from typing import Dict, List
-from jsonmodels import models, fields, errors, validators
+from jsonmodels import models, fields, validators
 
 
 TYPES_WITHOUT_PARS = [
@@ -14,13 +14,13 @@ TYPES_WITHOUT_PARS = [
     "Interval",
     "BBox",
     "Polygon",
-    "RlePolygon",
     "Image",
+    "InsMap",
     "Video",
     "Dict",
 ]
 TYPES_TIME = ["Date", "Time"]
-TYPES_LABEL = ["Label", "SegMap", "Keypoint"]
+TYPES_LABEL = ["Label", "LabelMap", "Keypoint"]
 TYPES_LIST = ["List"]
 TYPES_ALL = TYPES_WITHOUT_PARS + TYPES_TIME + TYPES_LABEL + TYPES_LIST
 
