@@ -92,7 +92,7 @@ class Config(CmdBase):
         Returns:
 
         """
-        print(args.storage_credentials)
+        # print(args.storage_credentials)
 
         if args.command:
             # repo command handler
@@ -201,7 +201,6 @@ class Config(CmdBase):
             
                 storage-name            # storage name
                 storage-path            # storage path
-                storage-username        # storage username
                 storage-credentials     # storage credentials (password, ssh-key, access-key, secret-key)
                 storage-endpoint        # storage endpoint
             """
