@@ -87,7 +87,7 @@ poetry build
 
 
 ### 4 发布到pypi
-忽略
+忽略， 由github Action结合tag机制自动完成。
 
 
 
@@ -95,7 +95,7 @@ poetry build
 
 一般发布一个python包需要在不同的python版本，例如python2.7, python3.x 进行单元测试，检测在不同操作系统windows, mac, linux上功能的一致性。
 
-tox 只用敲一次命令即可帮助完成在不同操作系统，不同pyton版本下的单元测试。
+tox 只用敲一次命令即可帮助完成在不同pyton版本下的单元测试，结合github Action甚至可以完成在不同操作系统下的测试。
 
 ### 单元测试的编写
 
@@ -104,3 +104,8 @@ tox 只用敲一次命令即可帮助完成在不同操作系统，不同pyton�
 ### 本地运行单元测试
 1. 测试文件命名规则：位于工程根目录的`tests`目录下，文件名以`test_`开头，例如`test_foo.py`，`test_bar.py`等等。
 2. 本地测试命令： `tox`， 在指定的python 版本下测试 `tox -e py38`
+
+
+## 参考
+- https://stackoverflow.com/questions/59377071/how-can-i-get-tox-and-poetry-to-work-together-to-support-testing-multiple-versio
+-

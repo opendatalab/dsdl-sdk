@@ -7,13 +7,14 @@ Examples:
 """
 
 from commands.cmdbase import CmdBase
+from commons.Storage import Storage, StorageBuilder
 from utils.admin import DBClient
 
 
 class Rm(CmdBase):
-    """
-    Example command
-    """
+
+    def __init__(self):
+        self.__config = None
 
     def init_parser(self, subparsers):
         """
@@ -57,6 +58,7 @@ class Rm(CmdBase):
         Returns:
 
         """
+        self.__config = config
         yes = cmdargs.yes
         storage_name = cmdargs.storage
         dataset_name = cmdargs.dataset_name
@@ -99,7 +101,8 @@ class Rm(CmdBase):
 
     def __delete_dataset(self, dataset_path: str, storage_name: str) -> None:
         """
-        TODO delete dataset from local storage
+        delete dataset from  storage
+
         Args:
             dataset_path:
             storage_name:
@@ -108,16 +111,17 @@ class Rm(CmdBase):
 
         """
         storage_cli = self.__get_storage_cli_by_name(storage_name)
-        storage_cli.delete(dataset_path)  # TODO
+        storage_cli.remove_tree(dataset_path)
 
-    def __get_storage_cli_by_name(self, storage_name):
+    def __get_storage_cli_by_name(self, storage_name) -> Storage:
         """
         Get storage client by name
-        TODO
+
         Args:
             storage_name:
 
         Returns:
 
         """
-        pass
+        s: Storage = StorageBuilder.build_by_name(storage_name, self.__config)
+        return s
