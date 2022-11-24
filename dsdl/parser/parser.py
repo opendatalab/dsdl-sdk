@@ -426,7 +426,7 @@ class DSDLParser(Parser, ABC):
 
 def dsdl_parse(
     dsdl_yaml: str,
-    dsdl_library_path: str,
+    dsdl_library_path: str = None,
     output_file: str = None,
     report_flag: bool = False,
 ) -> Optional[str]:
