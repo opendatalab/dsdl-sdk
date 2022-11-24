@@ -109,7 +109,7 @@ class Select(CmdBase):
             stat['split_stat'] = split_stat
 
             schema = split_reader.get_schema()
-            sub_split.save(df, schema, meta, stat)
+            sub_split.save(df, schema, 'user-defined', 1, 1, meta, stat)
             print("The parquet has exported to %s" % sub_split.parquet_path)
 
             # to do operations about fields

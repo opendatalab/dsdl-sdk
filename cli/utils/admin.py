@@ -67,6 +67,9 @@ def initialize_db(db_file):
     CREATE TABLE IF NOT EXISTS split(
     dataset_name varchar, 
     split_name varchar,
+    split_type varchar,
+    label_data boolean,
+    media_data boolean,
     split_media_file_num bigint,
     split_media_file_bytes bigint, 
     created_time timestamp,
@@ -228,7 +231,7 @@ class DBClient:
             [dataset_name, dataset_path, label, media, media_num, media_size])
         self.conn.commit()
 
-    def register_split(self, dataset_name, split_name, media_num, media_size):
+    def register_split(self, dataset_name, split_name, split_type, label, media, media_num, media_size):
         """
         Register a new split in database
         @param dataset_name: the dataset name
@@ -238,8 +241,8 @@ class DBClient:
         @return:
         """
         self.cursor.execute(
-            "insert or replace into split values (?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-            [dataset_name, split_name, media_num, media_size])
+            "insert or replace into split values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+            [dataset_name, split_name, split_type, label, media, media_num, media_size])
         self.conn.commit()
 
     def delete_split(self, dataset_name, split_name):
@@ -268,6 +271,26 @@ class DBClient:
             [dataset_name])
         self.conn.commit()
 
+    def is_dataset_label_downloaded(self, dataset_name):
+        res = self.cursor.execute("select label_data from dataset where dataset_name=?",
+                                  [dataset_name]).fetchone()
+        flag = False
+        if res:
+            if res[0] == 1:
+                flag = True
+
+        return flag
+
+    def is_dataset_media_downloaded(self, dataset_name):
+        res = self.cursor.execute("select media_data from dataset where dataset_name=?",
+                                  [dataset_name]).fetchone()
+        flag = False
+        if res:
+            if res[0] == 1:
+                flag = True
+
+        return flag
+
 
 if __name__ == '__main__':
     print(DB_PATH)
@@ -283,4 +306,7 @@ if __name__ == '__main__':
     # print(get_sqlite_dataframe('select * from dataset', get_sqlite_table_header('dataset')))
     df = db_client.get_sqlite_dataframe('select * from dataset')
     print(tabulate(df, headers='keys', tablefmt='psql', showindex=False))
-    print(db_client.is_split_local_exist('CIFAR-10', 'test2'))
+    # print(db_client.is_split_local_exist('CIFAR-10', 'test2'))
+    print(db_client.is_dataset_label_downloaded('CIFAR-10'))
+    print(db_client.is_dataset_media_downloaded('CIFAR-10'))
+

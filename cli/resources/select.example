@@ -1,1 +1,1 @@
-$dsdl select --dataset_name CIFAR-10 --split_name train --filter "label='automobile'" --limit 1000 --offset 50 --random 500 --export_name example
+    $%(prog)s select --dataset_name CIFAR-10 --split_name train --filter "label='automobile'" --limit 1000 --offset 50 --random 500 --export_name example

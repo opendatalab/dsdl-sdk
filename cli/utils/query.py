@@ -12,6 +12,7 @@ class ParquetReader:
     """
     A Class to read parquet file
     """
+
     def __init__(self, parquet_path):
         """
         Construct the parquet reader based on the parquet file path
@@ -88,6 +89,7 @@ class SplitReader(ParquetReader):
     """
     A class to read parquet base on dataset name and split name
     """
+
     def __init__(self, dataset_name, split_name):
         self.db_client = admin.DBClient()
         self.parquet_path = self.db_client.get_local_split_path(dataset_name, split_name)
@@ -98,6 +100,7 @@ class DSDLParquet:
     """
     A class to handle operations of dsdl parquet file
     """
+
     def __init__(self, dataframe, parquet_path, schema, dsdl_meta=None, statistics=None):
         self.parquet_path = parquet_path
         self.meta_dict = schema.metadata
@@ -122,6 +125,7 @@ class Split:
     """
     A class to handle a split
     """
+
     def __init__(self, dataset_name, split_name):
         self.db_client = admin.DBClient()
         if not self.db_client.is_dataset_local_exist(dataset_name):
@@ -138,7 +142,7 @@ class Split:
         """
         return self.db_client.is_split_local_exist(self.dataset_name, self.split_name)
 
-    def save(self, dataframe, schema, dsdl_meta, statistics):
+    def save(self, dataframe, schema, type, label, media, dsdl_meta, statistics):
         """
         Save the split
         @param dataframe: data in dataframe format
@@ -151,7 +155,7 @@ class Split:
         media_size = statistics['split_stat']['media_size']
         dsdl_parquet = DSDLParquet(dataframe, self.parquet_path, schema, dsdl_meta, statistics)
         dsdl_parquet.save()
-        self.db_client.register_split(self.dataset_name, self.split_name, media_num, media_size)
+        self.db_client.register_split(self.dataset_name, self.split_name, type, label, media, media_num, media_size)
 
 
 if __name__ == '__main__':

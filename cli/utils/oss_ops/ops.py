@@ -8,17 +8,6 @@ import time
 from boto3.session import Session
 from botocore.exceptions import ClientError
 
-"""
-
-@params:
-    iteration   
-    total       
-    prefix     
-    suffix      
-    decimals    
-    barLength   
-"""
-
 
 def print_progress(iteration, total, start_time, prefix='', suffix='', decimals=1, bar_length=100):
     """
@@ -48,6 +37,7 @@ class OssClient:
     """
     S3 connection client
     """
+
     def __init__(self, aws_access_key_id, aws_secret_access_key, endpoint_url, region_name):
         self.aws_access_key_id = aws_access_key_id
         self.aws_secret_access_key = aws_secret_access_key
@@ -79,8 +69,9 @@ class OssClient:
         pages = paginator.paginate(Bucket=bucket, Prefix=prefix, Delimiter=delimiter)
 
         for page in pages:
-            for obj in page['Contents']:
-                obj_list.append(obj)
+            if 'Contents' in page.keys():
+                for obj in page['Contents']:
+                    obj_list.append(obj)
         return obj_list
 
     def get_dir_list(self, bucket, remote_directory):
@@ -133,6 +124,7 @@ class OssClient:
         """
         dir_list = []
         self.__get_recursive_dir(dir_list, bucket, remote_directory)
+        dir_list = [dir[len(remote_directory):] for dir in dir_list]
         return dir_list
 
     def download_file(self, bucket, remote_file, local_file):
@@ -158,7 +150,7 @@ class OssClient:
         :param local_directory: local directory name
         :return:
         """
-        print("check local path...")
+        print("preparing...")
         dirs_list = self.get_recursive_dir_list(bucket=bucket, remote_directory=remote_directory)
         for d in dirs_list:
             path = os.path.join(local_directory, d)
@@ -166,27 +158,64 @@ class OssClient:
                 os.mkdir(path)
 
         print("start download...")
-        try:
-            file_list = self.list_objects(bucket, remote_directory)
-            process = 0
-            file_number = len(file_list)
-            start_time = time.perf_counter()
 
-            print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
+        # print(bucket)
+        # print(remote_directory)
+        file_list = self.list_objects(bucket, remote_directory)
+        process = 0
+        file_number = len(file_list)
+        start_time = time.perf_counter()
+
+        print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
+                       bar_length=50)
+
+        for file in file_list:
+            file_name = file['Key']
+            local_file = os.path.join(local_directory, file_name[len(remote_directory):])
+            if not os.path.exists(local_file):
+                self.download_file(bucket, file_name, local_file)
+            process += 1
+            print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
                            bar_length=50)
 
-            for file in file_list:
-                file_name = file['Key']
-                local_file = os.path.join(local_directory, file_name)
-                self.download_file(bucket, file_name, local_file)
-                process += 1
-                print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
-                               bar_length=50)
-        except Exception as e:
-            logging.error(e)
-            return False
         print('Download Complete')
-        return True
+
+    def download_list(self, bucket, media_list, remote_directory, local_directory):
+        """
+        Download a directory from s3
+        @param bucket: bucket name
+        @param media_list: a list of media files to download
+        @param remote_directory: remote directory name
+        @param local_directory: local directory name
+        @return:
+        """
+        print("preparing...")
+        dirs_list = self.get_recursive_dir_list(bucket=bucket, remote_directory=remote_directory)
+        # print(dirs_list)
+        for d in dirs_list:
+            path = os.path.join(local_directory, d)
+            if not os.path.exists(path):
+                os.mkdir(path)
+
+        print("start download...")
+
+        process = 0
+        file_number = len(media_list)
+        start_time = time.perf_counter()
+
+        print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
+                       bar_length=50)
+
+        for media in media_list:
+            file_key = remote_directory + media
+            local_file = os.path.join(local_directory, media)
+            if not os.path.exists(local_file):
+                self.download_file(bucket, file_key, local_file)
+            process += 1
+            print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
+                           bar_length=50)
+
+        print('Download Complete')
 
     def upload_file(self, local_file, bucket, remote_file=None):
         """
@@ -312,9 +341,8 @@ if __name__ == '__main__':
     # for prefix in response['CommonPrefixes']:
     #     print(prefix['Prefix'][:-1])
 
-    # dl = s3_client.get_all_dir_list('testdata', 'test_data/')
-    # print(dl)
-    s3_client.download_directory('dsdldata', 'Fashion-MNIST/', 'D:\\DSDL_DATA')
+    # s3_client.download_directory('dsdldata', 'Fashion-MNIST/', 'D:\\DSDL_DATA')
 
-    # print(s3_client.get_recursive_dir_list('testdata', 'test_data/'))
+    print(s3_client.get_recursive_dir_list('testdata', 'test_data/'))
+    print(len(s3_client.list_objects('dsdldata', 'CIFAR-10/media/')))
     # print(s3_client.get_dir_list('dsdldata', ''))
