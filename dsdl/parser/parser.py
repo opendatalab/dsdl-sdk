@@ -450,7 +450,7 @@ def dsdl_parse(
 
 def check_dsdl_parser(
     dsdl_yaml: str,
-    dsdl_library_path: str,
+    dsdl_library_path: str = None,
     output_file: str = None,
     report_flag: bool = False,
 ):
