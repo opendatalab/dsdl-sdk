@@ -77,7 +77,8 @@ class Config(CmdBase):
                                     required = True)
         storage_parser.add_argument('--storage-endpoint',
                                     help = 'set storage endpoint',
-                                    required = True)        
+                                    default = '',
+                                    required = False)        
         return config_parser
 
     def cmd_entry(self, args, config):

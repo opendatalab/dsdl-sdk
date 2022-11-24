@@ -11,10 +11,3 @@ For full documentation visit our [github pages](https://github.com/opendatalab/d
 * `dsdl search [COMMAND_ARGS]` - Show datasets directory local/remote.
 * `dsdl rm [COMMAND_ARGS] [DATASET_NAME]` - Remove dataset in a desired manner.
 * `dsdl studio [COMMAND_ARGS] [DATASET_NAME]` - Launch the OpenAIDE/studio in a web page.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
