@@ -36,7 +36,7 @@ class Parser(ABC):
         pass
 
     @abstractmethod
-    def _generate(self, output_file: str) -> Optional[str]:
+    def _generate(self) -> Optional[str]:
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
@@ -335,7 +335,7 @@ class DSDLParser(Parser, ABC):
 
         CHECK_LOG.flag = 1
 
-    def _generate(self, output_file: str = None) -> Optional[str]:
+    def _generate(self) -> Optional[str]:
         """
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
@@ -402,19 +402,14 @@ class DSDLParser(Parser, ABC):
             )
             CHECK_LOG.sub_struct.append(temp_check_item)
             CHECK_LOG.flag = 1
+        return dsdl_py
 
-        if output_file:
-            with open(output_file, "w") as of:
-                print(dsdl_py, file=of)
-        else:
-            return dsdl_py
-
-    def process(self, data_file, library_path, output_file):
+    def process(self, data_file: str, library_path: str, output_file: str) -> Optional[str]:
         self._parse(data_file, library_path)
         if self.report_flag and CHECK_LOG.flag:
-            dsdl_py = self._generate(output_file)
+            dsdl_py = self._generate()
         elif not self.report_flag:
-            dsdl_py = self._generate(output_file)
+            dsdl_py = self._generate()
         else:
             dsdl_py = None
         if dsdl_py:
@@ -423,12 +418,15 @@ class DSDLParser(Parser, ABC):
                 f"Yaml file (source): {data_file}\n"
                 f"Output file (output): {output_file}"
             )
+        if output_file:
+            with open(output_file, "w") as of:
+                print(dsdl_py, file=of)
         return dsdl_py
 
 
 def dsdl_parse(
     dsdl_yaml: str,
-    dsdl_library_path: str,
+    dsdl_library_path: str = None,
     output_file: str = None,
     report_flag: bool = False,
 ) -> Optional[str]:
