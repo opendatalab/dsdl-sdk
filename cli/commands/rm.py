@@ -88,18 +88,20 @@ class Rm(CmdBase):
             print("Dataset `{}` does not exist locally".format(dataset_name))
         else:  # 存在，那么就删除
             if force_delete:
-                self.__delete_dataset(dataset_name, storage_name)
+                self.__delete_dataset(dataset_name, dataset_path, storage_name)
             else:
                 print("Are you sure to delete dataset {}? [y/n]".format(
                     dataset_name))
                 answer = input()
                 if answer == "y":
-                    self.__delete_dataset(dataset_path, storage_name)
+                    self.__delete_dataset(dataset_name, dataset_path,
+                                          storage_name)
                     dbcli.delete_dataset(dataset_name)
                 else:
                     print("Delete cancelled")
 
-    def __delete_dataset(self, dataset_path: str, storage_name: str) -> None:
+    def __delete_dataset(self, dataset_name: str, dataset_path: str,
+                         storage_name: str) -> None:
         """
         delete dataset from  storage
 
@@ -110,8 +112,11 @@ class Rm(CmdBase):
         Returns:
 
         """
+        dbcli = DBClient()
         storage_cli = self.__get_storage_cli_by_name(storage_name)
-        storage_cli.remove_tree(dataset_path)
+        if storage_cli.remove_tree(dataset_path):
+            dbcli.delete_dataset(dataset_name)
+            print("Dataset {} deleted".format(dataset_path))
 
     def __get_storage_cli_by_name(self, storage_name) -> Storage:
         """

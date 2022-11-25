@@ -48,7 +48,8 @@ class SftpStorage(Storage):
 
 class StorageBuilder(object):
 
-    def build_by_name(self, storage_name: str, config: Any) -> Storage:
+    @staticmethod
+    def build_by_name(storage_name: str, config: Any) -> Storage:
         """
         Build storage client by name
         Args:
