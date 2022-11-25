@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, overload
 import numpy as np
 from PIL import ImageDraw, Image
 from .base_geometry import BaseGeometry
@@ -24,9 +24,16 @@ class PolygonItem(BaseGeometry):
     def points_y(self) -> List[float]:
         return [_[1] for _ in self._data]
 
-    @property
-    def point_for_draw(self) -> List[int]:
-        p = min(self._data, key=lambda x: x[0] + x[1])
+    def point_for_draw(self, mode: str = "lt"):
+        assert mode in ("lb", "lt", "rb", "rt")
+        if mode == "lt":
+            p = min(self._data, key=lambda x: x[0] + x[1])
+        elif mode == "lb":
+            p = min(self._data, key=lambda x: x[0] - x[1])
+        elif mode == "rt":
+            p = min(self._data, key=lambda x: -x[0] + x[1])
+        else:  # rb
+            p = min(self._data, key=lambda x: -x[0] - x[1])
         p = [int(_) for _ in p]
         return p
 
@@ -58,9 +65,17 @@ class Polygon(BaseGeometry):
         return [_.openmmlabformat for _ in self._data]
 
     @property
-    def point_for_draw(self) -> [int, int]:
-        p = min(self._data, key=lambda x: x.point_for_draw[0] + x.point_for_draw[1])
-        p = [int(_) for _ in p.point_for_draw]
+    def point_for_draw(self, mode: str = "lt") -> [int, int]:
+        assert mode in ("lb", "lt", "rb", "rt")
+        if mode == "lt":
+            p = min(self._data, key=lambda x: x.point_for_draw(mode)[0] + x.point_for_draw(mode)[1])
+        elif mode == "lb":
+            p = min(self._data, key=lambda x: x.point_for_draw(mode)[0] - x.point_for_draw(mode)[1])
+        elif mode == "rt":
+            p = min(self._data, key=lambda x: -x.point_for_draw(mode)[0] + x.point_for_draw(mode)[1])
+        else:  # rb
+            p = min(self._data, key=lambda x: -x.point_for_draw(mode)[0] - x.point_for_draw(mode)[1])
+        p = [int(_) for _ in p.point_for_draw(mode)]
         return p
 
     def visualize(self, image, palette, **kwargs):
