@@ -13,6 +13,8 @@ Examples:
 from commands.cmdbase import CmdBase
 from commands.const import DSDL_CLI_DATASET_NAME
 from commons.argument_parser import EnvDefaultVar
+from rich import print as rprint
+from rich.pretty import pprint
 from tabulate import tabulate
 from utils import admin
 
@@ -35,9 +37,9 @@ class Ls(CmdBase):
         return status_parser
     
     def get_dataset_df(self):
-        sql = 'select * from dataset'
-        dataset = admin.get_sqlite_dict_list(sql,admin.get_sqlite_table_header('dataset'))
-        return dataset
+        db_client = admin.DBClient()
+        data_list = db_client.get_sqlite_dict_list('select * from dataset')
+        return data_list
     
     def cmd_entry(self, cmdargs, config):
         """
@@ -51,5 +53,6 @@ class Ls(CmdBase):
         Returns:
 
         """
-        dataset = self.get_dataset_df()
-        print(tabulate(dataset, headers='keys', tablefmt='psql'))
+        dataset_list = self.get_dataset_df()
+        rprint(tabulate(dataset_list, headers='keys', tablefmt='psql'))
+        pprint(dataset_list, expand_all = True)
