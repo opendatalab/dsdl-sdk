@@ -77,7 +77,7 @@ class Label(BaseGeometry):
         if "bbox" in kwargs:
             coords = np.array([[item.xyxy[0], item.xyxy[1] + 0.2 * label_size[1]] for item in kwargs["bbox"].values()])
         elif "polygon" in kwargs:
-            coords = np.array([[item.point_for_draw[0], item.point_for_draw[1] + 0.2 * label_size[1]] for item in
+            coords = np.array([[item.point_for_draw()[0], item.point_for_draw()[1] + 0.2 * label_size[1]] for item in
                                kwargs["polygon"].values()])
         else:
             coords = np.array([[0, 0.2 * label_size[1]]])

@@ -10,6 +10,7 @@ from .special import (
     DateField,
     TimeField,
     KeypointField,
+    TextField,
 )
 from .unstructure import ImageField, LabelMapField, InsMapField
 
@@ -33,4 +34,5 @@ __all__ = [
     "LabelMapField",
     "InsMapField",
     "KeypointField",
+    "TextField",
 ]

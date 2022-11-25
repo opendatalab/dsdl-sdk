@@ -1,5 +1,5 @@
 from .field import Field
-from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints
+from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text
 from ..exception import ValidationError
 from datetime import date, time, datetime
 
@@ -79,7 +79,8 @@ class LabelField(Field):
             if isinstance(value, (int, str)):
                 return self.dom.get_label(value)
             else:
-                raise TypeError(f"LabelField Error: invalid class label type. Expected 'int' or 'str' value, got '{value.__class__.__name__}'.")
+                raise TypeError(
+                    f"LabelField Error: invalid class label type. Expected 'int' or 'str' value, got '{value.__class__.__name__}'.")
         except:
             raise RuntimeError(f"LabelField Error: The label '{value}' is not valid.")
 
@@ -111,3 +112,10 @@ class TimeField(Field):
         except Exception as e:
             raise RuntimeError(f"TimeField Error: {e}")
 
+
+class TextField(Field):
+    def validate(self, value):
+        try:
+            return Text("" + value)
+        except TypeError as _:
+            raise ValidationError(f"TextField Error: expect str value, got {value}")
