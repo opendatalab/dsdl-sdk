@@ -37,11 +37,11 @@ class Select(CmdBase):
         #                            metavar='SS')
         # example_parser.add_argument('--test1', nargs='?', default='x', help='show test1', metavar='a')
         # example_parser.add_argument('--test-1234', nargs='?', default='t', help='show test-1234', metavar='c')
-        select_parser.add_argument("--dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME,
+        select_parser.add_argument("--dataset-name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME,
                                    type=str,
                                    help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
                                    metavar='')
-        select_parser.add_argument("--split_name", type=str, required=True,
+        select_parser.add_argument("--split-name", type=str, required=True,
                                    help='The split name of the dataset, such as train/test/unlabeled or user self-defined split.',
                                    metavar='')
         select_parser.add_argument("--filter", type=str,
@@ -60,7 +60,7 @@ class Select(CmdBase):
                                    # help='Set the number/percent of random samples from the base select result, such as 100 or 5%',
                                    help='Set the number of random samples from the returned select result',
                                    metavar='')
-        select_parser.add_argument("--export_name", type=str,
+        select_parser.add_argument("--export-name", type=str,
                                    help='Save the select result as a split and use the given name to name it',
                                    metavar='')
         return select_parser

@@ -272,6 +272,11 @@ class DBClient:
         self.conn.commit()
 
     def is_dataset_label_downloaded(self, dataset_name):
+        """
+        Whether the label data of a dataset is downloaded
+        @param dataset_name: dataset name
+        @return:
+        """
         res = self.cursor.execute("select label_data from dataset where dataset_name=?",
                                   [dataset_name]).fetchone()
         flag = False
@@ -282,6 +287,11 @@ class DBClient:
         return flag
 
     def is_dataset_media_downloaded(self, dataset_name):
+        """
+        Whether the media data of a dataset is downloaded
+        @param dataset_name:
+        @return:
+        """
         res = self.cursor.execute("select media_data from dataset where dataset_name=?",
                                   [dataset_name]).fetchone()
         flag = False
