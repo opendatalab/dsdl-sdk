@@ -25,7 +25,8 @@ class VisualizerUtil:
     def sort_field(field_lst):
         field_lst = list(field_lst)
         # 定义画图时的先后顺序，数值越小的越先画
-        field_order = {"bbox": 20, "polygon": 10, "label": 30, "keypoint": 15, "insmap": 5, "labelmap": 0, "others": -1}
+        field_order = {"text": 40, "bbox": 20, "polygon": 10, "label": 30, "keypoint": 15, "insmap": 5, "labelmap": 0,
+                       "others": -1}
 
         field_lst = sorted(field_lst, key=lambda k: field_order.get(k, -1))
         return field_lst

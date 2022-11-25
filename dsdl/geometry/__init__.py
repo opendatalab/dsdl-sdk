@@ -8,10 +8,12 @@ from .insmap import InstanceMap
 from .keypoint import Coord2D, KeyPoints
 from .registry import STRUCT, CLASSDOMAIN, LABEL
 from .class_domain import ClassDomain
+from .text import Text
 
 __all__ = [
     "BBox",
     "Label",
+    "Text",
     "ImageMedia",
     "LabelList",
     "Polygon",
