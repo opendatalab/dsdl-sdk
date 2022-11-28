@@ -87,6 +87,8 @@ optional = true
 
 [tool.poetry.group.test.dependencies]
 pytest = { version = "^6.2.4" }
+pylint = ">=2.15.5"
+environs = ">=9.5.0"
 
 [tool.poetry.group.mkdocs]
 optional = true
