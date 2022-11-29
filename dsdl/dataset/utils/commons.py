@@ -2,8 +2,23 @@ import re
 from dsdl.types.field import Field
 from prettytable import PrettyTable
 
+FIELD_VISUALIZE_ORDER = {  # 定义画图时的先后顺序，数值越小的越先画
+    "text": 40,
+    "bbox": 20,
+    "polygon": 10,
+    "label": 30,
+    "keypoint": 15,
+    "insmap": 5,
+    "labelmap": 0,
+    "others": -1
+}
+
 
 class Util:
+    @staticmethod
+    def sort_field(field_lst):
+        return sorted(list(field_lst), key=lambda k: FIELD_VISUALIZE_ORDER.get(k, -1))
+
     @staticmethod
     def extract_key(field_obj: Field):
         field_cls_name = field_obj.__class__.__name__
