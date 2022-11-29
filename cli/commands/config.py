@@ -29,19 +29,11 @@ class Config(CmdBase):
 
         # config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example='config.example')
         config_parser = subparsers.add_parser('config', help='set dsdl configuration.')
-
-        
         config_parser.add_argument('-k',
                                    '--keys',
                                    action = 'store_true',
                                    help = 'show all the available keys',
                                    required = False)
-        # config_parser.add_argument('-s',
-        #                            '--setvalue',
-        #                            type = str,
-        #                            nargs = 2,
-        #                            action = 'append',
-        #                            help = 'Set key-value for a specific configuration.')
         config_parser.add_argument('-l',
                                    '--list',
                                    action = 'count',
@@ -74,7 +66,7 @@ class Config(CmdBase):
                                     action = 'append',
                                     nargs = 2,
                                     help = 'set credentials',
-                                    required = True)
+                                    required = False)
         storage_parser.add_argument('--storage-endpoint',
                                     help = 'set storage endpoint',
                                     default = '',
@@ -100,6 +92,7 @@ class Config(CmdBase):
             if args.command == 'repo':
                 if not args.repo_name:
                     rprint('please name a repo using [bold blue]--repo-name [/bold blue]before you can set its info!')
+                    exit()
                 else:
                     if args.repo_name not in config['repo'].keys():
                         config['repo'][args.repo_name] = {}
@@ -117,80 +110,42 @@ class Config(CmdBase):
                         if args.repo_service:
                             config['repo'][args.repo_name]['service'] = args.repo_service
 
-            # storage command handler
-            # elif args.command == 'storage':
-            #     if not args.storage_name:
-            #         rprint('please name a storage using [bold blue]--storage-name [/bold blue]before you can set its info!')
-            #     else:
-            #         if args.storage_name not in config['storage'].keys():
-            #             config['storage'][args.storage_name] = {}
-            #             if args.storage_username:
-            #                 config['storage'][args.storage_name]['user'] = args.storage_username
-            #             if args.storage_credentials:
-            #                 if len(args.storage_credentials) > 2:
-            #                     rprint('credentials requires [red]1 or 2 [/red]input!\n',
-            #                            '[yellow]1[/yellow] for password/ssh-key\n', 
-            #                            '[yellow]2[/yellow] for access-key & secret-key')
-            #                 else:
-            #                     config['storage'][args.storage_name]['credentials'] = args.storage_credentials
-            #             if args.storage_endpoint:
-            #                 config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
-            #             if args.storage_path:
-            #                 config['storage'][args.storage_name]['path'] = args.storage_path
-            #         else:
-            #             if args.storage_username:
-            #                 config['storage'][args.storage_name]['user'] = args.storage_username
-            #             if args.storage_credentials:
-            #                 if len(args.storage_credentials) > 2:
-            #                     rprint('credentials requires [red]1 or 2 [/red]input!\n', 
-            #                            '[yellow]1[/yellow] for password/ssh-key\n', 
-            #                            '[yellow]2[/yellow] for access-key & secret-key')
-            #                 else:
-            #                     config['storage'][args.storage_name]['credentials'] = args.storage_credentials
-            #             if args.storage_endpoint:
-            #                 config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
-            #             if args.storage_path:
-            #                 config['storage'][args.storage_name]['path'] = args.storage_path
-            
-            # storage command handler:
             elif args.command == 'storage':
+                # new storage entry
                 if args.storage_name not in config['storage'].keys():
                     config['storage'][args.storage_name] = {}
                     if args.storage_path[:2] not in ['s3','sf']:
-                        rprint('Only support [yellow]s3[/yellow] and [yellow]sftp[/yellow], please check your storage path!')
-                    else:
-                        if args.storage_path[:2] == 's3':
-                            config['storage'][args.storage_name]['ak'] = args.storage_credentials[0][0]
-                            config['storage'][args.storage_name]['sk'] = args.storage_credentials[0][1]
-                            config['storage'][args.storage_name]['path'] = args.storage_path
-                            config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
-                            rprint('Your [yellow]s3[/yellow] config for [yellow]{}[/yellow] success !'.format(args.storage_name))
-                        elif args.storage_path[:4] == 'sftp':
-                            config['storage'][args.storage_name]['user'] = args.storage_credentials[0][0]
-                            config['storage'][args.storage_name]['password'] = args.storage_credentials[0][1]
-                            config['storage'][args.storage_name]['path'] = args.storage_path
-                            rprint('Your [yellow]sftp[/yellow] config for [yellow]{}[/yellow] success !'.format(args.storage_name))
-                        else:
-                            rprint('Only support [yellow]s3[/yellow] and [yellow]sftp[/yellow], please check your storage path!')
+                        config['storage'][args.storage_name]['path'] = args.storage_path
+                        rprint('Your local storage was switched to {}!'.format(args.storage_path))
+                    elif args.storage_path[:2] == 's3':
+                        config['storage'][args.storage_name]['ak'] = args.storage_credentials[0][0]
+                        config['storage'][args.storage_name]['sk'] = args.storage_credentials[0][1]
+                        config['storage'][args.storage_name]['path'] = args.storage_path
+                        config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
+                        rprint('Your [yellow]s3[/yellow] config for [yellow]{}[/yellow] success !'.format(args.storage_name))
+                    elif args.storage_path[:4] == 'sftp':
+                        config['storage'][args.storage_name]['user'] = args.storage_credentials[0][0]
+                        config['storage'][args.storage_name]['password'] = args.storage_credentials[0][1]
+                        config['storage'][args.storage_name]['path'] = args.storage_path
+                        rprint('Your [yellow]sftp[/yellow] config for [yellow]{}[/yellow] success !'.format(args.storage_name))
+                
+                # old storage update
                 else:
                     if args.storage_path[:2] not in ['s3','sf']:
-                        rprint('Only support [yellow]s3[/yellow] and [yellow]sftp[/yellow], please check your storage path!')
-                    else:
-                        if args.storage_path[:2] == 's3':
-                            config['storage'][args.storage_name]['ak'] = args.storage_credentials[0][0]
-                            config['storage'][args.storage_name]['sk'] = args.storage_credentials[0][1]
-                            config['storage'][args.storage_name]['path'] = args.storage_path
-                            config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
-                            rprint('Your update for [yellow]s3[/yellow] config [yellow]{}[/yellow] success !'.format(args.storage_name))
+                        config['storage'][args.storage_name]['path'] = args.storage_path
+                        rprint('Your local storage was switched to {}!'.format(args.storage_path))
+                    elif args.storage_path[:2] == 's3':
+                        config['storage'][args.storage_name]['ak'] = args.storage_credentials[0][0]
+                        config['storage'][args.storage_name]['sk'] = args.storage_credentials[0][1]
+                        config['storage'][args.storage_name]['path'] = args.storage_path
+                        config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
+                        rprint('Your update for [yellow]s3[/yellow] config [yellow]{}[/yellow] success !'.format(args.storage_name))
 
-                        elif args.storage_path[:4] == 'sftp':
-                            config['storage'][args.storage_name]['user'] = args.storage_credentials[0][0]
-                            config['storage'][args.storage_name]['password'] = args.storage_credentials[0][1]
-                            config['storage'][args.storage_name]['path'] = args.storage_path
-                            rprint('Your ipdate for [yellow]sftp[/yellow] config [yellow]{}[/yellow] success !'.format(args.storage_name))
-
-                        else:
-                            rprint('Only support [yellow]s3[/yellow] and [yellow]sftp[/yellow], please check your storage path!')
+                    elif args.storage_path[:4] == 'sftp':
+                        config['storage'][args.storage_name]['user'] = args.storage_credentials[0][0]
+                        config['storage'][args.storage_name]['password'] = args.storage_credentials[0][1]
+                        config['storage'][args.storage_name]['path'] = args.storage_path
+                        rprint('Your update for [yellow]sftp[/yellow] config [yellow]{}[/yellow] success !'.format(args.storage_name))
 
         if args.keys:
             snippet_keys = """
