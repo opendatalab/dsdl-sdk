@@ -28,6 +28,13 @@ class CmdBase(ABC):
 
     """
 
+    def cmd_main(self, cmdargs, config, *args, **kwargs):
+        try:
+            self.cmd_entry(cmdargs, config, *args, **kwargs)
+        except Exception as e:
+            print(e)
+            exit(-1)
+
     @abstractmethod
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """

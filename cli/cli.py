@@ -145,7 +145,7 @@ class DSDLClient(object):
                     cmd_clz = clz_obj()
                     subcmd_parser = cmd_clz.init_parser(self.__subparsers)
                     subcmd_parser.set_defaults(
-                        command_handler=cmd_clz.cmd_entry)
+                        command_handler=cmd_clz.cmd_main)
                     subcmd_parser._optionals.title = "Command args"
                     subcmd_parser._positionals.title = "Positional arguments"
                     subcmd_parser.formatter_class = CustomHelpFormatter
