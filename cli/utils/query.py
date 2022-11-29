@@ -180,3 +180,5 @@ if __name__ == '__main__':
     dsdl_meta, stat_meta = parquet_reader.get_metadata()
     print(dsdl_meta)
     print(stat_meta)
+    meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-10', 'train'))
+    print(meta_dict)

@@ -37,7 +37,7 @@ class Select(CmdBase):
         #                            metavar='SS')
         # example_parser.add_argument('--test1', nargs='?', default='x', help='show test1', metavar='a')
         # example_parser.add_argument('--test-1234', nargs='?', default='t', help='show test-1234', metavar='c')
-        select_parser.add_argument("--dataset-name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME,
+        select_parser.add_argument("dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME,
                                    type=str,
                                    help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
                                    metavar='')

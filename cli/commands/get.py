@@ -47,8 +47,8 @@ class Get(CmdBase):
                                               example="get.example",
                                               description='Download data from repo', )
 
-        select_parser.add_argument("--dataset-name", action=EnvDefaultVar,
-                                   envvar='DSDL_CLI_DATASET_NAME', type=str,
+        select_parser.add_argument("dataset_name", action=EnvDefaultVar,
+                                   envvar=DSDL_CLI_DATASET_NAME, type=str,
                                    help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
                                    metavar='')
         select_parser.add_argument("-s", "--split-name", type=str,
