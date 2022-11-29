@@ -9,6 +9,7 @@ from .keypoint import Coord2D, KeyPoints
 from .registry import STRUCT, CLASSDOMAIN, LABEL
 from .class_domain import ClassDomain
 from .text import Text
+from .rotate_box import RBBox
 
 __all__ = [
     "BBox",
@@ -27,4 +28,5 @@ __all__ = [
     "LABEL",
     "ClassDomain",
     "KeyPoints",
+    "RBBox",
 ]

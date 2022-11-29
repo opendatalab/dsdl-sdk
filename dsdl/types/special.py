@@ -1,7 +1,8 @@
 from .field import Field
-from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text
+from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox
 from ..exception import ValidationError
 from datetime import date, time, datetime
+import math
 
 
 def validate_list_of_number(value, size_limit, item_type, field_name):
@@ -39,6 +40,30 @@ class BBoxField(Field):
     def validate(self, value):
         x, y, w, h = validate_list_of_number(value, 4, float, "BBoxField")
         return BBox(x, y, w, h)
+
+
+class RotateBBoxField(Field):
+    def __init__(self, mode="xywhr", measure="radian", *args, **kwargs):
+        super(RotateBBoxField, self).__init__(*args, **kwargs)
+        try:
+            assert mode in ("xywhr", "xyxy")
+            self.mode = mode
+        except AssertionError as e:
+            raise ValidationError("RotateBBox Error: invalid mode, only mode='xywhr' or 'xyxy' are permitted.")
+        try:
+            assert measure in ("radian", "degree")
+            self.measure = measure
+        except AssertionError as e:
+            raise ValidationError("RotateBBox Error: invalid measure, only measure='radian' or 'degree' are permitted.")
+
+    def validate(self, value):
+        if self.mode == "xywhr":
+            value = validate_list_of_number(value, 5, float, "RotateBBoxField")
+            if self.measure == "degree":
+                value[-1] = value[-1] / 180 * math.pi  # convert to radian
+        else:
+            value = validate_list_of_number(value, 8, float, "RotateBBoxField")
+        return RBBox(value, self.mode)
 
 
 class PolygonField(Field):
