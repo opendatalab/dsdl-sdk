@@ -64,33 +64,8 @@ class Dataset(Dataset_):
         """
         sample_list = []
         for sample in self.samples:
-            sample_list.append(self._parse_struct(self.sample_type(file_reader=self.file_reader, **sample)))
+            sample_list.append(self.sample_type(file_reader=self.file_reader, **sample))
         return sample_list
-
-    def _parse_struct(self, sample):
-        if isinstance(sample, Struct):
-            data_item = {}
-            struct_mapping = sample.get_mapping()
-            for key in sample.keys():
-                if key.startswith("$"):  # attributes
-                    field_key = key
-                    key = key.replace("$", "")
-                    if field_key in data_item:
-                        data_item[field_key][key] = getattr(sample, field_key)
-                    else:
-                        data_item[field_key] = {key: getattr(sample, field_key)}
-                else:
-                    field_key = Util.extract_key(struct_mapping[key])
-                    if field_key in data_item:
-                        data_item[field_key][key] = self._parse_struct(getattr(sample, key))
-                    else:
-                        data_item[field_key] = {key: self._parse_struct(getattr(sample, key))}
-            return data_item
-
-        elif isinstance(sample, list):
-            return [self._parse_struct(item) for item in sample]
-        else:
-            return sample
 
     def process_sample(self, sample):
         return sample

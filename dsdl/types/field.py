@@ -19,3 +19,8 @@ class Field:
         Validate value and raise ValidationError if necessary.
         """
         return value
+
+    @classmethod
+    def extract_key(cls):
+        field_cls_name = cls.__name__
+        return "$" + field_cls_name.replace("Field", "").lower()
