@@ -4,6 +4,7 @@ admin module handles sqlite operations
 import logging
 import os
 import sqlite3
+import json
 
 import pandas as pd
 from tabulate import tabulate
@@ -14,6 +15,12 @@ from commands import const
 DB_PATH = const.SQLITE_DB_PATH
 DB_DIR_PATH = const.DEFAULT_CONFIG_DIR
 DB_NAME = const.__SQLITE_DB_NAME
+CONF_PATH = const.DEFAULT_CLI_CONFIG_FILE
+
+
+def get_config_dict():
+    with open(CONF_PATH, 'r') as f:
+        return json.loads(f.read())
 
 
 def __get_default_path() -> str:
@@ -51,6 +58,7 @@ def initialize_db(db_file):
     create_table_sql = '''
     CREATE TABLE IF NOT EXISTS dataset(
     dataset_name varchar, 
+    storage_path varchar,
     dataset_path varchar,
     label_data boolean,
     media_data boolean,
@@ -215,10 +223,11 @@ class DBClient:
         else:
             return False
 
-    def register_dataset(self, dataset_name, dataset_path, label, media, media_num, media_size):
+    def register_dataset(self, dataset_name, storage_name, dataset_path, label, media, media_num, media_size):
         """
         Register a dataset in database
         @param dataset_name: the dataset name
+        @param storage_name: the storage name in conf file
         @param dataset_path: the dataset storage path
         @param label: 1 or 0, whether the label data of dataset is downloaded
         @param media: 1 or 0, whether the media data of dataset is downloaded
@@ -227,8 +236,8 @@ class DBClient:
         @return:
         """
         self.cursor.execute(
-            "insert or replace into dataset values (?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-            [dataset_name, dataset_path, label, media, media_num, media_size])
+            "insert or replace into dataset values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+            [dataset_name, storage_name, dataset_path, label, media, media_num, media_size])
         self.conn.commit()
 
     def register_split(self, dataset_name, split_name, split_type, label, media, media_num, media_size):
@@ -319,4 +328,4 @@ if __name__ == '__main__':
     # print(db_client.is_split_local_exist('CIFAR-10', 'test2'))
     print(db_client.is_dataset_label_downloaded('CIFAR-10'))
     print(db_client.is_dataset_media_downloaded('CIFAR-10'))
-
+    print(get_config_dict())

@@ -1,4 +1,4 @@
 01  download a full dataset
-    $%(prog)s get --dataset_name CIFAR-10
+    $%(prog)s get CIFAR-10
 02  download a split of a dataset
-    $%(prog)s get --dataset_name CIFAR-10 --split train
+    $%(prog)s get CIFAR-10 --split train

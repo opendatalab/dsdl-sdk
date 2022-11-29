@@ -75,10 +75,13 @@ class Get(CmdBase):
         Returns:
 
         """
+        conf_dict = admin.get_config_dict()
+
         # get params
         dataset_name = cmdargs.dataset_name
         split_name = cmdargs.split_name
-        output_path = cmdargs.output if cmdargs.output else default_path
+        output = cmdargs.output if cmdargs.output else 'default'
+        output_path = conf_dict['storage'][cmdargs.output]['path'] if cmdargs.output else default_path
 
         # construct class of s3 client
         s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
@@ -136,7 +139,8 @@ class Get(CmdBase):
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
 
-                db_client.register_dataset(dataset_name, dataset_dir, 1, 1, dataset_media_num, dataset_media_size)
+                db_client.register_dataset(dataset_name, output, dataset_dir, 1, 1, dataset_media_num,
+                                           dataset_media_size)
 
                 # get meta info of split to insert into sqlite
                 for split in parquet_list:
@@ -224,7 +228,8 @@ class Get(CmdBase):
                 _, stat = query.ParquetReader(parquet_path).get_metadata()
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
-                db_client.register_dataset(dataset_name, dataset_dir, 0, 0, dataset_media_num, dataset_media_size)
+                db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
+                                           dataset_media_size)
 
                 split_media_num = stat['split_stat']['media_num']
                 split_media_size = stat['split_stat']['media_size']
