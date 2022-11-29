@@ -18,6 +18,7 @@ TYPES_WITHOUT_PARS = [
     "InsMap",
     "Video",
     "Dict",
+    "Text",
 ]
 TYPES_TIME = ["Date", "Time"]
 TYPES_LABEL = ["Label", "LabelMap", "Keypoint"]
