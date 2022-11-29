@@ -58,7 +58,7 @@ def initialize_db(db_file):
     create_table_sql = '''
     CREATE TABLE IF NOT EXISTS dataset(
     dataset_name varchar, 
-    storage_path varchar,
+    storage_name varchar,
     dataset_path varchar,
     label_data boolean,
     media_data boolean,
