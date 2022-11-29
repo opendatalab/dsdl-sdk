@@ -1,13 +1,19 @@
 [tool]
 [tool.poetry]
-name = "dsdlsdk"
+name = "odl-cli"
 version = "0.1.0"
-homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev"
+homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev-cli"
 description = "made for opendatalab dsdl-sdk dev branch(ignore other branches)."
-authors = ["dsdl-team <dsdl-team@pjlab.org.cn>", "suizhihao <suizhihao@pjlab.org.cn>"]
+authors = [
+    "odl-cli <odl-cli@pjlab.org.cn>", 
+    "xuchao <xuchao@pjlab.org.cn>",
+    "suizhihao <suizhihao@pjlab.org.cn>",
+    "chenhaojiong <chenhaojiong@pjlab.org.cn>",
+    "weixingjian <weixingjian@pjlab.org.cn>",
+    ]
 readme = "README.md"
 license = "Apache-2.0"
-keywords = ['dsdl-sdk', 'opendatalab', 'pjlab']
+keywords = ['odl-cli', 'opendatalab', 'pjlab']
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Intended Audience :: Developers',

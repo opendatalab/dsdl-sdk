@@ -2,6 +2,7 @@ import pytest
 from pathlib import Path
 
 from cli.commands import const
+from distutils.spawn import find_executable
 
 
 @pytest.fixture
@@ -42,3 +43,8 @@ def dsdl_parquet_path(dsdl_path: Path) -> Path:
 @pytest.fixture
 def dsdl_sqlite_path(dsdl_path: Path) -> Path:
     return dsdl_path / const.__SQLITE_DB_NAME
+
+
+@pytest.fixture
+def which(executable):
+    return find_executable(executable)
