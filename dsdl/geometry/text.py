@@ -26,6 +26,10 @@ class Text(BaseGeometry):
             coords = np.array(
                 [[item.point_for_draw("lb")[0], item.point_for_draw("lb")[1] - 1.2 * label_size[1]] for item in
                  kwargs["polygon"].values()])
+        elif "rbbox" in kwargs:
+            coords = np.array(
+                [[item.point_for_draw("lb")[0], item.point_for_draw("lb")[1] - 1.2 * label_size[1]] for item in
+                 kwargs["rbbox"].values()])
         else:
             coords = np.array([[0, image.size[0] - 1.2 * label_size[1]]])
         for coord in coords:

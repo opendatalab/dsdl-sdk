@@ -5,6 +5,7 @@ from prettytable import PrettyTable
 FIELD_VISUALIZE_ORDER = {  # 定义画图时的先后顺序，数值越小的越先画
     "text": 40,
     "bbox": 20,
+    "rotatebbox": 20,
     "polygon": 10,
     "label": 30,
     "keypoint": 15,
