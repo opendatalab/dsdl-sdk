@@ -1,35 +1,10 @@
 from typing import Optional, Dict, Tuple, List
 import os
 from collections import defaultdict
-
-from .parser import Parser
+from .commons import Util
 from ...geometry import LabelList, BBox
+from ...types import Struct
 from copy import deepcopy
-
-
-class VisualizerUtil:
-
-    @staticmethod
-    def extract_field_pipeline(result_dic, sample, field_name):
-        info = Parser.flatten_sample(sample, f"${field_name}")
-        result_dic[field_name] = info
-
-    @staticmethod
-    def whole_pipeline(field_lst, sample):
-        result_dic = {}
-        for field_name in field_lst:
-            VisualizerUtil.extract_field_pipeline(result_dic, sample, field_name)
-        return result_dic
-
-    @staticmethod
-    def sort_field(field_lst):
-        field_lst = list(field_lst)
-        # 定义画图时的先后顺序，数值越小的越先画
-        field_order = {"text": 40, "bbox": 20, "polygon": 10, "label": 30, "keypoint": 15, "insmap": 5, "labelmap": 0,
-                       "others": -1}
-
-        field_lst = sorted(field_lst, key=lambda k: field_order.get(k, -1))
-        return field_lst
 
 
 class ImageVisualizer:
@@ -64,7 +39,7 @@ class ImageVisualizer:
         image = image.convert("RGBA")
         image_label_lst = []
         for gt_dir, gt_item in self.ground_truths.items():
-            field_keys = VisualizerUtil.sort_field(gt_item.keys())
+            field_keys = Util.sort_field(gt_item.keys())
             for field_key in field_keys:
                 if field_key == "label":
                     image = LabelList(gt_item[field_key].values()).visualize(image=image,
@@ -82,7 +57,7 @@ class ImageVisualizer:
         return result
 
 
-class ImageVisualizePipeline(VisualizerUtil):
+class ImageVisualizePipeline:
     """
     step 1:
 
@@ -91,7 +66,12 @@ class ImageVisualizePipeline(VisualizerUtil):
         sample = {
         "$image": {"img2": img_obj, "img1":img_obj},
         "$list": {"objects": [{"$image": {"img1": img_obj}, "$bbox": {"box": box_obj}}],
-                  "object2": [{"$bbox":{"box": box_obj}}, {"$bbox":{"box": box_obj}}], }
+                  "object2": [{"$bbox":{"box": box_obj}}, {"$bbox":{"box": box_obj}}], },
+        "$struct": {
+                "struct1": {
+                    "$image": {"img3": img_obj, "img4": img_obj}
+                }
+            }
         }
     指定的field_list内容为：[bbox, image]
     则self.whole_pipeline方法会将sample处理为：
@@ -123,14 +103,14 @@ class ImageVisualizePipeline(VisualizerUtil):
     """
     PALETTE = {}
 
-    def __init__(self, field_list: List[str], sample, palette: Optional[Dict[str, Tuple]] = None):
+    def __init__(self, field_list: List[str], sample: Struct, palette: Optional[Dict[str, Tuple]] = None):
         self.field_list = field_list
         self.palette = self.PALETTE
         if palette is not None:  # 如果用户自己定义了label调色盘，则更新默认的调色盘
             self.palette = palette
         if "image" not in field_list:  # 因为是imagevisualizer类，所以field_list中必须包含image字段
             raise ValueError("'image' field not found in the field list to be visualized.")
-        self.data_dic = self.whole_pipeline(field_list, sample)
+        self.data_dic = sample.extract_field_info(field_list)
         self.visualize_result = self.group_media_and_ann()
 
     def group_media_and_ann(self):
