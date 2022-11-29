@@ -45,8 +45,10 @@ class S3Storage(Storage):
 
     def remove_tree(self, s3_path: str) -> bool:
         bucket, obj_key = self.__split_s3_path(s3_path)
-        r = self.s3cli.delete_object(Bucket=self.bucket, Key=obj_key)
-        return r.status == 200
+        for files in self.list_objects(bucket, obj_key):
+            self.s3cli.delete_object(Bucket=bucket, Key=files['Key'])
+
+        return True
 
     def __build_s3_cli(self):
         session = Session(self.access_key, self.secret_key)
@@ -56,11 +58,42 @@ class S3Storage(Storage):
         return s3_client
 
     def __split_s3_path(self, s3_path: str) -> Tuple[str, str]:
+        """
+
+        Args:
+            s3_path:
+
+        Returns:
+
+        """
         s3_path_pattern = re.compile("^s3://([^/]+)(?:/(.*))?$")
         m = s3_path_pattern.match(s3_path)
         if m is None:
             return "", ""
         return m.group(1), (m.group(2) or "")
+
+    def list_objects(self, bucket, prefix, delimiter=''):
+        """
+
+        Args:
+            bucket:
+            prefix:
+            delimiter:
+
+        Returns:
+
+        """
+        marker = None
+        while True:
+            list_kwargs = dict(MaxKeys=1000, Bucket=bucket, Prefix=prefix)
+            if marker:
+                list_kwargs['Marker'] = marker
+            response = self.s3cli.list_objects(**list_kwargs)
+            contents = response.get("Contents", [])
+            yield from contents
+            if not response.get("IsTruncated") or len(contents) == 0:
+                break
+            marker = contents[-1]['Key']
 
 
 class SftpStorage(Storage):
@@ -102,8 +135,26 @@ class StorageBuilder(object):
                     else:
                         return LocalDiskStorage()
                 else:
-                    raise Exception('storage config error')
+                    raise Exception(f'unsupported storage path: {path}')
             else:
-                raise Exception("Storage config not found")
+                raise Exception(
+                    f"storage name key `{storage_name}' not found in config")
         else:
-            raise Exception("Storage config not found")
+            raise Exception(
+                f"storage named `{storage_name}' not found in config")
+
+
+if __name__ == "__main__":
+    s: Storage = StorageBuilder.build_by_name(
+        "s3", {
+            "storage": {
+                "s3": {
+                    "endpoint": "http://10.140.0.94:9800",
+                    "access_key": "ailabminio",
+                    "secret_key": "123123123",
+                    "path": "s3://testdata"
+                }
+            }
+        })
+    b = s.remove_tree("s3://testdata/.dsdl")
+    print(b)
