@@ -136,7 +136,8 @@ class OssClient:
         :return:
         """
         try:
-            self.s3_client.download_file(bucket, remote_file, local_file)
+            if not os.path.exists(local_file):
+                self.s3_client.download_file(bucket, remote_file, local_file)
         except ClientError as e:
             logging.error(e)
             return False

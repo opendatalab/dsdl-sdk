@@ -8,6 +8,8 @@ Examples:
 """
 import os
 
+import yaml
+
 from commands.cmdbase import CmdBase
 from commands.const import DSDL_CLI_DATASET_NAME, DEFAULT_LOCAL_STORAGE_PATH
 from commons.argument_parser import EnvDefaultVar
@@ -108,7 +110,9 @@ class Get(CmdBase):
         s3_media_prefix = dataset_name + "/media/"
         media_dir = os.path.join(dataset_dir, 'media')
         remote_split_list = [obj['Key'].split("/")[-1].replace(".parquet", "") for obj in
-                             s3_client.list_objects(default_bucket, s3_parquet_prefix)]
+                             s3_client.list_objects(default_bucket, s3_parquet_prefix) if
+                             str(obj['Key']).endswith(".parquet")]
+        dataset_info_path = os.path.join(parquet_dir, 'dataset.yaml')
 
         # get the whole dataset
         if not split_name:
@@ -134,8 +138,12 @@ class Get(CmdBase):
 
                 # get meta info of dataset to insert into sqlite
                 parquet_list = [obj['Key'].split("/")[-1] for obj in
-                                s3_client.list_objects(default_bucket, dataset_name + '/parquet/')]
-                _, stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', parquet_list[0])).get_metadata()
+                                s3_client.list_objects(default_bucket, dataset_name + '/parquet/') if
+                                str(obj['Key']).endswith(".parquet")]
+
+                with open(dataset_info_path, 'r') as f:
+                    stat = yaml.safe_load(f)['statistics']
+
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
 
@@ -200,6 +208,7 @@ class Get(CmdBase):
                 exit()
 
             s3_parquet_key = s3_parquet_prefix + split_name + '.parquet'
+            s3_datainfo_key = s3_parquet_prefix + 'dataset.yaml'
             parquet_path = db_client.get_local_split_path(dataset_name, split_name) \
                 if split_exist_flag else os.path.join(parquet_dir, split_name + '.parquet')
 
@@ -215,6 +224,7 @@ class Get(CmdBase):
                 os.mkdir(parquet_dir)
 
             s3_client.download_file(default_bucket, s3_parquet_key, parquet_path)
+            s3_client.download_file(default_bucket, s3_datainfo_key, dataset_info_path)
             parquet_reader = query.ParquetReader(parquet_path)
             s3_media_keys = parquet_reader.select('image')['image'].tolist()
 
@@ -225,12 +235,14 @@ class Get(CmdBase):
 
             print("register local split...")
             if not dataset_exist_flag:
-                _, stat = query.ParquetReader(parquet_path).get_metadata()
+                with open(dataset_info_path, 'r') as f:
+                    stat = yaml.safe_load(f)['statistics']
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
                 db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
                                            dataset_media_size)
 
+                _, stat = query.ParquetReader(parquet_path).get_metadata()
                 split_media_num = stat['split_stat']['media_num']
                 split_media_size = stat['split_stat']['media_size']
                 db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,

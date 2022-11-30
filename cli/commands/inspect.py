@@ -12,6 +12,8 @@ from commands.cmdbase import CmdBase
 from commands.const import DSDL_CLI_DATASET_NAME
 from commons.argument_parser import EnvDefaultVar
 from tabulate import tabulate
+from rich.tree import Tree
+from rich import print as rprint
 from utils import admin, query, plot
 
 
@@ -48,6 +50,12 @@ class Inspect(CmdBase):
         group.add_argument("-s", "--statistics", action="store_true",
                            help='Some statistics of the dataset.',
                            )
+        group.add_argument("-m", "--metadata", action="store_true",
+                           help='Show metadata of the dataset.',
+                           )
+        group.add_argument("--schema", action="store_true",
+                           help='Show schema of the dataset.',
+                           )
 
         return inspect_parser
 
@@ -67,6 +75,8 @@ class Inspect(CmdBase):
         dataset_name = cmdargs.dataset_name
         description = cmdargs.description
         statistics = cmdargs.statistics
+        schema = cmdargs.schema
+        metadata = cmdargs.metadata
 
         dataset_dict = query.get_dataset_info(dataset_name)
 
@@ -91,3 +101,31 @@ class Inspect(CmdBase):
                     y_colors = [x['color'] for x in y_data]
                     y_label = p['data']['y_label']
                     plot.plt_cli_bar(name, labels, data, y_categories, y_colors, y_label)
+
+        if schema:
+            print("dataset schema".center(100, "="))
+            schema_dict = dataset_dict["dsdl_meta"]["struct"]
+            dsdl_version = schema_dict['$dsdl-version']
+            fields = schema_dict['Sample']['$fields']
+            optional = schema_dict['Sample']['$optional']
+            schema_tree = Tree(dataset_name)
+            for k, v in fields.items():
+                field_str = "%s: %s" % (k, v)
+                if k in optional:
+                    field_str = field_str + " (Optional)"
+                schema_tree.add(field_str)
+
+            print("# dsdl version: " + dsdl_version)
+            rprint(schema_tree)
+
+        if metadata:
+            print("dataset metadata".center(100, "="))
+            dataset_meta = dataset_dict['dsdl_meta']['dataset']['meta']
+            for k, v in dataset_meta.items():
+                print(k + ': ' + v)
+            class_dict = dataset_dict['dsdl_meta']['class_dom']
+
+            for k, v in class_dict.items():
+                if not str(k).startswith("$"):
+                    print(k + ":")
+                    print(v['classes'])

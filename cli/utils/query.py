@@ -97,6 +97,15 @@ class ParquetReader:
         schema = pq.read_schema(self.parquet_path)
         return schema
 
+    def query(self, sql):
+        cursor = duckdb.connect(database=':memory:')
+        view_sql = """create or replace view dataset as 
+                select * 
+                from parquet_scan('%s');
+                """ % self.parquet_path
+        cursor.execute(view_sql)
+        return cursor.execute(sql).fetch_df()
+
 
 class SplitReader(ParquetReader):
     """
@@ -189,10 +198,10 @@ if __name__ == '__main__':
     split = DSDLParquet(df, 'D:\\DSDL_STORE\\test2.parquet', schema, statistics={'test': 'test'})
     split.save()
 
-    parquet_reader = ParquetReader('D:\\DSDL_STORE\\test2.parquet')
+    parquet_reader = ParquetReader('C:\\Users\\chenhaoling\\.dsdl\\datasets\\CIFAR-100\\parquet\\train.parquet')
     dsdl_meta, stat_meta = parquet_reader.get_metadata()
     print(dsdl_meta)
     print(stat_meta)
-    meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-10', 'train'))
-    print(meta_dict)
-    print(get_dataset_info('CIFAR-10'))
+    meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
+    print(parquet_reader.query("select label1,count(1) from dataset group by label1"))
+
