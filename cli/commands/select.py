@@ -87,6 +87,18 @@ class Select(CmdBase):
         random = cmdargs.random
         export_name = cmdargs.export_name
 
+        db_client = admin.DBClient()
+
+        if not db_client.is_dataset_local_exist(dataset_name):
+            print("there is no dataset named %s locally" % dataset_name)
+            exit()
+
+        # assert (db_client.is_dataset_local_exist(dataset_name)), "there is no dataset named %s locally" % dataset_name
+
+        if not db_client.is_split_local_exist(dataset_name, split_name):
+            print("there is no split named %s of dataset %s locally" % (split_name, dataset_name))
+            exit()
+
         split_reader = query.SplitReader(dataset_name, split_name)
         df = split_reader.select(select_cols=fields, filter_cond=filter, limit=limit, offset=offset, samples=random)
         print(df)

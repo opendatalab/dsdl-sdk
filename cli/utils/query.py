@@ -3,9 +3,22 @@ admin module handles parquet operations
 """
 import os.path
 import duckdb
+import yaml
+
 from utils import admin
 import pyarrow.parquet as pq
 import pyarrow as pa
+
+
+def get_dataset_info(dataset_name):
+    db_client = admin.DBClient()
+    if not db_client.is_dataset_local_exist(dataset_name):
+        print("there is no dataset named %s locally" % dataset_name)
+        exit()
+    yml_path = os.path.join(db_client.get_local_dataset_path(dataset_name), 'parquet', 'dataset.yaml')
+    with open(yml_path, 'r') as f:
+        dataset_dict = yaml.safe_load(f)
+    return dataset_dict
 
 
 class ParquetReader:
@@ -182,3 +195,4 @@ if __name__ == '__main__':
     print(stat_meta)
     meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-10', 'train'))
     print(meta_dict)
+    print(get_dataset_info('CIFAR-10'))
