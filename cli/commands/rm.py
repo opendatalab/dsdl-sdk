@@ -7,6 +7,8 @@ Examples:
 """
 
 from commands.cmdbase import CmdBase
+from commons.exceptions import CLIException, ExistCode
+from commons.stdio import print_stdout
 from commons.Storage import Storage, StorageBuilder
 from utils.admin import DBClient
 
@@ -85,20 +87,23 @@ class Rm(CmdBase):
         dataset_path = dbcli.get_local_dataset_path(dataset_name)
         # 先查找这个数据集是否存在本地
         if not dataset_path:
-            print("Dataset `{}` does not exist locally".format(dataset_name))
+            raise CLIException(
+                ExistCode.DATASET_NOT_EXIST_LOCAL,
+                "Dataset `{}` does not exist locally".format(dataset_name))
         else:  # 存在，那么就删除
             if force_delete:
                 self.__delete_dataset(dataset_name, dataset_path, storage_name)
             else:
-                print("Are you sure to delete dataset {}? [y/n]".format(
-                    dataset_name))
+                print_stdout("Are you sure to delete dataset {}? [y/n]".format(
+                    dataset_name),
+                             end='')
                 answer = input()
                 if answer == "y":
                     self.__delete_dataset(dataset_name, dataset_path,
                                           storage_name)
                     dbcli.delete_dataset(dataset_name)
                 else:
-                    print("Delete cancelled")
+                    print_stdout("Delete cancelled")
 
     def __delete_dataset(self, dataset_name: str, dataset_path: str,
                          storage_name: str) -> None:
@@ -116,7 +121,7 @@ class Rm(CmdBase):
         storage_cli = self.__get_storage_cli_by_name(storage_name)
         if storage_cli.remove_tree(dataset_path):
             dbcli.delete_dataset(dataset_name)
-            print("Dataset {} deleted".format(dataset_path))
+            print_stdout("Dataset {} deleted".format(dataset_path))
 
     def __get_storage_cli_by_name(self, storage_name) -> Storage:
         """

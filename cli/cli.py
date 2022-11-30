@@ -98,7 +98,7 @@ class DSDLClient(object):
             os.makedirs(DEFAULT_LOCAL_STORAGE_PATH)
 
         #########################################################
-        # todo 以上正确做法是放在pip install的时候，自定义一个安装脚本，目前先简单做
+        # todo 以上正确做法是放在pip install的时候，自定义一个安装脚本，目前先简单做,加快命令速度
         #########################################################
 
         # 接下来读取配置文件，然后返回成一个json对象
@@ -137,7 +137,7 @@ class DSDLClient(object):
             if module.is_file() and module.suffix == '.py'
             and not module.name.startswith('_')
         ]  # 获取commands目录下的所有py文件
-        for pkg in pkgs:
+        for pkg in pkgs:  # TODO这里的性能是硬性最大的地方，可以通过缓存或者打包的时候预定义方式优化
             module = importlib.import_module(f'commands.{pkg}')
             for clz_name, clz_obj in inspect.getmembers(module):
                 if inspect.isclass(clz_obj) and issubclass(

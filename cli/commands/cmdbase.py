@@ -17,6 +17,7 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser, _SubParsersAction
 
 from commons.exceptions import CLIException
+from commons.stdio import print_stderr
 
 
 class CmdBase(ABC):
@@ -34,9 +35,11 @@ class CmdBase(ABC):
         try:
             self.cmd_entry(cmdargs, config, *args, **kwargs)
         except CLIException as e:
-            print(e.message)
+            print_stderr(e.message)
             exit(e.errcode)
         except Exception as e:
+            # TODO log
+            print_stderr("unknown error, please see log files at ~/.dsdl/logs")
             exit(-1)
         exit(0)
 

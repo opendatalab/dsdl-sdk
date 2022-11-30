@@ -7,8 +7,7 @@ Examples:
 """
 
 from commands.cmdbase import CmdBase
-from commons.Storage import Storage, StorageBuilder
-from utils.admin import DBClient
+from commons.stdio import print_stdout
 
 
 class Search(CmdBase):
@@ -46,7 +45,7 @@ class Search(CmdBase):
         Returns:
 
         """
-        print("""CIFAR-10-Auto
+        print_stdout("""CIFAR-10-Auto
 CIFAR-10
 CIFAR-100
 Fashion-MNIST
