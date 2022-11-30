@@ -257,7 +257,7 @@ class CshActivator(_Activator):
         super().__init__(arguments)
 
 
-activator_map: Dict[str, type[_Activator]] = {
+activator_map: Dict[str, _Activator] = {
     "posix": PosixActivator,
     "ash": PosixActivator,
     "bash": PosixActivator,
