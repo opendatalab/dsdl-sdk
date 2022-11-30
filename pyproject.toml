@@ -24,13 +24,13 @@ classifiers = [
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
 ]
-packages = [{ include = "dsdlsdk" }, { include = "cli" }, { include = "dsdl" } ]
+packages = [{ include = "dsdlsdk" }, { include = "cli" } ]
 [tool.poetry.scripts]
 dsdl-cli = 'cli.cli:main'
 dsdl = 'dsdl.cli:cli'
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.9.7 || >3.9.7,<4.0"
 pyyaml = { version = "^6.0" }
 click = { version = "^8.1.3" }
 networkx = { version = "^2.8.4" }
@@ -43,7 +43,7 @@ tabulate = "^0.9.0"
 
 jsonmodels = "^2.6.0"
 rich = "^12.6.0"
-jinja2 = { version = "^2.11.3" }
+jinja2 = "^3.0.0"
 toml = { version = "^0.10.2" }
 tqdm = "^4.64.1"
 duckdb = "^0.6.0"
@@ -51,6 +51,8 @@ pyarrow = "^10.0.0"
 boto3 = "^1.26.14"
 smart-open = {extras = ["all"], version = "^6.2.0"}
 pandas = "^1.5.1"
+psutil = "^5.9.4"
+streamlit = "^1.15.1"
 
 [tool.poetry.group.test]
 optional = true
