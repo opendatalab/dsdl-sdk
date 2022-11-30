@@ -65,10 +65,15 @@ class Cd(CmdBase):
         Returns:
         """
 
-        os.environ.setdefault("DATASET_NAME", "")
-        os.environ["DATASET_NAME"] = cmdargs.dataset_name[0]
+        _act = _Activator()
+        _act.environ.setdefault("DATASET_NAME", "")
+        _act.environ["DATASET_NAME"] = cmdargs.dataset_name[0]
 
-        dsname = os.environ.get("DATASET_NAME", "default")
+        # os.environ.setdefault("DATASET_NAME", "")
+        # os.environ["DATASET_NAME"] = cmdargs.dataset_name[0]
+        # dsname = os.environ.get("DATASET_NAME", "default")
+
+        dsname = _act.environ.get("DATASET_NAME", "default")
 
         dbcli = DBClient()
 
@@ -77,11 +82,11 @@ class Cd(CmdBase):
 
             if sysstr == "Windows":
                 print("Enter new Windows cmd command shell")
-                shell_cmd = CmdExeActivator().activate_cmd
+                shell_cmd = CmdExeActivator(_act).activate_cmd
                 os.system(shell_cmd)
             elif sysstr in ["Linux", "Darwin"]:
                 print("Enter new Linux bash command shell")
-                shell_cmd = PosixActivator().activate_cmd
+                shell_cmd = PosixActivator(_act).activate_cmd
                 os.system(shell_cmd)
             else:
                 print("Other Systems hava not been supported yet!")
