@@ -3,7 +3,7 @@ import sys
 import sqlite3
 from typing import List
 
-sys.path.append(f'{os.path.dirname(os.path.abspath(__file__))}/../../../')
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../../")
 
 import pandas as pd
 import streamlit as st
@@ -27,24 +27,25 @@ st.set_page_config(
 conn = sqlite3.connect(admin.DB_PATH)
 
 # show all records of dataset which already stored in local
-print(conn.execute('select * from dataset').fetchall())
+print(conn.execute("select * from dataset").fetchall())
 
 dbclient = admin.DBClient()
 
 dbclient.register_dataset(
-    dataset_name='coco-demo',
-    dataset_path='/root/.dsdl/datasets/coco_demo/data/annotations',
+    storage_name="default",
+    dataset_name="coco-demo",
+    dataset_path="/root/.dsdl/datasets/coco_demo/data/annotations",
     label=1,
     media=1,
     media_num=300,
     media_size=1000,
 )
 # fetch the newly inserted record of this dataset
-dbclient.get_local_dataset_path('coco-demo')
+dbclient.get_local_dataset_path("coco-demo")
 
-data_dir_path = dbclient.get_local_dataset_path('coco-demo')
-train_data_file_path = os.path.join(data_dir_path, 'coco_train_2020.parquet.gzip')
-val_data_file_path = os.path.join(data_dir_path, 'coco_val_2020.parquet.gzip')
+data_dir_path = dbclient.get_local_dataset_path("coco-demo")
+train_data_file_path = os.path.join(data_dir_path, "coco_train_2020.parquet.gzip")
+val_data_file_path = os.path.join(data_dir_path, "coco_val_2020.parquet.gzip")
 
 
 def load_all_annotations() -> pd.DataFrame:
@@ -67,7 +68,9 @@ with st.sidebar:
 
     # Add a multiselect input to selection multiple labels
     available_labels = category_count.index.tolist()
-    labels_to_display = st.multiselect("Labels to display", available_labels, default=["toaster"])
+    labels_to_display = st.multiselect(
+        "Labels to display", available_labels, default=["toaster"]
+    )
 
 
 # Cache the last three requests
@@ -77,7 +80,9 @@ def get_selected_images(selected_categories: List[str]) -> pd.DataFrame:
     # one of the selected categories
     # return all the annotations on the selected images
     all_annotations = load_all_annotations()
-    return all_annotations.groupby("image_name").filter(lambda g: g.category_name.isin(selected_categories).any())
+    return all_annotations.groupby("image_name").filter(
+        lambda g: g.category_name.isin(selected_categories).any()
+    )
 
 
 annotations = get_selected_images(labels_to_display)
