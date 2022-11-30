@@ -55,9 +55,6 @@ class Cd(CmdBase):
         )
         return status_parser
 
-    def which(self, executable):
-        return find_executable(executable)
-
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """
         Entry point for the command
@@ -173,19 +170,11 @@ class _Activator:
         path_split = path.split(os.pathsep)
         return path_split
 
-    def shell_type(self):
+    def _get_activate_cmd(self) -> str:
         parent_pid = os.getppid()
         shell_type = psutil.Process(parent_pid).name().split(".")[0]
-        return shell_type
-
-    def which(self, shell_type):
         cmd_location = find_executable(shell_type)
-        return cmd_location
-
-    def _get_activate_cmd(self) -> str:
-        shell_type = self.shell_type()
-        activate_cmd = self.which(shell_type)
-        return activate_cmd
+        return f'"{cmd_location}"'
 
 
 class PosixActivator(_Activator):
