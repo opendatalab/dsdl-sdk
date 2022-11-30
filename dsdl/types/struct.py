@@ -89,7 +89,7 @@ class Struct(dict, metaclass=StructMetaclass):
 
     def __setattr__(self, key, value):
 
-        if key in self.__mappints__:
+        if key in self.__mappings__:
             if hasattr(self.__mappings__[key], "set_file_reader"):
                 self.__mappings__[key].set_file_reader(self.file_reader)
             try:
@@ -160,14 +160,10 @@ class Struct(dict, metaclass=StructMetaclass):
             result_dic[field_name] = self._flatten_sample(f"${field_name}")
         return result_dic
 
-    @property
-    def dict_format(self):
-        return self.convert2dict()
-
     def _flatten_sample(self, field_name, parse_method=lambda _: _):
         result_dic = {}
         prefix = "."
-        self._parse_helper(self.dict_format, field_name, result_dic, prefix, parse_method)
+        self._parse_helper(self.convert2dict(), field_name, result_dic, prefix, parse_method)
         return result_dic
 
     @classmethod
@@ -186,7 +182,7 @@ class Struct(dict, metaclass=StructMetaclass):
                         data_item[field_key] = {key: getattr(sample, field_key)}
                 elif key in field_mapping:  # fields
                     field_obj = getattr(sample, key)
-                    field_key = field_obj.extract_key(field_mapping[key])
+                    field_key = field_mapping[key].extract_key()
                     if field_key in data_item:
                         data_item[field_key][key] = cls._parse_struct(field_obj)
                     else:
