@@ -3,7 +3,7 @@
 name = "odl-cli"
 version = "0.1.0"
 homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev-cli"
-description = "made for opendatalab dsdl-sdk dev branch(ignore other branches)."
+description = "made for opendatalab dsdl-sdk dev-cli branch(ignore other branches)."
 authors = [
     "odl-cli <odl-cli@pjlab.org.cn>", 
     "xuchao <xuchao@pjlab.org.cn>",
@@ -40,7 +40,6 @@ prettytable = { version = "^3.3.0" }
 opencv-python = { version = "^4.6.0.66" }
 loguru = "^0.6.0"
 tabulate = "^0.9.0"
-
 jsonmodels = "^2.6.0"
 rich = "^12.6.0"
 jinja2 = "^3.0.0"
