@@ -53,7 +53,7 @@ jobs:
         with:
           password: ${{ secrets.PYPI_TOKEN}}
           # repository_url: https://test.pypi.org/legacy/
-          # repository_url: https://upload.pypi.org/legacy/
+          repository_url: https://upload.pypi.org/legacy/
           skip_existing: true
       
       - name: Send email
