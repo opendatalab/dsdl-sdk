@@ -17,6 +17,10 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser, _SubParsersAction
 
 
+class CliException:
+    pass
+
+
 class CmdBase(ABC):
     """
     Base class for all commands
@@ -31,9 +35,12 @@ class CmdBase(ABC):
     def cmd_main(self, cmdargs, config, *args, **kwargs):
         try:
             self.cmd_entry(cmdargs, config, *args, **kwargs)
+        except CliException as e:
+            print(e.message)
+            exit(e.errcode)
         except Exception as e:
-            print(e)
             exit(-1)
+        exit(0)
 
     @abstractmethod
     def cmd_entry(self, cmdargs, config, *args, **kwargs):

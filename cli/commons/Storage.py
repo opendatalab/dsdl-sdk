@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Tuple
 
 from boto3 import Session
+from commons.exceptions import CLIException, ExistCode
 
 
 class Storage(ABC):
@@ -118,7 +119,6 @@ class StorageBuilder(object):
         Returns:
 
         """
-
         if "storage" in config.keys():
             storage_config = config['storage'].get(storage_name, None)
             if storage_config is not None:
@@ -135,12 +135,15 @@ class StorageBuilder(object):
                     else:
                         return LocalDiskStorage()
                 else:
-                    raise Exception(f'unsupported storage path: {path}')
+                    raise CLIException(ExistCode.NOT_SUPPORTED_STORE_PATH,
+                                       f'unsupported storage path: {path}')
             else:
-                raise Exception(
+                raise CLIException(
+                    ExistCode.STORAGE_NAME_NOT_EXIST,
                     f"storage name key `{storage_name}' not found in config")
         else:
-            raise Exception(
+            raise CLIException(
+                ExistCode.STORAGE_NOT_EXIST,
                 f"storage named `{storage_name}' not found in config")
 
 
