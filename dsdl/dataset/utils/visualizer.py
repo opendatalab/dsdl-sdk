@@ -7,7 +7,7 @@ from ...types import Struct
 from copy import deepcopy
 
 
-class ImageVisualizer:
+class ImageSample:
     def __init__(self, image, palette):
         self.image = image
         self.palette = palette
@@ -37,7 +37,7 @@ class ImageVisualizer:
     def visualize(self):
         image = self.image.to_image()
         image = image.convert("RGBA")
-        image_label_lst = []
+        image_label_lst = []  # store labels having no matched polygon or bbox, etc.
         for gt_dir, gt_item in self.ground_truths.items():
             field_keys = Util.sort_field(gt_item.keys())
             for field_key in field_keys:
@@ -80,6 +80,8 @@ class ImageVisualizePipeline:
             "./img2": img_obj,
             "./img1": img_obj,
             "./objects/0/img1": img_obj,
+            "./struct1/img3": img_obj,
+            "./struct1/img4": img_obj,
         },
         "bbox": {
             "./objects/0/box": box_obj,
@@ -102,6 +104,9 @@ class ImageVisualizePipeline:
     调用format/visualize方法，从而可以对各个ImageVisualizer对象进行文本/图像可视化。
     """
     PALETTE = {}
+    BU_DIST_WEIGHT = 1
+    TD_DIST_WEIGHT = 0.01
+    DIST_TRHESH = 2
 
     def __init__(self, field_list: List[str], sample: Struct, palette: Optional[Dict[str, Tuple]] = None):
         self.field_list = field_list
@@ -113,31 +118,43 @@ class ImageVisualizePipeline:
         self.data_dic = sample.extract_field_info(field_list)
         self.visualize_result = self.group_media_and_ann()
 
+    @classmethod
+    def _match(cls, ann_path, image_paths):
+        dists = [cls._calculate_distance(ann_path, image_path) for image_path in image_paths]
+        min_dist = min(dists)
+        res = [image_paths[_] for _ in range(len(image_paths)) if dists[_] == min_dist and dists[_] < cls.DIST_TRHESH]
+        return res
+
+    @classmethod
+    def _calculate_distance(cls, ann_path, image_path):
+        img_dir = os.path.split(image_path)[0]
+        bu_distance = 0
+        while not ann_path.startswith(img_dir):
+            bu_distance += 1
+            img_dir = os.path.split(img_dir)[0]
+        td_distance = len(ann_path.replace(img_dir, "").split("/")) - 1
+        return cls._metric(bu_distance, td_distance)
+
+    @classmethod
+    def _metric(cls, bu_distance, td_distance):
+        return bu_distance * cls.BU_DIST_WEIGHT + td_distance * cls.TD_DIST_WEIGHT
+
     def group_media_and_ann(self):
         data_dic = deepcopy(self.data_dic)
         image_dic = data_dic.pop("image")
         image_paths = list(image_dic.keys())
-        # 将图像按照路径进行从长到短排序
-        image_paths = sorted(image_paths, key=lambda x: len(x.split("/")), reverse=True)
-        result_dic = {}
-        for image_path in image_paths:
-            image_dir = os.path.split(image_path)[0]
-            image_obj = image_dic[image_path]
-            result_dic[image_path] = ImageVisualizer(image_obj, self.palette)
-            for ann_dic in data_dic.values():
-                pop_keys = []
-                for ann_path, ann_obj in ann_dic.items():
-                    if ann_path.startswith(image_dir):
-                        result_dic[image_path].append_ground_truth(ann_path, ann_dic[ann_path])
-                        pop_keys.append(ann_path)
-                for pop_key in pop_keys:
-                    ann_dic.pop(pop_key)
+        result_dic = {k_: ImageSample(image_dic[k_], self.palette) for k_ in image_paths}
+        for ann_dic in data_dic.values():
+            for ann_path, ann_obj in ann_dic.items():
+                matched_img_paths = self._match(ann_path, image_paths)
+                for matched_img_path in matched_img_paths:
+                    result_dic[matched_img_path].append_ground_truth(ann_path, ann_obj)
         return result_dic
 
     def visualize(self):
         vis_result = {}
-        for image_path, image_vis_item in self.visualize_result.items():
-            vis_result[image_path] = image_vis_item.visualize()
+        for image_path, sample_item in self.visualize_result.items():
+            vis_result[image_path] = sample_item.visualize()
         return vis_result
 
     def format(self):

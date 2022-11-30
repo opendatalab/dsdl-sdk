@@ -17,5 +17,5 @@ class CheckDataset(Dataset):
             struct_instance, report_info = check_struct(self.sample_type, sample, self.file_reader)
             self.report.add_sample_info(report_info)
             if struct_instance is not None:
-                sample_list.append(self._parse_struct(struct_instance))
+                sample_list.append(struct_instance)
         return sample_list
