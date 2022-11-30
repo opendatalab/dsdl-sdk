@@ -52,6 +52,7 @@ smart-open = {extras = ["all"], version = "^6.2.0"}
 pandas = "^1.5.1"
 psutil = "^5.9.4"
 streamlit = "^1.15.1"
+termgraph = "^0.5.3"
 
 [tool.poetry.group.test]
 optional = true
