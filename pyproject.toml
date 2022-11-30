@@ -26,11 +26,11 @@ classifiers = [
 ]
 packages = [{ include = "dsdlsdk" }, { include = "cli" } ]
 [tool.poetry.scripts]
-dsdl-cli = 'cli.cli:main'
+odl-cli = 'cli.cli:main'
 dsdl = 'dsdl.cli:cli'
 
 [tool.poetry.dependencies]
-python = {version = ">=3.8,<3.9.7 || >3.9.7,<4.0"}
+python = ">=3.8,<4.0, !=3.9.7"
 pyyaml = { version = "^6.0" }
 click = { version = "^8.1.3" }
 networkx = { version = "^2.8.4" }
