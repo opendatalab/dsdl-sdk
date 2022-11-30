@@ -90,7 +90,7 @@ def parquet_filter(
 def explore_app():
     # the following varibles should be read from dsdl database by duckdb
     dbcli = DBClient()
-    dataset_dir_path = dbcli.get_local_dataset_path("CIFAR-10-AUTO")
+    dataset_dir_path = dbcli.get_local_dataset_path("CIFAR-10-Auto")
     parquet_dir_path = os.path.join(dataset_dir_path, "parquet")
     parquet_train_file = os.path.join(parquet_dir_path, "train.parquet")
     parquet_test_file = os.path.join(parquet_dir_path, "test.parquet")
