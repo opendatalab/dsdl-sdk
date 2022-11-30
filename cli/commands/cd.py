@@ -11,6 +11,7 @@ import psutil
 import sys
 import platform
 from distutils.spawn import find_executable
+from typing import Dict
 
 
 from commands.cmdbase import CmdBase
@@ -256,7 +257,7 @@ class CshActivator(_Activator):
         super().__init__(arguments)
 
 
-activator_map: dict[str, type[_Activator]] = {
+activator_map: Dict[str, type[_Activator]] = {
     "posix": PosixActivator,
     "ash": PosixActivator,
     "bash": PosixActivator,
