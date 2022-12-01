@@ -15,7 +15,7 @@ TYPES_WITHOUT_PARS = [
     "BBox",
     "Polygon",
     "Image",
-    "InsMap",
+    "InstanceMap",
     "Video",
     "Dict",
     "Text",
