@@ -34,7 +34,9 @@ jobs:
       - name: test with tox
         continue-on-error: true
         run:
-          tox
+          # tox
+          ls
+          
       
       # - name: Check if 'Lint with flake8' step failed
       #   if: steps.flake8.outcome != 'success'
