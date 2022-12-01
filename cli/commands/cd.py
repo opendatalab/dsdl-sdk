@@ -83,8 +83,12 @@ class Cd(CmdBase):
                 print("Enter new Windows cmd command shell")
                 shell_cmd = CmdExeActivator().activate_cmd
                 os.system(shell_cmd)
-            elif sysstr in ["Linux", "Darwin"]:
+            elif sysstr in ["Linux"]:
                 print("Enter new Linux bash command shell")
+                shell_cmd = PosixActivator().activate_cmd
+                os.system(shell_cmd)
+            elif sysstr in ["Darwin"]:
+                print("Enter new Darwin bash command shell")
                 shell_cmd = PosixActivator().activate_cmd
                 os.system(shell_cmd)
             else:
@@ -175,10 +179,7 @@ class _Activator:
         return path_split
 
     def _get_activate_cmd(self) -> str:
-        parent_pid = os.getppid()
-        shell_type = psutil.Process(parent_pid).name().split(".")[0]
-        cmd_location = find_executable(shell_type)
-        return f'"{cmd_location}"'
+        raise NotImplementedError
 
 
 class PosixActivator(_Activator):
@@ -194,6 +195,13 @@ class PosixActivator(_Activator):
         self.run_script_tmpl = '. "%s"'
 
         super().__init__(arguments)
+
+    def _get_activate_cmd(self) -> str:
+        parent_pid = os.getppid()
+        proc = psutil.Process(parent_pid)
+        shell_type = proc.name().split(".")[0]
+        cmd_location = find_executable(shell_type)
+        return f'"{cmd_location}"'
 
 
 class CmdExeActivator(_Activator):
@@ -212,6 +220,14 @@ class CmdExeActivator(_Activator):
         self.run_script_tmpl = '@CALL "%s"'
 
         super().__init__(arguments)
+
+    def _get_activate_cmd(self) -> str:
+        parent_pid = os.getppid()
+        proc = psutil.Process(parent_pid)
+        parent_proc = proc.parent()
+        shell_type = parent_proc.name().split(".")[0]
+        cmd_location = find_executable(shell_type)
+        return f'"{cmd_location}"'
 
 
 class PowerShellActivator(_Activator):
