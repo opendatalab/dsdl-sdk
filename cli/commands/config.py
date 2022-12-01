@@ -92,7 +92,6 @@ class Config(CmdBase):
             if args.command == 'repo':
                 if not args.repo_name:
                     rprint('please name a repo using [bold blue]--repo-name [/bold blue]before you can set its info!')
-                    exit()
                 else:
                     if args.repo_name not in config['repo'].keys():
                         config['repo'][args.repo_name] = {}

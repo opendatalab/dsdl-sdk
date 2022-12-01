@@ -72,6 +72,7 @@ class Ls(CmdBase):
         # default display no argument is given
         if not (cmdargs.skip_header or cmdargs.verbose):
             rprint(tabulate(dataset_list_trim, headers='keys', tablefmt='plain'))
+            
         if cmdargs.verbose:
             if cmdargs.verbose >= 1:
                 # verbose and skip head
@@ -80,6 +81,7 @@ class Ls(CmdBase):
                 # verbose but not skip head
                 else:
                     rprint(tabulate(dataset_list, headers = 'keys', tablefmt='plain'))
+                    
         if cmdargs.skip_header:
             # not verbose but skip head
             if not cmdargs.verbose:
