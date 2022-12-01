@@ -100,7 +100,7 @@ class Inspect(CmdBase):
                     y_categories = [x['name'] for x in y_data]
                     y_colors = [x['color'] for x in y_data]
                     y_label = p['data']['y_label']
-                    plot.plt_cli_bar(name, labels, data, y_categories, y_colors, y_label)
+                    plot.plt_cmd_bar(name, labels, data, y_categories, y_colors, y_label)
 
         if schema:
             print("dataset schema".center(100, "="))

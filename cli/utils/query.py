@@ -198,10 +198,10 @@ if __name__ == '__main__':
     split = DSDLParquet(df, 'D:\\DSDL_STORE\\test2.parquet', schema, statistics={'test': 'test'})
     split.save()
 
-    parquet_reader = ParquetReader('C:\\Users\\chenhaoling\\.dsdl\\datasets\\CIFAR-100\\parquet\\train.parquet')
+    parquet_reader = ParquetReader('D:\\DSDL_STORE\\STL-10\\STL-10\\parquet\\train.parquet')
     dsdl_meta, stat_meta = parquet_reader.get_metadata()
     print(dsdl_meta)
     print(stat_meta)
     meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
-    print(parquet_reader.query("select label1,count(1) from dataset group by label1"))
+    print(parquet_reader.query("select label,count(1) from dataset group by label"))
 

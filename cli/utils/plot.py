@@ -34,7 +34,7 @@ cli_chart_color_map = {'black': 90, 'red': 91, 'green': 92, 'yellow': 93, 'blue'
                        'white': 97, 'grey': 99}
 
 
-def plt_cli_bar(name, labels, data, y_categories, colors, y_label):
+def plt_cmd_bar(name, labels, data, y_categories, colors, y_label):
     print("# " + name)
     color_map_list = [cli_chart_color_map[x] for x in colors]
     tg.print_categories(y_categories, color_map_list)
