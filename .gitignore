@@ -164,3 +164,5 @@ cython_debug/
 *.swp
 /examples/computer-vision/image-classification/test/
 sss.ipynb
+loguru_playground.ipynb
+loguru_test.py
