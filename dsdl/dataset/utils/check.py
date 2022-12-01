@@ -20,6 +20,7 @@ def check_struct(sample_type: Struct, sample: dict, file_reader: BaseFileReader)
 
     field_not_matching_msg = []
     field_mappings = sample_type.__mappings__
+    struct_mappings = sample_type.__struct_mappings__
     optional_mappings = sample_type.__optional__
     for k in field_mappings:
         if k not in sample and k not in optional_mappings:
@@ -27,12 +28,39 @@ def check_struct(sample_type: Struct, sample: dict, file_reader: BaseFileReader)
             field_not_matching_msg.append(warn_msg)
             report["warning_flag"] = True
             report["normal_flag"] = False
+    for k in struct_mappings:
+        if k not in sample:
+            warn_msg = f"Field not matching warning: required struct field '{k}' not found in sample."
+            field_not_matching_msg.append(warn_msg)
+            report["warning_flag"] = True
+            report["normal_flag"] = False
     for k in sample:
-        if k not in field_mappings:
+        if k not in field_mappings and k not in struct_mappings:
             warn_msg = f"Field not matching warning: field key '{k}' in sample is not found in {sample_type.__name__} struct's fields."
             field_not_matching_msg.append(warn_msg)
             report["warning_flag"] = True
             report["normal_flag"] = False
+        elif k in struct_mappings:
+            struct_type = struct_mappings[k].__class__
+            sample_value = sample[k]
+            _, nested_report = check_struct(struct_type, sample_value, file_reader)
+            if not nested_report["normal_flag"]:
+                report["normal_flag"] = False
+                if "warning_msgs" in nested_report:
+                    field_not_matching_msg.extend(nested_report["warning_msgs"])
+        elif k in field_mappings:
+            this_field = field_mappings[k]
+            if this_field.extract_key() != "$list":
+                continue
+            if isinstance(this_field.ele_type, Struct):
+                struct_type = this_field.ele_type.__class__
+                sample_value = sample[k]
+                for s in sample_value:
+                    _, nested_report = check_struct(struct_type, s, file_reader)
+                    if not nested_report["normal_flag"]:
+                        report["normal_flag"] = False
+                        if "warning_msgs" in nested_report:
+                            field_not_matching_msg.extend(nested_report["warning_msgs"])
     if not report["normal_flag"]:
         report["sample_content"] = sample
     if field_not_matching_msg:
