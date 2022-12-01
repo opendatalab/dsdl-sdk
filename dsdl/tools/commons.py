@@ -13,7 +13,7 @@ TASK_FIELDS = {
     "detection": ["image", "label", "bbox", "polygon", "keypoint", "rotatebbox"],
     "classification": ["image", "label"],
     "semantic-seg": ["image", "labelmap"],
-    "panoptic-seg": ["image", "labelmap", "insmap"]
+    "panoptic-seg": ["image", "labelmap", "instancemap"]
 }
 
 

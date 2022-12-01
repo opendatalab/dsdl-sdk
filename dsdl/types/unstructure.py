@@ -52,13 +52,13 @@ class LabelMapField(UnstructuredObjectField):
         return SegmentationMap(value['$loc'], FileReader(self.file_reader, value), self.dom)
 
 
-class InsMapField(UnstructuredObjectField):
+class InstanceMapField(UnstructuredObjectField):
     def __init__(self, *args, **kwargs):
-        super(InsMapField, self).__init__(*args, **kwargs)
+        super(InstanceMapField, self).__init__(*args, **kwargs)
 
     def validate(self, value):
         if isinstance(value, str):
             value = {"$loc": value}
         else:
-            raise ValidationError(f"InsMapField Error: expect str, got {value}")
+            raise ValidationError(f"InstanceMapField Error: expect str, got {value}")
         return InstanceMap(value['$loc'], FileReader(self.file_reader, value))

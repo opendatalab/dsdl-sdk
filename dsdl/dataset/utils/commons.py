@@ -9,7 +9,7 @@ FIELD_VISUALIZE_ORDER = {  # 定义画图时的先后顺序，数值越小的越
     "polygon": 10,
     "label": 30,
     "keypoint": 15,
-    "insmap": 5,
+    "instancemap": 5,
     "labelmap": 0,
     "others": -1
 }
