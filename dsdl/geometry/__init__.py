@@ -10,6 +10,7 @@ from .registry import STRUCT, CLASSDOMAIN, LABEL
 from .class_domain import ClassDomain
 from .text import Text
 from .rotate_box import RBBox
+from .shape import Shape, ImageShape
 
 __all__ = [
     "BBox",
@@ -29,4 +30,6 @@ __all__ = [
     "ClassDomain",
     "KeyPoints",
     "RBBox",
+    "Shape",
+    "ImageShape"
 ]
