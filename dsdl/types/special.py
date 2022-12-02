@@ -1,5 +1,5 @@
 from .field import Field
-from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox, ImageShape
+from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox, ImageShape, InstanceID
 from ..exception import ValidationError
 from datetime import date, time, datetime
 import math
@@ -156,3 +156,11 @@ class ImageShapeField(Field):
     def validate(self, value):
         value = validate_list_of_number(value, 2, int, "ImageShapeField")
         return ImageShape(value=value, mode=self.mode)
+
+
+class InstanceIDField(Field):
+    def validate(self, value):
+        try:
+            return InstanceID("" + value)
+        except TypeError as _:
+            raise ValidationError(f"InstanceIDField Error: expect str value, got {value}")

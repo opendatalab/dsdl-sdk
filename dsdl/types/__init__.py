@@ -13,6 +13,7 @@ from .special import (
     KeypointField,
     TextField,
     ImageShapeField,
+    InstanceIDField,
 )
 from .unstructure import ImageField, LabelMapField, InstanceMapField
 
@@ -38,5 +39,6 @@ __all__ = [
     "InstanceMapField",
     "KeypointField",
     "TextField",
-    "ImageShapeField"
+    "ImageShapeField",
+    "InstanceIDField",
 ]
