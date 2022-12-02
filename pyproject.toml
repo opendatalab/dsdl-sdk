@@ -56,8 +56,6 @@ psutil = "^5.9.4"
 streamlit = "^1.15.1"
 termgraph = "^0.5.3"
 stqdm = "^0.0.4"
-# poetry-dynamic-versioning = "^0.21.1"
-# python-semantic-release = "^7.32.2"
 
 [tool.poetry.group.test]
 optional = true

@@ -94,15 +94,14 @@ class DSDLClient(object):
         if os.path.exists(SQLITE_DB_PATH) is False:  # sqlite数据库,并初始化table
             initialize_db(SQLITE_DB_PATH)
         if os.path.exists(DEFAULT_CLI_CONFIG_FILE) is False:  # 默认配置文件
-            with open(DEFAULT_CLI_CONFIG_FILE, "w") as f:
+            with open(DEFAULT_CLI_CONFIG_FILE, 'w') as f:
                 with open(
-                    os.path.join(
-                        os.path.dirname(__file__), "resources/default_cli_cfg.json"
-                    ),
-                    "r",
-                ) as f2:
+                        os.path.join(os.path.dirname(__file__),
+                                     'resources/default_cli_cfg.json'),
+                        'r') as f2:
                     x = json.loads(f2.read())
-                    x["storage"]["default"]["path"] = DEFAULT_LOCAL_STORAGE_PATH
+                    x["storage"]['default'][
+                        'path'] = DEFAULT_LOCAL_STORAGE_PATH
                     f.write(json.dumps(x, ensure_ascii=False, indent=4))
         if os.path.exists(DEFAULT_LOCAL_STORAGE_PATH) is False:  # 默认存放数据的目录
             os.makedirs(DEFAULT_LOCAL_STORAGE_PATH)
@@ -145,20 +144,15 @@ class DSDLClient(object):
         import commands
 
         pkgs = [
-            module.stem
-            for module in Path(commands.__path__[0]).iterdir()
-            if module.is_file()
-            and module.suffix == ".py"
-            and not module.name.startswith("_")
+            module.stem for module in Path(commands.__path__[0]).iterdir()
+            if module.is_file() and module.suffix == '.py'
+            and not module.name.startswith('_')
         ]  # 获取commands目录下的所有py文件
         for pkg in pkgs:  # TODO这里的性能是硬性最大的地方，可以通过缓存或者打包的时候预定义方式优化
-            module = importlib.import_module(f"commands.{pkg}")
+            module = importlib.import_module(f'commands.{pkg}')
             for clz_name, clz_obj in inspect.getmembers(module):
-                if (
-                    inspect.isclass(clz_obj)
-                    and issubclass(clz_obj, CmdBase)
-                    and not inspect.isabstract(clz_obj)
-                ):
+                if inspect.isclass(clz_obj) and issubclass(
+                        clz_obj, CmdBase) and not inspect.isabstract(clz_obj):
                     cmd_clz = clz_obj()
                     subcmd_parser = cmd_clz.init_parser(self.__subparsers)
                     subcmd_parser.set_defaults(command_handler=cmd_clz.cmd_main)
