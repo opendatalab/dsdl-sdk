@@ -6,12 +6,13 @@ from .special import (
     Coord3DField,
     IntervalField,
     BBoxField,
-    RotateBBoxField,
+    RotatedBBoxField,
     PolygonField,
     DateField,
     TimeField,
     KeypointField,
     TextField,
+    ImageShapeField,
 )
 from .unstructure import ImageField, LabelMapField, InstanceMapField
 
@@ -29,7 +30,7 @@ __all__ = [
     "Coord3DField",
     "IntervalField",
     "BBoxField",
-    "RotateBBoxField",
+    "RotatedBBoxField",
     "PolygonField",
     "DateField",
     "TimeField",
@@ -37,4 +38,5 @@ __all__ = [
     "InstanceMapField",
     "KeypointField",
     "TextField",
+    "ImageShapeField"
 ]

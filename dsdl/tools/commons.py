@@ -10,7 +10,7 @@ from yaml import load as yaml_load
 import json
 
 TASK_FIELDS = {
-    "detection": ["image", "label", "bbox", "polygon", "keypoint", "rotatebbox"],
+    "detection": ["image", "label", "bbox", "polygon", "keypoint", "rotatedbbox"],
     "classification": ["image", "label"],
     "semantic-seg": ["image", "labelmap"],
     "panoptic-seg": ["image", "labelmap", "instancemap"]
