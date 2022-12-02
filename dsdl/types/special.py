@@ -43,13 +43,13 @@ class BBoxField(Field):
 
 
 class RotatedBBoxField(Field):
-    def __init__(self, mode="xywhr", measure="radian", *args, **kwargs):
+    def __init__(self, mode="xywht", measure="radian", *args, **kwargs):
         super(RotatedBBoxField, self).__init__(*args, **kwargs)
         try:
-            assert mode in ("xywhr", "xyxy")
+            assert mode in ("xywht", "xyxy")
             self.mode = mode
         except AssertionError as e:
-            raise ValidationError("RotateBBox Error: invalid mode, only mode='xywhr' or 'xyxy' are permitted.")
+            raise ValidationError("RotateBBox Error: invalid mode, only mode='xywht' or 'xyxy' are permitted.")
         try:
             assert measure in ("radian", "degree")
             self.measure = measure
@@ -57,7 +57,7 @@ class RotatedBBoxField(Field):
             raise ValidationError("RotateBBox Error: invalid measure, only measure='radian' or 'degree' are permitted.")
 
     def validate(self, value):
-        if self.mode == "xywhr":
+        if self.mode == "xywht":
             value = validate_list_of_number(value, 5, float, "RotateBBoxField")
             if self.measure == "degree":
                 value[-1] = value[-1] / 180 * math.pi  # convert to radian
