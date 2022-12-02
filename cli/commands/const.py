@@ -19,3 +19,5 @@ SQLITE_DB_PATH = os.path.join(DEFAULT_CONFIG_DIR, __SQLITE_DB_NAME)  # sqlite数
 PROG_NAME = "odl-cli"  # 程序名称
 
 DEFAULT_LOCAL_STORAGE_PATH = os.path.join(DEFAULT_CONFIG_DIR, "datasets")  # 默认本地存储路径
+
+DEFAULT_CLI_LOG_FILE_PATH = os.path.join(DEFAULT_CONFIG_DIR, 'logs') # default log file path

@@ -27,11 +27,13 @@ from commands.const import (
     DEFAULT_CLI_CONFIG_FILE,
     DEFAULT_CONFIG_DIR,
     DEFAULT_LOCAL_STORAGE_PATH,
+    DEFAULT_CLI_LOG_FILE_PATH,
     PROG_NAME,
     SQLITE_DB_PATH,
 )
 from commons.argument_parser import CustomHelpFormatter
 from commons.argument_parser import DsdlArgumentParser as ArgumentParser
+from commons.loghandler import setup_loger
 from utils.admin import initialize_db
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -88,6 +90,8 @@ class DSDLClient(object):
         # 检查sqlite数据库是否有表，如果没有则创建表
         if os.path.exists(DEFAULT_CONFIG_DIR) is False:  # 配置目录
             os.makedirs(DEFAULT_CONFIG_DIR)
+        if os.path.exists(DEFAULT_CLI_LOG_FILE_PATH) is False:
+            os.makedirs(DEFAULT_CLI_LOG_FILE_PATH)
         if os.path.exists(SQLITE_DB_PATH) is False:  # sqlite数据库,并初始化table
             initialize_db(SQLITE_DB_PATH)
         if os.path.exists(DEFAULT_CLI_CONFIG_FILE) is False:  # 默认配置文件
@@ -169,4 +173,5 @@ def main():
 
 
 if __name__ == "__main__":
+    setup_loger()
     main()
