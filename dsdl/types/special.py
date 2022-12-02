@@ -1,5 +1,5 @@
 from .field import Field
-from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox
+from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox, ImageShape
 from ..exception import ValidationError
 from datetime import date, time, datetime
 import math
@@ -42,9 +42,9 @@ class BBoxField(Field):
         return BBox(x, y, w, h)
 
 
-class RotateBBoxField(Field):
+class RotatedBBoxField(Field):
     def __init__(self, mode="xywhr", measure="radian", *args, **kwargs):
-        super(RotateBBoxField, self).__init__(*args, **kwargs)
+        super(RotatedBBoxField, self).__init__(*args, **kwargs)
         try:
             assert mode in ("xywhr", "xyxy")
             self.mode = mode
@@ -144,3 +144,15 @@ class TextField(Field):
             return Text("" + value)
         except TypeError as _:
             raise ValidationError(f"TextField Error: expect str value, got {value}")
+
+
+class ImageShapeField(Field):
+    def __init__(self, mode="hw", *args, **kwargs):
+        super(ImageShapeField, self).__init__(*args, **kwargs)
+        mode = mode.lower()
+        assert mode in ("hw", "wh"), f"the mode of 'ImageShapeField' must be in {('hw', 'wh')}"
+        self.mode = mode
+
+    def validate(self, value):
+        value = validate_list_of_number(value, 2, int, "ImageShapeField")
+        return ImageShape(value=value, mode=self.mode)
