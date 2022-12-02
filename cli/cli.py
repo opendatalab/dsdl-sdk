@@ -17,7 +17,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 try:
     from commands.__version__ import __version__
-    from commands.__version__ import version_tuple
 except ImportError:
     __version__ = "unknown version"
     version_tuple = (0, 0, "unknown version")
