@@ -46,6 +46,7 @@ jobs:
 
       - name: Build wheels and source tarball
         run: |
+          poetry version $(poetry version --short)-dev.$(git describe --tags --abbrev=0)
           poetry version --short
           poetry build
 
