@@ -218,6 +218,17 @@ class OssClient:
 
         print('Download Complete')
 
+    def read_file(self, bucket, remote_file):
+        """
+
+        @param bucket:
+        @param remote_file:
+        @return:
+        """
+        data = self.s3_client.get_object(Bucket=bucket, Key=remote_file)
+        contents = data['Body'].read()
+        return contents.decode("utf-8")
+
     def upload_file(self, local_file, bucket, remote_file=None):
         """
         upload a local file to s3
@@ -344,6 +355,8 @@ if __name__ == '__main__':
 
     # s3_client.download_directory('dsdldata', 'Fashion-MNIST/', 'D:\\DSDL_DATA')
 
-    print(s3_client.get_recursive_dir_list('testdata', 'test_data/'))
-    print(len(s3_client.list_objects('dsdldata', 'CIFAR-10/media/')))
+    # print(s3_client.get_recursive_dir_list('testdata', 'test_data/'))
+    # print(len(s3_client.list_objects('dsdldata', 'CIFAR-10/media/')))
+    obj_list = s3_client.read_file('dsdldata', 'CIFAR-10/parquet/dataset.yaml')
+    print(obj_list)
     # print(s3_client.get_dir_list('dsdldata', ''))

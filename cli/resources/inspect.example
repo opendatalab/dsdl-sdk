@@ -1,0 +1,8 @@
+01  show the statistics of a dataset
+    $%(prog)s inspect CIFAR-10 -s
+02  show the schema of a dataset
+    $%(prog)s inspect CIFAR-10 --schema
+03  show the metadata of a dataset
+    $%(prog)s inspect CIFAR-10 -m
+04  show the description of a dataset
+    $%(prog)s inspect CIFAR-10 -d

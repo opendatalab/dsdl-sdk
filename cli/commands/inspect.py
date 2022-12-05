@@ -15,6 +15,14 @@ from tabulate import tabulate
 from rich.tree import Tree
 from rich import print as rprint
 from utils import admin, query, plot
+from utils.oss_ops import ops
+import yaml
+
+aws_access_key_id = "ailabminio"
+aws_secret_access_key = "123123123"
+endpoint_url = "https://10.140.0.94:9800"
+region_name = "ailab"
+default_bucket = "dsdldata"
 
 
 class Inspect(CmdBase):
@@ -78,7 +86,20 @@ class Inspect(CmdBase):
         schema = cmdargs.schema
         metadata = cmdargs.metadata
 
-        dataset_dict = query.get_dataset_info(dataset_name)
+        s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
+                                  aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+        db_client = admin.DBClient()
+        remote_dataset_list = [x.replace('/', '') for x in s3_client.get_dir_list(default_bucket, '')]
+
+        if dataset_name not in remote_dataset_list:
+            print("there is no dataset named %s in remote repo" % dataset_name)
+            exit()
+
+        if db_client.is_dataset_local_exist(dataset_name):
+            dataset_dict = query.get_dataset_info(dataset_name)
+        else:
+            parquet_key = '/'.join([dataset_name, 'parquet', 'dataset.yaml'])
+            dataset_dict = yaml.safe_load(s3_client.read_file(default_bucket, parquet_key))
 
         if description:
             print("dataset description".center(100, "="))
