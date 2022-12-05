@@ -12,6 +12,7 @@ from PIL import Image
 import pandas as pd
 
 from utils.query import SplitReader
+from utils.admin import DBClient
 
 
 def main():
@@ -37,9 +38,16 @@ def main():
 
 
 def explore_app(dataset_name: str, split_name: str):
+    dataset_name = dataset_name
     split_name = "train"  # currently only support train split
-    split_reader = SplitReader(dataset_name, split_name)
+    print(f"dataset_name: {dataset_name}, split_name: {split_name}")
 
+    db_client = DBClient()
+    path = db_client.get_local_split_path(dataset_name, split_name)
+    print(path)
+
+    split_reader = SplitReader(dataset_name, split_name)
+    print(split_reader.dataset_name, split_reader.split_name)
     SPLIT_DF = pd.DataFrame()
 
     SPLIT_DF["file_path"] = split_reader.get_image_samples(10)

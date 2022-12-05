@@ -3,8 +3,11 @@ from pathlib import Path
 
 
 class View:
-    def __init__(self, dataset_name: str):
-        self.dataset_name = dataset_name.lower()
+    def __init__(self, dataset_name: str, inspect: bool = False):
+        if inspect is True:
+            self.dataset_name = dataset_name
+        else:
+            self.dataset_name = dataset_name.lower()
         self.view_base_dir = Path(os.path.dirname(__file__))
         self.view_code_name = ".".join([self.dataset_name, "py"])
         self.view_code_abspath = Path.joinpath(
@@ -24,6 +27,7 @@ class View:
         streamlit_cmd = (
             f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name}"
         )
+        print("::: ", streamlit_cmd)
         try:
             os.system(streamlit_cmd)
         except Exception as e:

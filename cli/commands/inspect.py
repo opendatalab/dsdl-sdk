@@ -82,6 +82,11 @@ class Inspect(CmdBase):
             action="store_true",
             help="Show schema of the dataset.",
         )
+        group.add_argument(
+            "--preview",
+            action="store_true",
+            help="Preview of the dataset.",
+        )
 
         return inspect_parser
 
@@ -179,9 +184,10 @@ class Inspect(CmdBase):
                     print(v["classes"])
 
         if preview:
+            print("Previewing the dataset...")
             from utils.views.view import View
 
-            view = View(dataset_name)
+            view = View(dataset_name, inspect=True)
 
             from utils.admin import DBClient
 
