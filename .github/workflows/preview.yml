@@ -47,8 +47,9 @@ jobs:
 
       - name: Build wheels and source tarball
         run: |
-          semantic-release publish
+          poetry config virtualenvs.create false
           poetry build
+          semantic-release publish
 
 
       - name: publish to PyPI
