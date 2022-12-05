@@ -10,6 +10,7 @@ class ExistCode(Enum):
     STORAGE_NAME_NOT_EXIST = 2  # 有storage这个配置，但是没有storage_name这个配置
     STORAGE_NOT_EXIST = 3  # 没有storage这个配置
     DATASET_NOT_EXIST_LOCAL = 4  # 本地没有这个数据集
+    DATASET_PATH_NOT_EXISTS = 5  # 虽然数据库里能找到数据集名字，但是路径不存在。比如路径不在默认路径下，需要在删除时候指定 --storage, 否则只会到default路径下
 
 
 class CLIException(Exception):
