@@ -1,8 +1,7 @@
 import os
 
+from commands.const import DEFAULT_CLI_LOG_FILE_PATH
 from loguru import logger
-
-from cli.commands.const import DEFAULT_CLI_LOG_FILE_PATH
 
 
 def setup_loger():
