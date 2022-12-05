@@ -47,7 +47,7 @@ jobs:
 
       - name: Build wheels and source tarball
         run: |
-          poetry config virtualenvs.create false
+          poetry config virtualenvs.create true
           poetry build
           semantic-release publish
 
