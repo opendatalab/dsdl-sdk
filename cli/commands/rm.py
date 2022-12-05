@@ -9,8 +9,11 @@ Examples:
 from commands.cmdbase import CmdBase
 from commons.exceptions import CLIException, ExistCode
 from commons.stdio import print_stdout
-from commons.Storage import Storage, StorageBuilder
+from commons.storage_builder import StorageBuilder
 from utils.admin import DBClient
+
+from dsdlsdk.exception.exception import DatasetPathNotExists
+from dsdlsdk.storage import Storage
 
 
 class Rm(CmdBase):
@@ -64,9 +67,12 @@ class Rm(CmdBase):
         yes = cmdargs.yes
         storage_name = cmdargs.storage
         dataset_name = cmdargs.dataset_name
-        self.__process_dataset_del(dataset_name,
-                                   storage_name,
-                                   force_delete=yes)
+        try:
+            self.__process_dataset_del(dataset_name,
+                                       storage_name,
+                                       force_delete=yes)
+        except DatasetPathNotExists as e:
+            raise CLIException(ExistCode.DATASET_PATH_NOT_EXISTS, str(e))
 
     def __process_dataset_del(self,
                               dataset_name,

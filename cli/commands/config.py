@@ -1,6 +1,7 @@
 import json
 import os
 
+from loguru import logger
 from rich import print as rprint
 from rich.console import Console
 from rich.pretty import pprint
@@ -51,7 +52,8 @@ class Config(CmdBase):
                                  help = 'set repo user password')
         repo_parser.add_argument('--repo-service', 
                                  help = 'set repo service url')
-
+        repo_parser.add_augument('--repo-remove',
+                                 help = 'remove specific configuration')
         
         storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
         storage_parser.add_argument('--storage-name', 
@@ -70,9 +72,12 @@ class Config(CmdBase):
         storage_parser.add_argument('--storage-endpoint',
                                     help = 'set storage endpoint',
                                     default = '',
-                                    required = False)        
+                                    required = False)
+        storage_parser.add_argument('--storage-remove',
+                                    help = 'remove specific storage configuration')
         return config_parser
 
+    @logger.catch
     def cmd_entry(self, args, config):
         """
         Entry point for the command.
@@ -86,22 +91,21 @@ class Config(CmdBase):
 
         """
         # print(args.storage_credentials)
-
+        
+        
+        
         if args.command:
             # repo command handler
             if args.command == 'repo':
                 if not args.repo_name:
-                    rprint('please name a repo using [bold blue]--repo-name [/bold blue]before you can set its info!')
+                    logger.exception('Please name a repo using {} before you can set is info'.format('--repo-name'))
                 else:
                     if args.repo_name not in config['repo'].keys():
-                        config['repo'][args.repo_name] = {}
-                        if args.repo_username:
-                            config['repo'][args.repo_name]['user'] = args.repo_username
-                        if args.repo_userpswd:
-                            config['repo'][args.repo_name]['passwd'] = args.repo_userpswd
-                        if args.repo_service:
-                            config['repo'][args.repo_name]['service'] = args.repo_service
+                        # new repo
+                        self.__repo_new(config, args)
                     else:
+                        # update repo
+                        self.__repo_update(config, args)
                         if args.repo_username:
                             config['repo'][args.repo_name]['user'] = args.repo_username
                         if args.repo_userpswd:
@@ -174,3 +178,34 @@ class Config(CmdBase):
         
         with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
             return json.dump(config,file, indent=4)
+
+    @logger.catch
+    def __repo_new(self, config, args):
+        config['repo'][args.repo_name] = {}
+        if args.repo_username:
+            config['repo'][args.repo_name]['user'] = args.repo_username
+        if args.repo_userpswd:
+            config['repo'][args.repo_name]['passwd'] = args.repo_userpswd
+        if args.repo_service:
+            config['repo'][args.repo_name]['service'] = args.repo_service
+    
+    def __repo_update(self, config, args):
+        if args.repo_username:
+            config['repo'][args.repo_name]['user'] = args.repo_username
+        if args.repo_userpswd:
+            config['repo'][args.repo_name]['passwd'] = args.repo_userpswd
+        if args.repo_service:
+            config['repo'][args.repo_name]['service'] = args.repo_service
+        pass
+    
+    def __repo_delete(self, config, args):
+        pass
+    
+    def __storage_new(self, config, args):
+        pass
+    
+    def __storage_update(self, config, args):
+        pass
+    
+    def __storage_delete(self, config, args):
+        pass
