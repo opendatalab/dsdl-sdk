@@ -41,29 +41,47 @@ class Inspect(CmdBase):
         Returns:
 
         """
-        inspect_parser = subparsers.add_parser('inspect', help='Inspect dataset info',
-                                               example="inspect.example",
-                                               description='Inspect dataset info', )  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
+        inspect_parser = subparsers.add_parser(
+            "inspect",
+            help="Inspect dataset info",
+            example="inspect.example",
+            description="Inspect dataset info",
+        )  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
 
-        inspect_parser.add_argument("dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME,
-                                    type=str,
-                                    help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
-                                    metavar='')
+        inspect_parser.add_argument(
+            "dataset_name",
+            action=EnvDefaultVar,
+            envvar=DSDL_CLI_DATASET_NAME,
+            type=str,
+            help="Dataset name. The arg is optional only when the default dataset name was set by cd command.",
+            metavar="",
+        )
 
         group = inspect_parser.add_mutually_exclusive_group()
 
-        group.add_argument("-d", "--description", action="store_true",
-                           help='The split name of the dataset, such as train/test/unlabeled or user self-defined split.',
-                           )
-        group.add_argument("-s", "--statistics", action="store_true",
-                           help='Some statistics of the dataset.',
-                           )
-        group.add_argument("-m", "--metadata", action="store_true",
-                           help='Show metadata of the dataset.',
-                           )
-        group.add_argument("--schema", action="store_true",
-                           help='Show schema of the dataset.',
-                           )
+        group.add_argument(
+            "-d",
+            "--description",
+            action="store_true",
+            help="The split name of the dataset, such as train/test/unlabeled or user self-defined split.",
+        )
+        group.add_argument(
+            "-s",
+            "--statistics",
+            action="store_true",
+            help="Some statistics of the dataset.",
+        )
+        group.add_argument(
+            "-m",
+            "--metadata",
+            action="store_true",
+            help="Show metadata of the dataset.",
+        )
+        group.add_argument(
+            "--schema",
+            action="store_true",
+            help="Show schema of the dataset.",
+        )
 
         return inspect_parser
 
@@ -85,6 +103,7 @@ class Inspect(CmdBase):
         statistics = cmdargs.statistics
         schema = cmdargs.schema
         metadata = cmdargs.metadata
+        preview = cmdargs.preview
 
         s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
                                   aws_secret_access_key=aws_secret_access_key, region_name=region_name)
@@ -103,32 +122,40 @@ class Inspect(CmdBase):
 
         if description:
             print("dataset description".center(100, "="))
-            print(dataset_dict['dsdl_meta']['dataset']['meta']['description'])
+            print(dataset_dict["dsdl_meta"]["dataset"]["meta"]["description"])
 
         if statistics:
             print("dataset statistics".center(100, "="))
             print("# " + "basic indicators")
-            print(tabulate([dataset_dict['statistics']['dataset_stat']], headers='keys', tablefmt='plain'))
+            print(
+                tabulate(
+                    [dataset_dict["statistics"]["dataset_stat"]],
+                    headers="keys",
+                    tablefmt="plain",
+                )
+            )
 
-            plot_list = dataset_dict['statistics']['plots']
+            plot_list = dataset_dict["statistics"]["plots"]
 
             for p in plot_list:
-                if p['type'] == 'bar':
-                    name = p['name']
-                    labels = p['data']['x_data']
-                    y_data = p['data']['y_data']
-                    data = list(zip(*[x['data'] for x in y_data]))
-                    y_categories = [x['name'] for x in y_data]
-                    y_colors = [x['color'] for x in y_data]
-                    y_label = p['data']['y_label']
-                    plot.plt_cmd_bar(name, labels, data, y_categories, y_colors, y_label)
+                if p["type"] == "bar":
+                    name = p["name"]
+                    labels = p["data"]["x_data"]
+                    y_data = p["data"]["y_data"]
+                    data = list(zip(*[x["data"] for x in y_data]))
+                    y_categories = [x["name"] for x in y_data]
+                    y_colors = [x["color"] for x in y_data]
+                    y_label = p["data"]["y_label"]
+                    plot.plt_cmd_bar(
+                        name, labels, data, y_categories, y_colors, y_label
+                    )
 
         if schema:
             print("dataset schema".center(100, "="))
             schema_dict = dataset_dict["dsdl_meta"]["struct"]
-            dsdl_version = schema_dict['$dsdl-version']
-            fields = schema_dict['Sample']['$fields']
-            optional = schema_dict['Sample']['$optional']
+            dsdl_version = schema_dict["$dsdl-version"]
+            fields = schema_dict["Sample"]["$fields"]
+            optional = schema_dict["Sample"]["$optional"]
             schema_tree = Tree(dataset_name)
             for k, v in fields.items():
                 field_str = "%s: %s" % (k, v)
@@ -141,12 +168,27 @@ class Inspect(CmdBase):
 
         if metadata:
             print("dataset metadata".center(100, "="))
-            dataset_meta = dataset_dict['dsdl_meta']['dataset']['meta']
+            dataset_meta = dataset_dict["dsdl_meta"]["dataset"]["meta"]
             for k, v in dataset_meta.items():
-                print(k + ': ' + v)
-            class_dict = dataset_dict['dsdl_meta']['class_dom']
+                print(k + ": " + v)
+            class_dict = dataset_dict["dsdl_meta"]["class_dom"]
 
             for k, v in class_dict.items():
                 if not str(k).startswith("$"):
                     print(k + ":")
-                    print(v['classes'])
+                    print(v["classes"])
+
+        if preview:
+            from utils.views.view import View
+
+            view = View(dataset_name)
+
+            from utils.admin import DBClient
+
+            dbcli = DBClient()
+            local_exists = dbcli.is_dataset_local_exist(dataset_name)
+
+            if local_exists is True:
+                view.view_from_inspect()
+            else:
+                print(f"Dataset {dataset_name} is not exists on local.")

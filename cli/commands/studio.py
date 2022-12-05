@@ -30,27 +30,36 @@ class Studio(CmdBase):
         Returns:
 
         """
-        status_parser = subparsers.add_parser('studio', help='view the specified dataset on webpage.')
-        status_parser.add_argument("-s", '--show', nargs='?', default='SHOW', help='show example', metavar='SHOW')
+        status_parser = subparsers.add_parser(
+            "studio", help="view the specified dataset on webpage."
+        )
+        status_parser.add_argument(
+            "-s",
+            "--show",
+            nargs="?",
+            default="SHOW",
+            help="show example",
+            metavar="SHOW",
+        )
         status_parser.add_argument(
             "-l",
-            '--local',
-            nargs='?',
-            default='True',
-            const='True',
+            "--local",
+            nargs="?",
+            default="True",
+            const="True",
             type=bool,
-            help='view local[default] dataset.',
-            metavar='SET to True to VIEW LOCAL DATASET',
+            help="view local[default] dataset.",
+            metavar="SET to True to VIEW LOCAL DATASET",
         )
         status_parser.add_argument(
             "-r",
-            '--remote',
-            nargs='?',
-            default='False',
-            const='False',
+            "--remote",
+            nargs="?",
+            default="False",
+            const="False",
             type=bool,
-            help='view remote[when explicitly specified to true] dataset.',
-            metavar='SET to True(default false) to VIEW REMOTE DATASET',
+            help="view remote[when explicitly specified to true] dataset.",
+            metavar="SET to True(default false) to VIEW REMOTE DATASET",
         )
         status_parser.add_argument(
             "dataset_name",
@@ -58,8 +67,8 @@ class Studio(CmdBase):
             envvar="DSDL_CLI_DATASET_NAME",
             nargs=1,
             type=str,
-            help='dataset name',
-            metavar='[DATASET NAME]',
+            help="dataset name",
+            metavar="[DATASET NAME]",
         )
         return status_parser
 
@@ -97,9 +106,9 @@ class Studio(CmdBase):
                 use_local = input(
                     f"Dataset {dataset_name} already exists on local.\nDo you want view using local dataset:(y/n)?"
                 )
-                if use_local in ['y', 'Y', 'yes', 'Yes']:
+                if use_local in ["y", "Y", "yes", "Yes"]:
                     view.view_local_dataset()
-                elif use_local in ['n', 'N', 'no', 'No']:
+                elif use_local in ["n", "N", "no", "No"]:
                     view.view_remote_dataset()
             else:
                 view.view_remote_dataset()
