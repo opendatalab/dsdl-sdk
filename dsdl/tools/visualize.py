@@ -30,11 +30,21 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
     with open(dsdl_yaml, "r") as f:
         dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
         sample_type = dsdl_info['sample-type']
-        sample_path = dsdl_info["sample-path"]
-        if sample_path == "$local" or sample_path == "local":
+        global_info_type = dsdl_info.get("global-info-type", None)
+        global_info = None
+        if "sample-path" not in dsdl_info or dsdl_info["sample-path"] in ("local", "$local"):
+            assert "samples" in dsdl_info, f"Key 'samples' is required in {dsdl_yaml}."
             samples = dsdl_info['samples']
         else:
+            sample_path = dsdl_info["sample-path"]
             samples = load_samples(dsdl_yaml, sample_path)
+        if global_info_type is not None:
+            if "global-info-path" not in dsdl_info:
+                assert "global-info" in dsdl_info, f"Key 'global-info' is required in {dsdl_yaml}."
+                global_info = dsdl_info["global_info"]
+            else:
+                global_info_path = dsdl_info["global-info-path"]
+                global_info = load_samples(dsdl_yaml, global_info_path, "global-info")[0]
     if multistage:
         dsdl_py = os.path.splitext(dsdl_yaml)[0] + ".py"
         with open(dsdl_py, encoding='utf-8') as dsdl_file:
@@ -49,7 +59,7 @@ def view(dsdl_yaml, config, location, num, random, visualize, fields, task, posi
     with open(config, encoding='utf-8') as config_file:
         exec(config_file.read(), config_dic)
     location_config = config_dic["local" if location == "local" else "ali_oss"]
-    dataset = Dataset(samples, sample_type, location_config)
+    dataset = Dataset(samples, sample_type, location_config, global_info=global_info, global_info_type=global_info_type)
 
     palette = {}
     if task:
