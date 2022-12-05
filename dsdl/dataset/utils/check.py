@@ -2,11 +2,11 @@ import json
 import os
 import os.path as osp
 
-from ...types import Struct
+from ...types import Struct, StructMetaclass
 from ...objectio import BaseFileReader
 
 
-def check_struct(sample_type: Struct, sample: dict, file_reader: BaseFileReader):
+def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFileReader):
     report = {"error_flag": False, "warning_flag": False, "normal_flag": True}
 
     try:
@@ -19,9 +19,9 @@ def check_struct(sample_type: Struct, sample: dict, file_reader: BaseFileReader)
         return None, report
 
     field_not_matching_msg = []
-    field_mappings = sample_type.__mappings__
-    struct_mappings = sample_type.__struct_mappings__
-    optional_mappings = sample_type.__optional__
+    field_mappings = struct_sample.__mappings__
+    struct_mappings = struct_sample.__struct_mappings__
+    optional_mappings = struct_sample.__optional__
     for k in field_mappings:
         if k not in sample and k not in optional_mappings:
             warn_msg = f"Field not matching warning: required field '{k}' not found in sample."
@@ -73,8 +73,12 @@ class Report:
     def __init__(self, output_path):
         self.parser_info = None
         self.sample_info = []
+        self.global_info = None
         self.image_info = []
         self.output_path = output_path
+
+    def set_global_info(self, item):
+        self.global_info = item
 
     def add_sample_info(self, item):
         self.sample_info.append(item)
@@ -159,6 +163,27 @@ class Report:
         if not self.sample_info:
             return False
         file_handler.write("## 2.样本验证结果" + os.linesep)
+        if self.global_info:
+            # write global_info check info
+            file_handler.write("global-info验证结果如下：\n")
+            if self.global_info["normal_flag"]:
+                file_handler.write("global-info 实例化<font color=green>正常</font>\n")
+            elif self.global_info["error_flag"]:
+                file_handler.write("global-info 实例化<font color=red>失败</font>，报错信息如下：\n")
+                file_handler.write(f"```python\n")
+                file_handler.write(f"{self.global_info['error_msg']}\n")
+                file_handler.write("```\n")
+            elif self.global_info["warning_msg"]:
+                file_handler.write("global-info 实例化<font color=orange>异常</font>，警报信息如下：\n")
+                file_handler.write(f"```python\n")
+                for msg in self.global_info["warning_msgs"]:
+                    file_handler.write(msg + "\n")
+                file_handler.write("```\n")
+            if not self.global_info["normal_flag"]:
+                file_handler.write("global-info content:\n")
+                file_handler.write("```json\n")
+                file_handler.write(str(self.global_info["sample_content"]) + "\n")
+                file_handler.write("```\n")
 
         if len(self.sample_info) == 0:
             file_handler.write("数据集中无样本，请检查`sample-path`字段路径是否有效或`samples`字段是否正确" + os.linesep)

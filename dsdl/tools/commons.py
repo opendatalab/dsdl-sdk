@@ -69,7 +69,7 @@ JSON_VALID_SUFFIX = ('.json', '.JSON')
 VALID_SUFFIX = YAML_VALID_SUFFIX + JSON_VALID_SUFFIX
 
 
-def load_samples(dsdl_path: str, path: Union[str, Sequence[str]]):
+def load_samples(dsdl_path: str, path: Union[str, Sequence[str]], extract_key="samples"):
     samples = []
     paths = []
     dsdl_dir = os.path.split(dsdl_path)[0]
@@ -85,10 +85,16 @@ def load_samples(dsdl_path: str, path: Union[str, Sequence[str]]):
     for p in paths:
         if p.endswith(YAML_VALID_SUFFIX):
             with open(p, "r") as f:
-                data = yaml_load(f, YAMLSafeLoader)['samples']
-            samples.extend(data)
+                data = yaml_load(f, YAMLSafeLoader)[extract_key]
+            if isinstance(data, list):
+                samples.extend(data)
+            else:
+                samples.append(data)
         else:
             with open(p, "r") as f:
-                data = json.load(f)['samples']
-            samples.extend(data)
+                data = json.load(f)[extract_key]
+            if isinstance(data, list):
+                samples.extend(data)
+            else:
+                samples.append(data)
     return samples
