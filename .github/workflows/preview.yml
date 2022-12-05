@@ -50,8 +50,8 @@ jobs:
           # poetry version $(poetry version --short)
           # poetry version --short
           # poetry build
-          git config --global user.name "github-actions"
-          git config --global user.email "action@github.com"
+          # git config --global user.name "github-actions"
+          # git config --global user.email "action@github.com"
           semantic-release publish
 
       - name: publish to PyPI
