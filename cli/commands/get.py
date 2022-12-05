@@ -16,12 +16,13 @@ from commons.argument_parser import EnvDefaultVar
 from utils import admin, query
 from utils.oss_ops import ops
 
-aws_access_key_id = "ailabminio"
-aws_secret_access_key = "123123123"
-endpoint_url = "https://10.140.0.94:9800"
-region_name = "ailab"
 default_path = DEFAULT_LOCAL_STORAGE_PATH
-default_bucket = "dsdldata"
+
+aws_access_key_id = query.aws_access_key_id
+aws_secret_access_key = query.aws_secret_access_key
+endpoint_url = query.endpoint_url
+region_name = query.region_name
+default_bucket = query.default_bucket
 
 
 class Get(CmdBase):
@@ -152,7 +153,7 @@ class Get(CmdBase):
 
                 # get meta info of split to insert into sqlite
                 for split in parquet_list:
-                    _, stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
+                    stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
                     split_media_num = stat['split_stat']['media_num']
                     split_media_size = stat['split_stat']['media_size']
                     db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
@@ -176,7 +177,7 @@ class Get(CmdBase):
 
                         print("register local split...")
                         for split in download_file_list:
-                            _, stat = query.ParquetReader(os.path.join(parquet_dir, split)).get_metadata()
+                            stat = query.ParquetReader(os.path.join(parquet_dir, split)).get_metadata()
                             split_media_num = stat['split_stat']['media_num']
                             split_media_size = stat['split_stat']['media_size']
                             db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
@@ -242,13 +243,13 @@ class Get(CmdBase):
                 db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
                                            dataset_media_size)
 
-                _, stat = query.ParquetReader(parquet_path).get_metadata()
+                stat = query.ParquetReader(parquet_path).get_metadata()
                 split_media_num = stat['split_stat']['media_num']
                 split_media_size = stat['split_stat']['media_size']
                 db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
                                          split_media_size)
             else:
-                _, stat = query.ParquetReader(parquet_path).get_metadata()
+                stat = query.ParquetReader(parquet_path).get_metadata()
                 split_media_num = stat['split_stat']['media_num']
                 split_media_size = stat['split_stat']['media_size']
                 db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,

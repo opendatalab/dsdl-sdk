@@ -18,11 +18,11 @@ from utils import admin, query, plot
 from utils.oss_ops import ops
 import yaml
 
-aws_access_key_id = "ailabminio"
-aws_secret_access_key = "123123123"
-endpoint_url = "https://10.140.0.94:9800"
-region_name = "ailab"
-default_bucket = "dsdldata"
+aws_access_key_id = query.aws_access_key_id
+aws_secret_access_key = query.aws_secret_access_key
+endpoint_url = query.endpoint_url
+region_name = query.region_name
+default_bucket = query.default_bucket
 
 
 class Inspect(CmdBase):

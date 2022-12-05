@@ -13,6 +13,12 @@ from commands.const import DSDL_CLI_DATASET_NAME
 from commons.argument_parser import EnvDefaultVar
 from utils import admin, query
 
+aws_access_key_id = query.aws_access_key_id
+aws_secret_access_key = query.aws_secret_access_key
+endpoint_url = query.endpoint_url
+region_name = query.region_name
+default_bucket = query.default_bucket
+
 
 class Select(CmdBase):
     """
@@ -60,7 +66,7 @@ class Select(CmdBase):
                                    # help='Set the number/percent of random samples from the base select result, such as 100 or 5%',
                                    help='Set the number of random samples from the returned select result',
                                    metavar='')
-        select_parser.add_argument("--export-name", type=str,
+        select_parser.add_argument("--output-name", type=str,
                                    help='Save the select result as a split and use the given name to name it',
                                    metavar='')
         return select_parser
@@ -85,7 +91,7 @@ class Select(CmdBase):
         limit = cmdargs.limit
         offset = cmdargs.offset
         random = cmdargs.random
-        export_name = cmdargs.export_name
+        output_name = cmdargs.output_name
 
         db_client = admin.DBClient()
 
@@ -103,9 +109,9 @@ class Select(CmdBase):
         df = split_reader.select(select_cols=fields, filter_cond=filter, limit=limit, offset=offset, samples=random)
         print(df)
 
-        if export_name is not None:
-            sub_split = query.Split(dataset_name, export_name)
-            question = 'The split "%s" has already existed. Do you want to replace it? (y/n)' % export_name
+        if output_name is not None:
+            sub_split = query.Split(dataset_name, output_name)
+            question = 'The split "%s" has already existed. Do you want to replace it? (y/n)' % output_name
             if sub_split.is_local_exist():
                 if not input(question) in ("y", "Y"):
                     exit()
@@ -117,11 +123,11 @@ class Select(CmdBase):
 
             split_stat = {'media_num': media_num, 'media_size': media_size}
 
-            meta, stat = split_reader.get_metadata()
+            stat = split_reader.get_metadata()
             stat['split_stat'] = split_stat
 
             schema = split_reader.get_schema()
-            sub_split.save(df, schema, 'user-defined', 1, 1, meta, stat)
+            sub_split.save(df, schema, 'user-defined', 1, 1, stat)
             print("The parquet has exported to %s" % sub_split.parquet_path)
 
             # to do operations about fields

@@ -8,6 +8,14 @@ import yaml
 from utils import admin
 import pyarrow.parquet as pq
 import pyarrow as pa
+import s3fs
+from utils.oss_ops import ops
+
+aws_access_key_id = "ailabminio"
+aws_secret_access_key = "123123123"
+endpoint_url = "http://10.140.0.94:9800"
+region_name = "ailab"
+default_bucket = "dsdldata"
 
 
 def get_dataset_info(dataset_name):
@@ -26,12 +34,66 @@ class ParquetReader:
     A Class to read parquet file
     """
 
-    def __init__(self, parquet_path):
+    def __init__(self, parquet_path, endpoint=None, access_key_id=None, secret_access_key=None, url_stype='path',
+                 use_ssl=False):
         """
         Construct the parquet reader based on the parquet file path
         @param parquet_path:
         """
-        self.parquet_path = parquet_path
+        self.cursor = duckdb.connect(database=':memory:')
+        if not parquet_path.lower().startswith("s3"):
+            self.path_flag = "local"
+            self.parquet_path = parquet_path
+        else:
+            if endpoint is None:
+                print("s3 info lacks endpoint")
+                exit()
+            if access_key_id is None:
+                print("s3 info lacks access_key_id")
+                exit()
+            if secret_access_key is None:
+                print("s3 info lacks secret_access_key")
+                exit()
+
+            self.endpoint = endpoint
+            self.access_key_id = access_key_id
+            self.secret_access_key = secret_access_key
+            self.url_stype = url_stype
+            self.use_ssl = "true" if use_ssl else "false"
+            self.path_flag = "s3"
+            self.parquet_path = parquet_path
+
+            self.fs = s3fs.S3FileSystem(
+                anon=False,
+                use_ssl=True,
+                client_kwargs={
+                    "endpoint_url": "http://" + endpoint,
+                    "aws_access_key_id": access_key_id,
+                    "aws_secret_access_key": secret_access_key,
+                    "use_ssl": use_ssl,
+                }
+            )
+
+    def __create_dataset_view(self):
+        if self.path_flag == "local":
+            view_sql = """create or replace view dataset as 
+            select * 
+            from parquet_scan('%s');
+            """ % self.parquet_path
+        elif self.path_flag == "s3":
+            self.cursor.execute("INSTALL httpfs;")
+            self.cursor.execute("LOAD httpfs;")
+            self.cursor.execute("set s3_endpoint='%s'" % self.endpoint)
+            self.cursor.execute("set s3_access_key_id='%s'" % self.access_key_id)
+            self.cursor.execute("set s3_secret_access_key='%s'" % self.secret_access_key)
+            self.cursor.execute("set s3_url_style = '%s'" % self.url_stype)
+            self.cursor.execute("set s3_use_ssl=%s" % self.use_ssl)
+            view_sql = """create or replace view dataset as 
+            select * 
+            from read_parquet('%s');
+            """ % self.parquet_path
+
+        self.cursor.execute(view_sql)
 
     def select(self, select_cols='*', filter_cond='', limit=None, offset=None, samples=None):
         """
@@ -43,12 +105,8 @@ class ParquetReader:
         @param samples: query on a sample from the base table
         @return: a dataframe of data selected from the parquet
         """
-        cursor = duckdb.connect(database=':memory:')
-        view_sql = """create or replace view dataset as 
-        select * 
-        from parquet_scan('%s');
-        """ % self.parquet_path
-        cursor.execute(view_sql)
+        self.__create_dataset_view()
+
         query_sql = "select {cols} from dataset".format(cols=select_cols)
 
         # add where condition
@@ -69,7 +127,7 @@ class ParquetReader:
             query_sql = 'select * from (' + query_sql + ') using sample %d rows' % samples
 
         # print(query_sql)
-        df = cursor.execute(query_sql).fetch_df()
+        df = self.cursor.execute(query_sql).fetch_df()
         return df
 
     def get_metadata(self):
@@ -77,34 +135,36 @@ class ParquetReader:
         Get metadata from parquet schema
         @return: 2 dicts of metadata: dsdl meta and statistics
         """
-        if not os.path.exists(self.parquet_path):
-            raise Exception("parquet file does not exist")
+        if self.path_flag == "local":
+            if not os.path.exists(self.parquet_path):
+                raise Exception("parquet file does not exist")
 
-        meta_dict = pq.read_schema(self.parquet_path)
+            meta_dict = pq.read_schema(self.parquet_path)
 
-        dsdl_meta = eval(meta_dict.metadata[b'dsdl_meta'])
+        elif self.path_flag == "s3":
+            meta_dict = pq.read_schema(self.parquet_path, filesystem=self.fs)
+
         stat_meta = eval(meta_dict.metadata[b'statistics'])
-        return dsdl_meta, stat_meta
+        return stat_meta
 
     def get_schema(self):
         """
         Get the schema of a parquet
         @return: a parquet schema
         """
-        if not os.path.exists(self.parquet_path):
-            raise Exception("parquet file does not exist")
+        if self.path_flag == "local":
+            if not os.path.exists(self.parquet_path):
+                raise Exception("parquet file does not exist")
+            schema = pq.read_schema(self.parquet_path)
 
-        schema = pq.read_schema(self.parquet_path)
+        elif self.path_flag == "s3":
+            schema = pq.read_schema(self.parquet_path, filesystem=self.fs)
+
         return schema
 
     def query(self, sql):
-        cursor = duckdb.connect(database=':memory:')
-        view_sql = """create or replace view dataset as 
-                select * 
-                from parquet_scan('%s');
-                """ % self.parquet_path
-        cursor.execute(view_sql)
-        return cursor.execute(sql).fetch_df()
+        self.__create_dataset_view()
+        return self.cursor.execute(sql).fetch_df()
 
 
 class SplitReader(ParquetReader):
@@ -116,13 +176,37 @@ class SplitReader(ParquetReader):
         self.dataset_name = dataset_name
         self.split_name = split_name
         self.db_client = admin.DBClient()
-        self.parquet_path = self.db_client.get_local_split_path(dataset_name, split_name)
-        super(SplitReader, self).__init__(self.parquet_path)
+        self.parquet_path = ''
+
+        if self.db_client.is_split_local_exist(dataset_name, split_name):
+            self.parquet_path = self.db_client.get_local_split_path(dataset_name, split_name)
+        else:
+            self.s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
+                                           aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+            remote_dataset_list = [x.replace('/', '') for x in self.s3_client.get_dir_list(default_bucket, '')]
+            if dataset_name in remote_dataset_list:
+                parquet_prefix = dataset_name + "/parquet/"
+                parquet_name_list = [x['Key'][len(parquet_prefix):].replace('.parquet', '') for x in
+                                     self.s3_client.list_objects(default_bucket, parquet_prefix)]
+                if split_name in parquet_name_list:
+                    self.parquet_path = "s3://%s/%s/parquet/%s.parquet" % (default_bucket, dataset_name, split_name)
+
+        if not self.parquet_path:
+            print("Can not find the split named %s of dataset %s neither in local nor remote repo" % (
+                split_name, dataset_name))
+            exit()
+
+        super(SplitReader, self).__init__(self.parquet_path, endpoint_url.replace("http://", ""), aws_access_key_id,
+                                          aws_secret_access_key)
 
     def get_image_samples(self, sample_number):
         image_list = self.select('image', samples=sample_number)['image'].tolist()
-        dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
-        image_list = [os.path.join(dataset_path, img) for img in image_list]
+        if self.path_flag == "local":
+            dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
+            image_list = [os.path.join(dataset_path, img) for img in image_list]
+        elif self.path_flag == "s3":
+            dataset_path = "s3://%s/%s/" % (default_bucket, self.dataset_name)
+            image_list = [dataset_path + "/" + img for img in image_list]
         return image_list
 
 
@@ -131,11 +215,9 @@ class DSDLParquet:
     A class to handle operations of dsdl parquet file
     """
 
-    def __init__(self, dataframe, parquet_path, schema, dsdl_meta=None, statistics=None):
+    def __init__(self, dataframe, parquet_path, schema, statistics=None):
         self.parquet_path = parquet_path
         self.meta_dict = schema.metadata
-        if dsdl_meta:
-            self.meta_dict[b'dsdl_meta'] = str(dsdl_meta)
         if statistics:
             self.meta_dict[b'statistics'] = str(statistics)
 
@@ -172,7 +254,7 @@ class Split:
         """
         return self.db_client.is_split_local_exist(self.dataset_name, self.split_name)
 
-    def save(self, dataframe, schema, type, label, media, dsdl_meta, statistics):
+    def save(self, dataframe, schema, type, label, media, statistics):
         """
         Save the split
         @param dataframe: data in dataframe format
@@ -183,7 +265,7 @@ class Split:
         """
         media_num = statistics['split_stat']['media_num']
         media_size = statistics['split_stat']['media_size']
-        dsdl_parquet = DSDLParquet(dataframe, self.parquet_path, schema, dsdl_meta, statistics)
+        dsdl_parquet = DSDLParquet(dataframe, self.parquet_path, schema, statistics)
         dsdl_parquet.save()
         self.db_client.register_split(self.dataset_name, self.split_name, type, label, media, media_num, media_size)
 
@@ -212,3 +294,13 @@ if __name__ == '__main__':
     # print(stat_meta)
     # meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
     print(split_reader.get_image_samples(10))
+    # s3_path = "s3://dsdldata/CIFAR-10/parquet/test.parquet"
+    # parquet_reader = ParquetReader(s3_path, '10.140.0.94:9800', 'ailabminio', '123123123')
+    # df = parquet_reader.select(limit=20)
+    # print(df)
+    # stat = parquet_reader.get_metadata()
+    # print(stat)
+    # schema = parquet_reader.get_schema()
+    # print(schema)
+    # test_df = parquet_reader.query("select * from dataset limit 10")
+    # print(test_df)
