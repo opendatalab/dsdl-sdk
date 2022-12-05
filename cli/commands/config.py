@@ -52,7 +52,7 @@ class Config(CmdBase):
                                  help = 'set repo user password')
         repo_parser.add_argument('--repo-service', 
                                  help = 'set repo service url')
-        repo_parser.add_augument('--repo-remove',
+        repo_parser.add_argument('--repo-remove',
                                  help = 'remove specific configuration')
         
         storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
@@ -106,12 +106,6 @@ class Config(CmdBase):
                     else:
                         # update repo
                         self.__repo_update(config, args)
-                        if args.repo_username:
-                            config['repo'][args.repo_name]['user'] = args.repo_username
-                        if args.repo_userpswd:
-                            config['repo'][args.repo_name]['passwd'] = args.repo_userpswd
-                        if args.repo_service:
-                            config['repo'][args.repo_name]['service'] = args.repo_service
 
             elif args.command == 'storage':
                 # new storage entry
