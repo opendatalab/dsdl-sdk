@@ -16,6 +16,7 @@ class ParserField:
         self.TYPES_TIME = TYPES_TIME
         self.TYPES_LABEL = TYPES_LABEL
         self.TYPES_LIST = TYPES_LIST
+        self.TYPES_IMAGE_SHAPE = TYPES_IMAGE_SHAPE
         self.TYPES_ALL = TYPES_ALL
         self.is_attr = set()
         self.optional = set()
@@ -133,6 +134,58 @@ class ParserField:
         )
 
     @staticmethod
+    def parse_image_shape_field(field_type: str, param_list: List[str]) -> str:
+        """
+        解析处理ImageShape类型的field
+        """
+
+        def sanitize_fmt(val: str) -> str:
+            """
+            Date, Time中对ftm部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            val = val.strip("\"'")
+            return f'"{val}"'
+
+        param_dict = dict()
+        if not param_list:
+            param_dict["mode"] = sanitize_fmt("hw")
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为dom经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "mode"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(f"invalid parameters {param} in {field_type}.")
+
+                if field_para != "mode":
+                    raise DefineSyntaxError(
+                        f"invalid parameters '{field_para}' in {field_type}."
+                    )
+                if field_var not in ["hw", "wh"]:
+                    raise DefineSyntaxError(
+                        f"invalid parameters value '{field_var}' in {field_type}."
+                    )
+
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type}.")
+                else:
+                    param_dict[field_para] = sanitize_fmt(field_var)
+
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
+
+    @staticmethod
     def parse_label_field(field_type: str, param_list: List[str]) -> str:
         """
         解析处理Label类型的field
@@ -210,6 +263,9 @@ class ParserField:
         elif field_type in self.TYPES_LABEL:
             # 带参数的Label,SegMap类型的字段的校验
             field_type = self.parse_label_field(field_type, params_list)
+        elif field_type in self.TYPES_IMAGE_SHAPE:
+            # 带参数的ImageShape类型的字段的校验
+            field_type = self.parse_image_shape_field(field_type, params_list)
         else:
             # Struct类型的字段的校验
             if field_type not in self.struct:
