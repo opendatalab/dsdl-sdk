@@ -1,4 +1,4 @@
-from .struct import Struct
+from .struct import Struct, StructMetaclass
 from .generic import StrField, IntField, BoolField, NumField, ListField, DictField
 from .special import (
     LabelField,
@@ -41,4 +41,5 @@ __all__ = [
     "TextField",
     "ImageShapeField",
     "InstanceIDField",
+    "StructMetaclass",
 ]
