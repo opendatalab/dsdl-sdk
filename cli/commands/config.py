@@ -52,7 +52,7 @@ class Config(CmdBase):
                                  help = 'set repo user password')
         repo_parser.add_argument('--repo-service', 
                                  help = 'set repo service url')
-        repo_parser.add_augument('--repo-remove',
+        repo_parser.add_argument('--repo-remove',
                                  help = 'remove specific configuration')
         
         storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
