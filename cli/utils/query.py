@@ -113,9 +113,17 @@ class SplitReader(ParquetReader):
     """
 
     def __init__(self, dataset_name, split_name):
+        self.dataset_name = dataset_name
+        self.split_name = split_name
         self.db_client = admin.DBClient()
         self.parquet_path = self.db_client.get_local_split_path(dataset_name, split_name)
         super(SplitReader, self).__init__(self.parquet_path)
+
+    def get_image_samples(self, sample_number):
+        image_list = self.select('image', samples=sample_number)['image'].tolist()
+        dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
+        image_list = [os.path.join(dataset_path, img) for img in image_list]
+        return image_list
 
 
 class DSDLParquet:
@@ -185,23 +193,22 @@ if __name__ == '__main__':
     path = db_client.get_local_split_path('CIFAR-10', 'train')
     split_reader = SplitReader('CIFAR-10', 'train')
 
-    print(split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
-                              limit=800, offset=100))
-    dsdl_meta, stat_meta = split_reader.get_metadata()
-    print(dsdl_meta)
-    print(stat_meta)
+    # print(split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
+    #                           limit=800, offset=100))
+    # dsdl_meta, stat_meta = split_reader.get_metadata()
+    # print(dsdl_meta)
+    # print(stat_meta)
+    # #
+    # df = split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
+    #                          limit=800, offset=100)
+    # schema = split_reader.get_schema()
+    # meta = split_reader.get_metadata()
+    # split = DSDLParquet(df, 'D:\\DSDL_STORE\\test2.parquet', schema, statistics={'test': 'test'})
+    # split.save()
     #
-    df = split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
-                             limit=800, offset=100)
-    schema = split_reader.get_schema()
-    meta = split_reader.get_metadata()
-    split = DSDLParquet(df, 'D:\\DSDL_STORE\\test2.parquet', schema, statistics={'test': 'test'})
-    split.save()
-
-    parquet_reader = ParquetReader('D:\\DSDL_STORE\\STL-10\\STL-10\\parquet\\train.parquet')
-    dsdl_meta, stat_meta = parquet_reader.get_metadata()
-    print(dsdl_meta)
-    print(stat_meta)
-    meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
-    print(parquet_reader.query("select label,count(1) from dataset group by label"))
-
+    # parquet_reader = ParquetReader('D:\\DSDL_STORE\\STL-10\\STL-10\\parquet\\train.parquet')
+    # dsdl_meta, stat_meta = parquet_reader.get_metadata()
+    # print(dsdl_meta)
+    # print(stat_meta)
+    # meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
+    print(split_reader.get_image_samples(10))
