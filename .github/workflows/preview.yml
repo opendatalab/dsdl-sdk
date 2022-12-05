@@ -48,6 +48,8 @@ jobs:
       - name: Build wheels and source tarball
         run: |
           semantic-release publish
+          poetry build
+
 
       - name: publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
