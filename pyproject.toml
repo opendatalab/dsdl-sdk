@@ -57,7 +57,7 @@ streamlit = "^1.15.1"
 termgraph = "^0.5.3"
 stqdm = "^0.0.4"
 # poetry-dynamic-versioning = "^0.21.1"
-python-semantic-release = "^7.32.2"
+# python-semantic-release = "^7.32.2"
 
 [tool.poetry.group.test]
 optional = true
@@ -79,6 +79,10 @@ mkdocs-autorefs = { version = "^0.2.1" }
 twine = { version = "^3.3.0" }
 bump2version = { version = "^1.0.1" }
 
+
+
+[tool.poetry.group.dev.dependencies]
+python-semantic-release = "^7.32.2"
 
 [tool.semantic_release]
 version_variable = [
