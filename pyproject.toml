@@ -1,8 +1,8 @@
 [tool]
 [tool.poetry]
 name = "odl-cli"
-version = "0.1.0"
 # version = "0.1.0"
+version = "0.0.0"
 homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev-cli"
 description = "made for opendatalab dsdl-sdk dev-cli branch(ignore other branches)."
 authors = [
@@ -56,6 +56,7 @@ psutil = "^5.9.4"
 streamlit = "^1.15.1"
 termgraph = "^0.5.3"
 stqdm = "^0.0.4"
+poetry-dynamic-versioning = "^0.21.1"
 
 [tool.poetry.group.test]
 optional = true
@@ -79,44 +80,41 @@ bump2version = { version = "^1.0.1" }
 
 
 
-[tool.poetry.group.dev.dependencies]
-python-semantic-release = "^7.32.2"
+# [tool.semantic_release]
+# version_variable = [
+#     "cli/commands/__version__.py:__version__",
+#     "cli/commands/__init__.py:__version__"
+# ]
+# version_toml = [
+#     "pyproject.toml:tool.poetry.version"
+# ]
+# version_pattern = [
+#     "README.md:rev: v{version}",
+#     "docs/CONTRIBUTING.md:tryceratops, version {version}"
+# ]
+# major_on_zero = false
+# branch = "dev-cli"
+# upload_to_PyPI = true
+# upload_to_release = true
+# build_command = "pip install poetry && poetry build"
 
-[tool.semantic_release]
-version_variable = [
-    "cli/commands/__version__.py:__version__",
-    "cli/commands/__init__.py:__version__"
-]
-version_toml = [
-    "pyproject.toml:tool.poetry.version"
-]
-version_pattern = [
-    "README.md:rev: v{version}",
-    "docs/CONTRIBUTING.md:tryceratops, version {version}"
-]
-major_on_zero = false
-branch = "dev-cli"
-upload_to_PyPI = true
-upload_to_release = true
-build_command = "pip install poetry && poetry build"
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+format-jinja =  """
+{%- if distance == 0 -%}
+{{ serialize_pep440(base, stage, revision) }}
+{%- elif revision is not none -%}
+{{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
+{%- else -%}
+{{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
+{%- endif -%}
+"""
 
-# [tool.poetry-dynamic-versioning]
-# enable = true
-# vcs = "git"
-# format-jinja =  """
-# {%- if distance == 0 -%}
-# {{ serialize_pep440(base, stage, revision) }}
-# {%- elif revision is not none -%}
-# {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
-# {%- else -%}
-# {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
-# {%- endif -%}
-# """
+[tool.poetry-dynamic-versioning.substitution]
+files = ["cli/commands/__init__.py", "cli/commands/__version__.py", "cli/commands/_version.py"]
+# pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
 
-# [tool.poetry-dynamic-versioning.substitution]
-# files = ["cli/commands/__init__.py", "cli/commands/__version__.py", "cli/commands/_version.py"]
-# # pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
-
-# [build-system]
-# requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
-# build-backend = "poetry.masonry.api"
+[build-system]
+requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.masonry.api"
