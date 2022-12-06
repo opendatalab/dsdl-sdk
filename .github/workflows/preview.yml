@@ -42,7 +42,7 @@ jobs:
       
       - name: Create project version
         run: |
-          POETRY_VERSION=$(poetry version --short)
+          POETRY_VERSION=$(poetry version --short).dev.$GITHUB_RUN_NUMBER
           echo $POETRY_VERSION
 
           TAG=$(git rev-parse --short=4 HEAD)
