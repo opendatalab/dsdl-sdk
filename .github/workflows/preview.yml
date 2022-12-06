@@ -43,11 +43,11 @@ jobs:
       #     run: |
       #       echo "flake8 fails"
       #       exit 
-      - name: Get Asset name
-        run: |
-          export PKG=$(ls dist/ | grep tar)
-          set -- $PKG
-          echo "name=$1" >> $GITHUB_ENV
+      # - name: Get Asset name
+      #   run: |
+      #     export PKG=$(ls dist/ | grep tar)
+      #     set -- $PKG
+      #     echo "name=$1" >> $GITHUB_ENV
 
       - name: Build wheels and source tarball
         run: |
