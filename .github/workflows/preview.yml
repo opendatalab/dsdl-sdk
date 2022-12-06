@@ -48,7 +48,7 @@ jobs:
           TAG=$(git rev-parse --short=4 HEAD)
           echo $TAG
 
-          PROJECT_VERSION=$POETRY_VERSION'-'$TAG
+          PROJECT_VERSION=$POETRY_VERSION'+'$TAG
           echo $PROJECT_VERSION
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
       
