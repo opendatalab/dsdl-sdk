@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "odl-cli"
-version = "v0.0.1"
+version = "v0.1.1"
 homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev-cli"
 description = "made for opendatalab dsdl-sdk dev-cli branch(ignore other branches)."
 authors = [
