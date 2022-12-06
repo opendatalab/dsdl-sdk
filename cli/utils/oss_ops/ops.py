@@ -218,6 +218,14 @@ class OssClient:
 
         print('Download Complete')
 
+    def get_sum_size(self, bucket, file_key_list):
+        sum = 0
+        for key in file_key_list:
+            data = self.s3_client.head_object(Bucket=bucket, Key=key)
+            size = int(data['ResponseMetadata']['HTTPHeaders']['content-length'])
+            sum += size
+        return sum
+
     def read_file(self, bucket, remote_file):
         """
 
@@ -228,6 +236,57 @@ class OssClient:
         data = self.s3_client.get_object(Bucket=bucket, Key=remote_file)
         contents = data['Body'].read()
         return contents.decode("utf-8")
+
+    def list_datasets(self, bucket):
+        """
+        Return a list of dataset names
+        @return:
+        """
+        dataset_list = [x.replace('/', '') for x in self.get_dir_list(bucket, '')]
+        return dataset_list
+
+    def is_dataset_remote_exist(self, bucket, dataset_name):
+        """
+
+        @param bucket:
+        @param dataset_name:
+        @return:
+        """
+        dataset_list = self.list_datasets(bucket)
+        if dataset_name in dataset_list:
+            return True
+        else:
+            return False
+
+    def list_splits(self, bucket, dataset_name):
+        """
+
+        @param bucket:
+        @param dataset_name:
+        @return:
+        """
+        if not self.is_dataset_remote_exist(bucket, dataset_name):
+            print("The dataset %s does not exist in remote repo" % dataset_name)
+            exit()
+        else:
+            parquet_prefix = dataset_name + "/parquet/"
+            parquet_name_list = [x['Key'][len(parquet_prefix):].replace('.parquet', '') for x in
+                                 self.list_objects(bucket, parquet_prefix) if str(x['Key']).endswith(".parquet")]
+            return parquet_name_list
+
+    def is_split_remote_exist(self, bucket, dataset_name, split_name):
+        """
+
+        @param bucket:
+        @param dataset_name:
+        @param split_name:
+        @return:
+        """
+        split_list = self.list_splits(bucket, dataset_name)
+        if split_name in split_list:
+            return True
+        else:
+            return False
 
     def upload_file(self, local_file, bucket, remote_file=None):
         """
@@ -333,7 +392,7 @@ class OssClient:
 if __name__ == '__main__':
     aws_access_key_id = "ailabminio"
     aws_secret_access_key = "123123123"
-    endpoint_url = "https://10.140.0.94:9800"
+    endpoint_url = "http://10.140.0.94:9800"
     region_name = "ailab"
 
     s3_client = OssClient(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
@@ -357,6 +416,11 @@ if __name__ == '__main__':
 
     # print(s3_client.get_recursive_dir_list('testdata', 'test_data/'))
     # print(len(s3_client.list_objects('dsdldata', 'CIFAR-10/media/')))
-    obj_list = s3_client.read_file('dsdldata', 'CIFAR-10/parquet/dataset.yaml')
-    print(obj_list)
+    # obj_list = s3_client.read_file('dsdldata', 'CIFAR-10/parquet/dataset.yaml')
+    # print(obj_list)
+    # print(s3_client.list_datasets("dsdldata"))
+    # print(s3_client.list_splits("dsdldata", "STL-10"))
+    # print(s3_client.is_split_remote_exist("dsdldata", "STL-101", "unlabeled1"))
+    print(s3_client.get_sum_size("dsdldata", ['CIFAR-10-Auto/media/000000007605.png',
+                                        'CIFAR-10-Auto/media/000000009822.png']))
     # print(s3_client.get_dir_list('dsdldata', ''))

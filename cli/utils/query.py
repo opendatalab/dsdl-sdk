@@ -62,6 +62,7 @@ class ParquetReader:
             self.use_ssl = "true" if use_ssl else "false"
             self.path_flag = "s3"
             self.parquet_path = parquet_path
+            self.parquet_key = parquet_path[5:]
 
             self.fs = fs.S3FileSystem(
                 access_key=aws_access_key_id,
@@ -137,7 +138,7 @@ class ParquetReader:
             meta_dict = pq.read_schema(self.parquet_path)
 
         elif self.path_flag == "s3":
-            meta_dict = pq.read_schema(self.parquet_path, filesystem=self.fs)
+            meta_dict = pq.read_schema(self.parquet_key, filesystem=self.fs)
 
         stat_meta = eval(meta_dict.metadata[b'statistics'])
         return stat_meta
@@ -153,7 +154,7 @@ class ParquetReader:
             schema = pq.read_schema(self.parquet_path)
 
         elif self.path_flag == "s3":
-            schema = pq.read_schema(self.parquet_path, filesystem=self.fs)
+            schema = pq.read_schema(self.parquet_key, filesystem=self.fs)
 
         return schema
 
@@ -178,13 +179,8 @@ class SplitReader(ParquetReader):
         else:
             self.s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
                                            aws_secret_access_key=aws_secret_access_key, region_name=region_name)
-            remote_dataset_list = [x.replace('/', '') for x in self.s3_client.get_dir_list(default_bucket, '')]
-            if dataset_name in remote_dataset_list:
-                parquet_prefix = dataset_name + "/parquet/"
-                parquet_name_list = [x['Key'][len(parquet_prefix):].replace('.parquet', '') for x in
-                                     self.s3_client.list_objects(default_bucket, parquet_prefix)]
-                if split_name in parquet_name_list:
-                    self.parquet_path = "s3://%s/%s/parquet/%s.parquet" % (default_bucket, dataset_name, split_name)
+            if self.s3_client.is_split_remote_exist(default_bucket, dataset_name, split_name):
+                self.parquet_path = "s3://%s/%s/parquet/%s.parquet" % (default_bucket, dataset_name, split_name)
 
         if not self.parquet_path:
             print("Can not find the split named %s of dataset %s neither in local nor remote repo" % (
@@ -201,7 +197,7 @@ class SplitReader(ParquetReader):
             image_list = [os.path.join(dataset_path, img) for img in image_list]
         elif self.path_flag == "s3":
             dataset_path = "s3://%s/%s/" % (default_bucket, self.dataset_name)
-            image_list = [dataset_path + "/" + img for img in image_list]
+            image_list = [dataset_path + img for img in image_list]
         return image_list
 
 
@@ -233,14 +229,29 @@ class Split:
     A class to handle a split
     """
 
-    def __init__(self, dataset_name, split_name):
+    def __init__(self, dataset_name, split_name, storage_path=''):
         self.db_client = admin.DBClient()
-        if not self.db_client.is_dataset_local_exist(dataset_name):
-            raise Exception('There is no local dataset named %s' % dataset_name)
         self.dataset_name = dataset_name
-        self.dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
         self.split_name = split_name
-        self.parquet_path = os.path.join(self.dataset_path, 'parquet', self.split_name + '.parquet')
+
+        if not self.db_client.is_dataset_local_exist(dataset_name):
+            print('There is no local dataset named %s, create local path...' % dataset_name)
+            if not storage_path:
+                print("no storage path given...")
+                exit()
+            else:
+                self.dataset_path = os.path.join(storage_path, dataset_name)
+                self.parquet_folder_path = os.path.join(self.dataset_path, 'parquet')
+                self.media_folder_path = os.path.join(self.dataset_path, 'media')
+                for p in [self.dataset_path, self.parquet_folder_path, self.media_folder_path]:
+                    if not os.path.exists(p):
+                        os.mkdir(p)
+        else:
+            self.dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
+            self.parquet_folder_path = os.path.join(self.dataset_path, 'parquet')
+            self.media_folder_path = os.path.join(self.dataset_path, 'media')
+
+        self.parquet_path = os.path.join(self.parquet_folder_path, self.split_name + '.parquet')
 
     def is_local_exist(self):
         """
@@ -293,9 +304,9 @@ if __name__ == '__main__':
     parquet_reader = ParquetReader(s3_path, '10.140.0.94:9800', 'ailabminio', '123123123')
     df = parquet_reader.select(limit=20)
     print(df)
-    # stat = parquet_reader.get_metadata()
-    # print(stat)
-    # schema = parquet_reader.get_schema()
-    # print(schema)
+    stat = parquet_reader.get_metadata()
+    print(stat)
+    schema = parquet_reader.get_schema()
+    print(schema)
     # test_df = parquet_reader.query("select * from dataset limit 10")
     # print(test_df)
