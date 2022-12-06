@@ -12,13 +12,14 @@ __full_version__ = get_version() # return '0.1.dev519+g37fcc3b.d20221206'
 
 __version_tuple__ = tuple(__full_version__.split("."))
 
+
 __version_dev_part__ = ''
 for ele in __version_tuple__:    
     if ele.startswith('dev'):
         _tmp_tuple = tuple(ele.split("+"))
         for ele2 in _tmp_tuple:
             if ele2.startswith('dev'):
-                __version_dev_part__ = ele2
+                __version_dev_part__ = ele2 # return 'devxxx'
                 break
     
 repo = git.Repo(search_parent_directories=True)
@@ -27,5 +28,5 @@ sha = repo.head.object.hexsha
 __version_commitID_part__ = sha.split()[0][:4]
 
 # __version__ = 'v' + __short_version__  + '.' + __version_dev_part__ + __version_commitID_part__
-__version_dev_part__.replace('dev', 'post')
-__version__ = 'v' + __short_version__  + '.' + __version_dev_part__
+# __version__ = 'v' + __short_version__  + '.' + __version_dev_part__
+__version__ = 'v' + __short_version__
