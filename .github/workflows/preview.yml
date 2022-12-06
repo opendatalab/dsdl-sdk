@@ -40,9 +40,9 @@ jobs:
           ls
           
       
-      - name: Create project version
+      - name: Create project version and build wheels and source tarball
         run: |
-          POETRY_VERSION=$(poetry version --short).dev.$GITHUB_RUN_NUMBER
+          POETRY_VERSION=$(poetry version --short).dev$GITHUB_RUN_NUMBER
           echo $POETRY_VERSION
 
           TAG=$(git rev-parse --short=4 HEAD)
@@ -52,8 +52,6 @@ jobs:
           echo $PROJECT_VERSION
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
       
-      - name: Build wheels and source tarball
-        run: |
           # poetry version $PROJECT_VERSION
           poetry version $POETRY_VERSION
           poetry build
