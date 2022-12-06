@@ -27,4 +27,5 @@ sha = repo.head.object.hexsha
 __version_commitID_part__ = sha.split()[0][:4]
 
 # __version__ = 'v' + __short_version__  + '.' + __version_dev_part__ + __version_commitID_part__
+__version_dev_part__.replace('dev', 'post')
 __version__ = 'v' + __short_version__  + '.' + __version_dev_part__

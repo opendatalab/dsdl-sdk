@@ -42,7 +42,7 @@ jobs:
       
       - name: Create project version and build wheels and source tarball
         run: |
-          POETRY_VERSION=$(poetry version --short).dev$GITHUB_RUN_NUMBER
+          POETRY_VERSION=$(poetry version --short).post$GITHUB_RUN_NUMBER
           echo $POETRY_VERSION
 
           TAG=$(git rev-parse --short=4 HEAD)
