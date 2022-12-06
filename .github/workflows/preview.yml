@@ -54,7 +54,8 @@ jobs:
       
       - name: Build wheels and source tarball
         run: |
-          poetry version $PROJECT_VERSION
+          # poetry version $PROJECT_VERSION
+          poetry version $POETRY_VERSION
           poetry build
 
       - name: publish to PyPI
