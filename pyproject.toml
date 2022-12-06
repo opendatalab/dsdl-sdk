@@ -1,11 +1,12 @@
 [tool]
 [tool.poetry]
 name = "odl-cli"
-version = "v0.1.1"
+version = "0.1.0"
+# version = "0.1.0"
 homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev-cli"
 description = "made for opendatalab dsdl-sdk dev-cli branch(ignore other branches)."
 authors = [
-    "odl-cli <odl-cli@pjlab.org.cn>", 
+    "odl-cli <odl-cli@pjlab.org.cn>",
     "xuchao <xuchao@pjlab.org.cn>",
     "suizhihao <suizhihao@pjlab.org.cn>",
     "chenhaojiong <chenhaojiong@pjlab.org.cn>",
@@ -42,6 +43,7 @@ prettytable = { version = "^3.3.0" }
 opencv-python = { version = "^4.6.0.66" }
 loguru = "^0.6.0"
 tabulate = "^0.9.0"
+
 jsonmodels = "^2.6.0"
 rich = "^12.6.0"
 jinja2 = "^3.0.0"
@@ -79,10 +81,6 @@ twine = { version = "^3.3.0" }
 bump2version = { version = "^1.0.1" }
 
 
-[build-system]
-# requires = ["poetry-core>=1.0.0"]
-requires = ["poetry-core>=1.0.0","setuptools>=45", "setuptools_scm[toml]>=6.2"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.setuptools_scm]
 write_to = "cli/commands/__version__.py"
@@ -130,4 +128,6 @@ write_to = "cli/commands/__version__.py"
 # requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
 # build-backend = "poetry.masonry.api"
 
-## poetry-dynamic-versioning [end]
+[[tool.mypy.overrides]]
+module = "yaml"
+ignore_missing_imports = true
