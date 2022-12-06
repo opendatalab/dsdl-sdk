@@ -19,6 +19,7 @@ jobs:
     strategy:
       matrix:
         python-versions: [ '3.8','3.9','3.10' ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
 
     steps:
       - uses: actions/checkout@v2
@@ -27,6 +28,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-versions }}
+          os: ${{ matrix.os }}
 
       - name: Install dependencies
         run: |
@@ -36,8 +38,8 @@ jobs:
       - name: test with tox
         continue-on-error: true
         run:
-          # tox
-          ls
+          tox
+          # ls
           
       
       - name: Create project version and build wheels and source tarball
