@@ -246,6 +246,12 @@ class Split:
                 for p in [self.dataset_path, self.parquet_folder_path, self.media_folder_path]:
                     if not os.path.exists(p):
                         os.mkdir(p)
+                self.dataset_info_path = os.path.join(self.parquet_folder_path, 'dataset.yaml')
+                self.s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
+                                               aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+                self.s3_client.download_file(default_bucket, dataset_name + '/parquet/dataset.yaml',
+                                             self.dataset_info_path)
+
         else:
             self.dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
             self.parquet_folder_path = os.path.join(self.dataset_path, 'parquet')

@@ -57,6 +57,13 @@ class Inspect(CmdBase):
             metavar="",
         )
 
+        inspect_parser.add_argument(
+            "--split-name",
+            type=str,
+            help='The split name of the dataset, such as train/test/validation split.',
+            metavar=''
+        )
+
         group = inspect_parser.add_mutually_exclusive_group()
 
         group.add_argument(
@@ -109,6 +116,7 @@ class Inspect(CmdBase):
         schema = cmdargs.schema
         metadata = cmdargs.metadata
         preview = cmdargs.preview
+        split_name = cmdargs.split_name
 
         s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
                                   aws_secret_access_key=aws_secret_access_key, region_name=region_name)
@@ -183,18 +191,18 @@ class Inspect(CmdBase):
                     print(k + ":")
                     print(v["classes"])
 
-        if preview:
-            print("Previewing the dataset...")
-            from utils.views.view import View
-
-            view = View(dataset_name, inspect=True)
-
-            from utils.admin import DBClient
-
-            dbcli = DBClient()
-            local_exists = dbcli.is_dataset_local_exist(dataset_name)
-
-            if local_exists is True:
-                view.view_from_inspect()
-            else:
-                print(f"Dataset {dataset_name} is not exists on local.")
+        # if preview:
+        #     print("Previewing the dataset...")
+        #     from utils.views.view import View
+        #
+        #     view = View(dataset_name, inspect=True)
+        #
+        #     from utils.admin import DBClient
+        #
+        #     dbcli = DBClient()
+        #     local_exists = dbcli.is_dataset_local_exist(dataset_name)
+        #
+        #     if local_exists is True:
+        #         view.view_from_inspect(split_name)
+        #     else:
+        #         print(f"Dataset {dataset_name} is not exists on local.")

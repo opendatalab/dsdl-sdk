@@ -63,6 +63,9 @@ class Get(CmdBase):
         select_parser.add_argument("-o", "--output", type=str,
                                    help='Target saving path.',
                                    metavar='')
+        select_parser.add_argument("--label", action="store_true",
+                                   help='Target saving path.',
+                                   )
 
         return select_parser
 
@@ -85,6 +88,7 @@ class Get(CmdBase):
         split_name = cmdargs.split_name
         output = cmdargs.output if cmdargs.output else 'default'
         output_path = conf_dict['storage'][cmdargs.output]['path'] if cmdargs.output else default_path
+        label_flag = cmdargs.label
 
         # construct class of s3 client
         s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
@@ -94,8 +98,7 @@ class Get(CmdBase):
         db_client = admin.DBClient()
 
         # get dataset list in remote repo
-        remote_dataset_list = [x.replace('/', '') for x in s3_client.get_dir_list(default_bucket, '')]
-        if dataset_name not in remote_dataset_list:
+        if not s3_client.is_dataset_remote_exist(default_bucket, dataset_name):
             print("there is no dataset named %s in remote repo" % dataset_name)
             exit()
 
@@ -110,9 +113,9 @@ class Get(CmdBase):
         parquet_dir = os.path.join(dataset_dir, 'parquet')
         s3_media_prefix = dataset_name + "/media/"
         media_dir = os.path.join(dataset_dir, 'media')
-        remote_split_list = [obj['Key'].split("/")[-1].replace(".parquet", "") for obj in
-                             s3_client.list_objects(default_bucket, s3_parquet_prefix) if
-                             str(obj['Key']).endswith(".parquet")]
+        s3_yml_prefix = dataset_name + "/yml/"
+        yml_dir = os.path.join(dataset_dir, 'yml')
+        remote_split_list = s3_client.list_splits(default_bucket, dataset_name)
         dataset_info_path = os.path.join(parquet_dir, 'dataset.yaml')
 
         # get the whole dataset
@@ -134,7 +137,13 @@ class Get(CmdBase):
                 print("saving to %s" % dataset_dir)
 
                 # download dataset
-                s3_client.download_directory(default_bucket, dataset_name + '/', dataset_dir)
+                if not label_flag:
+                    s3_client.download_directory(default_bucket, dataset_name + '/', dataset_dir)
+                else:
+                    print("parquet folder: ")
+                    s3_client.download_directory(default_bucket, s3_parquet_prefix, parquet_dir)
+                    print("yml folder: ")
+                    s3_client.download_directory(default_bucket, s3_yml_prefix, yml_dir)
                 print("register local dataset...")
 
                 # get meta info of dataset to insert into sqlite
@@ -148,17 +157,30 @@ class Get(CmdBase):
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
 
-                db_client.register_dataset(dataset_name, output, dataset_dir, 1, 1, dataset_media_num,
-                                           dataset_media_size)
+                if not label_flag:
+                    db_client.register_dataset(dataset_name, output, dataset_dir, 1, 1, dataset_media_num,
+                                               dataset_media_size)
 
-                # get meta info of split to insert into sqlite
-                for split in parquet_list:
-                    stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
-                    split_media_num = stat['split_stat']['media_num']
-                    split_media_size = stat['split_stat']['media_size']
-                    db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
-                                             split_media_num,
-                                             split_media_size)
+                    # get meta info of split to insert into sqlite
+                    for split in parquet_list:
+                        stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
+                        split_media_num = stat['split_stat']['media_num']
+                        split_media_size = stat['split_stat']['media_size']
+                        db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
+                                                 split_media_num,
+                                                 split_media_size)
+                else:
+                    db_client.register_dataset(dataset_name, output, dataset_dir, 1, 0, dataset_media_num,
+                                               dataset_media_size)
+
+                    # get meta info of split to insert into sqlite
+                    for split in parquet_list:
+                        stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
+                        split_media_num = stat['split_stat']['media_num']
+                        split_media_size = stat['split_stat']['media_size']
+                        db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 0,
+                                                 split_media_num,
+                                                 split_media_size)
 
             # dataset has already been partly downloaded
             else:
@@ -193,64 +215,124 @@ class Get(CmdBase):
                     print("download missing media files")
                     s3_client.download_directory(default_bucket, s3_media_prefix, media_dir)
 
+                s3_client.download_directory(default_bucket, s3_yml_prefix, yml_dir)
+
                 print("update dataset info...")
                 db_client.cursor.execute(
                     "update dataset set label_data=?, media_data=?, updated_time=datetime('now','localtime') where dataset_name=?",
+                    [1, 1, dataset_name])
+                db_client.cursor.execute(
+                    "update split set label_data=?, media_data=?, updated_time=datetime('now','localtime') where dataset_name=?",
                     [1, 1, dataset_name])
                 db_client.conn.commit()
 
         # download a split of dataset
         else:
-            if split_name not in remote_split_list:
-                reminder = "there is no split named {split} of dataset {dataset} in remote repo".format(
-                    split=split_name,
-                    dataset=dataset_name)
-                print(reminder)
-                exit()
+            if split_name in remote_split_list:
 
-            s3_parquet_key = s3_parquet_prefix + split_name + '.parquet'
-            s3_datainfo_key = s3_parquet_prefix + 'dataset.yaml'
-            parquet_path = db_client.get_local_split_path(dataset_name, split_name) \
-                if split_exist_flag else os.path.join(parquet_dir, split_name + '.parquet')
+                s3_parquet_key = s3_parquet_prefix + split_name + '.parquet'
+                s3_datainfo_key = s3_parquet_prefix + 'dataset.yaml'
+                parquet_path = db_client.get_local_split_path(dataset_name, split_name) \
+                    if split_exist_flag else os.path.join(parquet_dir, split_name + '.parquet')
 
-            if split_exist_flag:
-                reminder = "The split named {split} of dataset {dataset} has already existed in {path}.".format(
-                    dataset=dataset_name, path=parquet_path, split=split_name)
-                print(reminder)
-                exit()
+                if not split_exist_flag:
+                    if not os.path.exists(dataset_dir):
+                        os.mkdir(dataset_dir)
+                    if not os.path.exists(parquet_dir):
+                        os.mkdir(parquet_dir)
 
-            if not os.path.exists(dataset_dir):
-                os.mkdir(dataset_dir)
-            if not os.path.exists(parquet_dir):
-                os.mkdir(parquet_dir)
+                    s3_client.download_file(default_bucket, s3_parquet_key, parquet_path)
+                    s3_client.download_file(default_bucket, s3_datainfo_key, dataset_info_path)
+                    parquet_reader = query.ParquetReader(parquet_path)
+                    s3_media_keys = parquet_reader.select('image')['image'].tolist()
 
-            s3_client.download_file(default_bucket, s3_parquet_key, parquet_path)
-            s3_client.download_file(default_bucket, s3_datainfo_key, dataset_info_path)
-            parquet_reader = query.ParquetReader(parquet_path)
-            s3_media_keys = parquet_reader.select('image')['image'].tolist()
+                    if not label_flag:
+                        if not os.path.exists(media_dir):
+                            os.mkdir(media_dir)
 
-            if not os.path.exists(media_dir):
-                os.mkdir(media_dir)
+                        s3_client.download_list(default_bucket, s3_media_keys, dataset_name + "/", dataset_dir)
 
-            s3_client.download_list(default_bucket, s3_media_keys, dataset_name + "/", dataset_dir)
+                    print("register local split...")
+                    if not dataset_exist_flag:
+                        with open(dataset_info_path, 'r') as f:
+                            stat = yaml.safe_load(f)['statistics']
+                        dataset_media_num = stat['dataset_stat']['media_num']
+                        dataset_media_size = stat['dataset_stat']['media_size']
+                        db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
+                                                   dataset_media_size)
 
-            print("register local split...")
-            if not dataset_exist_flag:
-                with open(dataset_info_path, 'r') as f:
-                    stat = yaml.safe_load(f)['statistics']
-                dataset_media_num = stat['dataset_stat']['media_num']
-                dataset_media_size = stat['dataset_stat']['media_size']
-                db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
-                                           dataset_media_size)
+                        stat = query.ParquetReader(parquet_path).get_metadata()
+                        split_media_num = stat['split_stat']['media_num']
+                        split_media_size = stat['split_stat']['media_size']
+                        if label_flag:
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 0, split_media_num,
+                                                     split_media_size)
+                        else:
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
+                                                     split_media_size)
+                    else:
+                        stat = query.ParquetReader(parquet_path).get_metadata()
+                        split_media_num = stat['split_stat']['media_num']
+                        split_media_size = stat['split_stat']['media_size']
+                        if label_flag:
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 0, split_media_num,
+                                                     split_media_size)
+                        else:
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
+                                                     split_media_size)
 
-                stat = query.ParquetReader(parquet_path).get_metadata()
-                split_media_num = stat['split_stat']['media_num']
-                split_media_size = stat['split_stat']['media_size']
-                db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
-                                         split_media_size)
+                else:
+                    local_db_split_dict = db_client.get_sqlite_dict_list(
+                        "select * from split where dataset_name='%s' and split_name='%s'" % (
+                            dataset_name, split_name))[0]
+                    label_data = local_db_split_dict['label_data']
+                    media_data = local_db_split_dict['media_data']
+                    if label_data == 1 and media_data == 1:
+                        print("the split has been fully downloaded")
+                        exit()
+                    elif label_data == 1 and media_data == 0:
+                        if label_flag:
+                            print("label data of the split has been downloaded")
+                        else:
+                            if not os.path.exists(media_dir):
+                                os.mkdir(media_dir)
+                            parquet_reader = query.ParquetReader(parquet_path)
+                            s3_media_keys = parquet_reader.select('image')['image'].tolist()
+                            s3_client.download_list(default_bucket, s3_media_keys, dataset_name + "/", dataset_dir)
+                            print("update split info...")
+                            db_client.cursor.execute(
+                                "update split set media_data=?, updated_time=datetime('now','localtime') where dataset_name=? and split_name=?",
+                                [1, dataset_name, split_name])
+                            db_client.conn.commit()
+
             else:
-                stat = query.ParquetReader(parquet_path).get_metadata()
-                split_media_num = stat['split_stat']['media_num']
-                split_media_size = stat['split_stat']['media_size']
-                db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
-                                         split_media_size)
+                if not split_exist_flag:
+                    print(
+                        "can not find the split named %s of dataset %s neither in remote repo nor in local storage" % (
+                        split_name, dataset_name))
+                    exit()
+
+                parquet_path = db_client.get_local_split_path(dataset_name, split_name)
+
+                local_db_split_dict = db_client.get_sqlite_dict_list(
+                    "select * from split where dataset_name='%s' and split_name='%s'" % (
+                        dataset_name, split_name))[0]
+                label_data = local_db_split_dict['label_data']
+                media_data = local_db_split_dict['media_data']
+                if label_data == 1 and media_data == 1:
+                    print("the split has been fully downloaded")
+                    exit()
+                elif label_data == 1 and media_data == 0:
+                    if label_flag:
+                        print("label data of the split has been downloaded")
+                    else:
+                        if not os.path.exists(media_dir):
+                            os.mkdir(media_dir)
+                        parquet_reader = query.ParquetReader(parquet_path)
+                        s3_media_keys = parquet_reader.select('image')['image'].tolist()
+                        s3_client.download_list(default_bucket, s3_media_keys, dataset_name + "/", dataset_dir)
+                        print("update split info...")
+                        db_client.cursor.execute(
+                            "update split set media_data=?, updated_time=datetime('now','localtime') where dataset_name=? and split_name=?",
+                            [1, dataset_name, split_name])
+                        db_client.conn.commit()
