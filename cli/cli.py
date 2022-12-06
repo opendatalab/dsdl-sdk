@@ -13,19 +13,15 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from loguru import logger
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from commands.__init__ import __version__
-
 from commands.cmdbase import CmdBase
-from commands.const import (
-    DEFAULT_CLI_CONFIG_FILE,
-    DEFAULT_CONFIG_DIR,
-    DEFAULT_LOCAL_STORAGE_PATH,
-    DEFAULT_CLI_LOG_FILE_PATH,
-    PROG_NAME,
-    SQLITE_DB_PATH,
-)
+from commands.const import (DEFAULT_CLI_CONFIG_FILE, DEFAULT_CLI_LOG_FILE_PATH,
+                            DEFAULT_CONFIG_DIR, DEFAULT_LOCAL_STORAGE_PATH,
+                            PROG_NAME, SQLITE_DB_PATH)
 from commons.argument_parser import CustomHelpFormatter
 from commons.argument_parser import DsdlArgumentParser as ArgumentParser
 from commons.loghandler import setup_loger
@@ -158,6 +154,8 @@ class DSDLClient(object):
 
 
 def main():
+    setup_loger()
+    logger.remove(handler_id=None)
     DSDLClient().execute()
 
 

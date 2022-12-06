@@ -18,6 +18,7 @@ from argparse import ArgumentParser, _SubParsersAction
 
 from commons.exceptions import CLIException
 from commons.stdio import print_stderr
+from loguru import logger
 
 
 class CmdBase(ABC):
@@ -35,10 +36,12 @@ class CmdBase(ABC):
         try:
             self.cmd_entry(cmdargs, config, *args, **kwargs)
         except CLIException as e:
+            logger.exception(e.message)
             print_stderr(e.message)
             exit(e.errcode)
         except Exception as e:
             # TODO log
+            logger.exception(e)
             print_stderr("unknown error, please see log files at ~/.dsdl/logs")
             exit(-1)
         exit(0)

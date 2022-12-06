@@ -71,6 +71,7 @@ class Ls(CmdBase):
 
         # default display no argument is given
         if not (cmdargs.skip_header or cmdargs.verbose):
+            rprint(tabulate(datasplit_list_trim, headers='keys', tablefmt='plain'))
             rprint(tabulate(dataset_list_trim, headers='keys', tablefmt='plain'))
             
         if cmdargs.verbose:
