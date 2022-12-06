@@ -85,8 +85,7 @@ requires = ["poetry-core>=1.0.0","setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.setuptools_scm]
-write_to = "cli/commands/__version__.py"
-# tag_regex = "^(?:[\\w-]+-)?(?P<version>[vV]?\\d+(?:\\.\\d+){0,2}[^\\+]*)(?:\\+.*)?$"
+# write_to = "cli/commands/__version__.py"
 
 ## semantic_release [start]
 # [tool.semantic_release]

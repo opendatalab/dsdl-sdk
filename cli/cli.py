@@ -15,11 +15,7 @@ from typing import Any
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-try:
-    from commands.__version__ import __version__
-except ImportError:
-    __version__ = "unknown version"
-    version_tuple = (0, 0, "unknown version")
+from commands.__init__ import __version__
 
 from commands.cmdbase import CmdBase
 from commands.const import (
