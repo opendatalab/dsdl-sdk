@@ -8,8 +8,8 @@ import yaml
 from utils import admin
 import pyarrow.parquet as pq
 import pyarrow as pa
-import s3fs
 from utils.oss_ops import ops
+from pyarrow import fs
 
 aws_access_key_id = "ailabminio"
 aws_secret_access_key = "123123123"
@@ -63,15 +63,10 @@ class ParquetReader:
             self.path_flag = "s3"
             self.parquet_path = parquet_path
 
-            self.fs = s3fs.S3FileSystem(
-                anon=False,
-                use_ssl=True,
-                client_kwargs={
-                    "endpoint_url": "http://" + endpoint,
-                    "aws_access_key_id": access_key_id,
-                    "aws_secret_access_key": secret_access_key,
-                    "use_ssl": use_ssl,
-                }
+            self.fs = fs.S3FileSystem(
+                access_key=aws_access_key_id,
+                secret_key=secret_access_key,
+                endpoint_override=endpoint_url,
             )
 
     def __create_dataset_view(self):
@@ -273,7 +268,7 @@ class Split:
 if __name__ == '__main__':
     db_client = admin.DBClient()
     path = db_client.get_local_split_path('CIFAR-10', 'train')
-    split_reader = SplitReader('CIFAR-10', 'train')
+    split_reader = SplitReader('CIFAR-10-Auto', 'train')
 
     # print(split_reader.select(filter_cond="label='bird'", select_cols="image,label", samples=1500,
     #                           limit=800, offset=100))
@@ -294,10 +289,10 @@ if __name__ == '__main__':
     # print(stat_meta)
     # meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
     print(split_reader.get_image_samples(10))
-    # s3_path = "s3://dsdldata/CIFAR-10/parquet/test.parquet"
-    # parquet_reader = ParquetReader(s3_path, '10.140.0.94:9800', 'ailabminio', '123123123')
-    # df = parquet_reader.select(limit=20)
-    # print(df)
+    s3_path = "s3://dsdldata/CIFAR-10/parquet/test.parquet"
+    parquet_reader = ParquetReader(s3_path, '10.140.0.94:9800', 'ailabminio', '123123123')
+    df = parquet_reader.select(limit=20)
+    print(df)
     # stat = parquet_reader.get_metadata()
     # print(stat)
     # schema = parquet_reader.get_schema()
