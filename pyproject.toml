@@ -56,7 +56,7 @@ psutil = "^5.9.4"
 streamlit = "^1.15.1"
 termgraph = "^0.5.3"
 stqdm = "^0.0.4"
-poetry-dynamic-versioning = "^0.21.1"
+setuptools-scm = "^7.0.5"
 
 [tool.poetry.group.test]
 optional = true
@@ -79,7 +79,16 @@ twine = { version = "^3.3.0" }
 bump2version = { version = "^1.0.1" }
 
 
+[build-system]
+# requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.0","setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "poetry.core.masonry.api"
 
+[tool.setuptools_scm]
+write_to = "cli/commands/__version__.py"
+
+
+## semantic_release [start]
 # [tool.semantic_release]
 # version_variable = [
 #     "cli/commands/__version__.py:__version__",
@@ -97,24 +106,29 @@ bump2version = { version = "^1.0.1" }
 # upload_to_PyPI = true
 # upload_to_release = true
 # build_command = "pip install poetry && poetry build"
+## semantic_release [end]
 
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-format-jinja =  """
-{%- if distance == 0 -%}
-{{ serialize_pep440(base, stage, revision) }}
-{%- elif revision is not none -%}
-{{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
-{%- else -%}
-{{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
-{%- endif -%}
-"""
 
-[tool.poetry-dynamic-versioning.substitution]
-files = ["cli/commands/__init__.py", "cli/commands/__version__.py", "cli/commands/_version.py"]
-# pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
+## poetry-dynamic-versioning [start]
+# [tool.poetry-dynamic-versioning]
+# enable = true
+# vcs = "git"
+# format-jinja =  """
+# {%- if distance == 0 -%}
+# {{ serialize_pep440(base, stage, revision) }}
+# {%- elif revision is not none -%}
+# {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
+# {%- else -%}
+# {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
+# {%- endif -%}
+# """
 
-[build-system]
-requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
-build-backend = "poetry.masonry.api"
+# [tool.poetry-dynamic-versioning.substitution]
+# files = ["cli/commands/__init__.py", "cli/commands/__version__.py", "cli/commands/_version.py"]
+# # pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
+
+# [build-system]
+# requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
+# build-backend = "poetry.masonry.api"
+
+## poetry-dynamic-versioning [end]
