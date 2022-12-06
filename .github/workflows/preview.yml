@@ -45,23 +45,16 @@ jobs:
           POETRY_VERSION=$(poetry version --short)
           echo $POETRY_VERSION
 
-          TAG1=$(git describe --tags --always --abbrev=0)
-          TAG2=$(git describe --tags --always --abbrev=1)
-          TAG3=$(git describe --tags --always --abbrev=2)
-          TAG4=$(git rev-parse --short=4 HEAD)
+          TAG=$(git rev-parse --short=4 HEAD)
+          echo $TAG
 
-          echo $TAG1
-          echo $TAG2
-          echo $TAG3
-          echo $TAG4
-
-          PROJECT_VERSION='odl-cli '$POETRY_VERSION'-'$TAG4
+          PROJECT_VERSION=$POETRY_VERSION'-'$TAG
           echo $PROJECT_VERSION
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
       
       - name: Build wheels and source tarball
         run: |
-          # poetry version $PROJECT_VERSION
+          poetry version $PROJECT_VERSION
           poetry build
 
       - name: publish to PyPI
