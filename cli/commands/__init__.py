@@ -8,9 +8,9 @@ except PackageNotFoundError:
     # package is not installed
     pass
 
-__full_version__ = get_version() # return '0.1.dev519+g37fcc3b.d20221206'
+# __full_version__ = get_version() # return '0.1.dev519+g37fcc3b.d20221206'
 
-__version_tuple__ = tuple(__full_version__.split("."))
+# __version_tuple__ = tuple(__full_version__.split("."))
 
 
 __version_dev_part__ = ''
