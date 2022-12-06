@@ -45,13 +45,15 @@ class Cd(CmdBase):
             metavar="METAVAR",
         )
         status_parser.add_argument(
-            "dataset_name",
+            "-d",
+            "--dataset-name",
             action=EnvDefaultVar,
             envvar="DSDL_CLI_DATASET_NAME",
             nargs=1,
             type=str,
             help="dataset name",
             metavar="[dataset name]",
+            required=True,
         )
         return status_parser
 
