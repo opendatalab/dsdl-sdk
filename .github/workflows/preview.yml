@@ -40,24 +40,22 @@ jobs:
           ls
           
       
-      - name: Add version to environment vars
+      - name: Create project version
         run: |
           POETRY_VERSION=$(poetry version --short)
           echo $POETRY_VERSION
 
-      - name: Check if tag version matches project version
-        run: |
           TAG1=$(git describe --tags --always --abbrev=0)
           TAG2=$(git describe --tags --always --abbrev=1)
           TAG3=$(git describe --tags --always --abbrev=2)
+          TAG4=$(git rev-parse --short=4 HEAD)
 
           echo $TAG1
           echo $TAG2
           echo $TAG3
+          echo $TAG4
 
-      - name: Create Project version
-        run: |
-          PROJECT_VERSION='odl-cli '$POETRY_VERSION'-'$TAG
+          PROJECT_VERSION='odl-cli '$POETRY_VERSION'-'$TAG4
           echo $PROJECT_VERSION
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
       
