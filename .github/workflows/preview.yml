@@ -49,9 +49,23 @@ jobs:
       #     set -- $PKG
       #     echo "name=$1" >> $GITHUB_ENV
 
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
       - name: Build wheels and source tarball
         run: |
           poetry build
+          export PKG=$(ls dist/ | grep tar)
+          set -- $PKG
+          echo "name=$1" >> $GITHUB_ENV
 
 
       - name: publish to PyPI
@@ -62,18 +76,6 @@ jobs:
           repository_url: https://upload.pypi.org/legacy/
           skip_existing: true
       
-
-      # - name: Create GitHub Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
 
       # - name: Upload Release Asset (sdist) to GitHub
       #   id: upload-release-asset
