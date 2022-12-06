@@ -22,6 +22,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-versions }}
@@ -38,19 +40,21 @@ jobs:
           ls
           
       
-      # - name: Check if 'Lint with flake8' step failed
-      #   if: steps.flake8.outcome != 'success'
-      #     run: |
-      #       echo "flake8 fails"
-      #       exit 
+      - name: Add version to environment vars
+        run: |
+          PROJECT_VERSION=$(poetry version --short)
+          echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
 
+      - name: Check if tag version matches project version
+        run: |
+          TAG=$(git describe HEAD --tags --abbrev=0)
+          echo $TAG
+          echo $PROJECT_VERSION
+          if [[ "$TAG" != "v$PROJECT_VERSION" ]]; then exit 1; fi
+      
       - name: Build wheels and source tarball
         run: |
           poetry build
-          export PKG=$(ls dist/ | grep tar)
-          set -- $PKG
-          echo "name=$1" >> $GITHUB_ENV
-          echo $GITHUB_ENV
 
 
       - name: publish to PyPI
