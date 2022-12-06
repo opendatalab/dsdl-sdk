@@ -19,9 +19,14 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from commands.__init__ import __version__
 from commands.cmdbase import CmdBase
-from commands.const import (DEFAULT_CLI_CONFIG_FILE, DEFAULT_CLI_LOG_FILE_PATH,
-                            DEFAULT_CONFIG_DIR, DEFAULT_LOCAL_STORAGE_PATH,
-                            PROG_NAME, SQLITE_DB_PATH)
+from commands.const import (
+    DEFAULT_CLI_CONFIG_FILE,
+    DEFAULT_CLI_LOG_FILE_PATH,
+    DEFAULT_CONFIG_DIR,
+    DEFAULT_LOCAL_STORAGE_PATH,
+    PROG_NAME,
+    SQLITE_DB_PATH,
+)
 from commons.argument_parser import CustomHelpFormatter
 from commons.argument_parser import DsdlArgumentParser as ArgumentParser
 from commons.loghandler import setup_loger
@@ -46,13 +51,13 @@ class DSDLClient(object):
             Use '%(prog)s <command>' to access/load datasets either from local
             file system or remote cloud storage, can also perform data-preprocessing
             including filtering, visualization, etc.""",
-            epilog="Report bugs to https://github.com/opendatalab/dsdl-sdk/issues",
-            usage=f"{PROG_NAME} GLOBAL_FLAGS | COMMAND [COMMAND_ARGS] [DATASET_NAME]",
+            epilog=
+            "Report bugs to https://github.com/opendatalab/dsdl-sdk/issues",
+            usage=
+            f"{PROG_NAME} GLOBAL_FLAGS | COMMAND [COMMAND_ARGS] [DATASET_NAME]\n",
             formatter_class=CustomHelpFormatter,
         )
-        self.__subparsers = self.__parser.add_subparsers(
-            title="Commands",
-        )
+        self.__subparsers = self.__parser.add_subparsers(title="Commands", )
         self.__init_subcommand_parser()
 
         self.__init_global_flags()  # 初始化全局参数
@@ -147,7 +152,8 @@ class DSDLClient(object):
                         clz_obj, CmdBase) and not inspect.isabstract(clz_obj):
                     cmd_clz = clz_obj()
                     subcmd_parser = cmd_clz.init_parser(self.__subparsers)
-                    subcmd_parser.set_defaults(command_handler=cmd_clz.cmd_main)
+                    subcmd_parser.set_defaults(
+                        command_handler=cmd_clz.cmd_main)
                     subcmd_parser._optionals.title = "Command args"
                     subcmd_parser._positionals.title = "Positional arguments"
                     subcmd_parser.formatter_class = CustomHelpFormatter
@@ -162,5 +168,3 @@ def main():
 if __name__ == "__main__":
     setup_loger()
     DSDLClient().execute()
-
-    # main()

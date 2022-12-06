@@ -128,6 +128,7 @@ write_to = "cli/commands/__version__.py"
 # requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
 # build-backend = "poetry.masonry.api"
 
+# fix mypy yaml error
 [[tool.mypy.overrides]]
 module = "yaml"
 ignore_missing_imports = true
