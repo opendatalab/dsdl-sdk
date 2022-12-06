@@ -155,10 +155,12 @@ class DSDLClient(object):
 
 def main():
     setup_loger()
-    logger.remove(handler_id=None)
+    logger.remove(0)
     DSDLClient().execute()
 
 
 if __name__ == "__main__":
     setup_loger()
-    main()
+    DSDLClient().execute()
+
+    # main()
