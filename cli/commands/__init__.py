@@ -15,4 +15,4 @@ sha = repo.head.object.hexsha
 #just keep the first 4 characters
 abbrev = sha.split()[0][:4]
 
-__version__ = 'v' + __version__ + abbrev
+__version__ = 'v' + __version__ + '.' + abbrev
