@@ -367,7 +367,6 @@ class DSDLParser(Parser, ABC):
                 # verify each ele (in other words: each label) of `class_domain`, and save in define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
                 define_info.field_list = CLASS_PARSER.class_field
-                # define_info.parent = CLASS_PARSER.super_class_list
                 define_info.skeleton = CLASS_PARSER.skeleton
             else:
                 err_msg = f"error type {define_type} in yaml, type must be class_domain or struct."
@@ -397,11 +396,6 @@ class DSDLParser(Parser, ABC):
                     for k in self.define_map.keys():
                         if k in field_list.type:
                             define_graph.add_edge(k, key)
-            # elif val.type == TypeEnum.CLASS_DOMAIN:
-            #     for field_list in val.parent:
-            #         for k in self.define_map.keys():
-            #             if k in field_list:
-            #                 define_graph.add_edge(k, key)
         if not nx.is_directed_acyclic_graph(define_graph):
             err_msg = "define cycle found."
             if self.report_flag:
