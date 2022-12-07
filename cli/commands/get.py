@@ -64,7 +64,7 @@ class Get(CmdBase):
                                    help='Target saving path.',
                                    metavar='')
         select_parser.add_argument("--label", action="store_true",
-                                   help='Target saving path.',
+                                   help='Download label data only.',
                                    )
 
         return select_parser
