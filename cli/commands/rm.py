@@ -17,7 +17,6 @@ from dsdlsdk.storage import Storage
 
 
 class Rm(CmdBase):
-
     def __init__(self):
         self.__config = None
 
@@ -32,24 +31,21 @@ class Rm(CmdBase):
         Returns:
 
         """
-        example_parser = subparsers.add_parser(
-            'rm',
-            help='Remove dataset in a desired manner',
-            example="example.example"
+        rm_parser = subparsers.add_parser(
+            "rm", help="Remove dataset in a desired manner", example="rm.example"
         )  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
-        example_parser.add_argument("-y",
-                                    '--yes',
-                                    default=False,
-                                    help='remove without confirmation',
-                                    action="store_true")
-        example_parser.add_argument('--storage',
-                                    default='default',
-                                    type=str,
-                                    help='local storage name')
-        example_parser.add_argument("dataset_name",
-                                    type=str,
-                                    help='dataset name')
-        return example_parser
+        rm_parser.add_argument(
+            "-y",
+            "--yes",
+            default=False,
+            help="remove without confirmation",
+            action="store_true",
+        )
+        rm_parser.add_argument(
+            "--storage", default="default", type=str, help="local storage name"
+        )
+        rm_parser.add_argument("dataset_name", type=str, help="dataset name")
+        return rm_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """
@@ -68,16 +64,13 @@ class Rm(CmdBase):
         storage_name = cmdargs.storage
         dataset_name = cmdargs.dataset_name
         try:
-            self.__process_dataset_del(dataset_name,
-                                       storage_name,
-                                       force_delete=yes)
+            self.__process_dataset_del(dataset_name, storage_name, force_delete=yes)
         except DatasetPathNotExists as e:
             raise CLIException(ExistCode.DATASET_PATH_NOT_EXISTS, str(e))
 
-    def __process_dataset_del(self,
-                              dataset_name,
-                              storage_name,
-                              force_delete=False) -> None:
+    def __process_dataset_del(
+        self, dataset_name, storage_name, force_delete=False
+    ) -> None:
         """
         Delete one dataset
 
@@ -95,24 +88,26 @@ class Rm(CmdBase):
         if not dataset_path:
             raise CLIException(
                 ExistCode.DATASET_NOT_EXIST_LOCAL,
-                "Dataset `{}` does not exist locally".format(dataset_name))
+                "Dataset `{}` does not exist locally".format(dataset_name),
+            )
         else:  # 存在，那么就删除
             if force_delete:
                 self.__delete_dataset(dataset_name, dataset_path, storage_name)
             else:
-                print_stdout("Are you sure to delete dataset {}? [y/n]".format(
-                    dataset_name),
-                             end='')
+                print_stdout(
+                    "Are you sure to delete dataset {}? [y/n]".format(dataset_name),
+                    end="",
+                )
                 answer = input()
                 if answer == "y":
-                    self.__delete_dataset(dataset_name, dataset_path,
-                                          storage_name)
+                    self.__delete_dataset(dataset_name, dataset_path, storage_name)
                     dbcli.delete_dataset(dataset_name)
                 else:
                     print_stdout("Delete cancelled")
 
-    def __delete_dataset(self, dataset_name: str, dataset_path: str,
-                         storage_name: str) -> None:
+    def __delete_dataset(
+        self, dataset_name: str, dataset_path: str, storage_name: str
+    ) -> None:
         """
         delete dataset from  storage
 

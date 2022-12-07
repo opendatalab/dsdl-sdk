@@ -12,6 +12,14 @@ from utils.views.view import View
 from commands.cmdbase import CmdBase
 from commons.argument_parser import EnvDefaultVar
 from utils.admin import DBClient
+from commands.const import (
+    DEFAULT_CLI_CONFIG_FILE,
+    DEFAULT_CLI_LOG_FILE_PATH,
+    DEFAULT_CONFIG_DIR,
+    DEFAULT_LOCAL_STORAGE_PATH,
+    PROG_NAME,
+    SQLITE_DB_PATH,
+)
 
 
 class Studio(CmdBase):
@@ -30,18 +38,12 @@ class Studio(CmdBase):
         Returns:
 
         """
-        status_parser = subparsers.add_parser(
-            "studio", help="view the specified dataset on webpage."
+        studio_parser = subparsers.add_parser(
+            "studio",
+            help="view the specified dataset on webpage.",
+            example="studio.example",
         )
-        status_parser.add_argument(
-            "-s",
-            "--show",
-            nargs="?",
-            default="SHOW",
-            help="show example",
-            metavar="SHOW",
-        )
-        status_parser.add_argument(
+        studio_parser.add_argument(
             "-l",
             "--local",
             nargs="?",
@@ -51,7 +53,7 @@ class Studio(CmdBase):
             help="view local[default] dataset.",
             metavar="SET to True to VIEW LOCAL DATASET",
         )
-        status_parser.add_argument(
+        studio_parser.add_argument(
             "-r",
             "--remote",
             nargs="?",
@@ -61,16 +63,18 @@ class Studio(CmdBase):
             help="view remote[when explicitly specified to true] dataset.",
             metavar="SET to True(default false) to VIEW REMOTE DATASET",
         )
-        status_parser.add_argument(
-            "dataset_name",
+        studio_parser.add_argument(
+            "-d",
+            "--dataset-name",
             action=EnvDefaultVar,
             envvar="DSDL_CLI_DATASET_NAME",
             nargs=1,
             type=str,
             help="dataset name",
             metavar="[DATASET NAME]",
+            required=True,
         )
-        return status_parser
+        return studio_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """

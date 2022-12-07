@@ -1,0 +1,6 @@
+  01. view a dataset
+      $%(prog)s CIFAR-10
+  02. view a local dataset
+      $%(prog)s -l True CIFAR-10
+  03. view a remote dataset
+      $%(prog)s -r True CIFAR-10

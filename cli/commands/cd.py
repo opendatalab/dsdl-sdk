@@ -33,18 +33,12 @@ class Cd(CmdBase):
             subparsers:
         Returns:
         """
-        status_parser = subparsers.add_parser(
-            "cd", help="change the context to the specified dataset."
+        cd_parser = subparsers.add_parser(
+            "cd",
+            help="change the context to the specified dataset.",
+            example="cd.example",
         )
-        status_parser.add_argument(
-            "-s",
-            "--show",
-            nargs="?",
-            default="SHOW",
-            help="show example",
-            metavar="METAVAR",
-        )
-        status_parser.add_argument(
+        cd_parser.add_argument(
             "-d",
             "--dataset-name",
             action=EnvDefaultVar,
@@ -52,10 +46,10 @@ class Cd(CmdBase):
             nargs=1,
             type=str,
             help="dataset name",
-            metavar="[dataset name]",
+            metavar="[DATASET NAME]",
             required=True,
         )
-        return status_parser
+        return cd_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
         """
