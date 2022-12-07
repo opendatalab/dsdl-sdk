@@ -6,7 +6,8 @@ from rich import print as rprint
 from rich.pretty import pprint
 
 from .cmdbase import CmdBase
-from .const import DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR, DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH
+from .const import (DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR,
+                    DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH)
 
 
 class Config(CmdBase):
@@ -25,7 +26,6 @@ class Config(CmdBase):
             subparsers (_type_): _description_
         """
 
-        # config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example='config.example')
         config_parser = subparsers.add_parser(
             'config',
             help='set odl-cli configuration.',
@@ -209,10 +209,10 @@ class Config(CmdBase):
         if args.storage_path[:2] not in ['s3', 'sf']:
             config['storage'][args.storage_name]['path'] = args.storage_path
             print_stdout(
-                'Remote storage only support s3 and sftp, Your local storage was switched to {} !'
+                'STORAGE LOCAL: The path {} configuration is successful!'
                 .format(args.storage_path))
             logger.info(
-                'Remote storage only support s3 and sftp, Your local storage was switched to {} !'
+                'STORAGE LOCAL: The path {} configuration is successful!'
                 .format(args.storage_path))
 
         elif args.storage_path[:2] == 's3':
@@ -223,7 +223,7 @@ class Config(CmdBase):
             config['storage'][args.storage_name]['path'] = args.storage_path
             config['storage'][
                 args.storage_name]['endpoint'] = args.storage_endpoint
-            print_stdout('STORAGE S3:  {} config success !'.format(
+            print_stdout('STORAGE S3: {} config success !'.format(
                 args.storage_name))
             logger.info('STORAGE S3: {} config success !'.format(
                 args.storage_name))
