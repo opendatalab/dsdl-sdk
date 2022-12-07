@@ -36,7 +36,7 @@ class Config:
             "FGVC_Aircraft",
             "KITTI_Object",
             # "ILSVRC2015DET",
-            "CityPersons",
+            # "CityPersons",
             # "CrowdHuman",  # too large
             # "DOTA-v1.5",
             "xBD",
