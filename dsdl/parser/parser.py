@@ -2,10 +2,9 @@ import warnings
 
 import click
 import json
-import keyword
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
-from dsdl.exception import ValidationError, DefineSyntaxError, DSDLImportError
+from dsdl.exception import DefineSyntaxError, DSDLImportError
 from dsdl.warning import DuplicateDefineWarning, DefineSyntaxWarning
 import os
 from dataclasses import dataclass, field
@@ -47,7 +46,7 @@ class Parser(ABC):
 
     def process(self, data_file, library_path, output_file):
         self._parse(data_file, library_path)
-        dsdl_py = self._generate(output_file)
+        dsdl_py = self._generate()
         print(
             f"Convert Yaml File to Python Code Successfully!\n"
             f"Yaml file (source): {data_file}\n"
@@ -83,6 +82,7 @@ class StructORClassDomain:
                 f"{self.name} is dsdl build-in value name, please rename it."
                 f"Build-in value names are: {','.join(TYPES_ALL)}"
             )
+        check_name_format(self.name)
 
 
 class DSDLParser(Parser, ABC):
@@ -268,36 +268,19 @@ class DSDLParser(Parser, ABC):
                 for raw_field in define_value["$fields"].items():
                     field_name = raw_field[0].strip()
                     field_type = raw_field[1].strip()
-                    # 判断是否为python保留字
-                    if keyword.iskeyword(field_name):
-                        err_msg = (
-                            f"'{field_name}' in `{define_name}` can't be a Python keyword."
-                            f"check https://docs.python.org/3/reference/lexical_analysis.html#keywords "
-                            f"for more information."
-                        )
+                    # 判断field_name是否为python保留字和是符合命名规范
+                    try:
+                        check_name_format(field_name)
+                    except ValidationError as e:
                         if self.report_flag:
                             temp_check_item = CheckLogItem(
                                 def_name=TypeEnum.STRUCT.value,
-                                msg=f"ValidationError: {err_msg}",
+                                msg=f"Error in `{define_name}`, {e}",
                             )
                             CHECK_LOG.sub_struct.append(temp_check_item)
                             return
-                        raise ValidationError(err_msg)
-                    if not field_name.isidentifier():
-                        err_msg = (
-                            f"'{field_name}' in `{define_name}` must be a a valid identifier. "
-                            f"Field name is considered a valid identifier if "
-                            f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). "
-                            f"A valid identifier cannot start with a number, or contain any spaces."
-                        )
-                        if self.report_flag:
-                            temp_check_item = CheckLogItem(
-                                def_name=TypeEnum.STRUCT.value,
-                                msg=f"ValidationError: {err_msg}",
-                            )
-                            CHECK_LOG.sub_struct.append(temp_check_item)
-                            return
-                        raise ValidationError(err_msg)
+                        raise ValidationError(f"Error in `{define_name}`, {e}")
+                    # 将参数实例化
                     if struct_params:
                         for param, value in PARAMS.general_param_map[
                             define_name
@@ -384,7 +367,7 @@ class DSDLParser(Parser, ABC):
                 # verify each ele (in other words: each label) of `class_domain`, and save in define_info
                 define_info.type = TypeEnum.CLASS_DOMAIN
                 define_info.field_list = CLASS_PARSER.class_field
-                define_info.parent = CLASS_PARSER.super_class_list
+                # define_info.parent = CLASS_PARSER.super_class_list
                 define_info.skeleton = CLASS_PARSER.skeleton
             else:
                 err_msg = f"error type {define_type} in yaml, type must be class_domain or struct."
@@ -414,11 +397,11 @@ class DSDLParser(Parser, ABC):
                     for k in self.define_map.keys():
                         if k in field_list.type:
                             define_graph.add_edge(k, key)
-            elif val.type == TypeEnum.CLASS_DOMAIN:
-                for field_list in val.parent:
-                    for k in self.define_map.keys():
-                        if k in field_list:
-                            define_graph.add_edge(k, key)
+            # elif val.type == TypeEnum.CLASS_DOMAIN:
+            #     for field_list in val.parent:
+            #         for k in self.define_map.keys():
+            #             if k in field_list:
+            #                 define_graph.add_edge(k, key)
         if not nx.is_directed_acyclic_graph(define_graph):
             err_msg = "define cycle found."
             if self.report_flag:

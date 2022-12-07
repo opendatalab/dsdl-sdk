@@ -5,7 +5,7 @@ import warnings
 from dsdl.exception import DefineSyntaxError
 from dsdl.warning import DefineSyntaxWarning
 from collections import defaultdict
-from .utils import sort_nx, TYPES_ALL
+from .utils import sort_nx, TYPES_ALL, check_name_format
 from dsdl.exception import ValidationError
 
 
@@ -25,14 +25,8 @@ class SingleStructParam:
         if self.struct_name in [i + 'Field' for i in TYPES_ALL]:
             raise ValidationError(f"{self.struct_name} is dsdl build-in value name, please rename it. "
                                   f"Build-in value names are: {', '.join(TYPES_ALL)}")
-        if not self.struct_name.isidentifier():
-            err_msg = (
-                f"'{self.struct_name}' must be a a valid identifier. "
-                f"Struct name is considered a valid identifier if "
-                f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). "
-                f"A valid identifier cannot start with a number, or contain any spaces."
-            )
-            raise ValidationError(f"{err_msg}")
+        check_name_format(self.struct_name)
+
 
 
 @dataclass()
