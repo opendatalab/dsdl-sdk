@@ -4,6 +4,7 @@ import sys
 import base64
 from io import BytesIO
 import argparse
+import glob
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../")
 
@@ -34,7 +35,8 @@ def main():
     dataset_name = args.dataset_name
     split_name = args.split_name
     st.title("Files")
-    explore_app(dataset_name, split_name)
+    # explore_app(dataset_name, split_name)
+    image_grid_main(dataset_name, split_name)
 
 
 def explore_app(dataset_name: str, split_name: str):
@@ -64,6 +66,53 @@ def explore_app(dataset_name: str, split_name: str):
 
     pd.set_option("display.max_colwidth", -1)
     st.markdown(DF_HTML, unsafe_allow_html=True)
+
+
+def image_grid_main(dataset_name: str, split_name: str):
+    st.title("Image Grid Display")
+    image_files, manuscripts = load_images(dataset_name, split_name)
+    view_manuscripts = st.multiselect("Select Manuscript(s)", manuscripts)
+    n = st.number_input("Select Grid Width", 1, 5, 3)
+
+    view_images = []
+    for image_file in image_files:
+        if any(manuscript in image_file for manuscript in view_manuscripts):
+            view_images.append(image_file)
+    groups = []
+    for i in range(0, len(view_images), n):
+        groups.append(view_images[i : i + n])
+
+    for group in groups:
+        cols = st.columns(n)
+        for i, image_file in enumerate(group):
+            cols[i].image(image_file)
+
+
+# @st.cache
+def load_images(dataset_name: str, split_name: str):
+    files = get_file_list(dataset_name, split_name)
+    image_files = files
+    manuscripts = []
+    for image_file in image_files:
+        image_file = image_file.replace("\\", "/")
+        parts = image_file.split("/")
+        if parts[1] not in manuscripts:
+            manuscripts.append(parts[1])
+    manuscripts.sort()
+
+    return image_files, manuscripts
+
+
+def get_file_list(dataset_name: str, split_name: str, count=10):
+    dataset_name = dataset_name
+    split_name = "train"  # currently only support train split
+    print(f"dataset_name: {dataset_name}, split_name: {split_name}")
+
+    split_reader = SplitReader(dataset_name, split_name)
+    print(split_reader.dataset_name, split_reader.split_name)
+
+    files = split_reader.get_image_samples(count)
+    return files
 
 
 @st.cache

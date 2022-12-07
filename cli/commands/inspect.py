@@ -60,8 +60,8 @@ class Inspect(CmdBase):
         inspect_parser.add_argument(
             "--split-name",
             type=str,
-            help='The split name of the dataset, such as train/test/validation split.',
-            metavar=''
+            help="The split name of the dataset, such as train/test/validation split.",
+            metavar="",
         )
 
         group = inspect_parser.add_mutually_exclusive_group()
@@ -118,10 +118,16 @@ class Inspect(CmdBase):
         preview = cmdargs.preview
         split_name = cmdargs.split_name
 
-        s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
-                                  aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+        s3_client = ops.OssClient(
+            endpoint_url=endpoint_url,
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            region_name=region_name,
+        )
         db_client = admin.DBClient()
-        remote_dataset_list = [x.replace('/', '') for x in s3_client.get_dir_list(default_bucket, '')]
+        remote_dataset_list = [
+            x.replace("/", "") for x in s3_client.get_dir_list(default_bucket, "")
+        ]
 
         if dataset_name not in remote_dataset_list:
             print("there is no dataset named %s in remote repo" % dataset_name)
@@ -130,8 +136,10 @@ class Inspect(CmdBase):
         if db_client.is_dataset_local_exist(dataset_name):
             dataset_dict = query.get_dataset_info(dataset_name)
         else:
-            parquet_key = '/'.join([dataset_name, 'parquet', 'dataset.yaml'])
-            dataset_dict = yaml.safe_load(s3_client.read_file(default_bucket, parquet_key))
+            parquet_key = "/".join([dataset_name, "parquet", "dataset.yaml"])
+            dataset_dict = yaml.safe_load(
+                s3_client.read_file(default_bucket, parquet_key)
+            )
 
         if description:
             print("dataset description".center(100, "="))
@@ -191,18 +199,18 @@ class Inspect(CmdBase):
                     print(k + ":")
                     print(v["classes"])
 
-        # if preview:
-        #     print("Previewing the dataset...")
-        #     from utils.views.view import View
-        #
-        #     view = View(dataset_name, inspect=True)
-        #
-        #     from utils.admin import DBClient
-        #
-        #     dbcli = DBClient()
-        #     local_exists = dbcli.is_dataset_local_exist(dataset_name)
-        #
-        #     if local_exists is True:
-        #         view.view_from_inspect(split_name)
-        #     else:
-        #         print(f"Dataset {dataset_name} is not exists on local.")
+        if preview:
+            print("Previewing the dataset...")
+            from utils.views.view import View
+
+            view = View(dataset_name, inspect=True)
+
+            from utils.admin import DBClient
+
+            dbcli = DBClient()
+            local_exists = dbcli.is_dataset_local_exist(dataset_name)
+
+            if local_exists is True:
+                view.view_from_inspect()
+            else:
+                print(f"Dataset {dataset_name} is not exists on local.")
