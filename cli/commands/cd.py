@@ -39,15 +39,12 @@ class Cd(CmdBase):
             example="cd.example",
         )
         cd_parser.add_argument(
-            "-d",
-            "--dataset-name",
+            "dataset_name",
             action=EnvDefaultVar,
             envvar="DSDL_CLI_DATASET_NAME",
-            nargs=1,
             type=str,
             help="dataset name",
             metavar="[DATASET NAME]",
-            required=True,
         )
         return cd_parser
 
@@ -66,13 +63,19 @@ class Cd(CmdBase):
         # _act.environ["DATASET_NAME"] = cmdargs.dataset_name[0]
         # dsname = _act.environ.get("DATASET_NAME", "default")
 
-        os.environ.setdefault("DATASET_NAME", "")
-        os.environ["DATASET_NAME"] = cmdargs.dataset_name[0]
-        dsname = os.environ.get("DATASET_NAME", "default")
+        dsname = ""
+
+        if cmdargs.dataset_name:
+            os.environ.setdefault("DATASET_NAME", "")
+            os.environ["DATASET_NAME"] = cmdargs.dataset_name
+            dsname = os.environ.get("DATASET_NAME", "default")
+        else:
+            pass
 
         dbcli = DBClient()
+        is_exists = dbcli.is_dataset_local_exist(dsname)
 
-        if "DATASET_NAME" in os.environ and dbcli.is_dataset_local_exist(dsname):
+        if "DATASET_NAME" in os.environ and is_exists:
             sysstr = platform.system()
 
             if sysstr == "Windows":
