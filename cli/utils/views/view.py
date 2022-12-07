@@ -1,7 +1,10 @@
 import os
+import sys
 from pathlib import Path
 
 import commons.stdio as stdio
+from commons.exceptions import CLIException, ExistCode
+from loguru import logger
 
 
 class View:
@@ -31,11 +34,16 @@ class View:
         streamlit_cmd = (
             f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name}"
         )
-        # print("::: ", streamlit_cmd)
         try:
             os.system(streamlit_cmd)
-        except Exception as e:
-            print(e)
+        except KeyboardInterrupt:
+            stdio.print_stderr("View cancelled")
+            logger.exception("View cancelled")
+            sys.exit(0)
+        except CLIException as e:
+            stdio.print_stderr(e.message)
+            logger.exception(e.message)
+            raise CLIException(ExistCode.VIEW_FROM_INSPECT_FAILED, str(e))
 
     def view_local_dataset(self):
         """
@@ -50,18 +58,27 @@ class View:
             if os.path.isdir(dir_name) and dir_name.name == self.dataset_name:
                 for file in dir_name.iterdir():
                     if os.path.exists(self.view_code_abspath):
-                        stdio.print_stderr(
+                        stdio.print_stdout(
                             f"Code for Dataset:{self.dataset_name} visualization has been found."
                         )
                         streamlit_cmd = f"streamlit run {self.view_code_abspath}"
                         try:
                             os.system(streamlit_cmd)
-                        except Exception as e:
-                            print(e)
+                        except KeyboardInterrupt:
+                            stdio.print_stderr("View cancelled")
+                            logger.exception("View cancelled")
+                            sys.exit(0)
+                        except CLIException as e:
+                            logger.exception(e.message)
+                            stdio.print_stderr(e.message)
+                            raise CLIException(
+                                ExistCode.VIEW_LOCAL_DATASET_FAILED, str(e)
+                            )
                         break
                     else:
-                        print(
-                            "Visulization of Dataset:{self.dataset_name} is to be supported in the near future."
+                        raise CLIException(
+                            ExistCode.VIEW_LOCAL_DATASET_FAILED,
+                            "Visulization of Dataset:{self.dataset_name} is to be supported in the near future.",
                         )
 
     def view_remote_dataset(self):
