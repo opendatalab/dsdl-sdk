@@ -32,6 +32,9 @@ class CmdBase(ABC):
 
     """
 
+    def __init__(self):
+        self._parser: ArgumentParser = None
+
     def cmd_main(self, cmdargs, config, *args, **kwargs):
         try:
             self.cmd_entry(cmdargs, config, *args, **kwargs)
@@ -45,6 +48,10 @@ class CmdBase(ABC):
             print_stderr("unknown error, please see log files at ~/.dsdl/logs")
             exit(-1)
         exit(0)
+
+    def setup_parser(self, subparsers: _SubParsersAction) -> ArgumentParser:
+        self._parser = self.init_parser(subparsers)
+        return self._parser
 
     @abstractmethod
     def cmd_entry(self, cmdargs, config, *args, **kwargs):

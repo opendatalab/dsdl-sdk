@@ -151,7 +151,7 @@ class DSDLClient(object):
                 if inspect.isclass(clz_obj) and issubclass(
                         clz_obj, CmdBase) and not inspect.isabstract(clz_obj):
                     cmd_clz = clz_obj()
-                    subcmd_parser = cmd_clz.init_parser(self.__subparsers)
+                    subcmd_parser = cmd_clz.setup_parser(self.__subparsers)
                     subcmd_parser.set_defaults(
                         command_handler=cmd_clz.cmd_main)
                     subcmd_parser._optionals.title = "Command args"
