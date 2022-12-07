@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+import commons.stdio as stdio
+
 
 class View:
     def __init__(self, dataset_name: str, inspect: bool = False):
@@ -19,7 +21,9 @@ class View:
         view the files which get from inspect command on webpage.
         Returns: dataset visualization webpage url.
         """
-        print(f"Processing local dataset {self.dataset_name} inspect visulization...")
+        stdio.print_stdout(
+            f"Processing local dataset {self.dataset_name} inspect visulization..."
+        )
 
         view_base_dir = Path(os.path.dirname(__file__))
         view_code_name = "view_from_inspect.py"
@@ -38,13 +42,15 @@ class View:
         view the local dataset on webpage.
         Returns: dataset visualization webpage url.
         """
-        print(f"Processing local dataset {self.dataset_name} visulization...")
+        stdio.print_stdout(
+            f"Processing local dataset {self.dataset_name} visulization..."
+        )
 
         for dir_name in self.view_base_dir.iterdir():
             if os.path.isdir(dir_name) and dir_name.name == self.dataset_name:
                 for file in dir_name.iterdir():
                     if os.path.exists(self.view_code_abspath):
-                        print(
+                        stdio.print_stderr(
                             f"Code for Dataset:{self.dataset_name} visualization has been found."
                         )
                         streamlit_cmd = f"streamlit run {self.view_code_abspath}"
@@ -63,6 +69,6 @@ class View:
         view the remote dataset on webpage.
         Returns: dataset visualization webpage url.
         """
-        print(
+        stdio.print_stderr(
             f"[ TO BE DONE ] Processing remote dataset {self.dataset_name} visulization.\n Bye..."
         )

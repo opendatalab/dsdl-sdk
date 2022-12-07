@@ -18,6 +18,7 @@ from commands.cmdbase import CmdBase
 from commons.argument_parser import EnvDefaultVar
 
 from utils.admin import DBClient
+import commons.stdio as stdio
 
 
 class Cd(CmdBase):
@@ -79,21 +80,21 @@ class Cd(CmdBase):
             sysstr = platform.system()
 
             if sysstr == "Windows":
-                print("Enter new Windows cmd command shell")
+                stdio.print_stdout("Enter new Windows cmd command shell")
                 shell_cmd = CmdExeActivator().activate_cmd
                 os.system(shell_cmd)
             elif sysstr in ["Linux"]:
-                print("Enter new Linux bash command shell")
+                stdio.print_stdout("Enter new Linux bash command shell")
                 shell_cmd = PosixActivator().activate_cmd
                 os.system(shell_cmd)
             elif sysstr in ["Darwin"]:
-                print("Enter new Darwin bash command shell")
+                stdio.print_stdout("Enter new Darwin bash command shell")
                 shell_cmd = PosixActivator().activate_cmd
                 os.system(shell_cmd)
             else:
-                print("Other Systems hava not been supported yet!")
+                stdio.print_stderr("Other Systems hava not been supported yet!")
         else:
-            print("Dataset not exist, please check the dataset name.")
+            stdio.print_stderr("Dataset is not exist, please check the dataset name.")
 
 
 class _Activator:

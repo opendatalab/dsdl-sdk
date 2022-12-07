@@ -3,8 +3,11 @@
 cd function
 
 Examples:
-    $python cli.py studio --datasetname coco
-    >> now you can open the dataset viewer on localhost:9192:
+    $python cli.py studio coco
+    Collecting usage statistics. To deactivate, set browser.gatherUsageStats to False.
+    You can now view your Streamlit app in your browser.
+    Network URL: http://127.0.0.1:8501
+    External URL: http://?.?.?.?:8501
 """
 
 
@@ -20,6 +23,8 @@ from commands.const import (
     PROG_NAME,
     SQLITE_DB_PATH,
 )
+
+import commons.stdio as stdio
 
 
 class Studio(CmdBase):
@@ -45,15 +50,12 @@ class Studio(CmdBase):
         )
 
         studio_parser.add_argument(
-            "-d",
-            "--dataset-name",
+            "dataset_name",
             action=EnvDefaultVar,
             envvar="DSDL_CLI_DATASET_NAME",
-            nargs=1,
             type=str,
             help="dataset name",
             metavar="[DATASET NAME]",
-            required=True,
         )
 
         studio_parser_group = studio_parser.add_mutually_exclusive_group()
@@ -93,7 +95,7 @@ class Studio(CmdBase):
 
         """
 
-        dataset_name = cmdargs.dataset_name[0]
+        dataset_name = cmdargs.dataset_name
         local = cmdargs.local
         remote = cmdargs.remote
 
@@ -105,9 +107,9 @@ class Studio(CmdBase):
 
         view = View(dataset_name)
 
-        print(f"local:{local}")
-        print(f"remote:{str(remote)}")
-        print(f"exists on localhost: {local_exists}")
+        # print(f"local:{local}")
+        # print(f"remote:{str(remote)}")
+        # print(f"exists on localhost: {local_exists}")
 
         if remote is True:
             if local_exists is True:
@@ -124,4 +126,4 @@ class Studio(CmdBase):
             if local_exists is True:
                 view.view_local_dataset()
             else:
-                print(f"Dataset {dataset_name} is not exists on local.")
+                stdio.print_stderr(f"Dataset {dataset_name} is not exists on local.")
