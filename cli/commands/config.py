@@ -32,7 +32,7 @@ class Config(CmdBase):
         """
 
         # config_parser = subparsers.add_parser('config', help='set dsdl configuration.', example='config.example')
-        config_parser = subparsers.add_parser('config', help='set dsdl configuration.')
+        config_parser = subparsers.add_parser('config', help='set odl-cli configuration.', example = 'config.example')
         config_parser.add_argument('-k',
                                    '--keys',
                                    action = 'store_true',
@@ -46,7 +46,7 @@ class Config(CmdBase):
 
         
         sub_config_parser = config_parser.add_subparsers(dest = 'command')
-        repo_parser = sub_config_parser.add_parser('repo', help = 'set dsdl repo configuration')
+        repo_parser = sub_config_parser.add_parser('repo', help = 'set repo configuration')
         repo_parser.add_argument('--repo-name',
                                  help = 'set repo name',
                                  required = True)
@@ -61,7 +61,7 @@ class Config(CmdBase):
                                  help = 'remove specific configuration',
                                  required = False)
         
-        storage_parser = sub_config_parser.add_parser('storage', help = 'set dsdl storage configuration')
+        storage_parser = sub_config_parser.add_parser('storage', help = 'set storage configuration, only support local/s3/sftp for now')
         storage_parser.add_argument('--storage-name', 
                                     help = 'set storage name', 
                                     required = True)
@@ -192,14 +192,14 @@ class Config(CmdBase):
             config['storage'][args.storage_name]['sk'] = args.storage_credentials[0][1]
             config['storage'][args.storage_name]['path'] = args.storage_path
             config['storage'][args.storage_name]['endpoint'] = args.storage_endpoint
-            print_stdout('Yours3 config for {} success !'.format(args.storage_name))
+            print_stdout('STORAGE S3:  {} config success !'.format(args.storage_name))
             logger.info('STORAGE S3: {} config success !'.format(args.storage_name))
             
         elif args.storage_path[:4] == 'sftp':
             config['storage'][args.storage_name]['user'] = args.storage_credentials[0][0]
             config['storage'][args.storage_name]['password'] = args.storage_credentials[0][1]
             config['storage'][args.storage_name]['path'] = args.storage_path
-            print_stdout('Your sftp config for {} success !'.format(args.storage_name))
+            print_stdout('STORAGE SFTP: {} config success !'.format(args.storage_name))
             logger.info('STORAGE STFP: {} config success !'.format(args.storage_name))
     
     def __storage_delete(self, config, args):

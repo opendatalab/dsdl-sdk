@@ -20,7 +20,7 @@ class Ls(CmdBase):
             subparsers (_type_): _description_
         """
         
-        status_parser = subparsers.add_parser('ls', help = 'Show available datasets')
+        status_parser = subparsers.add_parser('ls', help = 'show local datasets', example = 'ls.example')
         status_parser.add_argument('-s',
                                    '--skip-header', 
                                    help = 'toggle display for headers',
@@ -71,7 +71,7 @@ class Ls(CmdBase):
 
         # default display no argument is given
         if not (cmdargs.skip_header or cmdargs.verbose):
-            rprint(tabulate(datasplit_list_trim, headers='keys', tablefmt='plain'))
+            # rprint(tabulate(datasplit_list_trim, headers='keys', tablefmt='plain'))
             rprint(tabulate(dataset_list_trim, headers='keys', tablefmt='plain'))
             
         if cmdargs.verbose:
