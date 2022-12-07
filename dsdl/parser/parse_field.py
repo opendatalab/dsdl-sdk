@@ -3,7 +3,7 @@ from .utils import *
 from dataclasses import dataclass
 from typing import Optional, Set
 import warnings
-from dsdl.warning import DuplicateDefineWarning, DefineSyntaxWarning
+from dsdl.warning import DefineSyntaxWarning
 
 
 @dataclass()

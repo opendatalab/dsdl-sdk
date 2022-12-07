@@ -2,6 +2,8 @@ import re
 import networkx as nx
 from typing import Dict, List
 from jsonmodels import models, fields, validators
+import keyword
+from dsdl.exception import ValidationError
 
 
 TYPES_WITHOUT_PARS = [
@@ -49,6 +51,25 @@ def sanitize_variable_name(varstr: str) -> str:
     temp = [re.sub("\W|^(?=\d)", "_", i) for i in temp]
     temp = "__".join(temp)
     return temp
+
+
+def check_name_format(varstr: str):
+    if not varstr.isidentifier():
+        err_msg = (
+            f"`{varstr}` must be a a valid identifier. "
+            f"Struct name is considered a valid identifier if "
+            f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). "
+            f"A valid identifier cannot start with a number, or contain any spaces."
+        )
+        raise ValidationError(f"{err_msg}")
+    # 判断是否为python保留字
+    if keyword.iskeyword(varstr):
+        err_msg = (
+            f"`{varstr}` can't be a Python keyword."
+            f"check https://docs.python.org/3/reference/lexical_analysis.html#keywords "
+            f"for more information."
+        )
+        raise ValidationError(err_msg)
 
 
 def rreplace(s, old, new, occurrence):
