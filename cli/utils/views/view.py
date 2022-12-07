@@ -27,7 +27,7 @@ class View:
         streamlit_cmd = (
             f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name}"
         )
-        print("::: ", streamlit_cmd)
+        # print("::: ", streamlit_cmd)
         try:
             os.system(streamlit_cmd)
         except Exception as e:
