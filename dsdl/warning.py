@@ -16,3 +16,7 @@ class ClassHasDefinedWarning(SyntaxWarning):
 
 class ImportWarning(SyntaxWarning):
     pass
+
+
+class DefineSyntaxWarning(SyntaxWarning):
+    pass

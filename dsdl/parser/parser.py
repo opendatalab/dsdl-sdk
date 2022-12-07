@@ -1,9 +1,12 @@
+import warnings
+
 import click
 import json
+import keyword
 from abc import ABC, abstractmethod
 from yaml import load as yaml_load
 from dsdl.exception import ValidationError, DefineSyntaxError, DSDLImportError
-from dsdl.warning import DuplicateDefineWarning
+from dsdl.warning import DuplicateDefineWarning, DefineSyntaxWarning
 import os
 from dataclasses import dataclass, field
 from enum import Enum
@@ -104,7 +107,9 @@ class DSDLParser(Parser, ABC):
         except KeyError as e:
             err_msg = f"data yaml must contains {e} section"
             if self.report_flag:
-                temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
+                temp_check_item = CheckLogItem(
+                    def_name="all", msg=f"DefineSyntaxError: {err_msg}"
+                )
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise DefineSyntaxError(err_msg)
@@ -113,7 +118,9 @@ class DSDLParser(Parser, ABC):
         except KeyError as e:
             err_msg = f"data yaml must contains {e} section"
             if self.report_flag:
-                temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
+                temp_check_item = CheckLogItem(
+                    def_name="all", msg=f"DefineSyntaxError: {err_msg}"
+                )
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise DefineSyntaxError(err_msg)
@@ -122,12 +129,29 @@ class DSDLParser(Parser, ABC):
         try:
             data_sample_type = desc["data"]["sample-type"]
         except KeyError as e:
-            err_msg = f"data yaml must contains {e} in `data` section"
+            err_msg = (
+                f"data yaml must contains {e} in `data` section with `sample-type`"
+            )
             if self.report_flag:
-                temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
+                temp_check_item = CheckLogItem(
+                    def_name="all", msg=f"DefineSyntaxError: {err_msg}"
+                )
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise DefineSyntaxError(err_msg)
+
+        # 校验必须有data字段和data中的sample-type字段
+        try:
+            global_info_type = desc["data"]["global-info-type"]
+        except KeyError as e:
+            global_info_type = None
+            warning_msg = f"{e}, `global-info-type` is not defined"
+            if self.report_flag:
+                temp_check_item = CheckLogItem(
+                    def_name="all", msg=f"DefineSyntaxWarning: {warning_msg}"
+                )
+                CHECK_LOG.sub_struct.append(temp_check_item)
+            warnings.warn(warning_msg, DefineSyntaxWarning)
 
         # import原则：优先import `-p`指定的路径，木有报错；如果`-p`木有指定，先import 本地路径，没有的话import dsdl/library路径
         import_list = []
@@ -140,7 +164,8 @@ class DSDLParser(Parser, ABC):
                         import_list.append(temp_p)
                     else:
                         raise DSDLImportError(
-                            f"{p} is not exists in `{library_path}`," f"please given right path using `-p`."
+                            f"{p} is not exists in `{library_path}`,"
+                            f"please given right path using `-p`."
                         )
             else:
                 library_path = os.path.dirname(data_file)
@@ -149,7 +174,9 @@ class DSDLParser(Parser, ABC):
                     if os.path.exists(temp_p):
                         import_list.append(temp_p)
                     else:
-                        temp_p = os.path.join("dsdl", "dsdl_library", p.strip() + ".yaml")
+                        temp_p = os.path.join(
+                            "dsdl", "dsdl_library", p.strip() + ".yaml"
+                        )
                         if os.path.exists(temp_p):
                             import_list.append(temp_p)
                         else:
@@ -183,10 +210,16 @@ class DSDLParser(Parser, ABC):
 
         # get self.data_sample_type and self.sample_param_map
         try:
-            PARAMS = ParserParam(data_type=data_sample_type, struct_defi=class_defi)
+            PARAMS = ParserParam(
+                sample_type=data_sample_type,
+                struct_defi=class_defi,
+                global_info_type=global_info_type,
+            )
         except Exception as e:
             if self.report_flag:
-                temp_check_item = CheckLogItem(def_name=TypeEnum.STRUCT.value, msg=f"{e}")
+                temp_check_item = CheckLogItem(
+                    def_name=TypeEnum.STRUCT.value, msg=f"{e}"
+                )
                 CHECK_LOG.sub_struct.append(temp_check_item)
                 return
             raise Exception(e)
@@ -198,7 +231,9 @@ class DSDLParser(Parser, ABC):
             except KeyError as e:
                 err_msg = f"{define_name} section must contains {e} sub-section"
                 if self.report_flag:
-                    temp_check_item = CheckLogItem(def_name="all", msg=f"DefineSyntaxError: {err_msg}")
+                    temp_check_item = CheckLogItem(
+                        def_name="all", msg=f"DefineSyntaxError: {err_msg}"
+                    )
                     CHECK_LOG.sub_struct.append(temp_check_item)
                     return
                 raise DefineSyntaxError(err_msg)
@@ -206,7 +241,9 @@ class DSDLParser(Parser, ABC):
                 if define_name in self.struct_name:
                     err_msg = f"{define_name} has defined."
                     if self.report_flag:
-                        temp_check_item = CheckLogItem(def_name="all", msg=f"DuplicateDefineWarning: {err_msg}")
+                        temp_check_item = CheckLogItem(
+                            def_name="all", msg=f"DuplicateDefineWarning: {err_msg}"
+                        )
                         CHECK_LOG.sub_struct.append(temp_check_item)
                         return
                     raise DuplicateDefineWarning(err_msg)
@@ -231,9 +268,24 @@ class DSDLParser(Parser, ABC):
                 for raw_field in define_value["$fields"].items():
                     field_name = raw_field[0].strip()
                     field_type = raw_field[1].strip()
+                    # 判断是否为python保留字
+                    if keyword.iskeyword(field_name):
+                        err_msg = (
+                            f"'{field_name}' in `{define_name}` can't be a Python keyword."
+                            f"check https://docs.python.org/3/reference/lexical_analysis.html#keywords "
+                            f"for more information."
+                        )
+                        if self.report_flag:
+                            temp_check_item = CheckLogItem(
+                                def_name=TypeEnum.STRUCT.value,
+                                msg=f"ValidationError: {err_msg}",
+                            )
+                            CHECK_LOG.sub_struct.append(temp_check_item)
+                            return
+                        raise ValidationError(err_msg)
                     if not field_name.isidentifier():
                         err_msg = (
-                            f"'{field_name}' must be a a valid identifier. "
+                            f"'{field_name}' in `{define_name}` must be a a valid identifier. "
                             f"Field name is considered a valid identifier if "
                             f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). "
                             f"A valid identifier cannot start with a number, or contain any spaces."
@@ -241,37 +293,49 @@ class DSDLParser(Parser, ABC):
                         if self.report_flag:
                             temp_check_item = CheckLogItem(
                                 def_name=TypeEnum.STRUCT.value,
-                                msg=f"DefineSyntaxError: {err_msg}",
+                                msg=f"ValidationError: {err_msg}",
                             )
                             CHECK_LOG.sub_struct.append(temp_check_item)
                             return
-                        raise DefineSyntaxError(err_msg)
+                        raise ValidationError(err_msg)
                     if struct_params:
-                        for param, value in PARAMS.general_param_map[define_name].params_dict.items():
+                        for param, value in PARAMS.general_param_map[
+                            define_name
+                        ].params_dict.items():
                             field_type = field_type.replace("$" + param, value)
                     try:
                         field_list[field_name] = EleStruct(
                             name=field_name,
-                            type=FIELD_PARSER.pre_parse_struct_field(field_name, field_type),
+                            type=FIELD_PARSER.pre_parse_struct_field(
+                                field_name, field_type
+                            ),
                         )
                     except Exception as e:
                         if self.report_flag:
-                            temp_check_item = CheckLogItem(def_name=TypeEnum.STRUCT.value, msg=f"{e}")
+                            temp_check_item = CheckLogItem(
+                                def_name=TypeEnum.STRUCT.value, msg=f"{e}"
+                            )
                             CHECK_LOG.sub_struct.append(temp_check_item)
                             return
                         raise Exception(e)
                 # deal with `$optional` section after `$fields` section，
                 # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
                 if "$optional" in define_value or FIELD_PARSER.optional:
-                    optional_set = set(define_value["$optional"]) | FIELD_PARSER.optional
+                    optional_set = (
+                        set(define_value["$optional"]) | FIELD_PARSER.optional
+                    )
                     for optional_name in optional_set:
                         optional_name = optional_name.strip()
                         if optional_name in field_list:
                             temp_type = field_list[optional_name].type
-                            temp_type = add_key_value_2_struct_field(temp_type, "optional", True)
+                            temp_type = add_key_value_2_struct_field(
+                                temp_type, "optional", True
+                            )
                             field_list[optional_name].type = temp_type
                         else:
-                            err_msg = f"Error in $optional: {optional_name} is not in $field"
+                            err_msg = (
+                                f"Error in $optional: {optional_name} is not in $field"
+                            )
                             if self.report_flag:
                                 temp_check_item = CheckLogItem(
                                     def_name=TypeEnum.STRUCT.value,
@@ -310,7 +374,9 @@ class DSDLParser(Parser, ABC):
                         CLASS_PARSER = ParserClass(define_name, define_value["classes"])
                 except Exception as e:
                     if self.report_flag:
-                        temp_check_item = CheckLogItem(def_name=TypeEnum.CLASS_DOMAIN.value, msg=f"{e}")
+                        temp_check_item = CheckLogItem(
+                            def_name=TypeEnum.CLASS_DOMAIN.value, msg=f"{e}"
+                        )
                         CHECK_LOG.sub_struct.append(temp_check_item)
                         return
                     raise e
@@ -393,7 +459,9 @@ class DSDLParser(Parser, ABC):
                 flag=1,
             )
             CHECK_LOG.sub_struct.append(temp_check_item)
-            temp_check_item = CheckLogItem(def_name=TypeEnum.STRUCT.value, msg=f"success parser all strcut", flag=1)
+            temp_check_item = CheckLogItem(
+                def_name=TypeEnum.STRUCT.value, msg=f"success parser all strcut", flag=1
+            )
             CHECK_LOG.sub_struct.append(temp_check_item)
             temp_check_item = CheckLogItem(
                 def_name=TypeEnum.STRUCT.value,
@@ -404,7 +472,9 @@ class DSDLParser(Parser, ABC):
             CHECK_LOG.flag = 1
         return dsdl_py
 
-    def process(self, data_file: str, library_path: str, output_file: str) -> Optional[str]:
+    def process(
+        self, data_file: str, library_path: str, output_file: str
+    ) -> Optional[str]:
         self._parse(data_file, library_path)
         if self.report_flag and CHECK_LOG.flag:
             dsdl_py = self._generate()
