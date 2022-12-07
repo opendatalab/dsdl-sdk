@@ -45,8 +45,9 @@ class Search(CmdBase):
         Returns:
 
         """
-        print_stdout("""CIFAR-10-Auto
-CIFAR-10
-CIFAR-100
-Fashion-MNIST
-STL-10""")
+        print_stdout("""
+CIFAR-10-Auto     21M
+CIFAR-10          241M
+CIFAR-100         243M
+Fashion-MNIST     281M
+STL-10            2.1G""")
