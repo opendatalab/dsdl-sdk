@@ -83,7 +83,7 @@ bump2version = { version = "^1.0.1" }
 
 
 [tool.setuptools_scm]
-write_to = "cli/commands/__version__.py"
+# write_to = "cli/commands/__version__.py"
 
 ## semantic_release [start]
 # [tool.semantic_release]
