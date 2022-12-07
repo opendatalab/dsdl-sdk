@@ -2,6 +2,8 @@ from dsdl.exception import DefineSyntaxError, DefineTypeError
 from .utils import *
 from dataclasses import dataclass
 from typing import Optional, Set
+import warnings
+from dsdl.warning import DuplicateDefineWarning, DefineSyntaxWarning
 
 
 @dataclass()
@@ -103,28 +105,36 @@ class ParserField:
             return f'"{val}"'
 
         param_dict = dict()
-        for param in param_list:
-            parts = param.split("=")
-            parts = [i.strip() for i in parts]
-            # 需要考虑参数省略的情况，因为dom经常省略
-            if len(parts) == 2:
-                field_para = parts[0]
-                field_var = parts[1]
-            elif len(parts) == 1:
-                field_para = "fmt"
-                field_var = parts[0]
-            else:
-                raise DefineSyntaxError(f"invalid parameters {param} in {field_type}.")
+        if not param_list:
+            warnings.warn(
+                f"basic type `{field_type}` not contains fmt, we use ISO 8601 format by default.",
+                DefineSyntaxWarning,
+            )
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为dom经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "fmt"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type}."
+                    )
 
-            if field_para != "fmt":
-                raise DefineSyntaxError(
-                    f"invalid parameters {field_para} in {field_type}."
-                )
+                if field_para != "fmt":
+                    raise DefineSyntaxError(
+                        f"invalid parameters {field_para} in {field_type}."
+                    )
 
-            if field_para in param_dict:
-                raise ValueError(f"duplicated param {param} in {field_type}.")
-            else:
-                param_dict[field_para] = sanitize_fmt(field_var)
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type}.")
+                else:
+                    param_dict[field_para] = sanitize_fmt(field_var)
 
         return (
             field_type
@@ -162,7 +172,9 @@ class ParserField:
                     field_para = "mode"
                     field_var = parts[0]
                 else:
-                    raise DefineSyntaxError(f"invalid parameters {param} in {field_type}.")
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type}."
+                    )
 
                 if field_para != "mode":
                     raise DefineSyntaxError(
