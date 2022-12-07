@@ -98,3 +98,75 @@ def load_samples(dsdl_path: str, path: Union[str, Sequence[str]], extract_key="s
             else:
                 samples.append(data)
     return samples
+
+
+def prepare_input(**kwargs):
+    def _decorator(func):
+        def process(dsdl_yaml, config, location, num, random, fields, task, position, **kwargs2):
+            result = {
+                "dsdl_yaml": dsdl_yaml,
+                "config": config,
+                "location": location,
+                "num": num,
+                "random": random,
+                "fields": fields,
+                "task": task,
+                "position": position,
+                **kwargs2
+            }
+
+            # parse samples and global-info
+            with open(dsdl_yaml, "r") as f:
+                dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
+                sample_type = dsdl_info['sample-type']
+                global_info_type = dsdl_info.get("global-info-type", None)
+                global_info = None
+                if "sample-path" not in dsdl_info or dsdl_info["sample-path"] in ("local", "$local"):
+                    assert "samples" in dsdl_info, f"Key 'samples' is required in {dsdl_yaml}."
+                    samples = dsdl_info['samples']
+                else:
+                    sample_path = dsdl_info["sample-path"]
+                    samples = load_samples(dsdl_yaml, sample_path)
+                if global_info_type is not None:
+                    if "global-info-path" not in dsdl_info:
+                        assert "global-info" in dsdl_info, f"Key 'global-info' is required in {dsdl_yaml}."
+                        global_info = dsdl_info["global_info"]
+                    else:
+                        global_info_path = dsdl_info["global-info-path"]
+                        global_info = load_samples(dsdl_yaml, global_info_path, "global-info")[0]
+            result["dsdl_yaml"] = {"samples": samples, "global_info": global_info, "sample_type": sample_type,
+                                   "global_info_type": global_info_type, "yaml_file": dsdl_yaml}
+
+            # parse location config
+            config_dic = {}
+            with open(config, encoding='utf-8') as config_file:
+                exec(config_file.read(), config_dic)
+            location_config = config_dic["local" if location == "local" else "ali_oss"]
+            result["config"] = location_config
+
+            # parse field list
+            if task:
+                assert task in TASK_FIELDS, f"invalid task, you can only choose in {list(TASK_FIELDS.keys())}"
+                fields = TASK_FIELDS[task]
+            else:
+                if fields is None:
+                    fields = []
+                else:
+                    local_dic = {}
+                    exec(f"f = list({fields})", {}, local_dic)
+                    fields = local_dic['f']
+                fields = list(set(fields + ["image", "dict"]))
+            fields = [_.lower() for _ in fields]
+
+            result["fields"] = fields
+
+            return result
+
+        def wrapper(*args, **kwargs3):
+            ret = process(*args, **kwargs3, **kwargs)
+            ret = func(**ret)
+            return ret
+
+        return wrapper
+
+    return _decorator
