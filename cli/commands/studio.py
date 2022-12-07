@@ -43,26 +43,7 @@ class Studio(CmdBase):
             help="view the specified dataset on webpage.",
             example="studio.example",
         )
-        studio_parser.add_argument(
-            "-l",
-            "--local",
-            nargs="?",
-            default="True",
-            const="True",
-            type=bool,
-            help="view local[default] dataset.",
-            metavar="SET to True to VIEW LOCAL DATASET",
-        )
-        studio_parser.add_argument(
-            "-r",
-            "--remote",
-            nargs="?",
-            default="False",
-            const="False",
-            type=bool,
-            help="view remote[when explicitly specified to true] dataset.",
-            metavar="SET to True(default false) to VIEW REMOTE DATASET",
-        )
+
         studio_parser.add_argument(
             "-d",
             "--dataset-name",
@@ -73,6 +54,29 @@ class Studio(CmdBase):
             help="dataset name",
             metavar="[DATASET NAME]",
             required=True,
+        )
+
+        studio_parser_group = studio_parser.add_mutually_exclusive_group()
+
+        studio_parser_group.add_argument(
+            "-l",
+            "--local",
+            nargs="?",
+            default="True",
+            const="True",
+            type=bool,
+            help="view local[default] dataset.",
+            metavar="SET to True to VIEW LOCAL DATASET",
+        )
+        studio_parser_group.add_argument(
+            "-r",
+            "--remote",
+            nargs="?",
+            default="False",
+            const="False",
+            type=bool,
+            help="view remote[when explicitly specified to true] dataset.",
+            metavar="SET to True(default false) to VIEW REMOTE DATASET",
         )
         return studio_parser
 
