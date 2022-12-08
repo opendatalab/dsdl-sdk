@@ -1,5 +1,5 @@
 from importlib.metadata import version, PackageNotFoundError
-import git
+# import git
 from setuptools_scm import get_version
 
 try:
