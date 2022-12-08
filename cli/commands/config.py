@@ -175,8 +175,8 @@ class Config(CmdBase):
                     pprint(config, expand_all=True)
 
             if not (args.keys or args.list):
-                snippet = """Please use -h to get more information. """
-                #print_stderr(snippet)
+                helper_str = """Please use -h to get more information. """
+                # rprint(helper_str)
                 self._parser.print_help()
 
     def __config_writter(self, config):
