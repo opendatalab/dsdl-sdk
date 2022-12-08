@@ -42,16 +42,27 @@ class Util:
 
     @staticmethod
     def extract_class_dom(sample_type):
-        c_dom = re.findall(r"\[(.*?)\]", sample_type)
-        if c_dom:
-            c_dom = c_dom[0]
-            if "=" in c_dom:
-                c_dom = c_dom.split("=")[-1]
-            c_dom = c_dom.split(",")
-            res = [_.strip("[] ") for _ in c_dom]
+        res = dict()
+        c_dom = re.findall(r"\[(.*?)\]$", sample_type.strip())
+        if not c_dom:
             return res
-        else:
-            return list()
+        c_dom = c_dom[0]
+        c_dom1 = re.findall(r"([^,]*?)\s*=\s*\[(.*?)\]", c_dom)
+        c_dom2 = re.findall(r"([^,]*?)\s*=\s*(\w+)", c_dom)
+
+        for item in c_dom1:
+            param, value = item
+            param = param.strip()
+            value = value.split(",")
+            value = [_.strip() for _ in value]
+            res[param] = value
+        for item in c_dom2:
+            param, value = item
+            param = param.strip()
+            value = value.strip()
+            res[param] = [value]
+
+        return res
 
     @staticmethod
     def format_sample(samples):
