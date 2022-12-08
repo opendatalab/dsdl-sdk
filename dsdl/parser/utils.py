@@ -21,6 +21,7 @@ TYPES_WITHOUT_PARS = [
     "Video",
     "Dict",
     "Text",
+    "InstanceID",
 ]
 TYPES_TIME = ["Date", "Time"]
 TYPES_LABEL = ["Label", "LabelMap", "Keypoint"]
