@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+import signal
 
 import commons.stdio as stdio
 from commons.exceptions import CLIException, ExistCode
@@ -35,11 +36,8 @@ class View:
             f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name}"
         )
         try:
+            signal.signal(signal.SIGINT, self.ctrl_c_handler)
             os.system(streamlit_cmd)
-        except KeyboardInterrupt:
-            stdio.print_stderr("View cancelled")
-            logger.exception("View cancelled")
-            sys.exit(0)
         except CLIException as e:
             stdio.print_stderr(e.message)
             logger.exception(e.message)
@@ -63,11 +61,8 @@ class View:
                         )
                         streamlit_cmd = f"streamlit run {self.view_code_abspath}"
                         try:
+                            signal.signal(signal.SIGINT, self.ctrl_c_handler)
                             os.system(streamlit_cmd)
-                        except KeyboardInterrupt:
-                            stdio.print_stderr("View cancelled")
-                            logger.exception("View cancelled")
-                            sys.exit(0)
                         except CLIException as e:
                             logger.exception(e.message)
                             stdio.print_stderr(e.message)
@@ -89,3 +84,10 @@ class View:
         stdio.print_stderr(
             f"[ TO BE DONE ] Processing remote dataset {self.dataset_name} visulization.\n Bye..."
         )
+
+    def ctrl_c_handler(self, signum, frame):
+        response = input("Are you sure you want to exit? (y/n): ")
+        if response == "y":
+            stdio.print_stderr("View cancelled")
+            logger.exception("View cancelled")
+            sys.exit(0)
