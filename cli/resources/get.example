@@ -2,5 +2,7 @@
     $%(prog)s CIFAR-10
 02  download a split of a dataset
     $%(prog)s CIFAR-10 --split train
-02  only download label data of a dataset
+03  only download label data of a split of dataset
     $%(prog)s CIFAR-10 --split train --label
+04 only download label data of a dataset
+    $%(prog)s CIFAR-10 --label

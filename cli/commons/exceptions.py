@@ -20,6 +20,7 @@ class ExistCode(Enum):
     DATASET_PARAM_NOT_EXIST = 10  # 缺少dataset name参数
     SPLIT_NOT_EXIST = 11  # split在本地和远端都不存在
     DATASET_NOT_EXIST_REMOTE = 12  # dataset在本地和远端都不存在
+    SQLITE_OPERATION_ERROR = 13  # sqlite操作报错
 
 
 class CLIException(Exception):
