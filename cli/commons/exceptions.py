@@ -5,7 +5,6 @@ class ExistCode(Enum):
     """
     定义错误码
     """
-
     SUCCESS = 0
     NOT_SUPPORTED_STORE_PATH = 1
     STORAGE_NAME_NOT_EXIST = 2  # 有storage这个配置，但是没有storage_name这个配置
@@ -17,6 +16,10 @@ class ExistCode(Enum):
     VIEW_FROM_INSPECT_FAILED = 6  # 从inspect命令中中查看数据集失败
     VIEW_LOCAL_DATASET_FAILED = 7  # 从本地查看数据集失败
     VIEW_REMOTE_DATASET_FAILED = 8  # 从远程查看数据集失败
+    QUERY_SYNTAX_ERROR = 9  # 查询数据集时的语法报错
+    DATASET_PARAM_NOT_EXIST = 10  # 缺少dataset name参数
+    SPLIT_NOT_EXIST = 11  # split在本地和远端都不存在
+    DATASET_NOT_EXIST_REMOTE = 12  # dataset在本地和远端都不存在
 
 
 class CLIException(Exception):

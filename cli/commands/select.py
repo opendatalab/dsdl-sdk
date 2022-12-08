@@ -14,6 +14,10 @@ from commons.argument_parser import EnvDefaultVar
 from utils import admin, query
 from utils.oss_ops import ops
 import yaml
+import re
+from commons.stdio import print_stdout
+from loguru import logger
+from commons.exceptions import CLIException, ExistCode
 
 aws_access_key_id = query.aws_access_key_id
 aws_secret_access_key = query.aws_secret_access_key
@@ -22,6 +26,28 @@ region_name = query.region_name
 default_bucket = query.default_bucket
 
 default_path = DEFAULT_LOCAL_STORAGE_PATH
+
+
+def query_error_info(error_info):
+    try:
+        info = str(error_info).split("\n")
+        if "^" in info[-1]:
+            error_pos = info[-1].index("^")
+            index_list = [m.start() for m in re.finditer(' ', info[-2])]
+            index = -1
+            space = 0
+            for n in index_list:
+                if n > error_pos:
+                    index = n
+                    break
+                space = n
+            std_info = "\n".join(["Query syntax error: ", info[-2][space:index], info[-1][space:]])
+        else:
+            std_info = error_info
+
+        return std_info
+    except Exception as e:
+        pass
 
 
 class Select(CmdBase):
@@ -42,16 +68,9 @@ class Select(CmdBase):
         """
         select_parser = subparsers.add_parser('select', help='Select data from dataset',
                                               example="select.example",
-                                              description='Select data from dataset', )  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
-        # select_parser.add_argument("-s", '--show', nargs='?', default='SHOW', help='show example string.....',
-        #                            metavar='SS')
-        # example_parser.add_argument('--test1', nargs='?', default='x', help='show test1', metavar='a')
-        # example_parser.add_argument('--test-1234', nargs='?', default='t', help='show test-1234', metavar='c')
-        select_parser.add_argument("dataset_name", action=EnvDefaultVar, envvar=DSDL_CLI_DATASET_NAME,
-                                   type=str,
-                                   help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
-                                   metavar='')
-        select_parser.add_argument("--split-name", type=str, required=True,
+                                              description='Select data from dataset', )
+
+        select_parser.add_argument("--split", type=str, required=True,
                                    help='The split name of the dataset, such as train/test/unlabeled or user self-defined split.',
                                    metavar='')
         select_parser.add_argument("--filter", type=str,
@@ -76,6 +95,11 @@ class Select(CmdBase):
         select_parser.add_argument("--output", type=str,
                                    help='The path to save the select result as a new split',
                                    metavar='')
+        select_parser.add_argument("dataset_name", action=EnvDefaultVar,
+                                   envvar=DSDL_CLI_DATASET_NAME,
+                                   type=str,
+                                   help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
+                                   )
         return select_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
@@ -93,7 +117,7 @@ class Select(CmdBase):
         conf_dict = admin.get_config_dict()
 
         dataset_name = cmdargs.dataset_name
-        split_name = cmdargs.split_name
+        split_name = cmdargs.split
         filter = cmdargs.filter
         # fields = '*' if cmdargs.fields is None else cmdargs.fields
         fields = '*'
@@ -102,7 +126,12 @@ class Select(CmdBase):
         random = cmdargs.random
         export_name = cmdargs.export_name
         output = cmdargs.output if cmdargs.output else 'default'
-        output_path = conf_dict['storage'][cmdargs.output]['path'] if cmdargs.output else default_path
+        try:
+            output_path = conf_dict['storage'][cmdargs.output]['path'] if cmdargs.output else default_path
+        except Exception as e:
+            error_info = str(
+                e) + "\n" + "get output path error, output refers to the storage name, the storage path and name are required to be set with config command"
+            raise CLIException(ExistCode.STORAGE_NOT_EXIST, error_info)
 
         db_client = admin.DBClient()
         s3_client = ops.OssClient(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
@@ -115,16 +144,27 @@ class Select(CmdBase):
         # assert (db_client.is_dataset_local_exist(dataset_name)), "there is no dataset named %s locally" % dataset_name
 
         if not db_client.is_split_local_exist(dataset_name, split_name):
-            print(
+            print_stdout(
                 "there is no split named %s of dataset %s locally, search in remote repo" % (split_name, dataset_name))
 
             if not s3_client.is_split_remote_exist(default_bucket, dataset_name, split_name):
-                print("there is no split named %s of dataset %s in remote repo" % (split_name, dataset_name))
+                print_stdout("there is no split named %s of dataset %s neither in remote repo nor local storage" % (
+                    split_name, dataset_name))
                 exit()
 
         split_reader = query.SplitReader(dataset_name, split_name)
-        df = split_reader.select(select_cols=fields, filter_cond=filter, limit=limit, offset=offset, samples=random)
-        print(df)
+
+        try:
+            df = split_reader.select(select_cols=fields, filter_cond=filter, limit=limit, offset=offset, samples=random)
+        except Exception as e:
+            # print_stdout(str(e))
+            logger.error(e)
+            raise CLIException(ExistCode.QUERY_SYNTAX_ERROR, query_error_info(e))
+        print_stdout(df)
+
+        if cmdargs.output is not None and export_name is None:
+            print_stdout("If you want to export select result to a directory, --export-name is required")
+            exit()
 
         if export_name is not None:
             sub_split = query.Split(dataset_name, export_name, output_path)
@@ -192,7 +232,7 @@ class Select(CmdBase):
                                            dataset_media_size)
 
             sub_split.save(df, schema, 'user-defined', 1, media_download_flag, stat)
-            print(path_info)
+            print_stdout(path_info)
 
             # to do operations about fields
             # a, b = query.get_parquet_metadata(parquet_path)

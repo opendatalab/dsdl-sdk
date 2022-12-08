@@ -8,6 +8,10 @@ import time
 from boto3.session import Session
 from botocore.exceptions import ClientError
 
+from commons.stdio import print_stdout
+from loguru import logger
+from commons.exceptions import CLIException, ExistCode
+
 
 def print_progress(iteration, total, start_time, prefix='', suffix='', decimals=1, bar_length=100):
     """
@@ -151,14 +155,14 @@ class OssClient:
         :param local_directory: local directory name
         :return:
         """
-        print("preparing...")
+        print_stdout("preparing...")
         dirs_list = self.get_recursive_dir_list(bucket=bucket, remote_directory=remote_directory)
         for d in dirs_list:
             path = os.path.join(local_directory, d)
             if not os.path.exists(path):
                 os.mkdir(path)
 
-        print("start download...")
+        print_stdout("start download...")
 
         # print(bucket)
         # print(remote_directory)
@@ -179,7 +183,7 @@ class OssClient:
             print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
                            bar_length=50)
 
-        print('Download Complete')
+        print_stdout('Download Complete')
 
     def download_list(self, bucket, media_list, remote_directory, local_directory):
         """
@@ -190,7 +194,7 @@ class OssClient:
         @param local_directory: local directory name
         @return:
         """
-        print("preparing...")
+        print_stdout("preparing...")
         dirs_list = self.get_recursive_dir_list(bucket=bucket, remote_directory=remote_directory)
         # print(dirs_list)
         for d in dirs_list:
@@ -198,7 +202,7 @@ class OssClient:
             if not os.path.exists(path):
                 os.mkdir(path)
 
-        print("start download...")
+        print_stdout("start download...")
 
         process = 0
         file_number = len(media_list)
@@ -216,7 +220,7 @@ class OssClient:
             print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
                            bar_length=50)
 
-        print('Download Complete')
+        print_stdout('Download Complete')
 
     def get_sum_size(self, bucket, file_key_list):
         sum = 0
@@ -266,7 +270,8 @@ class OssClient:
         @return:
         """
         if not self.is_dataset_remote_exist(bucket, dataset_name):
-            print("The dataset %s does not exist in remote repo" % dataset_name)
+            print_stdout("The dataset %s does not exist in remote repo" % dataset_name)
+            # logger.info("The dataset %s does not exist in remote repo" % dataset_name)
             exit()
         else:
             parquet_prefix = dataset_name + "/parquet/"
@@ -422,5 +427,5 @@ if __name__ == '__main__':
     # print(s3_client.list_splits("dsdldata", "STL-10"))
     # print(s3_client.is_split_remote_exist("dsdldata", "STL-101", "unlabeled1"))
     print(s3_client.get_sum_size("dsdldata", ['CIFAR-10-Auto/media/000000007605.png',
-                                        'CIFAR-10-Auto/media/000000009822.png']))
+                                              'CIFAR-10-Auto/media/000000009822.png']))
     # print(s3_client.get_dir_list('dsdldata', ''))
