@@ -46,6 +46,7 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
             _, nested_report = check_struct(struct_type, sample_value, file_reader)
             if not nested_report["normal_flag"]:
                 report["normal_flag"] = False
+                report["warning_flag"] = report["warning_flag"] and nested_report["warning_flag"]
                 if "warning_msgs" in nested_report:
                     field_not_matching_msg.extend(nested_report["warning_msgs"])
         elif k in field_mappings:
@@ -59,6 +60,7 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
                     _, nested_report = check_struct(struct_type, s, file_reader)
                     if not nested_report["normal_flag"]:
                         report["normal_flag"] = False
+                        report["warning_flag"] = report["warning_flag"] and nested_report["warning_flag"]
                         if "warning_msgs" in nested_report:
                             field_not_matching_msg.extend(nested_report["warning_msgs"])
     if not report["normal_flag"]:
@@ -197,7 +199,10 @@ class Report:
                   f"<font color=orange>{warn_num}</font>个样本出现警报信息，" \
                   f"<font color=red>{error_num}</font>个样本实例化失败。"
         file_handler.write(res_str + os.linesep)
-        file_handler.write("查看具体日志信息请[点击链接](./samples_log.md)" + os.linesep)
+        if total_num != normal_num:
+            file_handler.write("查看具体日志信息请[点击链接](./samples_log.md)" + os.linesep)
+        else:
+            os.remove(osp.join(osp.split(self.output_path)[0], "samples_log.md"))
         return True
 
     def generate_image_info(self, file_handler):

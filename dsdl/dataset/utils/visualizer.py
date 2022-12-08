@@ -129,7 +129,7 @@ class ImageVisualizePipeline:
     def _calculate_distance(cls, ann_path, image_path):
         img_dir = os.path.split(image_path)[0]
         bu_distance = 0
-        while not ann_path.startswith(img_dir):
+        while not ann_path.startswith(img_dir+"/"):
             bu_distance += 1
             img_dir = os.path.split(img_dir)[0]
         td_distance = len(ann_path.replace(img_dir, "").split("/")) - 1
