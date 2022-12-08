@@ -162,17 +162,9 @@ class Config(CmdBase):
                         .format(args.storage_name))
         else:
             if args.keys:
-                snippet_keys = """
-                The available keys are:
-                    repo-name               # set repo name
-                    repo-username           # set repo username
-                    repo-userpswd           # set repo password
-                    repo-service            # set repo service url
-
-                    storage-name            # storage name
-                    storage-path            # storage path
-                    storage-credentials     # storage credentials (password, ssh-key, access-key, secret-key)
-                    storage-endpoint        # storage endpoint
+                snippet_keys = """The available keys are:
+                \nrepo-name           # set repo name\nrepo-username       # set repo username\nrepo-userpswd       # set repo password\nrepo-service        # set repo service url
+                \nstorage-name        # storage name\nstorage-path        # storage path\nstorage-credentials # storage credentials S3:(access-key, secret-key), SFTP:(username,password)\nstorage-endpoint    # storage endpoint
                 """
                 rprint(snippet_keys)
 
