@@ -41,6 +41,19 @@ class Util:
             return sample_type
 
     @staticmethod
+    def extract_class_dom(sample_type):
+        c_dom = re.findall(r"\[(.*?)\]", sample_type)
+        if c_dom:
+            c_dom = c_dom[0]
+            if "=" in c_dom:
+                c_dom = c_dom.split("=")[-1]
+            c_dom = c_dom.split(",")
+            res = [_.strip("[] ") for _ in c_dom]
+            return res
+        else:
+            return list()
+
+    @staticmethod
     def format_sample(samples):
         """
         该方法的作用就是将parse_struct方法的返回值（单个样本）写到一个列表中，方便在命令行中展示样本的基本信息
