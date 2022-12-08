@@ -97,17 +97,39 @@ class KeypointField(Field):
 class LabelField(Field):
     def __init__(self, dom, *args, **kwargs):
         super(LabelField, self).__init__(*args, **kwargs)
+        if not isinstance(dom, list):
+            self.dom_lst = [dom]
+        self.dom_dic = {_.__name__: _ for _ in self.dom_lst}
         self.dom = dom
 
     def validate(self, value):
-        try:
-            if isinstance(value, (int, str)):
-                return self.dom.get_label(value)
+
+        if not isinstance(value, (int, str)):
+            raise TypeError(
+                f"LabelField Error: invalid class label type. Expected 'int' or 'str' value, got '{value.__class__.__name__}'.")
+
+        if (isinstance(value, int) or (isinstance(value, str) and "::" not in value)):
+            if len(self.dom_lst) > 1:
+                raise RuntimeError(
+                    "LabelField Error: there are more than 1 domains in the struct, you need to specify the label's class domain explicitly.")
             else:
-                raise TypeError(
-                    f"LabelField Error: invalid class label type. Expected 'int' or 'str' value, got '{value.__class__.__name__}'.")
-        except:
-            raise RuntimeError(f"LabelField Error: The label '{value}' is not valid.")
+                try:
+                    return self.dom.get_label(value)
+                except Exception as e:
+                    raise RuntimeError(f"LabelField Error: The label '{value}' is not valid. {e}")
+
+        if isinstance(value, str) and "::" in value:
+            domain_name, label_name = value.split("::")[:2]
+
+            if domain_name not in self.dom_dic:
+                raise RuntimeError(
+                    f"LabelField Error: the class domain '{domain_name}' is not provided for the struct."
+                )
+            else:
+                try:
+                    return self.dom_dic[domain_name].get_label(label_name)
+                except Exception as e:
+                    raise RuntimeError(f"LabelField Error: The label '{value}' is not valid. {e}")
 
 
 class DateField(Field):
