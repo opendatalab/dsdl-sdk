@@ -17,6 +17,9 @@ from rich import print as rprint
 from utils import admin, query, plot
 from utils.oss_ops import ops
 import yaml
+from commons.exceptions import CLIException, ExistCode
+from commons.stdio import print_stdout
+from loguru import logger
 
 aws_access_key_id = query.aws_access_key_id
 aws_secret_access_key = query.aws_secret_access_key
@@ -54,17 +57,16 @@ class Inspect(CmdBase):
             envvar=DSDL_CLI_DATASET_NAME,
             type=str,
             help="Dataset name. The arg is optional only when the default dataset name was set by cd command.",
-            metavar="",
         )
 
         inspect_parser.add_argument(
-            "--split-name",
+            "--split",
             type=str,
             help="The split name of the dataset, such as train/test/validation split.",
             metavar="",
         )
 
-        group = inspect_parser.add_mutually_exclusive_group()
+        group = inspect_parser.add_mutually_exclusive_group(required=True)
 
         group.add_argument(
             "-d",
@@ -116,7 +118,7 @@ class Inspect(CmdBase):
         schema = cmdargs.schema
         metadata = cmdargs.metadata
         preview = cmdargs.preview
-        split_name = cmdargs.split_name
+        split_name = cmdargs.split
 
         s3_client = ops.OssClient(
             endpoint_url=endpoint_url,
@@ -130,8 +132,8 @@ class Inspect(CmdBase):
         ]
 
         if dataset_name not in remote_dataset_list:
-            print("there is no dataset named %s in remote repo" % dataset_name)
-            exit()
+            error_info = "there is no dataset named %s in remote repo" % dataset_name
+            raise CLIException(ExistCode.DATASET_NOT_EXIST_REMOTE, error_info)
 
         if db_client.is_dataset_local_exist(dataset_name):
             dataset_dict = query.get_dataset_info(dataset_name)
