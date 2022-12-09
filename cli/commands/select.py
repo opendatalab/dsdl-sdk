@@ -148,9 +148,10 @@ class Select(CmdBase):
                 "there is no split named %s of dataset %s locally, search in remote repo" % (split_name, dataset_name))
 
             if not s3_client.is_split_remote_exist(default_bucket, dataset_name, split_name):
-                print_stdout("there is no split named %s of dataset %s neither in remote repo nor local storage" % (
-                    split_name, dataset_name))
-                exit()
+                reminder = "there is no split named %s of dataset %s neither in remote repo nor local storage" % (
+                    split_name, dataset_name)
+                logger.info(reminder)
+                raise CLIException(ExistCode.DATASET_NOT_EXIST, reminder)
 
         split_reader = query.SplitReader(dataset_name, split_name)
 

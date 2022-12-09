@@ -107,8 +107,9 @@ class Get(CmdBase):
 
         # get dataset list in remote repo
         if not s3_client.is_dataset_remote_exist(default_bucket, dataset_name):
-            print_stdout("there is no dataset named %s in remote repo" % dataset_name)
-            exit()
+            reminder = "there is no dataset named %s in remote repo" % dataset_name
+            logger.info(reminder)
+            raise CLIException(ExistCode.DATASET_NOT_EXIST_REMOTE, reminder)
 
         # dataset & split flag of existence
         dataset_exist_flag = db_client.is_dataset_local_exist(dataset_name)
@@ -166,41 +167,29 @@ class Get(CmdBase):
                 dataset_media_size = stat['dataset_stat']['media_size']
 
                 if not label_flag:
-                    try:
-                        db_client.register_dataset(dataset_name, output, dataset_dir, 1, 1, dataset_media_num,
-                                                   dataset_media_size)
-                    except Exception as e:
-                        raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                    db_client.register_dataset(dataset_name, output, dataset_dir, 1, 1, dataset_media_num,
+                                               dataset_media_size)
 
                     # get meta info of split to insert into sqlite
                     for split in parquet_list:
                         stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
                         split_media_num = stat['split_stat']['media_num']
                         split_media_size = stat['split_stat']['media_size']
-                        try:
-                            db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
-                                                     split_media_num,
-                                                     split_media_size)
-                        except Exception as e:
-                            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                        db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
+                                                 split_media_num,
+                                                 split_media_size)
                 else:
-                    try:
-                        db_client.register_dataset(dataset_name, output, dataset_dir, 1, 0, dataset_media_num,
-                                                   dataset_media_size)
-                    except Exception as e:
-                        raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                    db_client.register_dataset(dataset_name, output, dataset_dir, 1, 0, dataset_media_num,
+                                               dataset_media_size)
 
                     # get meta info of split to insert into sqlite
                     for split in parquet_list:
                         stat = query.ParquetReader(os.path.join(dataset_dir, 'parquet', split)).get_metadata()
                         split_media_num = stat['split_stat']['media_num']
                         split_media_size = stat['split_stat']['media_size']
-                        try:
-                            db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 0,
-                                                     split_media_num,
-                                                     split_media_size)
-                        except Exception as e:
-                            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                        db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 0,
+                                                 split_media_num,
+                                                 split_media_size)
 
             # dataset has already been partly downloaded
             else:
@@ -222,16 +211,13 @@ class Get(CmdBase):
                             stat = query.ParquetReader(os.path.join(parquet_dir, split)).get_metadata()
                             split_media_num = stat['split_stat']['media_num']
                             split_media_size = stat['split_stat']['media_size']
-                            try:
-                                db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
-                                                         split_media_num,
-                                                         split_media_size)
-                            except Exception as e:
-                                raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                            db_client.register_split(dataset_name, split.replace(".parquet", ""), 'official', 1, 1,
+                                                     split_media_num,
+                                                     split_media_size)
 
                 print_stdout("check media data...")
                 if media_exist_flag:
-                    print("media data has been all downloaded")
+                    print_stdout("media data has been all downloaded")
                 else:
                     if not os.path.exists(media_dir):
                         os.mkdir(media_dir)
@@ -284,43 +270,28 @@ class Get(CmdBase):
                             stat = yaml.safe_load(f)['statistics']
                         dataset_media_num = stat['dataset_stat']['media_num']
                         dataset_media_size = stat['dataset_stat']['media_size']
-                        try:
-                            db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
-                                                       dataset_media_size)
-                        except Exception as e:
-                            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                        db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
+                                                   dataset_media_size)
 
                         stat = query.ParquetReader(parquet_path).get_metadata()
                         split_media_num = stat['split_stat']['media_num']
                         split_media_size = stat['split_stat']['media_size']
                         if label_flag:
-                            try:
-                                db_client.register_split(dataset_name, split_name, 'official', 1, 0, split_media_num,
-                                                         split_media_size)
-                            except Exception as e:
-                                raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 0, split_media_num,
+                                                     split_media_size)
                         else:
-                            try:
-                                db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
-                                                         split_media_size)
-                            except Exception as e:
-                                raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
+                                                     split_media_size)
                     else:
                         stat = query.ParquetReader(parquet_path).get_metadata()
                         split_media_num = stat['split_stat']['media_num']
                         split_media_size = stat['split_stat']['media_size']
                         if label_flag:
-                            try:
-                                db_client.register_split(dataset_name, split_name, 'official', 1, 0, split_media_num,
-                                                         split_media_size)
-                            except Exception as e:
-                                raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 0, split_media_num,
+                                                     split_media_size)
                         else:
-                            try:
-                                db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
-                                                         split_media_size)
-                            except Exception as e:
-                                raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                            db_client.register_split(dataset_name, split_name, 'official', 1, 1, split_media_num,
+                                                     split_media_size)
 
                 else:
                     local_db_split_dict = db_client.get_sqlite_dict_list(
@@ -351,10 +322,10 @@ class Get(CmdBase):
 
             else:
                 if not split_exist_flag:
-                    print_stdout(
-                        "can not find the split named %s of dataset %s neither in remote repo nor in local storage" % (
-                            split_name, dataset_name))
-                    exit()
+                    reminder = "can not find the split named %s of dataset %s neither in remote repo nor in local storage" % (
+                        split_name, dataset_name)
+                    logger.info(reminder)
+                    raise CLIException(ExistCode.SPLIT_NOT_EXIST, reminder)
 
                 parquet_path = db_client.get_local_split_path(dataset_name, split_name)
 

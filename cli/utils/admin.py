@@ -10,6 +10,9 @@ import pandas as pd
 from tabulate import tabulate
 
 from commands import const
+from commons.stdio import print_stdout
+from loguru import logger
+from commons.exceptions import CLIException, ExistCode
 
 # get const path
 DB_PATH = const.SQLITE_DB_PATH
@@ -174,7 +177,13 @@ class DBClient:
         @return: the dataset local path get from sqlite db
                  return None if there is no record in database for the given dataset name
         """
-        res = self.cursor.execute("select dataset_path from dataset where dataset_name=?", [dataset_name]).fetchone()
+        try:
+            res = self.cursor.execute("select dataset_path from dataset where dataset_name=?",
+                                      [dataset_name]).fetchone()
+        except Exception as e:
+            error_info = "Sqlite select dataset operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
         if res:
             return res[0]
         else:
@@ -189,8 +198,13 @@ class DBClient:
                  return None if there is no record in database for the given dataset name
         """
         dataset_path = self.get_local_dataset_path(dataset_name)
-        split_data = self.cursor.execute("select * from split where dataset_name=? and split_name=?",
-                                         [dataset_name, split_name]).fetchone()
+        try:
+            split_data = self.cursor.execute("select * from split where dataset_name=? and split_name=?",
+                                             [dataset_name, split_name]).fetchone()
+        except Exception as e:
+            error_info = "Sqlite select split operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
         split_path = os.path.join(dataset_path, 'parquet', '%s.parquet' % split_name)
         if split_data and os.path.exists(split_path):
             return split_path
@@ -216,8 +230,13 @@ class DBClient:
         @param split_name: the split name which you want to check if exists locally
         @return: if exists, return True, otherwise return False
         """
-        res = self.cursor.execute("select * from split where dataset_name=? and split_name=?",
-                                  [dataset_name, split_name]).fetchone()
+        try:
+            res = self.cursor.execute("select * from split where dataset_name=? and split_name=?",
+                                      [dataset_name, split_name]).fetchone()
+        except Exception as e:
+            error_info = "Sqlite select split operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
         if res:
             return True
         else:
@@ -235,10 +254,15 @@ class DBClient:
         @param media_size: the number of total media file size
         @return:
         """
-        self.cursor.execute(
-            "insert or replace into dataset values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-            [dataset_name, storage_name, dataset_path, label, media, media_num, media_size])
-        self.conn.commit()
+        try:
+            self.cursor.execute(
+                "insert or replace into dataset values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+                [dataset_name, storage_name, dataset_path, label, media, media_num, media_size])
+            self.conn.commit()
+        except Exception as e:
+            error_info = "Sqlite register dataset operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
 
     def register_split(self, dataset_name, split_name, split_type, label, media, media_num, media_size):
         """
@@ -249,10 +273,15 @@ class DBClient:
         @param media_size: the number of total media file size
         @return:
         """
-        self.cursor.execute(
-            "insert or replace into split values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-            [dataset_name, split_name, split_type, label, media, media_num, media_size])
-        self.conn.commit()
+        try:
+            self.cursor.execute(
+                "insert or replace into split values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+                [dataset_name, split_name, split_type, label, media, media_num, media_size])
+            self.conn.commit()
+        except Exception as e:
+            error_info = "Sqlite register split operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
 
     def delete_split(self, dataset_name, split_name):
         """
@@ -261,10 +290,15 @@ class DBClient:
         @param split_name: a subset of a dataset
         @return:
         """
-        self.cursor.execute(
-            "delete from split where dataset_name=? and split_name=?",
-            [dataset_name, split_name])
-        self.conn.commit()
+        try:
+            self.cursor.execute(
+                "delete from split where dataset_name=? and split_name=?",
+                [dataset_name, split_name])
+            self.conn.commit()
+        except Exception as e:
+            error_info = "Sqlite delete split operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
 
     def delete_dataset(self, dataset_name):
         """
@@ -272,13 +306,18 @@ class DBClient:
         @param dataset_name: the dataset name
         @return:
         """
-        self.cursor.execute(
-            "delete from split where dataset_name=?",
-            [dataset_name])
-        self.cursor.execute(
-            "delete from dataset where dataset_name=?",
-            [dataset_name])
-        self.conn.commit()
+        try:
+            self.cursor.execute(
+                "delete from split where dataset_name=?",
+                [dataset_name])
+            self.cursor.execute(
+                "delete from dataset where dataset_name=?",
+                [dataset_name])
+            self.conn.commit()
+        except Exception as e:
+            error_info = "Sqlite delete dataset operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
 
     def is_dataset_label_downloaded(self, dataset_name):
         """
@@ -286,8 +325,13 @@ class DBClient:
         @param dataset_name: dataset name
         @return:
         """
-        res = self.cursor.execute("select label_data from dataset where dataset_name=?",
-                                  [dataset_name]).fetchone()
+        try:
+            res = self.cursor.execute("select label_data from dataset where dataset_name=?",
+                                      [dataset_name]).fetchone()
+        except Exception as e:
+            error_info = "Sqlite select dataset operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
         flag = False
         if res:
             if res[0] == 1:
@@ -301,8 +345,13 @@ class DBClient:
         @param dataset_name:
         @return:
         """
-        res = self.cursor.execute("select media_data from dataset where dataset_name=?",
-                                  [dataset_name]).fetchone()
+        try:
+            res = self.cursor.execute("select media_data from dataset where dataset_name=?",
+                                      [dataset_name]).fetchone()
+        except Exception as e:
+            error_info = "Sqlite select dataset operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
         flag = False
         if res:
             if res[0] == 1:
