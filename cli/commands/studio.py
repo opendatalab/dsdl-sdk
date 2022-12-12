@@ -10,6 +10,7 @@ Examples:
     External URL: http://?.?.?.?:8501
 """
 
+import sys
 
 from utils.views.view import View
 from commands.cmdbase import CmdBase
@@ -63,22 +64,24 @@ class Studio(CmdBase):
         studio_parser_group.add_argument(
             "-l",
             "--local",
-            nargs="?",
-            default="True",
-            const="True",
-            type=bool,
-            help="view local[default] dataset.",
-            metavar="SET to True to VIEW LOCAL DATASET",
+            action="store_true",
+            # nargs="?",
+            default=True,
+            # const="True",
+            # type=bool,
+            # help="view local[default] dataset.",
+            # metavar="SET to True to VIEW LOCAL DATASET",
         )
         studio_parser_group.add_argument(
             "-r",
             "--remote",
-            nargs="?",
-            default="False",
-            const="False",
-            type=bool,
-            help="view remote[when explicitly specified to true] dataset.",
-            metavar="SET to True(default false) to VIEW REMOTE DATASET",
+            action="store_true",
+            # nargs="?",
+            default=False,
+            # const="False",
+            # type=bool,
+            # help="view remote[when explicitly specified to true] dataset.",
+            # metavar="SET to True(default false) to VIEW REMOTE DATASET",
         )
         return studio_parser
 
@@ -109,7 +112,7 @@ class Studio(CmdBase):
 
         # print(f"local:{local}")
         # print(f"remote:{str(remote)}")
-        # print(f"exists on localhost: {local_exists}")
+        # print(f"local_exists: {local_exists}")
 
         if remote is True:
             if local_exists is True:
@@ -119,8 +122,12 @@ class Studio(CmdBase):
                 if use_local in ["y", "Y", "yes", "Yes"]:
                     view.view_local_dataset()
                 elif use_local in ["n", "N", "no", "No"]:
-                    view.view_remote_dataset()
+                    stdio.print_stdout(msg="Visualization terminated.")
+                    sys.exit(0)
             else:
+                stdio.print_stderr(
+                    "Dataset not exists on local,try view remote dataset."
+                )
                 view.view_remote_dataset()
         elif local is True:
             if local_exists is True:

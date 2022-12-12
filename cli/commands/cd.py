@@ -5,13 +5,27 @@ Examples:
     >> now in the Coco dataset context, you can use the following commands:
     >> inspect select studio search
 """
+from io import StringIO
+from contextlib import redirect_stdout
 
 import os
-import psutil
 import sys
+import subprocess
+from pathlib import Path
+import psutil
 import platform
+import shlex
+import json
+import pprint
 from distutils.spawn import find_executable
 from typing import Dict
+from dotenv import (
+    find_dotenv,
+    load_dotenv,
+    set_key,
+    get_key,
+    unset_key,
+)
 
 
 from commands.cmdbase import CmdBase
@@ -19,6 +33,7 @@ from commons.argument_parser import EnvDefaultVar
 
 from utils.admin import DBClient
 import commons.stdio as stdio
+from .const import DEFAULT_ENV_FILE
 
 
 class Cd(CmdBase):
@@ -65,28 +80,94 @@ class Cd(CmdBase):
         # dsname = _act.environ.get("DATASET_NAME", "default")
 
         dsname = ""
+        dotenv_path = Path(DEFAULT_ENV_FILE)
 
         if cmdargs.dataset_name:
             os.environ.setdefault("DATASET_NAME", "")
             os.environ["DATASET_NAME"] = cmdargs.dataset_name
             dsname = os.environ.get("DATASET_NAME", "default")
-        else:
-            pass
 
         dbcli = DBClient()
         is_exists = dbcli.is_dataset_local_exist(dsname)
 
         if "DATASET_NAME" in os.environ and is_exists:
             sysstr = platform.system()
-
-            if sysstr == "Windows":
+            if sysstr in ["Windows"]:
                 stdio.print_stdout("Enter new Windows cmd command shell")
                 shell_cmd = CmdExeActivator().activate_cmd
                 os.system(shell_cmd)
             elif sysstr in ["Linux"]:
                 stdio.print_stdout("Enter new Linux bash command shell")
-                shell_cmd = PosixActivator().activate_cmd
-                os.system(shell_cmd)
+
+                set_key(dotenv_path, "DATASET_NAME", dsname)
+                load_dotenv(dotenv_path)
+
+                # os.execl("/bin/bash", "bash", "-c", "source ~/.dsdl/.env")
+
+                # pipe = subprocess.Popen(
+                #     "cat /root/.dsdl/.env", stdout=subprocess.PIPE, shell=True
+                # )
+                # output = pipe.communicate()[0]
+                # env = dict((line.split("=", 1) for line in output.splitlines()))
+
+                # os.environ.update()
+
+                # output = subprocess.check_output(
+                #     "source /root/.dsdl/.env; env -0",
+                #     shell=True,
+                #     executable="/bin/bash",
+                # )
+                # exported_vars = dict(
+                #     line.split("=", 1) for line in output.decode().splitlines() if line
+                # )
+
+                dsname = os.getenv("DATASET_NAME")
+                print(dsname)
+
+                # source = "source /root/.dsdl/.env"
+                # dump = '/usr/bin/python -c "import os, json;print json.dumps(dict(os.environ))"'
+                # pipe = subprocess.Popen(
+                #     ["/bin/bash", "-c", "%s && %s" % (source, dump)],
+                #     stdout=subprocess.PIPE,
+                #     stderr=subprocess.PIPE,
+                #     shell=True,
+                #     executable="bash",
+                # )
+                # env = json.loads(pipe.stdout.read())
+                # os.environ = env
+
+                # os.environ.clear()
+                # os.environ.update(env)
+
+                # open a new linux shell session
+                # my_env = os.environ.copy()
+                # my_env["PATH"] = "/usr/sbin:/sbin:" + my_env["PATH"]
+                # subprocess.Popen(
+                #     "/bin/bash",
+                #     env=my_env,
+                #     stdout=subprocess.PIPE,
+                #     stderr=subprocess.PIPE,
+                #     shell=True,
+                #     executable="bash",
+                # )
+
+                # # subprocess.Popen("/bin/bash", env=os.environ)
+                # cmd = "eval $(echo export DATASET_NAME={dsname})".format(dsname=dsname)
+                # print(cmd)
+
+                os.system(
+                    "/usr/bin/bash",
+                    # "/usr/bin/bash -c 'source /root/.dsdl/.env; exec /bin/bash -i;)'",
+                    # "/usr/bin/bash -c '/root/ws/anaconda3/bin/conda init'",
+                    # "/usr/bin/bash -c '/root/ws/anaconda3/bin/conda initactivate py310'",
+                )
+
+                # subprocess.run(
+                #     "source activate py310",
+                #     # 'source activate py310 && "python --version" && source deactivate',
+                #     shell=True,
+                # )
+
             elif sysstr in ["Darwin"]:
                 stdio.print_stdout("Enter new Darwin bash command shell")
                 shell_cmd = PosixActivator().activate_cmd
@@ -199,7 +280,7 @@ class PosixActivator(_Activator):
     def _get_activate_cmd(self) -> str:
         parent_pid = os.getppid()
         proc = psutil.Process(parent_pid)
-        shell_type = proc.name().split(".")[0]
+        shell_type = proc.name()
         cmd_location = find_executable(shell_type)
         return f'"{cmd_location}"'
 
