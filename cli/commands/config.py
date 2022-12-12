@@ -208,28 +208,38 @@ class Config(CmdBase):
                 .format(args.storage_path))
 
         elif args.storage_path[:2] == 's3':
-            config['storage'][
-                args.storage_name]['ak'] = args.storage_credentials[0][0]
-            config['storage'][
-                args.storage_name]['sk'] = args.storage_credentials[0][1]
-            config['storage'][args.storage_name]['path'] = args.storage_path
-            config['storage'][
-                args.storage_name]['endpoint'] = args.storage_endpoint
-            print_stdout('STORAGE S3: {} config success !'.format(
-                args.storage_name))
-            logger.info('STORAGE S3: {} config success !'.format(
-                args.storage_name))
-
+            try:
+                config['storage'][
+                    args.storage_name]['ak'] = args.storage_credentials[0][0]
+                config['storage'][
+                    args.storage_name]['sk'] = args.storage_credentials[0][1]
+                config['storage'][
+                    args.storage_name]['endpoint'] = args.storage_endpoint
+                config['storage'][args.storage_name]['path'] = args.storage_path
+                print_stdout('STORAGE S3: {} config success !'.format(
+                    args.storage_name))
+                logger.info('STORAGE S3: {} config success !'.format(
+                    args.storage_name))
+            except TypeError as e:
+                print_stderr('STORAGE S3: config incomplete! access-key,secret-key and endpoint are required !')
+                logger.error('STORAGE S3: config incomplete! access-key,secret-key and endpoint are required !')
+            
         elif args.storage_path[:4] == 'sftp':
-            config['storage'][
-                args.storage_name]['user'] = args.storage_credentials[0][0]
-            config['storage'][
-                args.storage_name]['password'] = args.storage_credentials[0][1]
-            config['storage'][args.storage_name]['path'] = args.storage_path
-            print_stdout('STORAGE SFTP: {} config success !'.format(
-                args.storage_name))
-            logger.info('STORAGE STFP: {} config success !'.format(
-                args.storage_name))
+            try:
+                config['storage'][
+                    args.storage_name]['user'] = args.storage_credentials[0][0]
+                config['storage'][
+                    args.storage_name]['password'] = args.storage_credentials[0][1]
+                config['storage'][args.storage_name]['path'] = args.storage_path
+            
+                print_stdout('STORAGE SFTP: {} config success !'.format(
+                    args.storage_name))
+                logger.info('STORAGE STFP: {} config success !'.format(
+                    args.storage_name))
+            except TypeError as e:
+                print_stderr('STORAGE SFTP: config incomplete! username and password are required !')
+                logger.error('STORAGE SFTP: config incomplete! username and password are required !')
+            
 
     def __storage_delete(self, config, args):
         del config['storage'][args.storage_name]
