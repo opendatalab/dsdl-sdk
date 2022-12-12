@@ -213,6 +213,6 @@ class Inspect(CmdBase):
             local_exists = dbcli.is_dataset_local_exist(dataset_name)
 
             if local_exists is True:
-                view.view_from_inspect()
+                view.view_from_inspect(split_name)
             else:
                 print(f"Dataset {dataset_name} is not exists on local.")

@@ -80,12 +80,12 @@ def image_grid_main(dataset_name: str, split_name: str):
             view_images.append(image_file)
     groups = []
     for i in range(0, len(view_images), n):
-        groups.append(view_images[i : i + n])
+        groups.append(view_images[i: i + n])
 
     for group in groups:
         cols = st.columns(n)
         for i, image_file in enumerate(group):
-            cols[i].image(image_file)
+            cols[i].image(Image.open(image_file))
 
 
 # @st.cache
@@ -105,12 +105,11 @@ def load_images(dataset_name: str, split_name: str):
 
 def get_file_list(dataset_name: str, split_name: str, count=10):
     dataset_name = dataset_name
-    split_name = "train"  # currently only support train split
-    print(f"dataset_name: {dataset_name}, split_name: {split_name}")
+    split_name = split_name  # currently only support train split
+    # print(f"dataset_name: {dataset_name}, split_name: {split_name}")
 
     split_reader = SplitReader(dataset_name, split_name)
-    print(split_reader.dataset_name, split_reader.split_name)
-
+    # print(split_reader.dataset_name, split_reader.split_name)
     files = split_reader.get_image_samples(count)
     return files
 

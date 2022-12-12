@@ -1,0 +1,1 @@
+DATASET_NAME='CIFAR-10-Auto'

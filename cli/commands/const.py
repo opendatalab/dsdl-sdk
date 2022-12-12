@@ -20,4 +20,10 @@ PROG_NAME = "odl-cli"  # 程序名称
 
 DEFAULT_LOCAL_STORAGE_PATH = os.path.join(DEFAULT_CONFIG_DIR, "datasets")  # 默认本地存储路径
 
-DEFAULT_CLI_LOG_FILE_PATH = os.path.join(DEFAULT_CONFIG_DIR, 'logs') # default log file path
+DEFAULT_CLI_LOG_FILE_PATH = os.path.join(
+    DEFAULT_CONFIG_DIR, "logs"
+)  # default log file path
+
+# 环境变量配置路径
+_ENV_FILE_PATH = ".env"  # 默认环境变量文件名称
+DEFAULT_ENV_FILE = os.path.join(DEFAULT_CONFIG_DIR, _ENV_FILE_PATH)  # 默认环境变量配置文件路径
