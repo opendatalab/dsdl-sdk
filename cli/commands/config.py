@@ -1,4 +1,5 @@
 import json
+import os
 
 from commons.stdio import print_stderr, print_stdout
 from loguru import logger
@@ -199,14 +200,40 @@ class Config(CmdBase):
         config['storage'][args.storage_name] = {}
 
         if args.storage_path[:2] not in ['s3', 'sf']:
-            config['storage'][args.storage_name]['path'] = args.storage_path
-            print_stdout(
-                'STORAGE LOCAL: The path {} configuration is successful!'
-                .format(args.storage_path))
-            logger.info(
-                'STORAGE LOCAL: The path {} configuration is successful!'
-                .format(args.storage_path))
-
+            # local store not exists: --new
+            if os.path.exists(args.storage_path) is False:
+                try:
+                    os.mkdir(args.storage_path)
+                    config['storage'][args.storage_name]['path'] = args.storage_path
+                    print_stdout(
+                        'STORAGE LOCAL: The path {} configuration is successful!'
+                        .format(args.storage_path))
+                    logger.info(
+                        'STORAGE LOCAL: The path {} configuration is successful!'
+                        .format(args.storage_path))
+                except OSError as e:
+                    print_stderr(
+                        'STORAGE LOCAL: unable to create path {}'
+                        .format(args.storage_path))
+                    logger.error(
+                        'STORAGE LOCAL: unable to create path {}'
+                        .format(args.storage_path))
+            # local store exists and empty: --continue
+            elif len(os.listdir(args.storage_path)) == 0:
+                config['storage'][args.storage_name]['path'] = args.storage_path
+                print_stdout(
+                    'STORAGE LOCAL: The path {} configuration is successful!'
+                    .format(args.storage_path))
+                logger.info(
+                    'STORAGE LOCAL: The path {} configuration is successful!'
+                    .format(args.storage_path))
+            # local store exists and not empty:
+            elif len(os.listdir(args.storage_path)) > 0:
+                print_stderr('STORAGE LOCAL: The path {} is not empty, please check before configuration'
+                             .format(args.storage_path))
+                logger.error('STORAGE LOCAL: The path {} is not empty, please check before configuration'
+                             .format(args.storage_path))
+                
         elif args.storage_path[:2] == 's3':
             try:
                 config['storage'][
