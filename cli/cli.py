@@ -76,7 +76,6 @@ class DSDLClient(object):
 
     def __init_cli_config(self) -> Any:
         """
-        TODO 初始化命令行配置
 
         Returns:
 
@@ -145,7 +144,7 @@ class DSDLClient(object):
             if module.is_file() and module.suffix == '.py'
             and not module.name.startswith('_')
         ]  # 获取commands目录下的所有py文件
-        for pkg in pkgs:  # TODO这里的性能是硬性最大的地方，可以通过缓存或者打包的时候预定义方式优化
+        for pkg in pkgs:  # TODO 这里的性能是硬性最大的地方，可以通过缓存或者打包的时候预定义方式优化
             module = importlib.import_module(f'commands.{pkg}')
             for clz_name, clz_obj in inspect.getmembers(module):
                 if inspect.isclass(clz_obj) and issubclass(

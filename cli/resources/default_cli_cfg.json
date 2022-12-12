@@ -1,14 +1,14 @@
 {
     "repo": {
         "central": {
-            "user": "weixingjian",
-            "passwd": "wxj123456",
-            "service": " http://10.140.0.94:9889"
+            "user": "readonly",
+            "passwd": "readonly",
+            "service": " http://10.140.0.94:9800"
         }
     },
     "storage": {
         "default": {
-            "path": "/home/PJLAB/weixingjian/.dsdl/datasets"
+            "path": "~/.dsdl/datasets"
         }
     }
 }
