@@ -16,7 +16,6 @@ from typing import Any
 from loguru import logger
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 from commands.__init__ import __version__
 from commands.cmdbase import CmdBase
 from commands.const import (
@@ -30,6 +29,7 @@ from commands.const import (
 from commons.argument_parser import CustomHelpFormatter
 from commons.argument_parser import DsdlArgumentParser as ArgumentParser
 from commons.loghandler import setup_loger
+from commons.stdio import print_stderr
 from utils.admin import initialize_db
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -162,7 +162,12 @@ class DSDLClient(object):
 def main():
     setup_loger()
     logger.remove(0)
-    DSDLClient().execute()
+    try:
+        DSDLClient().execute()
+    except Exception as e:
+        logger.exception(e)
+        print_stderr("unknown error, please see log files at ~/.dsdl/logs")
+        exit(-1)
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ from commons.stdio import print_stdout
 class Search(CmdBase):
 
     def __init__(self):
+        super().__init__()
         self.__config = None
 
     def init_parser(self, subparsers):
