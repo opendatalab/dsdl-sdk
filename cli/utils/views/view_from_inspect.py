@@ -85,7 +85,7 @@ def image_grid_main(dataset_name: str, split_name: str):
     for group in groups:
         cols = st.columns(n)
         for i, image_file in enumerate(group):
-            cols[i].image(image_file)
+            cols[i].image(Image.open(image_file))
 
 
 # @st.cache
