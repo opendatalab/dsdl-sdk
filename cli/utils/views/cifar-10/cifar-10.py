@@ -5,7 +5,7 @@ import base64
 from io import BytesIO
 import urllib
 
-sys.path.append(f'{os.path.dirname(os.path.abspath(__file__))}/../../../')
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../../")
 
 import duckdb
 import streamlit as st
@@ -33,7 +33,12 @@ def main():
     st.sidebar.title("CIFAR-10")
     app_mode = st.sidebar.selectbox(
         "Choose the app mode",
-        ["Show dataset introductions", "Show dataset details", "Show source code", "Explore the app"],
+        [
+            "Show dataset introductions",
+            "Show dataset details",
+            "Show source code",
+            "Explore the app",
+        ],
     )
     if app_mode == "Show dataset introductions":
         st.sidebar.success("Displaying the introductions of dataset.")
@@ -49,9 +54,14 @@ def main():
         explore_app()
 
 
-def parquet_filter(parquet_path, select_cols="*", filter_cond="", limit=None, offset=None, samples=None):
+def parquet_filter(
+    parquet_path, select_cols="*", filter_cond="", limit=None, offset=None, samples=None
+):
     cursor = duckdb.connect(database=":memory:")
-    view_sql = """create or replace view dataset as select * from parquet_scan('%s');""" % parquet_path
+    view_sql = (
+        """create or replace view dataset as select * from parquet_scan('%s');"""
+        % parquet_path
+    )
     cursor.execute(view_sql)
     query_sql = "select {cols} from dataset".format(cols=select_cols)
 
@@ -80,10 +90,10 @@ def parquet_filter(parquet_path, select_cols="*", filter_cond="", limit=None, of
 def explore_app():
     # the following varibles should be read from dsdl database by duckdb
     dbcli = DBClient()
-    dataset_dir_path = dbcli.get_local_dataset_path('CIFAR-10')
-    parquet_dir_path = os.path.join(dataset_dir_path, 'parquet')
-    parquet_train_file = os.path.join(parquet_dir_path, 'train.parquet')
-    parquet_test_file = os.path.join(parquet_dir_path, 'test.parquet')
+    dataset_dir_path = dbcli.get_local_dataset_path("CIFAR-10")
+    parquet_dir_path = os.path.join(dataset_dir_path, "parquet")
+    parquet_train_file = os.path.join(parquet_dir_path, "train.parquet")
+    parquet_test_file = os.path.join(parquet_dir_path, "test.parquet")
 
     TRAIN_DF = parquet_filter(
         parquet_path=parquet_train_file,
@@ -102,25 +112,25 @@ def explore_app():
         samples=None,
     )
 
-    TRAIN_DF['split'] = 'train'
-    TEST_DF['split'] = 'test'
+    TRAIN_DF["split"] = "train"
+    TEST_DF["split"] = "test"
     DF = pd.concat([TRAIN_DF, TEST_DF], ignore_index=True)
     # DF['path'] = dataset_dir_path + DF['image']
-    DF['path'] = DF['image'].apply(lambda x: os.path.join(dataset_dir_path, x))
-    DF['thumbnail'] = DF.path.map(lambda x: image_formatter(x))
+    DF["path"] = DF["image"].apply(lambda x: os.path.join(dataset_dir_path, x))
+    DF["thumbnail"] = DF.path.map(lambda x: image_formatter(x))
     DF = pd.DataFrame(
         {
-            'name': DF["image"],
-            'label': DF["label"],
-            'split': DF["split"],
-            'path': DF["path"],
-            'thumbnail': DF["thumbnail"],
+            "name": DF["image"],
+            "label": DF["label"],
+            "split": DF["split"],
+            "path": DF["path"],
+            "thumbnail": DF["thumbnail"],
         }
     )
 
     DF_HTML = convert_df(DF.head(100))
 
-    pd.set_option('display.max_colwidth', -1)
+    pd.set_option("display.max_colwidth", None)
     st.markdown(DF_HTML, unsafe_allow_html=True)
 
 
@@ -128,14 +138,14 @@ def explore_app():
 def convert_df(input_df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return input_df.to_html(
-        formatters={'img': image_formatter},
+        formatters={"img": image_formatter},
         escape=False,
     )
 
 
 def get_thumbnail(path):
     i = Image.open(path)
-    i.thumbnail((320, 320), Image.LANCZOS)
+    i.thumbnail((320, 320), Image.Resampling.LANCZOS)
     return i
 
 
@@ -143,7 +153,7 @@ def image_base64(im):
     if isinstance(im, str):
         im = get_thumbnail(im)
     with BytesIO() as buffer:
-        im.save(buffer, 'jpeg')
+        im.save(buffer, "jpeg")
         return base64.b64encode(buffer.getvalue()).decode()
 
 

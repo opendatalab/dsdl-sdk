@@ -130,7 +130,7 @@ def explore_app():
 
     DF_HTML = convert_df(DF.head(100))
 
-    pd.set_option("display.max_colwidth", -1)
+    pd.set_option("display.max_colwidth", None)
     st.markdown(DF_HTML, unsafe_allow_html=True)
 
 
@@ -145,7 +145,7 @@ def convert_df(input_df):
 
 def get_thumbnail(path):
     i = Image.open(path)
-    i.thumbnail((320, 320), Image.LANCZOS)
+    i.thumbnail((320, 320), Image.Resampling.LANCZOS)
     return i
 
 
