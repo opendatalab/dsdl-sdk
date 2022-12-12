@@ -25,7 +25,7 @@ class View:
             self.view_base_dir, self.dataset_name, self.view_code_name
         )
 
-    def view_from_inspect(self):
+    def view_from_inspect(self, split_name):
         """
         view the files which get from inspect command on webpage.
         Returns: dataset visualization webpage url.
@@ -41,7 +41,7 @@ class View:
         view_code_name = "view_from_inspect.py"
         view_code_abspath = Path.joinpath(view_base_dir, view_code_name)
         streamlit_cmd = (
-            f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name}"
+            f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name} --split-name {split_name}"
         )
         try:
             process = Popen(
