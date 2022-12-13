@@ -164,7 +164,7 @@ class ParserField:
             for param in param_list:
                 parts = param.split("=")
                 parts = [i.strip() for i in parts]
-                # 需要考虑参数省略的情况，因为dom经常省略
+                # 需要考虑参数省略的情况，因为mode经常省略
                 if len(parts) == 2:
                     field_para = parts[0]
                     field_var = parts[1]
