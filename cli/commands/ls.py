@@ -47,10 +47,11 @@ class Ls(CmdBase):
             if not dataset_path:
                 raise CLIException(ExistCode.DATASET_NOT_EXIST_LOCAL,
                                 "Dataset `{}` does not exist locally".format(dataset_name))
+        dataset_list = db_client.get_sqlite_dict_list('select * from dataset')
+
         if len(dataset_list) == 0:
             raise CLIException(ExistCode.NO_DATASET_LOCAL,
                                "Local storage has no datasets !")
-        dataset_list = db_client.get_sqlite_dict_list('select * from dataset')
         # datasplit_list = db_client.get_sqlite_dict_list('select * from split')
         datasplit_join_list = db_client.get_sqlite_dict_list("select * from split where dataset_name='%s'" %(dataset_name))
 
