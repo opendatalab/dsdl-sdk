@@ -10,9 +10,9 @@
 
 [English](README.md) | 简体中文
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/odl-cli) ](https://pypi.org/project/odl-cli/)[![PyPI](https://img.shields.io/pypi/v/odl-cli)](https://pypi.org/project/odl-cli/) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs)
 
-[📘使用文档](https://opendatalab.github.io/dsdl-docs/) |
+[📘使用文档](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs) |
 
 ## 简介
 
