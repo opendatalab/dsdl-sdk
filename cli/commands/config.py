@@ -180,6 +180,11 @@ class Config(CmdBase):
                 # rprint(helper_str)
                 self._parser.print_help()
 
+    def __get_space(self, path:str):
+        info = os.statvfs(path)
+        space = info.f_bsize * info.f_bavail /1024 /1024 /1024
+        return space
+    
     def __config_writter(self, config):
         with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
             return json.dump(config, file, indent=4)
@@ -197,20 +202,22 @@ class Config(CmdBase):
         del config['repo'][args.repo_name]
 
     def __storage_new(self, config, args):
-        config['storage'][args.storage_name] = {}
 
         if args.storage_path[:2] not in ['s3', 'sf']:
             # local store not exists: --new
             if os.path.exists(args.storage_path) is False:
                 try:
                     os.mkdir(args.storage_path)
+                    config['storage'][args.storage_name] = {}
+
                     config['storage'][args.storage_name]['path'] = args.storage_path
+                    space = self.__get_space(args.storage_path) 
                     print_stdout(
-                        'STORAGE LOCAL: The path {} configuration is successful!'
-                        .format(args.storage_path))
+                        'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
+                        .format(args.storage_path, space))
                     logger.info(
-                        'STORAGE LOCAL: The path {} configuration is successful!'
-                        .format(args.storage_path))
+                        'STORAGE LOCAL: The path {} configuration is successful,c urrent path have {:.4}GB left!'
+                        .format(args.storage_path, space))
                 except OSError as e:
                     print_stderr(
                         'STORAGE LOCAL: unable to create path {}'
@@ -220,13 +227,15 @@ class Config(CmdBase):
                         .format(args.storage_path))
             # local store exists and empty: --continue
             elif len(os.listdir(args.storage_path)) == 0:
+                config['storage'][args.storage_name] = {}
                 config['storage'][args.storage_name]['path'] = args.storage_path
+                space = self.__get_space(args.storage_path) 
                 print_stdout(
-                    'STORAGE LOCAL: The path {} configuration is successful!'
-                    .format(args.storage_path))
+                    'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
+                    .format(args.storage_path, space))
                 logger.info(
-                    'STORAGE LOCAL: The path {} configuration is successful!'
-                    .format(args.storage_path))
+                    'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
+                    .format(args.storage_path, space))
             # local store exists and not empty:
             elif len(os.listdir(args.storage_path)) > 0:
                 print_stderr('STORAGE LOCAL: The path {} is not empty, please check before configuration'
