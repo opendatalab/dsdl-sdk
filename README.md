@@ -10,9 +10,9 @@
 
 English | [简体中文](README_zh-CN.md)
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)[![dev workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml)[![stage & preview workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/odl-cli) ](https://pypi.org/project/odl-cli/)[![PyPI](https://img.shields.io/pypi/v/odl-cli)](https://pypi.org/project/odl-cli/) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs)[![dev workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml)[![stage & preview workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml)
 
-[📘Documentation](https://opendatalab.github.io/dsdl-docs/) |
+[📘Documentation](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs) |
 
 ## Introduction
 
