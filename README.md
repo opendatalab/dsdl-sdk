@@ -2,11 +2,7 @@
   <img src="https://raw.githubusercontent.com/opendatalab/dsdl-sdk/2ae5264a7ce1ae6116720478f8fa9e59556bed41/resources/opendatalab.svg" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b>OpenDataLab website</b>
-    <sup>
-      <a href="https://opendatalab.com/">
-      </a>
-    </sup>
+    <a href="https://opendatalab.com/"> OpenDataLab Website</a>
     &nbsp;&nbsp;&nbsp;&nbsp;
   </div>
   <div>&nbsp;</div>
