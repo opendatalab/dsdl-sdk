@@ -1,6 +1,8 @@
 from commands.cmdbase import CmdBase
 from commands.const import DSDL_CLI_DATASET_NAME
 from commons.argument_parser import EnvDefaultVar
+from commons.exceptions import CLIException, ExistCode
+from loguru import logger
 from rich import print as rprint
 from rich.pretty import pprint
 from tabulate import tabulate
@@ -40,10 +42,15 @@ class Ls(CmdBase):
     
     def get_dataset_df(self, dataset_name = ''):
         db_client = admin.DBClient()
+        if dataset_name:
+            dataset_path = db_client.get_local_dataset_path(dataset_name)
+            if not dataset_path:
+                raise CLIException(ExistCode.DATASET_NOT_EXIST_LOCAL,
+                                "Dataset `{}` does not exist locally".format(dataset_name))
         dataset_list = db_client.get_sqlite_dict_list('select * from dataset')
         # datasplit_list = db_client.get_sqlite_dict_list('select * from split')
         datasplit_join_list = db_client.get_sqlite_dict_list("select * from split where dataset_name='%s'" %(dataset_name))
-        # return dataset_list, datasplit_list, datasplit_join_list
+
         return dataset_list, datasplit_join_list
     
     def datalist_trim(self, dataset_list, datasplit_join_list):
@@ -96,16 +103,30 @@ class Ls(CmdBase):
 
         """
         
+        __MAPPING = {'dataset_name': 'DatasetName',
+                    'task_type': 'TaskType',
+                    'storage_name': 'StorageName',
+                    'dataset_media_file_num': 'MediaFileNum',
+                    'dataset_media_file_bytes': 'MediaFileBytes',
+                    'label_data_exists':'LabelDataExists',
+                    'media_data_exists':'MediaDataExists',
+                    'dataset_path':'DatasetPath',
+                    'created_time':'CreatedTime',
+                    'updated_time':'UpdatedTime',
+                    'split_type':'SplitType',
+                    'split_name': 'SplitName',
+                    'split_media_file_num':'MediaFileNum',
+                    'split_media_file_bytes': 'MediaFileBytes'}
 
         dataset_name = cmdargs.dataset_name
         dataset_list, datasplit_join_list= self.get_dataset_df(dataset_name)
         dataset_list_trim, dataset_list_out, datasplit_join_list_trim, datasplit_join_list_out = self.datalist_trim(dataset_list, datasplit_join_list)
-
+        
         # no split show dataset table
         if not cmdargs.dataset_name:
         # default display no argument is given
             if not (cmdargs.skip_header or cmdargs.verbose):
-                rprint(tabulate(dataset_list_trim, headers='keys', tablefmt='plain', numalign='left'))
+                rprint(tabulate(dataset_list_trim, headers=__MAPPING, tablefmt='plain', numalign='left'))
                 
             if cmdargs.verbose:
                 if cmdargs.verbose >= 1:
@@ -114,7 +135,7 @@ class Ls(CmdBase):
                         rprint(tabulate(dataset_list_out, tablefmt='plain',numalign='left'))
                     # verbose but not skip head
                     else:
-                        rprint(tabulate(dataset_list_out, headers = 'keys', tablefmt='plain',numalign='left'))
+                        rprint(tabulate(dataset_list_out, headers = __MAPPING, tablefmt='plain',numalign='left'))
                         
             if cmdargs.skip_header:
                 # not verbose but skip head
@@ -123,7 +144,7 @@ class Ls(CmdBase):
         # show split dataset
         else:
             if not (cmdargs.skip_header or cmdargs.verbose):
-                rprint(tabulate(datasplit_join_list_trim, headers='keys', tablefmt='plain',numalign='left'))
+                rprint(tabulate(datasplit_join_list_trim, headers=__MAPPING, tablefmt='plain',numalign='left'))
                 
             if cmdargs.verbose:
                 if cmdargs.verbose >= 1:
@@ -132,7 +153,7 @@ class Ls(CmdBase):
                         rprint(tabulate(datasplit_join_list_out, tablefmt='plain',numalign='left'))
                     # verbose but not skip head
                     else:
-                        rprint(tabulate(datasplit_join_list_out, headers = 'keys', tablefmt='plain',numalign='left'))
+                        rprint(tabulate(datasplit_join_list_out, headers = __MAPPING, tablefmt='plain',numalign='left'))
                         
             if cmdargs.skip_header:
                 # not verbose but skip head
