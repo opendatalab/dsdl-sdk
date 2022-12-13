@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="resources/opendatalab.svg" width="600"/>
+  <img src="https://raw.githubusercontent.com/opendatalab/dsdl-sdk/2ae5264a7ce1ae6116720478f8fa9e59556bed41/resources/opendatalab.svg" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
     <b><font size="5">OpenDataLab website</font></b>
@@ -96,16 +96,16 @@ ali_oss = dict(
 
 The description of each argument is shown below:  
 
-| simplified  argument | argument      | description                                                  |
-| -------------------- | ------------- | :----------------------------------------------------------- |
-| -y                   | `--yaml`      | The path of dsdl yaml file.                                  |
-| -c                   | `--config`    | The path of  location configuration file.                    |
-| -l                   | `--location`  | `local` or `ali-oss`，which means read media from local or aliyun oss. |
-| -n                   | `--num`       | The number of samples to be visualized.                      |
-| -r                   | `--random`    | Whether to load the samples in a random order.               |
-| -v                   | `--visualize` | Whether to visualize the samples or just print the information in console. |
+| simplified  argument | argument      | description                                                                                                                                                                                                                                        |
+| -------------------- | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -y                   | `--yaml`      | The path of dsdl yaml file.                                                                                                                                                                                                                        |
+| -c                   | `--config`    | The path of  location configuration file.                                                                                                                                                                                                          |
+| -l                   | `--location`  | `local` or `ali-oss`，which means read media from local or aliyun oss.                                                                                                                                                                             |
+| -n                   | `--num`       | The number of samples to be visualized.                                                                                                                                                                                                            |
+| -r                   | `--random`    | Whether to load the samples in a random order.                                                                                                                                                                                                     |
+| -v                   | `--visualize` | Whether to visualize the samples or just print the information in console.                                                                                                                                                                         |
 | -f                   | `--field`     | The field type to visualize, e.g. `-f BBox`means show the bounding box in samples, `-f Attributes`means show the attributes of a sample in the console . One can specify multiple field types simultaneously, such as `-f Label BBox  Attributes`. |
-| -t                   | `--task`      | The task you are working on, for example, `-t detection` is equivalent to `-f Label BBox Polygon Attributes`. |
+| -t                   | `--task`      | The task you are working on, for example, `-t detection` is equivalent to `-f Label BBox Polygon Attributes`.                                                                                                                                      |
 
 ## Citation
 
