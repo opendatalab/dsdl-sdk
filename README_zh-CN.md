@@ -2,16 +2,12 @@
   <img src="https://raw.githubusercontent.com/opendatalab/dsdl-sdk/2ae5264a7ce1ae6116720478f8fa9e59556bed41/resources/opendatalab.svg" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b><font size="5">OpenDataLab 官网</font></b>
-    <sup>
-      <a href="https://opendatalab.com/">
-        <i><font size="4">HOT</font></i>
-      </a>
-    </sup>
+    <a href="https://opendatalab.com/"> OpenDataLab Website</a>
     &nbsp;&nbsp;&nbsp;&nbsp;
   </div>
   <div>&nbsp;</div>
 </div>
+
 [English](README.md) | 简体中文
 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)
