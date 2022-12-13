@@ -161,13 +161,15 @@ class Get(CmdBase):
                                 str(obj['Key']).endswith(".parquet")]
 
                 with open(dataset_info_path, 'r') as f:
-                    stat = yaml.safe_load(f)['statistics']
+                    dataset_dict = yaml.safe_load(f)
 
+                task_type = dataset_dict['dsdl_meta']['dataset']['meta']['task']
+                stat = dataset_dict['statistics']
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
 
                 if not label_flag:
-                    db_client.register_dataset(dataset_name, output, dataset_dir, 1, 1, dataset_media_num,
+                    db_client.register_dataset(dataset_name, task_type, output, dataset_dir, 1, 1, dataset_media_num,
                                                dataset_media_size)
 
                     # get meta info of split to insert into sqlite
@@ -179,7 +181,7 @@ class Get(CmdBase):
                                                  split_media_num,
                                                  split_media_size)
                 else:
-                    db_client.register_dataset(dataset_name, output, dataset_dir, 1, 0, dataset_media_num,
+                    db_client.register_dataset(dataset_name, task_type, output, dataset_dir, 1, 0, dataset_media_num,
                                                dataset_media_size)
 
                     # get meta info of split to insert into sqlite
@@ -267,11 +269,15 @@ class Get(CmdBase):
                     print_stdout("register local split...")
                     if not dataset_exist_flag:
                         with open(dataset_info_path, 'r') as f:
-                            stat = yaml.safe_load(f)['statistics']
+                            dataset_dict = yaml.safe_load(f)
+
+                        task_type = dataset_dict['dsdl_meta']['dataset']['meta']['task']
+                        stat = dataset_dict['statistics']
                         dataset_media_num = stat['dataset_stat']['media_num']
                         dataset_media_size = stat['dataset_stat']['media_size']
-                        db_client.register_dataset(dataset_name, output, dataset_dir, 0, 0, dataset_media_num,
-                                                   dataset_media_size)
+
+                        db_client.register_dataset(dataset_name, task_type, output, dataset_dir, 0, 0,
+                                                   dataset_media_num, dataset_media_size)
 
                         stat = query.ParquetReader(parquet_path).get_metadata()
                         split_media_num = stat['split_stat']['media_num']

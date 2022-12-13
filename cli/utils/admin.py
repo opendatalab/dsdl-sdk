@@ -61,6 +61,7 @@ def initialize_db(db_file):
     create_table_sql = '''
     CREATE TABLE IF NOT EXISTS dataset(
     dataset_name varchar, 
+    task_type varchar,
     storage_name varchar,
     dataset_path varchar,
     label_data boolean,
@@ -242,10 +243,12 @@ class DBClient:
         else:
             return False
 
-    def register_dataset(self, dataset_name, storage_name, dataset_path, label, media, media_num, media_size):
+    def register_dataset(self, dataset_name, task_type, storage_name, dataset_path, label, media, media_num,
+                         media_size):
         """
         Register a dataset in database
         @param dataset_name: the dataset name
+        @param task_type: the task type of the dataset
         @param storage_name: the storage name in conf file
         @param dataset_path: the dataset storage path
         @param label: 1 or 0, whether the label data of dataset is downloaded
@@ -256,8 +259,8 @@ class DBClient:
         """
         try:
             self.cursor.execute(
-                "insert or replace into dataset values (?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
-                [dataset_name, storage_name, dataset_path, label, media, media_num, media_size])
+                "insert or replace into dataset values (?,?,?,?,?,?,?,?,datetime('now','localtime'),datetime('now','localtime'))",
+                [dataset_name, task_type, storage_name, dataset_path, label, media, media_num, media_size])
             self.conn.commit()
         except Exception as e:
             error_info = "Sqlite register dataset operation error: \n" + str(e)
