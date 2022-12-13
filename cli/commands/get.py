@@ -7,6 +7,7 @@ Examples:
     >> ["'tell", 'me', 'the', "truth'"]
 """
 import os
+import shutil
 
 import yaml
 
@@ -49,26 +50,41 @@ class Get(CmdBase):
         Returns:
 
         """
-        select_parser = subparsers.add_parser('get', help='download data from repo',
-                                              example="get.example",
-                                              description='Download data from repo', )
+        select_parser = subparsers.add_parser(
+            'get',
+            help='download data from repo',
+            example="get.example",
+            description='Download data from repo',
+        )
 
-        select_parser.add_argument("dataset_name", action=EnvDefaultVar,
-                                   envvar=DSDL_CLI_DATASET_NAME, type=str,
-                                   help='Dataset name. The arg is optional only when the default dataset name was set by cd command.',
-                                   )
-        select_parser.add_argument("-s", "--split", type=str,
-                                   help='The split name of the dataset, such as train/test/validation split.',
-                                   metavar='')
+        select_parser.add_argument(
+            "dataset_name",
+            action=EnvDefaultVar,
+            envvar=DSDL_CLI_DATASET_NAME,
+            type=str,
+            help=
+            'Dataset name. The arg is optional only when the default dataset name was set by cd command.',
+        )
+        select_parser.add_argument(
+            "-s",
+            "--split",
+            type=str,
+            help=
+            'The split name of the dataset, such as train/test/validation split.',
+            metavar='')
         # select_parser.add_argument("-p", "--part", type=str,
         #                            help='The part name of the dataset, such as label/media.',
         #                            metavar='')
-        select_parser.add_argument("-o", "--output", type=str,
+        select_parser.add_argument("-o",
+                                   "--output",
+                                   type=str,
                                    help='Target saving path.',
                                    metavar='')
-        select_parser.add_argument("--label", action="store_true",
-                                   help='Download label data only.',
-                                   )
+        select_parser.add_argument(
+            "--label",
+            action="store_true",
+            help='Download label data only.',
+        )
 
         return select_parser
 
@@ -99,8 +115,10 @@ class Get(CmdBase):
         label_flag = cmdargs.label
 
         # construct class of s3 client
-        s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
-                                  aws_secret_access_key=aws_secret_access_key, region_name=region_name)
+        s3_client = ops.OssClient(endpoint_url=endpoint_url,
+                                  aws_access_key_id=aws_access_key_id,
+                                  aws_secret_access_key=aws_secret_access_key,
+                                  region_name=region_name)
 
         # construct class of sqlite client
         db_client = admin.DBClient()
@@ -110,6 +128,9 @@ class Get(CmdBase):
             reminder = "there is no dataset named %s in remote repo" % dataset_name
             logger.info(reminder)
             raise CLIException(ExistCode.DATASET_NOT_EXIST_REMOTE, reminder)
+        else:
+            self.__check_disk_usage(dataset_name, output_path,
+                                    s3_client)  # check local disk usage
 
         # dataset & split flag of existence
         dataset_exist_flag = db_client.is_dataset_local_exist(dataset_name)
@@ -276,8 +297,10 @@ class Get(CmdBase):
                         dataset_media_num = stat['dataset_stat']['media_num']
                         dataset_media_size = stat['dataset_stat']['media_size']
 
-                        db_client.register_dataset(dataset_name, task_type, output, dataset_dir, 0, 0,
-                                                   dataset_media_num, dataset_media_size)
+                        db_client.register_dataset(dataset_name, task_type, output,
+                                                   dataset_dir, 0, 0,
+                                                   dataset_media_num,
+                                                   dataset_media_size)
 
                         stat = query.ParquetReader(parquet_path).get_metadata()
                         split_media_num = stat['split_stat']['media_num']
@@ -359,4 +382,39 @@ class Get(CmdBase):
                                 [1, dataset_name, split_name])
                             db_client.conn.commit()
                         except Exception as e:
-                            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, str(e))
+                            raise CLIException(
+                                ExistCode.SQLITE_OPERATION_ERROR, str(e))
+
+    def __check_disk_usage(self, dataset_name: str, output_path: str,
+                           s3_client: ops.OssClient):
+        """
+
+        Args:
+            dataset_name: uniq dataset name
+            output_path: dataset download full path
+            s3_client: reuse s3 client
+
+        Returns: None
+
+        """
+        # check local disk usage
+        # 1. is space less than 10G
+        # 2. is space less than the size of the dataset
+
+        if os.path.exists(output_path):  # only check local path
+            total, used, free = shutil.disk_usage(output_path)
+            # 1.
+            if free < 10 * 1024 * 1024 * 1024:
+                reminder = "the disk space is less than 10G, please check the disk space"
+                logger.warning(reminder)
+                raise CLIException(ExistCode.DISK_SPACE_NOT_ENOUGH, reminder)
+            # 2.
+            # get dataset size from network
+            yaml_content = s3_client.read_file(
+                default_bucket, f"{dataset_name}/parquet/dataset.yaml")
+            dataset_sz_bytes = yaml.safe_load(
+                yaml_content)['statistics']['dataset_stat']['media_size']
+            if free * 0.95 <= dataset_sz_bytes:
+                reminder = "the disk space is less than the size of the dataset, please use config to add another storage path"
+                logger.warning(reminder)
+                raise CLIException(ExistCode.DISK_SPACE_NOT_ENOUGH, reminder)
