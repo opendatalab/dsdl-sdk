@@ -1,19 +1,26 @@
 """
 oss ops module handles s3 operations
 """
+import datetime as dt
 import logging
 import os
 import time
 
+import human_readable
 from boto3.session import Session
 from botocore.exceptions import ClientError
-
+from commons.exceptions import CLIException, ExistCode
 from commons.stdio import print_stdout
 from loguru import logger
-from commons.exceptions import CLIException, ExistCode
 
 
-def print_progress(iteration, total, start_time, prefix='', suffix='', decimals=1, bar_length=100):
+def print_progress(iteration,
+                   total,
+                   start_time,
+                   prefix='',
+                   suffix='',
+                   decimals=1,
+                   bar_length=100):
     """
     Call in a loop to create a terminal progress bar
     @param iteration:   - Required  : current iteration (Int)
@@ -29,9 +36,16 @@ def print_progress(iteration, total, start_time, prefix='', suffix='', decimals=
     format_str = "{0:." + str(decimals) + "f}"
     percent = format_str.format(100 * (iteration / float(total)))
     filled_length = int(round(bar_length * iteration / float(total)))
-    bar = '#' * filled_length + '-' * (bar_length - filled_length)
+    bar = '█' * filled_length + '-' * (bar_length - filled_length)
     dur = time.perf_counter() - start_time
-    sys.stdout.write('\r%s |%s| %ds %s%s %s' % (prefix, bar, dur, percent, '%', suffix)),
+    avg_speed = iteration / dur
+    est_seconds = (total - iteration) // max(1, avg_speed)  # TODO 改为瞬时速度的评估
+    delta = dt.timedelta(seconds=est_seconds)
+    est_tm = human_readable.precise_delta(delta,
+                                          suppress=["days"],
+                                          formatting='%.0f')
+    sys.stdout.write('\r%s |%s| %s%s, Eta %s' %
+                     (prefix, bar, percent, '%', est_tm))
     if iteration == total:
         sys.stdout.write('\n')
     sys.stdout.flush()
@@ -42,14 +56,18 @@ class OssClient:
     S3 connection client
     """
 
-    def __init__(self, aws_access_key_id, aws_secret_access_key, endpoint_url, region_name):
+    def __init__(self, aws_access_key_id, aws_secret_access_key, endpoint_url,
+                 region_name):
         self.aws_access_key_id = aws_access_key_id
         self.aws_secret_access_key = aws_secret_access_key
         self.endpoint_url = endpoint_url
         self.region_name = region_name
 
         self.session = Session(aws_access_key_id, aws_secret_access_key)
-        self.s3_client = self.session.client("s3", endpoint_url=endpoint_url, region_name=region_name, use_ssl=False)
+        self.s3_client = self.session.client("s3",
+                                             endpoint_url=endpoint_url,
+                                             region_name=region_name,
+                                             use_ssl=False)
 
     def list_buckets(self):
         """
@@ -70,7 +88,9 @@ class OssClient:
         """
         obj_list = []
         paginator = self.s3_client.get_paginator('list_objects_v2')
-        pages = paginator.paginate(Bucket=bucket, Prefix=prefix, Delimiter=delimiter)
+        pages = paginator.paginate(Bucket=bucket,
+                                   Prefix=prefix,
+                                   Delimiter=delimiter)
 
         for page in pages:
             if 'Contents' in page.keys():
@@ -87,7 +107,9 @@ class OssClient:
         """
         child_dir_list = set()
         paginator = self.s3_client.get_paginator('list_objects_v2')
-        pages = paginator.paginate(Bucket=bucket, Prefix=remote_directory, Delimiter='/')
+        pages = paginator.paginate(Bucket=bucket,
+                                   Prefix=remote_directory,
+                                   Delimiter='/')
 
         for page in pages:
             if 'CommonPrefixes' in page.keys():
@@ -156,7 +178,8 @@ class OssClient:
         :return:
         """
         print_stdout("preparing...")
-        dirs_list = self.get_recursive_dir_list(bucket=bucket, remote_directory=remote_directory)
+        dirs_list = self.get_recursive_dir_list(
+            bucket=bucket, remote_directory=remote_directory)
         for d in dirs_list:
             path = os.path.join(local_directory, d)
             if not os.path.exists(path):
@@ -171,21 +194,27 @@ class OssClient:
         file_number = len(file_list)
         start_time = time.perf_counter()
 
-        print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
-                       bar_length=50)
+        # print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
+        #                bar_length=50)
 
         for file in file_list:
             file_name = file['Key']
-            local_file = os.path.join(local_directory, file_name[len(remote_directory):])
+            local_file = os.path.join(local_directory,
+                                      file_name[len(remote_directory):])
             if not os.path.exists(local_file):
                 self.download_file(bucket, file_name, local_file)
             process += 1
-            print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
+            print_progress(process,
+                           file_number,
+                           start_time,
+                           prefix='Download',
+                           suffix='Complete',
                            bar_length=50)
 
         print_stdout('Download Complete')
 
-    def download_list(self, bucket, media_list, remote_directory, local_directory):
+    def download_list(self, bucket, media_list, remote_directory,
+                      local_directory):
         """
         Download a directory from s3
         @param bucket: bucket name
@@ -195,7 +224,8 @@ class OssClient:
         @return:
         """
         print_stdout("preparing...")
-        dirs_list = self.get_recursive_dir_list(bucket=bucket, remote_directory=remote_directory)
+        dirs_list = self.get_recursive_dir_list(
+            bucket=bucket, remote_directory=remote_directory)
         # print(dirs_list)
         for d in dirs_list:
             path = os.path.join(local_directory, d)
@@ -208,7 +238,11 @@ class OssClient:
         file_number = len(media_list)
         start_time = time.perf_counter()
 
-        print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
+        print_progress(process,
+                       file_number,
+                       start_time,
+                       prefix='Downloading',
+                       suffix='Complete',
                        bar_length=50)
 
         for media in media_list:
@@ -217,7 +251,11 @@ class OssClient:
             if not os.path.exists(local_file):
                 self.download_file(bucket, file_key, local_file)
             process += 1
-            print_progress(process, file_number, start_time, prefix='Download', suffix='Complete',
+            print_progress(process,
+                           file_number,
+                           start_time,
+                           prefix='Download',
+                           suffix='Complete',
                            bar_length=50)
 
         print_stdout('Download Complete')
@@ -226,7 +264,8 @@ class OssClient:
         sum = 0
         for key in file_key_list:
             data = self.s3_client.head_object(Bucket=bucket, Key=key)
-            size = int(data['ResponseMetadata']['HTTPHeaders']['content-length'])
+            size = int(
+                data['ResponseMetadata']['HTTPHeaders']['content-length'])
             sum += size
         return sum
 
@@ -246,7 +285,9 @@ class OssClient:
         Return a list of dataset names
         @return:
         """
-        dataset_list = [x.replace('/', '') for x in self.get_dir_list(bucket, '')]
+        dataset_list = [
+            x.replace('/', '') for x in self.get_dir_list(bucket, '')
+        ]
         return dataset_list
 
     def is_dataset_remote_exist(self, bucket, dataset_name):
@@ -270,13 +311,17 @@ class OssClient:
         @return:
         """
         if not self.is_dataset_remote_exist(bucket, dataset_name):
-            print_stdout("The dataset %s does not exist in remote repo" % dataset_name)
+            print_stdout("The dataset %s does not exist in remote repo" %
+                         dataset_name)
             # logger.info("The dataset %s does not exist in remote repo" % dataset_name)
             exit()
         else:
             parquet_prefix = dataset_name + "/parquet/"
-            parquet_name_list = [x['Key'][len(parquet_prefix):].replace('.parquet', '') for x in
-                                 self.list_objects(bucket, parquet_prefix) if str(x['Key']).endswith(".parquet")]
+            parquet_name_list = [
+                x['Key'][len(parquet_prefix):].replace('.parquet', '')
+                for x in self.list_objects(bucket, parquet_prefix)
+                if str(x['Key']).endswith(".parquet")
+            ]
             return parquet_name_list
 
     def is_split_remote_exist(self, bucket, dataset_name, split_name):
@@ -304,7 +349,10 @@ class OssClient:
         if remote_file is None:
             remote_file = local_file
         try:
-            self.s3_client.upload_file(local_file, bucket, remote_file, ExtraArgs={"ACL": "public-read"})
+            self.s3_client.upload_file(local_file,
+                                       bucket,
+                                       remote_file,
+                                       ExtraArgs={"ACL": "public-read"})
         except ClientError as e:
             logging.error(e)
             return False
@@ -400,8 +448,10 @@ if __name__ == '__main__':
     endpoint_url = "http://10.140.0.94:9800"
     region_name = "ailab"
 
-    s3_client = OssClient(aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key,
-                          endpoint_url=endpoint_url, region_name=region_name)
+    s3_client = OssClient(aws_access_key_id=aws_access_key_id,
+                          aws_secret_access_key=aws_secret_access_key,
+                          endpoint_url=endpoint_url,
+                          region_name=region_name)
 
     # print(s3_client.list_buckets())
     # obj_list = s3_client.list_objects('testdata', 'test_data/', '/')
@@ -426,6 +476,9 @@ if __name__ == '__main__':
     # print(s3_client.list_datasets("dsdldata"))
     # print(s3_client.list_splits("dsdldata", "STL-10"))
     # print(s3_client.is_split_remote_exist("dsdldata", "STL-101", "unlabeled1"))
-    print(s3_client.get_sum_size("dsdldata", ['CIFAR-10-Auto/media/000000007605.png',
-                                              'CIFAR-10-Auto/media/000000009822.png']))
+    print(
+        s3_client.get_sum_size("dsdldata", [
+            'CIFAR-10-Auto/media/000000007605.png',
+            'CIFAR-10-Auto/media/000000009822.png'
+        ]))
     # print(s3_client.get_dir_list('dsdldata', ''))
