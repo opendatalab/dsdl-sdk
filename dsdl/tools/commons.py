@@ -170,3 +170,29 @@ def prepare_input(**kwargs):
         return wrapper
 
     return _decorator
+
+
+def get_yaml_for_cli(dataset_name):
+    SPLIT_PREFIX = "set-"
+    config_path = os.path.join(os.path.expanduser("~"), ".dsdl", "dsdl.json")
+    with open(config_path, "r") as f:
+        storage_info = json.load(f)["storage"]
+    dataset_dir = None
+    for storage in storage_info.values():
+        if "path" not in storage:
+            continue
+        parent_dir = storage["path"]
+        _dataset_dir = os.path.join(parent_dir, dataset_name)
+        if os.path.isdir(_dataset_dir):
+            dataset_dir = _dataset_dir
+            break
+    if dataset_dir is None:
+        raise RuntimeError(
+            f"Dataset '{dataset_name}' doesn't exist local, please download it use command 'odl-cli get'.")
+    yml_dir = os.path.join(dataset_dir, "yml")
+    split_dir_names = [str(_) for _ in os.listdir(yml_dir) if
+                       os.path.isdir(os.path.join(yml_dir, _)) and str(_).startswith(SPLIT_PREFIX)]
+    split_names = [_[len(SPLIT_PREFIX):] for _ in split_dir_names]
+    yaml_names = [f"{_}.yaml" for _ in split_names]
+    yaml_paths = [os.path.join(yml_dir, d, y) for d, y in zip(split_dir_names, yaml_names)]
+    return yaml_paths, dataset_dir

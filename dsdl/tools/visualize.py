@@ -1,4 +1,4 @@
-from dsdl.dataset import Dataset, ImageVisualizePipeline, Util
+from ..dataset import Dataset, ImageVisualizePipeline, Util
 import click
 import numpy as np
 from random import randint
@@ -9,8 +9,10 @@ try:
     from yaml import CSafeLoader as YAMLSafeLoader
 except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
-from .commons import OptionEatAll, prepare_input
+from .commons import OptionEatAll, prepare_input, get_yaml_for_cli, load_samples, TASK_FIELDS
 from ..parser import dsdl_parse
+from yaml import load as yaml_load
+from ..geometry import LABEL, STRUCT, CLASSDOMAIN
 
 
 @click.command(name="view")
@@ -61,3 +63,45 @@ def view(dsdl_yaml, num, random, visualize, fields, config, position, multistage
             for vis_name, vis_item in vis_sample.items():
                 cv2.imshow(vis_name, cv2.cvtColor(np.array(vis_item), cv2.COLOR_BGR2RGB))
                 cv2.waitKey(0)
+
+
+def studio_view(dataset_name, task_type):
+    palette = dict()
+    assert task_type in TASK_FIELDS, f"invalid task, you can only choose in {list(TASK_FIELDS.keys())}"
+    fields = TASK_FIELDS[task_type]
+    yaml_paths, media_dir = get_yaml_for_cli(dataset_name)
+
+    for dsdl_yaml in yaml_paths:
+        print(f"Parsing {dsdl_yaml} ...")
+        LABEL.clear()
+        STRUCT.clear()
+        CLASSDOMAIN.clear()
+        config_dic = dict(type="LocalFileReader", working_dir=media_dir)
+        with open(dsdl_yaml, "r") as f:
+            dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
+        sample_type = dsdl_info['sample-type']
+        global_info_type = dsdl_info.get("global-info-type", None)
+        global_info = None
+        if "sample-path" not in dsdl_info or dsdl_info["sample-path"] in ("local", "$local"):
+            assert "samples" in dsdl_info, f"Key 'samples' is required in {dsdl_yaml}."
+            samples = dsdl_info['samples']
+        else:
+            sample_path = dsdl_info["sample-path"]
+            samples = load_samples(dsdl_yaml, sample_path)
+        if global_info_type is not None:
+            if "global-info-path" not in dsdl_info:
+                assert "global-info" in dsdl_info, f"Key 'global-info' is required in {dsdl_yaml}."
+                global_info = dsdl_info["global_info"]
+            else:
+                global_info_path = dsdl_info["global-info-path"]
+                global_info = load_samples(dsdl_yaml, global_info_path, "global-info")[0]
+
+        dsdl_py = dsdl_parse(dsdl_yaml, dsdl_library_path="")
+        exec(dsdl_py, {})
+
+        dataset = Dataset(samples, sample_type, config_dic, global_info=global_info, global_info_type=global_info_type)
+        for ind in range(len(dataset)):
+            sample = ImageVisualizePipeline(sample=dataset[ind], palette=palette, field_list=fields)
+            vis_sample = sample.visualize()
+            for _, vis_item in vis_sample.items():
+                yield vis_item
