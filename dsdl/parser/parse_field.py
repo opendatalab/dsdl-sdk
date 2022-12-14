@@ -208,8 +208,16 @@ class ParserField:
             Label中对dom部分的校验，是用来严格限制特定格式或者字符。
             防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
             """
-            if not val.isidentifier():
-                raise DefineSyntaxError(f"invalid dom: {val}")
+            if re.search(r"^\[[\w\s,]+\]$", val):
+                temp = re.findall(r"^\[(.*)\]$", val)
+                p_list = re.split(r",\s*(?![^\[]*\])", temp[0])
+                for p in p_list:
+                    p = p.strip()
+                    if not p.isidentifier():
+                        raise DefineSyntaxError(f"invalid dom: {val} for {p} in {val} is illegal.")
+            else:
+                if not val.isidentifier():
+                    raise DefineSyntaxError(f"invalid dom: {val}")
             return val
 
         param_dict = dict()

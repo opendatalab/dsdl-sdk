@@ -52,9 +52,11 @@ class ParserParam:
         if c_dom:
             data_sample_type = raw.replace("[" + c_dom[0] + "]", "", 1).strip()
             sample_param_map = SingleStructParam(struct_name=data_sample_type)
-            temp = c_dom[0].split(",")
-            for param in temp:
-                param = param.strip()
+            # 'SceneAndObjectSample[scenedom=SceneDom,objectdom=[ObjectDom,aaaDom]]'变成
+            # ['scenedom=SceneDom', 'objectdom=[ObjectDom,aaaDom]']
+            k_v_list = re.split(r",\s*(?![^\[]*\])", c_dom[0])
+            k_v_list = [i.strip() for i in k_v_list]
+            for param in k_v_list:
                 temp = param.split("=")
                 sample_param_map.params_dict.update({temp[0].strip(): temp[1].strip()})
             return sample_param_map
