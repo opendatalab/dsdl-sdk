@@ -24,6 +24,9 @@ class Registry:
             raise ClassNotFoundError(f"Class '{name}' is not defined.")
         return self._map[name]
 
+    def clear(self):
+        self._map = {}
+
 
 STRUCT = Registry("struct")
 CLASSDOMAIN = Registry("class domain")
@@ -53,6 +56,9 @@ class LabelRegistry:
             return item.registry_name in self._labels
         else:
             return False
+
+    def clear(self):
+        self._labels = {}
 
 
 LABEL = LabelRegistry()
