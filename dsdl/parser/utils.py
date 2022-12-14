@@ -59,7 +59,8 @@ def check_name_format(varstr: str):
     if not varstr.isidentifier():
         err_msg = (
             f"`{varstr}` must be a a valid identifier. "
-            f"Struct name is considered a valid identifier if "
+            f"[1. `Struct` name 2. `Class domain` name 3.name of `$field` in `Struct`] "
+            f"is considered a valid identifier if "
             f"it only contains alphanumeric letters (a-z) and (0-9), or underscores (_). "
             f"A valid identifier cannot start with a number, or contain any spaces."
         )
