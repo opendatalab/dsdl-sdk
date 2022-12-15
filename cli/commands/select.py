@@ -18,6 +18,7 @@ from commons.stdio import print_stdout
 from loguru import logger
 from utils import admin, query
 from utils.oss_ops import ops
+import duckdb
 
 aws_access_key_id = query.aws_access_key_id
 aws_secret_access_key = query.aws_secret_access_key
@@ -160,7 +161,7 @@ class Select(CmdBase):
                                   aws_secret_access_key=aws_secret_access_key,
                                   endpoint_url=endpoint_url,
                                   region_name=region_name)
-
+        duck_cursor = duckdb.connect(database=':memory:')
         # if not db_client.is_dataset_local_exist(dataset_name):
         #     print("there is no dataset named %s locally" % dataset_name)
         #     exit()
@@ -178,8 +179,19 @@ class Select(CmdBase):
                     split_name, dataset_name)
                 logger.info(reminder)
                 raise CLIException(ExistCode.DATASET_NOT_EXIST, reminder)
+            else:
+                yaml_key = '/'.join([dataset_name, 'parquet', 'dataset.yaml'])
+                dataset_dict = yaml.safe_load(
+                    s3_client.read_file(default_bucket, yaml_key))
+        else:
+            yaml_path = os.path.join(db_client.get_local_dataset_path(dataset_name), 'parquet/dataset.yaml')
+            with open(yaml_path, 'r') as f:
+                dataset_dict = yaml.safe_load(f)
 
         split_reader = query.SplitReader(dataset_name, split_name)
+        media_path_field = dataset_dict['dsdl_meta']['struct']['media_field'] if 'media_field' in \
+                                                                                 dataset_dict['dsdl_meta'][
+                                                                                     'struct'].keys() else 'image'
 
         try:
             df = split_reader.select(select_cols=fields,
@@ -221,7 +233,7 @@ class Select(CmdBase):
                 if media_download_flag:
                     media_path = [
                         os.path.join(sub_split.dataset_path, x)
-                        for x in df['image'].tolist()
+                        for x in [x[0] for x in duck_cursor.execute("select %s from df" % media_path_field).fetchall()]
                     ]
                     media_stat = admin.get_media_stat(media_path)
                     media_num = media_stat['media_num']
@@ -240,7 +252,8 @@ class Select(CmdBase):
                 else:
                     media_prefix = "%s/" % dataset_name
                     media_path = [
-                        media_prefix + x for x in df['image'].tolist()
+                        media_prefix + x for x in
+                        [x[0] for x in duck_cursor.execute("select %s from df" % media_path_field).fetchall()]
                     ]
                     media_num = len(set(media_path))
                     media_size = s3_client.get_sum_size(
@@ -260,7 +273,8 @@ class Select(CmdBase):
                     dataset_name, sub_split.parquet_path)
 
                 media_prefix = "%s/" % dataset_name
-                media_path = [media_prefix + x for x in df['image'].tolist()]
+                media_path = [media_prefix + x for x in
+                              [x[0] for x in duck_cursor.execute("select %s from df" % media_path_field).fetchall()]]
                 media_num = len(set(media_path))
                 media_size = s3_client.get_sum_size(default_bucket, media_path)
 
@@ -270,9 +284,6 @@ class Select(CmdBase):
 
                 schema = split_reader.get_schema()
 
-                yaml_key = '/'.join([dataset_name, 'parquet', 'dataset.yaml'])
-                dataset_dict = yaml.safe_load(
-                    s3_client.read_file(default_bucket, yaml_key))
                 dataset_media_num = dataset_dict["statistics"]["dataset_stat"][
                     'media_num']
                 dataset_media_size = dataset_dict["statistics"][

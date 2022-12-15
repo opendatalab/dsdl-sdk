@@ -199,8 +199,10 @@ class Get(CmdBase):
                 with open(dataset_info_path, 'r') as f:
                     dataset_dict = yaml.safe_load(f)
 
-                task_type = dataset_dict['dsdl_meta']['dataset']['meta'][
-                    'task']
+                if 'task' in dataset_dict['dsdl_meta']['dataset']['meta'].keys():
+                    task_type = dataset_dict['dsdl_meta']['dataset']['meta']['task']
+                if 'Task' in dataset_dict['dsdl_meta']['dataset']['meta'].keys():
+                    task_type = dataset_dict['dsdl_meta']['dataset']['meta']['Task']
                 stat = dataset_dict['statistics']
                 dataset_media_num = stat['dataset_stat']['media_num']
                 dataset_media_size = stat['dataset_stat']['media_size']
@@ -339,8 +341,10 @@ class Get(CmdBase):
                         with open(dataset_info_path, 'r') as f:
                             dataset_dict = yaml.safe_load(f)
 
-                        task_type = dataset_dict['dsdl_meta']['dataset'][
-                            'meta']['task']
+                        if 'task' in dataset_dict['dsdl_meta']['dataset']['meta'].keys():
+                            task_type = dataset_dict['dsdl_meta']['dataset']['meta']['task']
+                        if 'Task' in dataset_dict['dsdl_meta']['dataset']['meta'].keys():
+                            task_type = dataset_dict['dsdl_meta']['dataset']['meta']['Task']
                         stat = dataset_dict['statistics']
                         dataset_media_num = stat['dataset_stat']['media_num']
                         dataset_media_size = stat['dataset_stat']['media_size']
