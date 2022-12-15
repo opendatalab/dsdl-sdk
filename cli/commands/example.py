@@ -31,7 +31,7 @@ class Example(CmdBase):
         """
         example_parser = subparsers.add_parser(
             'example',
-            help='Show the working tree status',
+            help='example command, developer use only',
             example="example.example"
         )  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
         example_parser.add_argument("-s",

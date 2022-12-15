@@ -71,9 +71,9 @@ class Select(CmdBase):
         """
         select_parser = subparsers.add_parser(
             'select',
-            help='Select data from dataset',
+            help='select data from dataset',
             example="select.example",
-            description='Select data from dataset',
+            description='select data from dataset',
         )
 
         select_parser.add_argument(

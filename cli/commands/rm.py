@@ -35,7 +35,7 @@ class Rm(CmdBase):
         """
         rm_parser = subparsers.add_parser(
             "rm",
-            help="Remove dataset in a desired manner",
+            help="remove dataset in a desired manner",
             example="rm.example")  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
         rm_parser.add_argument(
             "-y",
