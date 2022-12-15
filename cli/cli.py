@@ -163,6 +163,9 @@ def main():
     logger.remove(0)
     try:
         DSDLClient().execute()
+    except KeyboardInterrupt as e:
+        print_stderr("\nkeyboard interrupt, exit")
+        exit(-1)
     except Exception as e:
         logger.exception(e)
         print_stderr("unknown error, please see log files at ~/.dsdl/logs")
