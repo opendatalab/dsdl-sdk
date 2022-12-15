@@ -164,7 +164,7 @@ def main():
     try:
         DSDLClient().execute()
     except KeyboardInterrupt as e:
-        print_stderr("\nkeyboard interrupt, exit")
+        print_stderr("\nkeyboard interrupted, exit")
         exit(-1)
     except Exception as e:
         logger.exception(e)
