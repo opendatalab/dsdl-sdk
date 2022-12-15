@@ -173,14 +173,18 @@ class SplitReader(ParquetReader):
         self.split_name = split_name
         self.db_client = admin.DBClient()
         self.parquet_path = ''
+        self.dataset_yaml_path = ''
 
         if self.db_client.is_split_local_exist(dataset_name, split_name):
             self.parquet_path = self.db_client.get_local_split_path(dataset_name, split_name)
+            self.dataset_yaml_path = os.path.join(self.db_client.get_local_dataset_path(dataset_name),
+                                                  'parquet/dataset.yaml')
         else:
             self.s3_client = ops.OssClient(endpoint_url=endpoint_url, aws_access_key_id=aws_access_key_id,
                                            aws_secret_access_key=aws_secret_access_key, region_name=region_name)
             if self.s3_client.is_split_remote_exist(default_bucket, dataset_name, split_name):
                 self.parquet_path = "s3://%s/%s/parquet/%s.parquet" % (default_bucket, dataset_name, split_name)
+                self.dataset_yaml_path = "s3://%s/%s/parquet/dataset.yaml" % (default_bucket, dataset_name)
 
         if not self.parquet_path:
             print("Can not find the split named %s of dataset %s neither in local nor remote repo" % (
@@ -191,11 +195,24 @@ class SplitReader(ParquetReader):
                                           aws_secret_access_key)
 
     def get_image_samples(self, sample_number):
-        image_list = self.select('image', samples=sample_number)['image'].tolist()
+        image_list = []
         if self.path_flag == "local":
+            with open(self.dataset_yaml_path, 'r') as f:
+                dataset_dict = yaml.safe_load(f)
+            path_field = dataset_dict["dsdl_meta"]["struct"]["media_field"] if "media_field" in \
+                                                                               dataset_dict["dsdl_meta"][
+                                                                                   "struct"].keys() else "image"
+            field_last_name = path_field.split(".")[-1]
+            image_list = self.select(path_field, samples=sample_number)[field_last_name].tolist()
             dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
             image_list = [os.path.join(dataset_path, img) for img in image_list]
         elif self.path_flag == "s3":
+            dataset_dict = yaml.safe_load(self.s3_client.read_file(default_bucket, self.dataset_yaml_path))
+            path_field = dataset_dict["dsdl_meta"]["struct"]["media_field"] if "media_field" in \
+                                                                               dataset_dict["dsdl_meta"][
+                                                                                   "struct"].keys() else "image"
+            field_last_name = path_field.split(".")[-1]
+            image_list = self.select(path_field, samples=sample_number)[field_last_name].tolist()
             dataset_path = "s3://%s/%s/" % (default_bucket, self.dataset_name)
             image_list = [dataset_path + img for img in image_list]
         return image_list
@@ -305,7 +322,6 @@ if __name__ == '__main__':
     # print(dsdl_meta)
     # print(stat_meta)
     # meta_dict = pq.read_schema(db_client.get_local_split_path('CIFAR-100', 'train'))
-    print(split_reader.get_image_samples(10))
     s3_path = "s3://dsdldata/CIFAR-10/parquet/test.parquet"
     parquet_reader = ParquetReader(s3_path, '10.140.0.94:9800', 'ailabminio', '123123123')
     df = parquet_reader.select(limit=20)
