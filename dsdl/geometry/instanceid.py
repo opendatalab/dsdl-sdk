@@ -15,3 +15,7 @@ class InstanceID(BaseGeometry):
 
     def __repr__(self):
         return f"instance {self.value}"
+
+    @property
+    def field_key(self):
+        return "InstanceID"

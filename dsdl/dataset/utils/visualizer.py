@@ -28,7 +28,10 @@ class ImageSample:
         }
         """
         gt_dir, gt_name = os.path.split(gt_path)
-        field_key = gt_item.__class__.__name__.lower()
+        if hasattr(gt_item, "field_key"):
+            field_key = gt_item.field_key.lower()
+        else:
+            field_key = gt_item.__class__.__name__.lower()
         if field_key not in self.ground_truths[gt_dir]:
             self.ground_truths[gt_dir][field_key] = {gt_name: gt_item}
         else:
@@ -129,7 +132,7 @@ class ImageVisualizePipeline:
     def _calculate_distance(cls, ann_path, image_path):
         img_dir = os.path.split(image_path)[0]
         bu_distance = 0
-        while not ann_path.startswith(img_dir+"/"):
+        while not ann_path.startswith(img_dir + "/"):
             bu_distance += 1
             img_dir = os.path.split(img_dir)[0]
         td_distance = len(ann_path.replace(img_dir, "").split("/")) - 1

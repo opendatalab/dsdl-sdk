@@ -85,3 +85,7 @@ class BBox(BaseGeometry):
 
     def __repr__(self):
         return str(self.xyxy)
+
+    @property
+    def field_key(self):
+        return "BBox"

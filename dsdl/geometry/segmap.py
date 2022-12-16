@@ -69,3 +69,7 @@ class SegmentationMap(BaseGeometry):
 
     def __repr__(self):
         return f"path:{self.location}, class domain: {self._dom.__name__}"
+
+    @property
+    def field_key(self):
+        return "LabelMap"
