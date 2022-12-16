@@ -136,8 +136,12 @@ class LabelList(BaseGeometry):
                     [[item.xyxy[0], item.xyxy[1] + 0.2 * label_size[1]] for item in kwargs["bbox"].values()])
             elif "polygon" in kwargs:
                 coords = y_offset + np.array(
-                    [[item.point_for_draw[0], item.point_for_draw[1] + 0.2 * label_size[1]] for item in
+                    [[item.point_for_draw()[0], item.point_for_draw()[1] + 0.2 * label_size[1]] for item in
                      kwargs["polygon"].values()])
+            elif "rotatedbbox" in kwargs:
+                coords = y_offset + np.array(
+                    [[item.point_for_draw()[0], item.point_for_draw()[1] + 0.2 * label_size[1]] for item in
+                     kwargs["rotatedbbox"].values()])
             elif "image_label_list" not in kwargs:
                 coords = y_offset + np.array([[0, 0.2 * label_size[1]]])
             else:
