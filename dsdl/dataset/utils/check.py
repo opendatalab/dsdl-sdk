@@ -175,7 +175,7 @@ class Report:
                 file_handler.write(f"```python\n")
                 file_handler.write(f"{self.global_info['error_msg']}\n")
                 file_handler.write("```\n")
-            elif self.global_info["warning_msg"]:
+            elif self.global_info["warning_flag"]:
                 file_handler.write("global-info 实例化<font color=orange>异常</font>，警报信息如下：\n")
                 file_handler.write(f"```python\n")
                 for msg in self.global_info["warning_msgs"]:
