@@ -80,7 +80,7 @@ def image_grid_main(dataset_name: str, split_name: str):
             view_images.append(image_file)
     groups = []
     for i in range(0, len(view_images), n):
-        groups.append(view_images[i: i + n])
+        groups.append(view_images[i : i + n])
 
     for group in groups:
         cols = st.columns(n)
@@ -88,7 +88,7 @@ def image_grid_main(dataset_name: str, split_name: str):
             cols[i].image(Image.open(image_file))
 
 
-# @st.cache
+@st.cache
 def load_images(dataset_name: str, split_name: str):
     files = get_file_list(dataset_name, split_name)
     image_files = files

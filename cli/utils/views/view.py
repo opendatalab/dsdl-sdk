@@ -25,6 +25,15 @@ class View:
             self.view_base_dir, self.dataset_name, self.view_code_name
         )
 
+    def view_general_dataset(self):
+        """
+        view the general dataset on webpage.
+        Returns: dataset visualization webpage url.
+        """
+        stdio.print_stderr(
+            f"[ TO BE DONE ] General dataset {self.dataset_name} visualization.\n Bye..."
+        )
+
     def view_from_inspect(self, split_name):
         """
         view the files which get from inspect command on webpage.
@@ -40,9 +49,7 @@ class View:
         view_base_dir = Path(os.path.dirname(__file__))
         view_code_name = "view_from_inspect.py"
         view_code_abspath = Path.joinpath(view_base_dir, view_code_name)
-        streamlit_cmd = (
-            f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name} --split-name {split_name}"
-        )
+        streamlit_cmd = f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name} --split-name {split_name}"
         try:
             process = Popen(
                 streamlit_cmd,
@@ -123,6 +130,7 @@ class View:
         logger.exception("View cancelled")
         sys.exit(0)
 
+        # the following code is to be completed.
         # if input("\nReally quit? (y/n)> ").lower().startswith("y"):
         #     stdio.print_stderr("View cancelled")
         #     logger.exception("View cancelled")
