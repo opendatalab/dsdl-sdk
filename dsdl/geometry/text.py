@@ -40,3 +40,7 @@ class Text(BaseGeometry):
 
     def __repr__(self):
         return self._text
+
+    @property
+    def field_key(self):
+        return "Text"

@@ -87,3 +87,7 @@ class RBBox(BaseGeometry):
         x, y, w, h, angle = self.rbbox_value
         x, y, w, h, angle = int(x), int(y), int(w), int(h), int(angle / math.pi * 180)
         return f"[{x}, {y}, {w}, {h}, {angle}°]"
+
+    @property
+    def field_key(self):
+        return "RotatedBBox"
