@@ -54,4 +54,6 @@ Fashion-MNIST                   281M
 STL-10                          2.1G
 PascalVOC2007-detection         835M
 PascalVOC2012-detection         2.4G
+CIFAR10                         129M
+Oxford_102_Flowers              331M
 """)
