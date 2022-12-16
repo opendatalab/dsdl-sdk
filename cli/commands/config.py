@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 
 from commons.stdio import print_stderr, print_stdout
 from loguru import logger
@@ -7,8 +8,7 @@ from rich import print as rprint
 from rich.pretty import pprint
 
 from .cmdbase import CmdBase
-from .const import (DEFAULT_CLI_CONFIG_FILE, DEFAULT_CONFIG_DIR,
-                    DEFAULT_LOCAL_STORAGE_PATH, PROG_NAME, SQLITE_DB_PATH)
+from .const import DEFAULT_CLI_CONFIG_FILE
 
 
 class Config(CmdBase):
@@ -180,11 +180,19 @@ class Config(CmdBase):
                 # rprint(helper_str)
                 self._parser.print_help()
 
-    def __get_space(self, path:str):
-        info = os.statvfs(path)
-        space = info.f_bsize * info.f_bavail /1024 /1024 /1024
+    def __get_space(self, path: str):
+        """
+        return free space (GB) on local disk
+        Args:
+            path:
+
+        Returns:
+
+        """
+        _, _, free = shutil.disk_usage(path)
+        space = free // 1024 // 1024 // 1024
         return space
-    
+
     def __config_writter(self, config):
         with open(DEFAULT_CLI_CONFIG_FILE, 'w') as file:
             return json.dump(config, file, indent=4)
@@ -210,8 +218,9 @@ class Config(CmdBase):
                     os.mkdir(args.storage_path)
                     config['storage'][args.storage_name] = {}
 
-                    config['storage'][args.storage_name]['path'] = args.storage_path
-                    space = self.__get_space(args.storage_path) 
+                    config['storage'][
+                        args.storage_name]['path'] = args.storage_path
+                    space = self.__get_space(args.storage_path)
                     print_stdout(
                         'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
                         .format(args.storage_path, space))
@@ -220,16 +229,17 @@ class Config(CmdBase):
                         .format(args.storage_path, space))
                 except OSError as e:
                     print_stderr(
-                        'STORAGE LOCAL: unable to create path {}'
-                        .format(args.storage_path))
+                        'STORAGE LOCAL: unable to create path {}'.format(
+                            args.storage_path))
                     logger.error(
-                        'STORAGE LOCAL: unable to create path {}'
-                        .format(args.storage_path))
+                        'STORAGE LOCAL: unable to create path {}'.format(
+                            args.storage_path))
             # local store exists and empty: --continue
             elif len(os.listdir(args.storage_path)) == 0:
                 config['storage'][args.storage_name] = {}
-                config['storage'][args.storage_name]['path'] = args.storage_path
-                space = self.__get_space(args.storage_path) 
+                config['storage'][
+                    args.storage_name]['path'] = args.storage_path
+                space = self.__get_space(args.storage_path)
                 print_stdout(
                     'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
                     .format(args.storage_path, space))
@@ -238,11 +248,13 @@ class Config(CmdBase):
                     .format(args.storage_path, space))
             # local store exists and not empty:
             elif len(os.listdir(args.storage_path)) > 0:
-                print_stderr('STORAGE LOCAL: The path {} is not empty, please check before configuration'
-                             .format(args.storage_path))
-                logger.error('STORAGE LOCAL: The path {} is not empty, please check before configuration'
-                             .format(args.storage_path))
-                
+                print_stderr(
+                    'STORAGE LOCAL: The path {} is not empty, please check before configuration'
+                    .format(args.storage_path))
+                logger.error(
+                    'STORAGE LOCAL: The path {} is not empty, please check before configuration'
+                    .format(args.storage_path))
+
         elif args.storage_path[:2] == 's3':
             try:
                 config['storage'][
@@ -251,31 +263,40 @@ class Config(CmdBase):
                     args.storage_name]['sk'] = args.storage_credentials[0][1]
                 config['storage'][
                     args.storage_name]['endpoint'] = args.storage_endpoint
-                config['storage'][args.storage_name]['path'] = args.storage_path
+                config['storage'][
+                    args.storage_name]['path'] = args.storage_path
                 print_stdout('STORAGE S3: {} config success !'.format(
                     args.storage_name))
                 logger.info('STORAGE S3: {} config success !'.format(
                     args.storage_name))
             except TypeError as e:
-                print_stderr('STORAGE S3: config incomplete! access-key,secret-key and endpoint are required !')
-                logger.error('STORAGE S3: config incomplete! access-key,secret-key and endpoint are required !')
-            
+                print_stderr(
+                    'STORAGE S3: config incomplete! access-key,secret-key and endpoint are required !'
+                )
+                logger.error(
+                    'STORAGE S3: config incomplete! access-key,secret-key and endpoint are required !'
+                )
+
         elif args.storage_path[:4] == 'sftp':
             try:
                 config['storage'][
                     args.storage_name]['user'] = args.storage_credentials[0][0]
+                config['storage'][args.storage_name][
+                    'password'] = args.storage_credentials[0][1]
                 config['storage'][
-                    args.storage_name]['password'] = args.storage_credentials[0][1]
-                config['storage'][args.storage_name]['path'] = args.storage_path
-            
+                    args.storage_name]['path'] = args.storage_path
+
                 print_stdout('STORAGE SFTP: {} config success !'.format(
                     args.storage_name))
                 logger.info('STORAGE STFP: {} config success !'.format(
                     args.storage_name))
             except TypeError as e:
-                print_stderr('STORAGE SFTP: config incomplete! username and password are required !')
-                logger.error('STORAGE SFTP: config incomplete! username and password are required !')
-            
+                print_stderr(
+                    'STORAGE SFTP: config incomplete! username and password are required !'
+                )
+                logger.error(
+                    'STORAGE SFTP: config incomplete! username and password are required !'
+                )
 
     def __storage_delete(self, config, args):
         del config['storage'][args.storage_name]
