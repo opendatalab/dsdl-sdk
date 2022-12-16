@@ -1,4 +1,4 @@
-01 $%(prog)s CIFAR-10 --split train --filter "label='automobile'" --limit 1000 --offset 50  --export_name example
-   (output refers to default storage when output is not given)
-02 $%(prog)s CIFAR-10 --split train --random 200 --export_name example --output default
-03 $%(prog)s --split train --random 200 (when use cd, the dataset name can be omitted)
+  01. select and export a new dataset split
+      $%(prog)s CIFAR-10 --split train --filter "label='automobile'" --limit 1000 --export-name example
+  02. select 10 items from train split and show to console
+      $%(prog)s CIFAR-10 --split train --limit 10

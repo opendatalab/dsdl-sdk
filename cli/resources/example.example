@@ -1,6 +1,0 @@
-  01. show somothing
-      $%(prog)s example --show tell me the truth
-  02. show test
-      $%(prog)s example --show test
-  03. show test123
-      $%(prog)s example --show test123
