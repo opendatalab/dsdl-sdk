@@ -53,7 +53,7 @@ class Get(CmdBase):
             'get',
             help='download data from repo',
             example="get.example",
-            description='Download data from repo',
+            description='download data from repo',
         )
 
         select_parser.add_argument(
@@ -62,14 +62,14 @@ class Get(CmdBase):
             envvar=DSDL_CLI_DATASET_NAME,
             type=str,
             help=
-            'Dataset name. The arg is optional only when the default dataset name was set by cd command.',
+            'dataset name. The arg is optional only when the default dataset name was set by cd command.',
         )
         select_parser.add_argument(
             "-s",
             "--split",
             type=str,
             help=
-            'The split name of the dataset, such as train/test/validation split.',
+            'split name of the dataset, such as train/test/validation split.',
             metavar='')
         # select_parser.add_argument("-p", "--part", type=str,
         #                            help='The part name of the dataset, such as label/media.',
@@ -77,12 +77,12 @@ class Get(CmdBase):
         select_parser.add_argument("-o",
                                    "--output",
                                    type=str,
-                                   help='Target saving path.',
+                                   help='target saving path.',
                                    metavar='')
         select_parser.add_argument(
             "--label",
             action="store_true",
-            help='Download label data only.',
+            help='download label data only.',
         )
 
         return select_parser

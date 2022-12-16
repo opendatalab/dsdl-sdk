@@ -81,20 +81,20 @@ class Select(CmdBase):
             type=str,
             required=True,
             help=
-            'The split name of the dataset, such as train/test/unlabeled or user self-defined split.',
+            'split name of the dataset, such as train/test/unlabeled or user self-defined split.',
             metavar='')
         select_parser.add_argument(
             "--filter",
             type=str,
             help=
-            'Filter data according to given conditions, such as "label=\'bird\'"',
+            'filter data according to given conditions, such as "label=\'bird\'"',
             metavar='')
         # select_parser.add_argument("--fields", type=str,
         #                            help='Fields to be selected. All the files will be selected if the arg is not given. Use "," to split fields.',
         #                            metavar='')
         select_parser.add_argument("--limit",
                                    type=int,
-                                   help='Limit the number of returned records',
+                                   help='limit the number of returned records',
                                    metavar='')
         # select_parser.add_argument("--offset", type=int,
         #                            help='Set the number of rows to skip from the beginning of the returned data before presenting the results',
@@ -106,12 +106,12 @@ class Select(CmdBase):
             "--export-name",
             type=str,
             help=
-            'Save the select result as a split and use the given name to name it',
+            'save the select result as a split and use the given name to name it',
             metavar='')
         select_parser.add_argument(
             "--output",
             type=str,
-            help='The path to save the select result as a new split',
+            help='the path to save the select result as a new split',
             metavar='')
         select_parser.add_argument(
             "dataset_name",
@@ -119,7 +119,7 @@ class Select(CmdBase):
             envvar=DSDL_CLI_DATASET_NAME,
             type=str,
             help=
-            'Dataset name. The arg is optional only when the default dataset name was set by cd command.',
+            'dataset name. The arg is optional only when the default dataset name was set by cd command.',
         )
         return select_parser
 

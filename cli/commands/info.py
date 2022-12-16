@@ -46,9 +46,9 @@ class Info(CmdBase):
         """
         inspect_parser = subparsers.add_parser(
             "info",
-            help="Inspect dataset info",
+            help="inspect dataset info",
             example="info.example",
-            description="Inspect dataset info",
+            description="inspect dataset info",
         )  # example 样例文件位于resources/下，普通的文本文件，每个命令写一个
 
         inspect_parser.add_argument(
@@ -56,13 +56,13 @@ class Info(CmdBase):
             action=EnvDefaultVar,
             envvar=DSDL_CLI_DATASET_NAME,
             type=str,
-            help="Dataset name. The arg is optional only when the default dataset name was set by cd command.",
+            help="dataset name. The arg is optional only when the default dataset name was set by cd command.",
         )
 
         inspect_parser.add_argument(
             "--split",
             type=str,
-            help="The split name of the dataset, such as train/test/validation split.",
+            help="split name of the dataset, such as train/test/validation split.",
             metavar="",
         )
 
@@ -72,29 +72,29 @@ class Info(CmdBase):
         #     "-d",
         #     "--description",
         #     action="store_true",
-        #     help="The split name of the dataset, such as train/test/unlabeled or user self-defined split.",
+        #     help="split name of the dataset, such as train/test/unlabeled or user self-defined split.",
         # )
         # group.add_argument(
         #     "-s",
         #     "--statistics",
         #     action="store_true",
-        #     help="Some statistics of the dataset.",
+        #     help="some statistics of the dataset.",
         # )
         # group.add_argument(
         #     "-m",
         #     "--metadata",
         #     action="store_true",
-        #     help="Show metadata of the dataset.",
+        #     help="show metadata of the dataset.",
         # )
         # group.add_argument(
         #     "--schema",
         #     action="store_true",
-        #     help="Show schema of the dataset.",
+        #     help="show schema of the dataset.",
         # )
         group.add_argument(
             "--preview",
             action="store_true",
-            help="Preview of the dataset.",
+            help="preview of the dataset.",
         )
 
         return inspect_parser
