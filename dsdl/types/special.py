@@ -63,6 +63,7 @@ class RotatedBBoxField(Field):
                 value[-1] = value[-1] / 180 * math.pi  # convert to radian
         else:
             value = validate_list_of_number(value, 8, float, "RotateBBoxField")
+            value = [value[i:i+2] for i in (0, 2, 4, 6)]
         return RBBox(value, self.mode)
 
 
