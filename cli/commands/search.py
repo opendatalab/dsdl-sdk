@@ -53,4 +53,5 @@ CIFAR-100                       243M
 Fashion-MNIST                   281M
 STL-10                          2.1G
 PascalVOC2007-detection         835M
+PascalVOC2012-detection         2.4G
 """)
