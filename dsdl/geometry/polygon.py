@@ -97,6 +97,10 @@ class Polygon(BaseGeometry):
     def __repr__(self):
         return str(self._data)
 
+    @property
+    def field_key(self):
+        return "Polygon"
+
 
 class RLEPolygon(BaseGeometry):
     def __init__(self, rle_data, image_shape):

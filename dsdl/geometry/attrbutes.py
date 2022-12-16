@@ -23,3 +23,7 @@ class Attributes(BaseGeometry):
 
     def __repr__(self):
         return self.container.__repr__()
+
+    @property
+    def field_key(self):
+        return "Attributes"

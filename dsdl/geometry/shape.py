@@ -44,3 +44,7 @@ class ImageShape(Shape):
 
     def __repr__(self):
         return f"image height: {self.height}; image width: {self.width}"
+
+    @property
+    def field_key(self):
+        return "ImageShape"
