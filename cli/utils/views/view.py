@@ -109,7 +109,6 @@ class View:
         returns:
             dataset visualization webpage url.
         """
-        stdio.print_stdout(f"Processing local dataset {dataset_name} visulization...")
         viewed = False
         signal.signal(signal.SIGINT, self.ctrl_c_handler)
         for dir_name in self.view_base_dir.iterdir():
