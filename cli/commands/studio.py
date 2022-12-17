@@ -14,6 +14,7 @@ import sys
 
 from utils.views.view import View
 from commands.cmdbase import CmdBase
+from commons.exceptions import CLIException, ExistCode
 from commons.argument_parser import EnvDefaultVar
 from utils.admin import DBClient
 from commands.const import (
@@ -58,6 +59,21 @@ class Studio(CmdBase):
             help="dataset name",
             metavar="[DATASET NAME]",
         )
+        studio_parser.add_argument(
+            "-t",
+            "--task",
+            required=False,
+            choices=["detection", "classification", "semantic-seg", "panoptic-seg"],
+            help="task type [detection, classification, semantic-seg, panoptic-seg] of the dataset. ",
+            metavar="[TASK TYPE]",
+        )
+        studio_parser.add_argument(
+            "-n",
+            "--number",
+            required=False,
+            type=int,
+            help="number of images want to be viewed of the dataset.",
+        )
 
         studio_parser_group = studio_parser.add_mutually_exclusive_group()
 
@@ -65,24 +81,17 @@ class Studio(CmdBase):
             "-l",
             "--local",
             action="store_true",
-            # nargs="?",
             default=True,
-            # const="True",
-            # type=bool,
-            # help="view local[default] dataset.",
-            # metavar="SET to True to VIEW LOCAL DATASET",
+            help="view local [ default ] dataset.",
         )
         studio_parser_group.add_argument(
             "-r",
             "--remote",
             action="store_true",
-            # nargs="?",
             default=False,
-            # const="False",
-            # type=bool,
-            # help="view remote[when explicitly specified to true] dataset.",
-            # metavar="SET to True(default false) to VIEW REMOTE DATASET",
+            help="view remote dataset.",
         )
+
         return studio_parser
 
     def cmd_entry(self, cmdargs, config, *args, **kwargs):
@@ -99,6 +108,8 @@ class Studio(CmdBase):
         """
 
         dataset_name = cmdargs.dataset_name
+        task_type_name = cmdargs.task
+        number = cmdargs.number
         local = cmdargs.local
         remote = cmdargs.remote
 
@@ -108,7 +119,26 @@ class Studio(CmdBase):
         # TODO support remote dataset exists or not in the future:
         # remote_exists = dbcli.is_dataset_remote_exist(dataset_name)
 
-        view = View(dataset_name)
+        if task_type_name is None:
+            view = View(dataset_name, task=False)
+        else:
+            if task_type_name not in [
+                "detection",
+                "classification",
+                "semantic-seg",
+                "panoptic-seg",
+            ]:
+                raise CLIException(
+                    ExistCode.VIEW_TASK_TYPE_ERROR,
+                    f"Task type {task_type} is not supported.",
+                )
+            else:
+                view = View(
+                    dataset_name,
+                    task=True,
+                    task_type=task_type_name,
+                    number=number,
+                )
 
         # print(f"local:{local}")
         # print(f"remote:{str(remote)}")

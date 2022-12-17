@@ -15,7 +15,7 @@ def main():
         "--task-type",
     )
     parser.add_argument(
-        "--numbers",
+        "--number",
     )
 
     try:
@@ -25,21 +25,20 @@ def main():
 
     dataset_name = args.dataset_name
     task_type = args.task_type
-    numbers = args.numbers
+    number = args.number
 
     generator = studio_view(dataset_name, task_type)
 
     image_list = []
     i = 0
     for image in generator:
-        if i == numbers:
+        if i == number:
             break
         else:
             image_list.append(image)
         i += 1
 
     st.title("Files")
-
 
     display_images(image_list, max_images=numbers)
 

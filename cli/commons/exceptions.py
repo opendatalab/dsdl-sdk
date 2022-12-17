@@ -24,6 +24,7 @@ class ExistCode(Enum):
     DATASET_NOT_EXIST = 14  # dataset在本地和远端都不存在
     DISK_SPACE_NOT_ENOUGH = 15  # 磁盘空间不足
     NO_DATASET_LOCAL = 16 # 本地没有数据集
+    VIEW_TASK_TYPE_ERROR = 17 # 不支持的任务类型
 
 
 class CLIException(Exception):

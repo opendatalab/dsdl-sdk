@@ -62,7 +62,7 @@ class Info(CmdBase):
         inspect_parser.add_argument(
             "--split",
             type=str,
-            help="split name of the dataset, such as train/test/validation split.",
+            help="the split name of the dataset, such as train/test/validation split.",
             metavar="",
         )
 
@@ -201,7 +201,7 @@ class Info(CmdBase):
             print("Previewing the dataset...")
             from utils.views.view import View
 
-            view = View(dataset_name, inspect=True)
+            view = View(dataset_name, info=True)
 
             from utils.admin import DBClient
 
@@ -209,7 +209,7 @@ class Info(CmdBase):
             local_exists = dbcli.is_dataset_local_exist(dataset_name)
 
             if local_exists is True:
-                view.view_from_inspect(split_name)
+                view.view_from_info(split_name)
             else:
                 print(f"Dataset {dataset_name} is not exists on local.")
 
@@ -219,7 +219,7 @@ class Info(CmdBase):
             for k, v in dataset_meta.items():
                 meta_list.append({"field_name": k, "field_value": v})
             print_stdout("# dataset info")
-            print_stdout(tabulate(meta_list, tablefmt='grid', numalign='left'))
+            print_stdout(tabulate(meta_list, tablefmt="grid", numalign="left"))
 
             if "plots" in dataset_dict["statistics"]:
                 plot_list = dataset_dict["statistics"]["plots"]
@@ -241,4 +241,11 @@ class Info(CmdBase):
                 table_list = dataset_dict["statistics"]["tables"]
                 for table in table_list:
                     print_stdout("# " + table["name"])
-                    print_stdout(tabulate(table["data"], tablefmt='grid', headers='keys', numalign='left'))
+                    print_stdout(
+                        tabulate(
+                            table["data"],
+                            tablefmt="grid",
+                            headers="keys",
+                            numalign="left",
+                        )
+                    )
