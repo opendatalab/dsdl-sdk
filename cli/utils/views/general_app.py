@@ -44,7 +44,7 @@ def main():
 
 
 def display_images(
-    images: [PilImage],
+    images: [Image],
     columns=5,
     width=20,
     height=8,
