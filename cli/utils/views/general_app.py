@@ -1,8 +1,9 @@
+import argparse
 import streamlit as st
 import matplotlib.pyplot as plt
 from PIL import Image
 
-from dsdl.tools import studio_view
+from dsdl.tools import StudioView
 
 
 def main():
@@ -16,6 +17,7 @@ def main():
     )
     parser.add_argument(
         "--number",
+        type=int,
     )
 
     try:
@@ -27,11 +29,12 @@ def main():
     task_type = args.task_type
     number = args.number
 
-    generator = studio_view(dataset_name, task_type)
+    # ex. iterator = StudioView("CIFAR-10", "classification", n=10, shuffle=True)
+    iterator = StudioView(dataset_name, task_type, n=number, shuffle=True)
 
     image_list = []
     i = 0
-    for image in generator:
+    for image in iterator:
         if i == number:
             break
         else:
@@ -40,7 +43,7 @@ def main():
 
     st.title("Files")
 
-    display_images(image_list, max_images=numbers)
+    display_images(image_list, max_images=number)
 
 
 def display_images(
