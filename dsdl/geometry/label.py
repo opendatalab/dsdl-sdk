@@ -54,6 +54,11 @@ class Label(BaseGeometry):
     def class_domain(self):
         return CLASSDOMAIN.get(self.domain_name)
 
+    def index_in_domain(self):
+        all_label_names = self.class_domain.get_label_names()
+        ind = all_label_names.index(self.category_name) + 1
+        return ind
+
     def __eq__(self, other):
         if self.domain_name != other.domain_name:
             return False
@@ -77,7 +82,7 @@ class Label(BaseGeometry):
         if "bbox" in kwargs:
             coords = np.array([[item.xyxy[0], item.xyxy[1] + 0.2 * label_size[1]] for item in kwargs["bbox"].values()])
         elif "polygon" in kwargs:
-            coords = np.array([[item.point_for_draw[0], item.point_for_draw[1] + 0.2 * label_size[1]] for item in
+            coords = np.array([[item.point_for_draw()[0], item.point_for_draw()[1] + 0.2 * label_size[1]] for item in
                                kwargs["polygon"].values()])
         else:
             coords = np.array([[0, 0.2 * label_size[1]]])
@@ -89,6 +94,10 @@ class Label(BaseGeometry):
 
     def __repr__(self):
         return self.category_name
+
+    @property
+    def field_key(self):
+        return "Label"
 
 
 class LabelList(BaseGeometry):
@@ -131,8 +140,12 @@ class LabelList(BaseGeometry):
                     [[item.xyxy[0], item.xyxy[1] + 0.2 * label_size[1]] for item in kwargs["bbox"].values()])
             elif "polygon" in kwargs:
                 coords = y_offset + np.array(
-                    [[item.point_for_draw[0], item.point_for_draw[1] + 0.2 * label_size[1]] for item in
+                    [[item.point_for_draw()[0], item.point_for_draw()[1] + 0.2 * label_size[1]] for item in
                      kwargs["polygon"].values()])
+            elif "rotatedbbox" in kwargs:
+                coords = y_offset + np.array(
+                    [[item.point_for_draw()[0], item.point_for_draw()[1] + 0.2 * label_size[1]] for item in
+                     kwargs["rotatedbbox"].values()])
             elif "image_label_list" not in kwargs:
                 coords = y_offset + np.array([[0, 0.2 * label_size[1]]])
             else:

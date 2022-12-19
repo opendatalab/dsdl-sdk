@@ -54,6 +54,8 @@ class SegmentationMap(BaseGeometry):
         category_ids = np.unique(seg)
         label_lst = []
         for category_id in category_ids:
+            if int(category_id) > len(self._dom) or int(category_id) < 1:
+                continue
             label = self._dom.get_label(int(category_id))
             category_name = label.category_name
             if category_name not in palette:
@@ -67,3 +69,7 @@ class SegmentationMap(BaseGeometry):
 
     def __repr__(self):
         return f"path:{self.location}, class domain: {self._dom.__name__}"
+
+    @property
+    def field_key(self):
+        return "LabelMap"

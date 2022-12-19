@@ -1,0 +1,383 @@
+{
+    "sub_dataset_name": "_default",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000000006.jpg",
+                "source": "001.ak47/001_0003.jpg",
+                "type": "image",
+                "height": 186,
+                "width": 300
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000002",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000000.jpg",
+                "source": "001.ak47/001_0006.jpg",
+                "type": "image",
+                "height": 207,
+                "width": 325
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000005",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000007.jpg",
+                "source": "001.ak47/001_0005.jpg",
+                "type": "image",
+                "height": 200,
+                "width": 380
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000004",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000008.jpg",
+                "source": "001.ak47/001_0004.jpg",
+                "type": "image",
+                "height": 185,
+                "width": 250
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000003",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000009.jpg",
+                "source": "001.ak47/001_0001.jpg",
+                "type": "image",
+                "height": 278,
+                "width": 499
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000000",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000005.jpg",
+                "source": "001.ak47/001_0007.jpg",
+                "type": "image",
+                "height": 160,
+                "width": 300
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000006",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000004.jpg",
+                "source": "001.ak47/001_0008.jpg",
+                "type": "image",
+                "height": 556,
+                "width": 576
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000007",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000003.jpg",
+                "source": "001.ak47/001_0009.jpg",
+                "type": "image",
+                "height": 134,
+                "width": 400
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000008",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000002.jpg",
+                "source": "001.ak47/001_0010.jpg",
+                "type": "image",
+                "height": 396,
+                "width": 528
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000009",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000001.jpg",
+                "source": "001.ak47/001_0002.jpg",
+                "type": "image",
+                "height": 218,
+                "width": 268
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000001",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000010.jpg",
+                "source": "001.ak47/001_0012.jpg",
+                "type": "image",
+                "height": 272,
+                "width": 614
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000011",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000011.jpg",
+                "source": "001.ak47/001_0017.jpg",
+                "type": "image",
+                "height": 130,
+                "width": 190
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000016",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000013.jpg",
+                "source": "001.ak47/001_0013.jpg",
+                "type": "image",
+                "height": 600,
+                "width": 800
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000012",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000012.jpg",
+                "source": "001.ak47/001_0014.jpg",
+                "type": "image",
+                "height": 186,
+                "width": 600
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000013",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000014.jpg",
+                "source": "001.ak47/001_0015.jpg",
+                "type": "image",
+                "height": 600,
+                "width": 800
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000014",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000015.jpg",
+                "source": "001.ak47/001_0018.jpg",
+                "type": "image",
+                "height": 150,
+                "width": 200
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000017",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000019.jpg",
+                "source": "001.ak47/001_0022.jpg",
+                "type": "image",
+                "height": 470,
+                "width": 1024
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000021",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000016.jpg",
+                "source": "001.ak47/001_0011.jpg",
+                "type": "image",
+                "height": 132,
+                "width": 315
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000010",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000018.jpg",
+                "source": "001.ak47/001_0016.jpg",
+                "type": "image",
+                "height": 180,
+                "width": 436
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000015",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000020.jpg",
+                "source": "001.ak47/001_0020.jpg",
+                "type": "image",
+                "height": 133,
+                "width": 315
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000019",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000017.jpg",
+                "source": "001.ak47/001_0021.jpg",
+                "type": "image",
+                "height": 150,
+                "width": 250
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000020",
+                    "name": "Caltech-256 Images Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        }
+    ]
+}

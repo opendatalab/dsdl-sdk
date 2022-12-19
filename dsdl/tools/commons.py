@@ -1,6 +1,7 @@
 import click
 from typing import Sequence, Union
 import os
+
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
 except ImportError:
@@ -8,6 +9,13 @@ except ImportError:
 from yaml import load as yaml_load
 import json
 
+TASK_FIELDS = {
+    "detection": ["image", "label", "bbox", "polygon", "keypoint", "rotatedbbox"],
+    "classification": ["image", "label"],
+    "semantic-seg": ["image", "labelmap"],
+    "panoptic-seg": ["image", "labelmap", "instancemap"],
+    "ocr": ["image", "rotatedbbox", "text", "polygon"]
+}
 
 
 class OptionEatAll(click.Option):
@@ -62,7 +70,7 @@ JSON_VALID_SUFFIX = ('.json', '.JSON')
 VALID_SUFFIX = YAML_VALID_SUFFIX + JSON_VALID_SUFFIX
 
 
-def load_samples(dsdl_path: str, path: Union[str, Sequence[str]]):
+def load_samples(dsdl_path: str, path: Union[str, Sequence[str]], extract_key="samples"):
     samples = []
     paths = []
     dsdl_dir = os.path.split(dsdl_path)[0]
@@ -78,12 +86,88 @@ def load_samples(dsdl_path: str, path: Union[str, Sequence[str]]):
     for p in paths:
         if p.endswith(YAML_VALID_SUFFIX):
             with open(p, "r") as f:
-                data = yaml_load(f, YAMLSafeLoader)['samples']
-            samples.extend(data)
+                data = yaml_load(f, YAMLSafeLoader)[extract_key]
+            if isinstance(data, list):
+                samples.extend(data)
+            else:
+                samples.append(data)
         else:
             with open(p, "r") as f:
-                data = json.load(f)['samples']
-            samples.extend(data)
+                data = json.load(f)[extract_key]
+            if isinstance(data, list):
+                samples.extend(data)
+            else:
+                samples.append(data)
     return samples
 
 
+def prepare_input(**kwargs):
+    def _decorator(func):
+        def process(dsdl_yaml, config, location, num, random, fields, task, position, **kwargs2):
+            result = {
+                "dsdl_yaml": dsdl_yaml,
+                "config": config,
+                "location": location,
+                "num": num,
+                "random": random,
+                "fields": fields,
+                "task": task,
+                "position": position,
+                **kwargs2
+            }
+
+            # parse samples and global-info
+            with open(dsdl_yaml, "r") as f:
+                dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
+                sample_type = dsdl_info['sample-type']
+                global_info_type = dsdl_info.get("global-info-type", None)
+                global_info = None
+                if "sample-path" not in dsdl_info or dsdl_info["sample-path"] in ("local", "$local"):
+                    assert "samples" in dsdl_info, f"Key 'samples' is required in {dsdl_yaml}."
+                    samples = dsdl_info['samples']
+                else:
+                    sample_path = dsdl_info["sample-path"]
+                    samples = load_samples(dsdl_yaml, sample_path)
+                if global_info_type is not None:
+                    if "global-info-path" not in dsdl_info:
+                        assert "global-info" in dsdl_info, f"Key 'global-info' is required in {dsdl_yaml}."
+                        global_info = dsdl_info["global_info"]
+                    else:
+                        global_info_path = dsdl_info["global-info-path"]
+                        global_info = load_samples(dsdl_yaml, global_info_path, "global-info")[0]
+            result["dsdl_yaml"] = {"samples": samples, "global_info": global_info, "sample_type": sample_type,
+                                   "global_info_type": global_info_type, "yaml_file": dsdl_yaml}
+
+            # parse location config
+            config_dic = {}
+            with open(config, encoding='utf-8') as config_file:
+                exec(config_file.read(), config_dic)
+            location_config = config_dic["local" if location == "local" else "ali_oss"]
+            result["config"] = location_config
+
+            # parse field list
+            if task:
+                assert task in TASK_FIELDS, f"invalid task, you can only choose in {list(TASK_FIELDS.keys())}"
+                fields = TASK_FIELDS[task]
+            else:
+                if fields is None:
+                    fields = []
+                else:
+                    local_dic = {}
+                    exec(f"f = list({fields})", {}, local_dic)
+                    fields = local_dic['f']
+                fields = list(set(fields + ["image", "dict"]))
+            fields = [_.lower() for _ in fields]
+
+            result["fields"] = fields
+
+            return result
+
+        def wrapper(*args, **kwargs3):
+            ret = process(*args, **kwargs3, **kwargs)
+            ret = func(**ret)
+            return ret
+
+        return wrapper
+
+    return _decorator
