@@ -1,10 +1,16 @@
 [tool]
 [tool.poetry]
-name = "dsdlsdk"
-version = "0.1.0"
-homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev"
-description = "made for opendatalab dsdl-sdk dev branch(ignore other branches)."
-authors = ["dsdl-team <dsdl-team@pjlab.org.cn>", "suizhihao <suizhihao@pjlab.org.cn>"]
+name = "odl-cli"
+version = "0.1.1"
+homepage = "https://github.com/opendatalab/dsdl-sdk/tree/dev-cli"
+description = "made for opendatalab dsdl-sdk dev-cli branch(ignore other branches)."
+authors = [
+    "odl-cli <odl-cli@pjlab.org.cn>",
+    "xuchao <xuchao@pjlab.org.cn>",
+    "suizhihao <suizhihao@pjlab.org.cn>",
+    "chenhaojiong <chenhaojiong@pjlab.org.cn>",
+    "weixingjian <weixingjian@pjlab.org.cn>",
+    ]
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ['odl-cli', 'opendatalab', 'pjlab']
@@ -22,8 +28,6 @@ packages = [{ include = "dsdlsdk" }, { include = "cli"  }, { include = "dsdl" },
 [tool.poetry.scripts]
 odl-cli = 'cli.cli:main'
 dsdl = 'dsdl.cli:cli'
-
-
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0, !=3.9.7"
@@ -82,55 +86,6 @@ mkdocs-autorefs = { version = "^0.2.1" }
 twine = { version = "^3.3.0" }
 bump2version = { version = "^1.0.1" }
 
-
-
-[tool.setuptools_scm]
-# write_to = "cli/commands/__version__.py"
-
-## semantic_release [start]
-# [tool.semantic_release]
-# version_variable = [
-#     "cli/commands/__version__.py:__version__",
-#     "cli/commands/__init__.py:__version__"
-# ]
-# version_toml = [
-#     "pyproject.toml:tool.poetry.version"
-# ]
-# version_pattern = [
-#     "README.md:rev: v{version}",
-#     "docs/CONTRIBUTING.md:tryceratops, version {version}"
-# ]
-# major_on_zero = false
-# branch = "dev-cli"
-# upload_to_PyPI = true
-# upload_to_release = true
-# build_command = "pip install poetry && poetry build"
-## semantic_release [end]
-
-
-## poetry-dynamic-versioning [start]
-# [tool.poetry-dynamic-versioning]
-# enable = true
-# vcs = "git"
-# format-jinja =  """
-# {%- if distance == 0 -%}
-# {{ serialize_pep440(base, stage, revision) }}
-# {%- elif revision is not none -%}
-# {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
-# {%- else -%}
-# {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
-# {%- endif -%}
-# """
-
-# [tool.poetry-dynamic-versioning.substitution]
-# files = ["cli/commands/__init__.py", "cli/commands/__version__.py", "cli/commands/_version.py"]
-# # pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
-
-# [build-system]
-# requires = ["poetry>=1.1.0", "poetry-dynamic-versioning"]
-# build-backend = "poetry.masonry.api"
-
-# fix mypy yaml error
 [[tool.mypy.overrides]]
 module = "yaml"
 ignore_missing_imports = true
