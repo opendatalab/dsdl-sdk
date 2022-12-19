@@ -7,6 +7,7 @@ import cv2
 import os
 import json
 import random
+from ..warning import FieldNotFoundWarning
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -153,7 +154,6 @@ class StudioView:
 
     @staticmethod
     def extract_info_from_yml(dsdl_yaml, shuffle=False):
-        res = dict()
         with open(dsdl_yaml, "r") as f:
             dsdl_info = yaml_load(f, Loader=YAMLSafeLoader)['data']
         sample_type = dsdl_info['sample-type']
@@ -203,12 +203,25 @@ class StudioView:
             raise RuntimeError(
                 f"Dataset '{dataset_name}' doesn't exist local, please download it use command 'odl-cli get'.")
         yml_dir = os.path.join(dataset_dir, "yml")
-        split_dir_names = [str(_) for _ in os.listdir(yml_dir) if
-                           os.path.isdir(os.path.join(yml_dir, _)) and str(_).startswith(SPLIT_PREFIX)]
+        if os.path.isdir(yml_dir) and len(os.listdir(yml_dir)) > 0:
+            split_dir_names = [str(_) for _ in os.listdir(yml_dir) if
+                               os.path.isdir(os.path.join(yml_dir, _)) and str(_).startswith(SPLIT_PREFIX)]
+        else:
+            FieldNotFoundWarning(f"'{yml_dir}' is not a directory or is empty, please check again.")
+            return [], dataset_dir
+
         split_names = [_[len(SPLIT_PREFIX):] for _ in split_dir_names]
         yaml_names = [f"{_}.yaml" for _ in split_names]
         yaml_paths = [os.path.join(yml_dir, d, y) for d, y in zip(split_dir_names, yaml_names)]
-        return yaml_paths, dataset_dir
+
+        res = []
+        for yml_path in yaml_paths:
+            if not os.path.isfile(yml_path):
+                FieldNotFoundWarning(f"'{yml_path}' not found, please check again.")
+                continue
+            res.append(yml_path)
+
+        return res, dataset_dir
 
 
 def studio_view(dataset_name, task_type):
