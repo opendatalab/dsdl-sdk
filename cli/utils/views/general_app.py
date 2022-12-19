@@ -43,37 +43,28 @@ def main():
 
     st.title("Files")
 
-    display_images(image_list, max_images=number)
+    # display_images(image_list, max_images=number)
+    image_grid_main(image_list, number)
 
 
-def display_images(
-    images: [Image],
-    columns=5,
-    width=20,
-    height=8,
-    max_images=100,
-    label_wrap_length=50,
-    label_font_size=8,
-):
+def image_grid_main(images: [Image], max_images):
+    st.title("Image Grid Display")
     if not images:
         print("No images to display.")
         return
     if len(images) > max_images:
         print(f"Showing {max_images} images of {len(images)}:")
         images = images[0:max_images]
-    height = max(height, int(len(images) / columns) * height)
-    plt.figure(figsize=(width, height))
-    for i, image in enumerate(images):
-        plt.subplot(int(len(images) / columns + 1), columns, i + 1)
-        plt.imshow(image)
-        if hasattr(image, "filename"):
-            title = image.filename
-            if title.endswith("/"):
-                title = title[0:-1]
-            title = os.path.basename(title)
-            title = textwrap.wrap(title, label_wrap_length)
-            title = "\n".join(title)
-            plt.title(title, fontsize=label_font_size)
+    n = st.number_input("Select Grid Width", 1, 5, 3)
+
+    groups = []
+    for i in range(0, len(images), n):
+        groups.append(images[i : i + n])
+
+    for group in groups:
+        cols = st.columns(n)
+        for i, image_file in enumerate(group):
+            cols[i].image(image_file)
 
 
 if __name__ == "__main__":
