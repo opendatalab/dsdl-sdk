@@ -190,8 +190,11 @@ class Select(CmdBase):
 
         split_reader = query.SplitReader(dataset_name, split_name)
         media_path_field = dataset_dict['dsdl_meta']['struct']['media_field'] if 'media_field' in \
-                                                                                 dataset_dict['dsdl_meta'][
-                                                                                     'struct'].keys() else 'image'
+                           dataset_dict['dsdl_meta']['struct'].keys() else 'image'
+
+        # temp solution
+        if type(media_path_field) != type([]):
+            media_path_field = [media_path_field]
 
         try:
             df = split_reader.select(select_cols=fields,
@@ -213,6 +216,11 @@ class Select(CmdBase):
             exit()
 
         if export_name is not None:
+            media_relative_path = []
+            for field in media_path_field:
+                media_relative_path = media_relative_path + [x[0] for x in duck_cursor.execute(
+                    "select %s from df" % field).fetchall()]
+
             sub_split = query.Split(dataset_name, export_name, output_path)
             media_download_flag = 0
             question = 'The split "%s" has already existed. Do you want to replace it? (y/n)' % export_name
@@ -231,10 +239,7 @@ class Select(CmdBase):
                     media_download_flag = split_db_info[0]['media_data']
 
                 if media_download_flag:
-                    media_path = [
-                        os.path.join(sub_split.dataset_path, x)
-                        for x in [x[0] for x in duck_cursor.execute("select %s from df" % media_path_field).fetchall()]
-                    ]
+                    media_path = [os.path.join(sub_split.dataset_path, x) for x in media_relative_path]
                     media_stat = admin.get_media_stat(media_path)
                     media_num = media_stat['media_num']
                     media_size = media_stat['media_size']
@@ -251,10 +256,7 @@ class Select(CmdBase):
 
                 else:
                     media_prefix = "%s/" % dataset_name
-                    media_path = [
-                        media_prefix + x for x in
-                        [x[0] for x in duck_cursor.execute("select %s from df" % media_path_field).fetchall()]
-                    ]
+                    media_path = [media_prefix + x for x in media_relative_path]
                     media_num = len(set(media_path))
                     media_size = s3_client.get_sum_size(
                         default_bucket, media_path)
@@ -273,8 +275,7 @@ class Select(CmdBase):
                     dataset_name, sub_split.parquet_path)
 
                 media_prefix = "%s/" % dataset_name
-                media_path = [media_prefix + x for x in
-                              [x[0] for x in duck_cursor.execute("select %s from df" % media_path_field).fetchall()]]
+                media_path = [media_prefix + x for x in media_relative_path]
                 media_num = len(set(media_path))
                 media_size = s3_client.get_sum_size(default_bucket, media_path)
 

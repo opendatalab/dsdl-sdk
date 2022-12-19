@@ -202,6 +202,8 @@ class SplitReader(ParquetReader):
             path_field = dataset_dict["dsdl_meta"]["struct"]["media_field"] if "media_field" in \
                                                                                dataset_dict["dsdl_meta"][
                                                                                    "struct"].keys() else "image"
+            if type(path_field) == type([]):
+                path_field = path_field[0]
             field_last_name = path_field.split(".")[-1]
             image_list = self.select(path_field, samples=sample_number)[field_last_name].tolist()
             dataset_path = self.db_client.get_local_dataset_path(self.dataset_name)
