@@ -59,14 +59,14 @@ class Info(CmdBase):
             help="dataset name. The arg is optional only when the default dataset name was set by cd command.",
         )
 
-        inspect_parser.add_argument(
-            "--split",
-            type=str,
-            help="the split name of the dataset, such as train/test/validation split.",
-            metavar="",
-        )
+        # inspect_parser.add_argument(
+        #     "--split",
+        #     type=str,
+        #     help="the split name of the dataset, such as train/test/validation split.",
+        #     metavar="",
+        # )
 
-        group = inspect_parser.add_mutually_exclusive_group()
+        # group = inspect_parser.add_mutually_exclusive_group()
 
         # group.add_argument(
         #     "-d",
@@ -91,11 +91,11 @@ class Info(CmdBase):
         #     action="store_true",
         #     help="show schema of the dataset.",
         # )
-        group.add_argument(
-            "--preview",
-            action="store_true",
-            help="preview of the dataset.",
-        )
+        # group.add_argument(
+        #     "--preview",
+        #     action="store_true",
+        #     help="preview of the dataset.",
+        # )
 
         return inspect_parser
 
@@ -117,8 +117,8 @@ class Info(CmdBase):
         # statistics = cmdargs.statistics
         # schema = cmdargs.schema
         # metadata = cmdargs.metadata
-        preview = cmdargs.preview
-        split_name = cmdargs.split
+        preview = False
+        split_name = None
 
         s3_client = ops.OssClient(
             endpoint_url=endpoint_url,
