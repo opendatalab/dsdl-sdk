@@ -1,14 +1,13 @@
 import os
+import signal
 import sys
 from pathlib import Path
-import signal
-from subprocess import Popen, PIPE
-import asyncio
+from subprocess import Popen
 
+from loguru import logger
 
 import commons.stdio as stdio
 from commons.exceptions import CLIException, ExistCode
-from loguru import logger
 
 
 class View:
