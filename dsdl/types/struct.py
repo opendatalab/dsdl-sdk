@@ -58,6 +58,7 @@ class Struct(dict, metaclass=StructMetaclass):
         self.file_reader = file_reader
         self._keys = []
         self._dict_format = None
+        self._raw_dict = kwargs
         if file_reader is not None:  # 说明是在赋值
             for k in self.__required__:
                 if k not in kwargs:
@@ -165,6 +166,9 @@ class Struct(dict, metaclass=StructMetaclass):
         prefix = "."
         self._parse_helper(self.convert2dict(), field_name, result_dic, prefix, parse_method)
         return result_dic
+
+    def convert2json(self):
+        return self._raw_dict
 
     @classmethod
     def _parse_struct(cls, sample):
