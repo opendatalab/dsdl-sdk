@@ -13,7 +13,7 @@ class ImageSample:
         self.palette = palette
         self.ground_truths = defaultdict(dict)
 
-    def append_ground_truth(self, gt_path, gt_item):
+    def append_ground_truth(self, field_key, gt_path, gt_item):
         """
         {
             ./object/1:{
@@ -28,10 +28,7 @@ class ImageSample:
         }
         """
         gt_dir, gt_name = os.path.split(gt_path)
-        if hasattr(gt_item, "field_key"):
-            field_key = gt_item.field_key.lower()
-        else:
-            field_key = gt_item.__class__.__name__.lower()
+
         if field_key not in self.ground_truths[gt_dir]:
             self.ground_truths[gt_dir][field_key] = {gt_name: gt_item}
         else:
@@ -147,11 +144,11 @@ class ImageVisualizePipeline:
         image_dic = data_dic.pop("image")
         image_paths = list(image_dic.keys())
         result_dic = {k_: ImageSample(image_dic[k_], self.palette) for k_ in image_paths}
-        for ann_dic in data_dic.values():
+        for field_key, ann_dic in data_dic.items():
             for ann_path, ann_obj in ann_dic.items():
                 matched_img_paths = self._match(ann_path, image_paths)
                 for matched_img_path in matched_img_paths:
-                    result_dic[matched_img_path].append_ground_truth(ann_path, ann_obj)
+                    result_dic[matched_img_path].append_ground_truth(field_key, ann_path, ann_obj)
         return result_dic
 
     def visualize(self):
