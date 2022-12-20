@@ -108,7 +108,7 @@ class StudioView:
 
     def _init_generator(self):
         for dsdl_yaml in self.yaml_paths:
-            print(f"Parsing {dsdl_yaml} ...")
+            # print(f"Parsing {dsdl_yaml} ...")
             self.clear_registry()
             yaml_info = self.extract_info_from_yml(dsdl_yaml, shuffle=self.shuffle)
             dsdl_py, sample_type, samples, global_info_type, global_info = yaml_info["dsdl_py"], yaml_info[
