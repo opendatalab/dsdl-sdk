@@ -190,7 +190,8 @@ class Select(CmdBase):
 
         split_reader = query.SplitReader(dataset_name, split_name)
         media_path_field = dataset_dict['dsdl_meta']['struct']['media_field'] if 'media_field' in \
-                           dataset_dict['dsdl_meta']['struct'].keys() else 'image'
+                                                                                 dataset_dict['dsdl_meta'][
+                                                                                     'struct'].keys() else 'image'
 
         # temp solution
         if type(media_path_field) != type([]):
@@ -218,8 +219,11 @@ class Select(CmdBase):
         if export_name is not None:
             media_relative_path = []
             for field in media_path_field:
-                media_relative_path = media_relative_path + [x[0] for x in duck_cursor.execute(
-                    "select %s from df" % field).fetchall()]
+                try:
+                    media_relative_path = media_relative_path + [x[0] for x in duck_cursor.execute(
+                        "select %s from df" % field).fetchall()]
+                except Exception as e:
+                    pass
 
             sub_split = query.Split(dataset_name, export_name, output_path)
             media_download_flag = 0
