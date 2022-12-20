@@ -240,12 +240,12 @@ class Info(CmdBase):
             if "tables" in dataset_dict["statistics"]:
                 table_list = dataset_dict["statistics"]["tables"]
                 for table in table_list:
+                    sort_key = list(table["data"][0].keys())[0]
                     print_stdout("# " + table["name"])
                     print_stdout(
-                        tabulate(
-                            table["data"],
-                            tablefmt="grid",
-                            headers="keys",
-                            numalign="left",
-                        )
+                        tabulate(sorted(table["data"], key=lambda d: d[sort_key]),
+                                 tablefmt="grid",
+                                 headers="keys",
+                                 numalign="left",
+                                 )
                     )
