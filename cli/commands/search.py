@@ -44,14 +44,14 @@ class Search(CmdBase):
             config:
 
         Returns:
-
+        old data:
+        CIFAR-10-Auto                   21M
+        CIFAR-10                        241M
+        CIFAR-100                       243M
+        Fashion-MNIST                   281M
+        STL-10                          2.1G
         """
         print_stdout("""
-CIFAR-10-Auto                   21M
-CIFAR-10                        241M
-CIFAR-100                       243M
-Fashion-MNIST                   281M
-STL-10                          2.1G
 PascalVOC2007-detection         835M
 PascalVOC2012-detection         2.4G
 CIFAR10                         129M
