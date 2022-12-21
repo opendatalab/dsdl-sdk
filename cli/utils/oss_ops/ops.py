@@ -44,7 +44,7 @@ def print_progress(iteration,
     est_tm = human_readable.precise_delta(delta,
                                           suppress=["days"],
                                           formatting='%.0f')
-    sys.stdout.write('\r%s |%s| %s%s, Eta %s' %
+    sys.stdout.write('\r%s |%s| %s%s, Eta %s                  ' %
                      (prefix, bar, percent, '%', est_tm))
     if iteration == total:
         sys.stdout.write('\n')
