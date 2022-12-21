@@ -1,3 +1,6 @@
+import re
+import os
+from fnmatch import fnmatch
 from .field import Field
 from ..geometry import Attributes, STRUCT
 from ..exception import ValidationError
@@ -58,6 +61,7 @@ class Struct(dict, metaclass=StructMetaclass):
         self.file_reader = file_reader
         self._keys = []
         self._dict_format = None
+        self._flatten_format = None
         self._raw_dict = kwargs
         if file_reader is not None:  # 说明是在赋值
             for k in self.__required__:
@@ -139,6 +143,35 @@ class Struct(dict, metaclass=StructMetaclass):
             self._dict_format = self._parse_struct(self)
         return self._dict_format
 
+    def extract_path_info(self, pattern):
+        magic_check = re.compile('([*?[])')
+        if self._flatten_format is None:
+            self._flatten_format = self.flatten_sample()
+        flatten_sample = self._flatten_format
+        if magic_check.search(pattern) is None:  # 无通配
+            if pattern in flatten_sample:
+                return {pattern: flatten_sample[pattern]}
+            else:
+                return dict()
+        res = dict()
+        for path in flatten_sample.keys():
+            if self._match(path, pattern):
+                res[path] = flatten_sample[path]
+        return res
+
+    @staticmethod
+    def _match(path, pattern):
+        path = os.path.normpath(path)
+        path_seg = path.split(os.sep)
+        pattern = os.path.normpath(pattern)
+        pattern_seg = pattern.split(os.sep)
+        if len(path_seg) != len(pattern_seg):
+            return False
+        for pattern_, path_ in zip(pattern_seg, path_seg):
+            if not fnmatch(path_, pattern_):
+                return False
+        return True
+
     def extract_field_info(self, field_lst):
         """
         Extract the field info given field list, for example, if field_lst is [bbox, image], the result will be:
@@ -158,13 +191,13 @@ class Struct(dict, metaclass=StructMetaclass):
         """
         result_dic = {}
         for field_name in field_lst:
-            result_dic[field_name] = self._flatten_sample(f"${field_name}")
+            result_dic[field_name] = self.flatten_sample(f"${field_name}")
         return result_dic
 
-    def _flatten_sample(self, field_name, parse_method=lambda _: _):
+    def flatten_sample(self, field_name=None, parse_method=lambda _: _):
         result_dic = {}
         prefix = "."
-        self._parse_helper(self.convert2dict(), field_name, result_dic, prefix, parse_method)
+        self._parse_helper(self.convert2dict(), result_dic, field_name, prefix, parse_method)
         return result_dic
 
     def convert2json(self):
@@ -206,25 +239,28 @@ class Struct(dict, metaclass=StructMetaclass):
             return sample
 
     @classmethod
-    def _parse_helper(cls, sample, field_name, result_dic, prefix=".", parse_method=lambda _: _):
+    def _parse_helper(cls, sample, result_dic, field_name=None, prefix=".", parse_method=lambda _: _):
         assert field_name not in ("$struct", "$list")
 
         if isinstance(sample, dict):
             for field_type in sample:
-                if field_type == field_name:
+                if (field_name is None and field_type not in ("$struct", "$list")) or (
+                        field_name is not None and field_type == field_name):
                     for key, value in sample[field_type].items():
                         k_ = f"{prefix}/{key}"
                         result_dic[k_] = parse_method(value)
-                if field_type == "$list":
+                elif field_type == "$list":
                     for key, value in sample[field_type].items():
                         k_ = f"{prefix}/{key}"
-                        cls._parse_helper(value, field_name, result_dic, prefix=k_, parse_method=parse_method)
-                if field_type == "$struct":
+                        cls._parse_helper(value, result_dic, field_name=field_name, prefix=k_,
+                                          parse_method=parse_method)
+                elif field_type == "$struct":
                     for key, value in sample[field_type].items():
                         k_ = f"{prefix}/{key}"
-                        cls._parse_helper(value, field_name, result_dic, prefix=k_, parse_method=parse_method)
+                        cls._parse_helper(value, result_dic, field_name=field_name, prefix=k_,
+                                          parse_method=parse_method)
 
         elif isinstance(sample, list):
             for id_, item in enumerate(sample):
                 k_ = f"{prefix}/{id_}"
-                cls._parse_helper(item, field_name, result_dic, prefix=k_, parse_method=parse_method)
+                cls._parse_helper(item, result_dic, field_name=field_name, prefix=k_, parse_method=parse_method)
