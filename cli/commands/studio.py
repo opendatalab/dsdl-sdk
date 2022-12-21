@@ -120,25 +120,38 @@ class Studio(CmdBase):
         # remote_exists = dbcli.is_dataset_remote_exist(dataset_name)
 
         if task_type_name is None:
-            view = View(dataset_name, task=False)
-        else:
-            if task_type_name not in [
-                "detection",
-                "classification",
-                "semantic-seg",
-                "panoptic-seg",
-            ]:
-                raise CLIException(
-                    ExistCode.VIEW_TASK_TYPE_ERROR,
-                    f"Task type {task_type} is not supported.",
-                )
+            # view = View(dataset_name, task=False)
+            dataset_info = dbcli.get_dataset_info_by_name(dataset_name)
+            if dataset_info is not None:
+                task_type_name = dataset_info["task_type"]
+                task_type_name_map = {
+                    "ObjectDetection": "detection",
+                    "Image Classification": "classification",
+                    # "semantic-seg": "Segmentation", # TODO?
+                    # "panoptic-seg": "Segmentation",
+                }
+                task_type_name = task_type_name_map[task_type_name]
+
             else:
-                view = View(
-                    dataset_name,
-                    task=True,
-                    task_type=task_type_name,
-                    number=number,
-                )
+                pass # TODO raise?
+
+        if task_type_name not in [
+            "detection",
+            "classification",
+            "semantic-seg",
+            "panoptic-seg",
+        ]:
+            raise CLIException(
+                ExistCode.VIEW_TASK_TYPE_ERROR,
+                f"Task type {task_type_name} is not supported.",
+            )
+        else:
+            view = View(
+                dataset_name,
+                task=True,
+                task_type=task_type_name,
+                number=number,
+            )
 
         # print(f"local:{local}")
         # print(f"remote:{str(remote)}")

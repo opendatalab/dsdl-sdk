@@ -212,6 +212,27 @@ class DBClient:
         else:
             return None
 
+    def get_dataset_info_by_name(self, dataset_name:str) -> dict:
+        """
+
+        Args:
+            dataset_name:
+
+        Returns:
+
+        """
+        try:
+            res = self.cursor.execute("select * from dataset where dataset_name=?", [dataset_name]).fetchone()
+        except Exception as e:
+            error_info = "Sqlite select dataset operation error: \n" + str(e)
+            logger.error(error_info)
+            raise CLIException(ExistCode.SQLITE_OPERATION_ERROR, error_info)
+        if res:
+            header = [x[0] for x in self.cursor.description]
+            return dict(zip(header, res))
+        else:
+            return None
+
     def is_dataset_local_exist(self, dataset_name: str) -> bool:
         """
         Check whether the given dataset exists locally
