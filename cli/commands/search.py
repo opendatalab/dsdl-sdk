@@ -58,4 +58,6 @@ CIFAR10                         129M
 Oxford_102_Flowers              331M
 PascalVOC2012-segmentation      487M
 PascalVOC2007-segmentation      58M
+MPII                            11.3G
+COCO2017Keypoints               10.2G
 """)

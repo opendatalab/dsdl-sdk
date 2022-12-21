@@ -57,8 +57,14 @@ class ParserField:
 
         ele_type, ordered = None, None
         if len(param_list) == 2:
-            ele_type = param_list[0].strip()
-            ordered = param_list[1].strip()
+            if param_list[0].strip().startswith("etype"):
+                ele_type = param_list[0].strip()
+                ordered = param_list[1].strip()
+            elif param_list[1].strip().startswith("etype"):
+                ordered = param_list[0].strip()
+                ele_type = param_list[1].strip()
+            else:
+                raise DefineSyntaxError(f"invalid parameters {param_list} in List.")
         elif len(param_list) == 1:
             ele_type = param_list[0].strip()
         else:
