@@ -193,6 +193,7 @@ class Report:
 
         res = self.parse_sample_info()
         total_num, normal_num, warn_num, error_num = res["total"], res["normal"], res["warn"], res["error"]
+        assert total_num == normal_num + warn_num + error_num, "Error. Number not match!"
         file_handler.write("samples验证结果如下：" + os.linesep)
         res_str = f"共实例化<font color=blue>{total_num}</font>个样本，" \
                   f"其中<font color=green>{normal_num}</font>个样本实例化正常，" \
