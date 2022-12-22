@@ -190,7 +190,7 @@ class Config(CmdBase):
 
         """
         _, _, free = shutil.disk_usage(path)
-        space = free // 1024 // 1024 // 1024
+        space = free / 1024 / 1024 / 1024
         return space
 
     def __config_writter(self, config):
@@ -225,7 +225,7 @@ class Config(CmdBase):
                         'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
                         .format(args.storage_path, space))
                     logger.info(
-                        'STORAGE LOCAL: The path {} configuration is successful,c urrent path have {:.4}GB left!'
+                        'STORAGE LOCAL: The path {} configuration is successful, current path have {:.4}GB left!'
                         .format(args.storage_path, space))
                 except OSError as e:
                     print_stderr(
