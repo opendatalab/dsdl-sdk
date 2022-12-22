@@ -31,7 +31,7 @@ class Text(BaseGeometry):
                 [[item.point_for_draw("lb")[0], item.point_for_draw("lb")[1] - 1.2 * label_size[1]] for item in
                  kwargs["rotatedbbox"].values()])
         else:
-            coords = np.array([[0, image.size[0] - 1.2 * label_size[1]]])
+            coords = np.array([[0, image.size[1] - 1.2 * label_size[1]]])
         for coord in coords:
             draw_obj.rectangle([tuple(coord), tuple(coord + label_size)], fill=(*text_color, 255))
             draw_obj.text(tuple(coord), self.value, fill=(255, 255, 255, 255), font=font)
