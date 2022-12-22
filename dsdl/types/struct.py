@@ -153,7 +153,7 @@ class Struct(dict, metaclass=StructMetaclass):
             if not isinstance(field_keys, list):
                 field_keys = [field_keys]
             flatten_sample = dict()
-            field_keys = [f"${_}" for _ in field_keys if isinstance(_, str)]
+            field_keys = [f"${_.lower()}" for _ in field_keys if isinstance(_, str)]
             for field_name in field_keys:
                 flatten_sample.update(self.flatten_sample(field_name))
         if magic_check.search(pattern) is None:  # 无通配
