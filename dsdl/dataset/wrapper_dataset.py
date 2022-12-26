@@ -27,13 +27,13 @@ class DSDLDataset(Dataset):
         dsdl_py, sample_type, samples, global_info_type, global_info = self._yaml_info["dsdl_py"], self._yaml_info[
             "sample_type"], self._yaml_info["samples"], self._yaml_info["global_info_type"], self._yaml_info[
                                                                            "global_info"]
+        exec(dsdl_py, {})
         self.class_dom = Util.extract_class_dom(sample_type)
         for _arg in self.class_dom:
             for _dom_ind, class_dom in enumerate(self.class_dom[_arg]):
                 self.class_dom[_arg][_dom_ind] = CLASSDOMAIN.get(class_dom)
         self.meta = self._yaml_info["meta"]
         self.version = self._yaml_info["version"]
-        exec(dsdl_py, {})
 
         super().__init__(samples, sample_type, location_config, None, global_info_type, global_info)
 
