@@ -10,9 +10,10 @@ import os
 import json
 from ..parser import dsdl_parse
 from .utils.commons import Util
+from ..geometry import CLASSDOMAIN
 
 
-class WrapperDataset(Dataset):
+class DSDLDataset(Dataset):
     YAML_VALID_SUFFIX = ('.yaml', '.YAML')
     JSON_VALID_SUFFIX = ('.json', '.JSON')
     VALID_SUFFIX = YAML_VALID_SUFFIX + JSON_VALID_SUFFIX
@@ -27,6 +28,9 @@ class WrapperDataset(Dataset):
             "sample_type"], self._yaml_info["samples"], self._yaml_info["global_info_type"], self._yaml_info[
                                                                            "global_info"]
         self.class_dom = Util.extract_class_dom(sample_type)
+        for _arg in self.class_dom:
+            for _dom_ind, class_dom in enumerate(self.class_dom[_arg]):
+                self.class_dom[_arg][_dom_ind] = CLASSDOMAIN.get(class_dom)
         self.meta = self._yaml_info["meta"]
         self.version = self._yaml_info["version"]
         exec(dsdl_py, {})
