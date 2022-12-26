@@ -6,6 +6,7 @@ from PIL import Image
 import io
 from .label import LabelList
 from .box import BBox
+from .class_domain import _LabelMapDefaultDomain
 
 
 class SegmentationMap(BaseGeometry):
@@ -17,6 +18,8 @@ class SegmentationMap(BaseGeometry):
         self._loc = location
         self._reader = file_reader
         self._dom = dom
+        if self._dom is None:
+            self._dom = _LabelMapDefaultDomain
 
     @property
     def class_domain(self):
@@ -52,6 +55,8 @@ class SegmentationMap(BaseGeometry):
         seg = self.to_array()
         color_seg = np.zeros((seg.shape[0], seg.shape[1], 3), dtype=np.uint8)
         category_ids = np.unique(seg)
+        if self.class_domain.__name__ == "_LabelMapDefaultDomain":
+            category_ids = category_ids + 1
         label_lst = []
         for category_id in category_ids:
             if int(category_id) > len(self._dom) or int(category_id) < 1:

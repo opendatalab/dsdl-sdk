@@ -25,11 +25,10 @@ class ClassDomainMeta(type):
         attributes["__mapping__"] = mapping
         attributes["__list__"] = classes
         attr_dic = {attr_k: CLASSDOMAIN_ATTRIBUTES[attr_k](attributes.pop(attr_k)) for attr_k in
-                                        CLASSDOMAIN_ATTRIBUTES if attr_k in attributes}
+                    CLASSDOMAIN_ATTRIBUTES if attr_k in attributes}
         for attr_k in attr_dic:
             attr_dic[attr_k].set_domain(name)
         attributes["__attributes__"] = attr_dic
-
 
         new_cls = super_new(mcs, name, bases, attributes)
         CLASSDOMAIN.register(name, new_cls)
@@ -80,3 +79,10 @@ class ClassDomain(metaclass=ClassDomainMeta):
     def get_attribute(cls, attr_name):
         attr_dic = getattr(cls, "__attributes__")
         return attr_dic.get(attr_name, None)
+
+
+class _LabelMapDefaultDomain(ClassDomain):
+    Classes = [
+        Label("background"),
+        Label("object"),
+    ]
