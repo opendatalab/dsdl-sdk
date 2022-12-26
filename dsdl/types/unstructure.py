@@ -40,7 +40,7 @@ class ImageField(UnstructuredObjectField):
 
 
 class LabelMapField(UnstructuredObjectField):
-    def __init__(self, dom, *args, **kwargs):
+    def __init__(self, dom=None, *args, **kwargs):
         super(LabelMapField, self).__init__(*args, **kwargs)
         self.dom = dom
 
