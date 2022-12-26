@@ -12,6 +12,7 @@ from botocore.exceptions import ClientError
 from commons.exceptions import CLIException, ExistCode
 from commons.stdio import print_stdout
 from loguru import logger
+from tqdm import tqdm
 
 
 def print_progress(iteration,
@@ -44,7 +45,7 @@ def print_progress(iteration,
     est_tm = human_readable.precise_delta(delta,
                                           suppress=["days"],
                                           formatting='%.0f')
-    sys.stdout.write('\r%s |%s| %s%s, Eta %s                  ' %
+    sys.stdout.write('\r%s |%s| %s%s, Eta %s' %
                      (prefix, bar, percent, '%', est_tm))
     if iteration == total:
         sys.stdout.write('\n')
@@ -190,27 +191,28 @@ class OssClient:
         # print(bucket)
         # print(remote_directory)
         file_list = self.list_objects(bucket, remote_directory)
-        process = 0
+        # process = 0
         file_number = len(file_list)
-        start_time = time.perf_counter()
+        # start_time = time.perf_counter()
 
-        # print_progress(process, file_number, start_time, prefix='Downloading', suffix='Complete',
-        #                bar_length=50)
-
+        pbar = tqdm(total=file_number, ncols=100)
+        pbar.set_description("Download")
         for file in file_list:
             file_name = file['Key']
             local_file = os.path.join(local_directory,
                                       file_name[len(remote_directory):])
             if not os.path.exists(local_file):
                 self.download_file(bucket, file_name, local_file)
-            process += 1
-            print_progress(process,
-                           file_number,
-                           start_time,
-                           prefix='Download',
-                           suffix='Complete',
-                           bar_length=50)
+            pbar.update(1)
+            # process += 1
+            # print_progress(process,
+            #                file_number,
+            #                start_time,
+            #                prefix='Download',
+            #                suffix='Complete',
+            #                bar_length=50)
 
+        pbar.close()
         print_stdout('Download Complete')
 
     def download_list(self, bucket, media_list, remote_directory,
@@ -234,30 +236,34 @@ class OssClient:
 
         print_stdout("start download...")
 
-        process = 0
+        # process = 0
         file_number = len(media_list)
-        start_time = time.perf_counter()
+        # start_time = time.perf_counter()
 
-        print_progress(process,
-                       file_number,
-                       start_time,
-                       prefix='Downloading',
-                       suffix='Complete',
-                       bar_length=50)
+        # print_progress(process,
+        #                file_number,
+        #                start_time,
+        #                prefix='Downloading',
+        #                suffix='Complete',
+        #                bar_length=50)
 
+        pbar = tqdm(total=file_number, ncols=100)
+        pbar.set_description("Download")
         for media in media_list:
             file_key = remote_directory + media
             local_file = os.path.join(local_directory, media)
             if not os.path.exists(local_file):
                 self.download_file(bucket, file_key, local_file)
-            process += 1
-            print_progress(process,
-                           file_number,
-                           start_time,
-                           prefix='Download',
-                           suffix='Complete',
-                           bar_length=50)
+            # process += 1
+            # print_progress(process,
+            #                file_number,
+            #                start_time,
+            #                prefix='Download',
+            #                suffix='Complete',
+            #                bar_length=50)
+            pbar.update(1)
 
+        pbar.close()
         print_stdout('Download Complete')
 
     def get_sum_size(self, bucket, file_key_list):
