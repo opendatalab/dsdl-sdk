@@ -157,7 +157,7 @@ class ParserParam:
                                         temp = re.findall(
                                             r"%s\[(.*?)\]" % str(structure), field_type
                                         )[0]
-                                    except KeyError:
+                                    except (KeyError, IndexError):
                                         raise DefineSyntaxError(
                                             f"definition error of filed {field_type}"
                                         )
