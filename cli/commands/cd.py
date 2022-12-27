@@ -97,76 +97,28 @@ class Cd(CmdBase):
                 shell_cmd = CmdExeActivator().activate_cmd
                 os.system(shell_cmd)
             elif sysstr in ["Linux"]:
-                stdio.print_stdout("Enter new Linux bash command shell")
+                # stdio.print_stdout("Enter new Linux bash command shell")
 
-                set_key(dotenv_path, "DATASET_NAME", dsname)
-                load_dotenv(dotenv_path)
-
-                # os.execl("/bin/bash", "bash", "-c", "source ~/.dsdl/.env")
-
-                # pipe = subprocess.Popen(
-                #     "cat /root/.dsdl/.env", stdout=subprocess.PIPE, shell=True
-                # )
-                # output = pipe.communicate()[0]
-                # env = dict((line.split("=", 1) for line in output.splitlines()))
-
-                # os.environ.update()
-
-                # output = subprocess.check_output(
-                #     "source /root/.dsdl/.env; env -0",
-                #     shell=True,
-                #     executable="/bin/bash",
-                # )
-                # exported_vars = dict(
-                #     line.split("=", 1) for line in output.decode().splitlines() if line
-                # )
-
-                dsname = os.getenv("DATASET_NAME")
-                print(dsname)
-
-                # source = "source /root/.dsdl/.env"
-                # dump = '/usr/bin/python -c "import os, json;print json.dumps(dict(os.environ))"'
-                # pipe = subprocess.Popen(
-                #     ["/bin/bash", "-c", "%s && %s" % (source, dump)],
-                #     stdout=subprocess.PIPE,
-                #     stderr=subprocess.PIPE,
-                #     shell=True,
-                #     executable="bash",
-                # )
-                # env = json.loads(pipe.stdout.read())
-                # os.environ = env
-
-                # os.environ.clear()
-                # os.environ.update(env)
-
-                # open a new linux shell session
-                # my_env = os.environ.copy()
-                # my_env["PATH"] = "/usr/sbin:/sbin:" + my_env["PATH"]
-                # subprocess.Popen(
-                #     "/bin/bash",
-                #     env=my_env,
-                #     stdout=subprocess.PIPE,
-                #     stderr=subprocess.PIPE,
-                #     shell=True,
-                #     executable="bash",
-                # )
-
-                # # subprocess.Popen("/bin/bash", env=os.environ)
-                # cmd = "eval $(echo export DATASET_NAME={dsname})".format(dsname=dsname)
-                # print(cmd)
-
-                os.system(
-                    "/usr/bin/bash",
-                    # "/usr/bin/bash -c 'source /root/.dsdl/.env; exec /bin/bash -i;)'",
-                    # "/usr/bin/bash -c '/root/ws/anaconda3/bin/conda init'",
-                    # "/usr/bin/bash -c '/root/ws/anaconda3/bin/conda initactivate py310'",
+                PS1_VAR_OS = os.getenv(key="PS1", default="[\\u@\\h \\W]\\$ ")
+                CONDA_PROMPT_MODIFIER = os.getenv(
+                    key="CONDA_PROMPT_MODIFIER", default=""
+                )
+                PS1_VAR_NEW = (
+                    "(" + dsname + ")" + " " + CONDA_PROMPT_MODIFIER + PS1_VAR_OS
                 )
 
-                # subprocess.run(
-                #     "source activate py310",
-                #     # 'source activate py310 && "python --version" && source deactivate',
-                #     shell=True,
+                set_key(dotenv_path, "DATASET_NAME", dsname)
+                set_key(dotenv_path, "PS1", PS1_VAR_NEW)
+
+                load_dotenv(dotenv_path)
+
+                # os.system(
+                #     "/usr/bin/bash",
                 # )
+
+                stdio.print_stdout(
+                    "to activate new environment, please run:\n source $HOME/.dsdl/.env"
+                )
 
             elif sysstr in ["Darwin"]:
                 stdio.print_stdout("Enter new Darwin bash command shell")
