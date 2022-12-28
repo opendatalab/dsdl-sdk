@@ -106,7 +106,7 @@ class Cd(CmdBase):
                 /bin/dash
                 """
 
-                if os.environ["SHELL"] != "/bin/bash":
+                if os.environ["SHELL"].split("/")[-1] != "bash":
                     stdio.print_stderr("Only support bash shell now!")
                     sys.exit(1)
 
@@ -140,7 +140,7 @@ class Cd(CmdBase):
                 /bin/dash
                 """
 
-                if os.environ["SHELL"] != "/bin/bash":
+                if os.environ["SHELL"].split("/")[-1] != "bash":
                     stdio.print_stderr("Only support bash shell now!")
                     sys.exit(1)
 
