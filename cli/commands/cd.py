@@ -10,6 +10,7 @@ from contextlib import redirect_stdout
 
 import os
 import sys
+import re
 import subprocess
 from pathlib import Path
 import psutil
@@ -33,7 +34,7 @@ from commons.argument_parser import EnvDefaultVar
 
 from utils.admin import DBClient
 import commons.stdio as stdio
-from .const import DEFAULT_ENV_FILE
+from .const import DEFAULT_ENV_FILE, DEFAULT_ENV_FILE_WIN
 
 
 class Cd(CmdBase):
@@ -81,6 +82,7 @@ class Cd(CmdBase):
 
         dsname = ""
         dotenv_path = Path(DEFAULT_ENV_FILE)
+        dotenv_path_win = Path(DEFAULT_ENV_FILE_WIN)
 
         if cmdargs.dataset_name:
             os.environ.setdefault("DATASET_NAME", "")
@@ -89,13 +91,51 @@ class Cd(CmdBase):
 
         dbcli = DBClient()
         is_exists = dbcli.is_dataset_local_exist(dsname)
+        
+        is_exists = True
+        print(dsname)
 
         if "DATASET_NAME" in os.environ and is_exists:
             sysstr = platform.system()
             if sysstr in ["Windows"]:
-                stdio.print_stdout("Enter new Windows cmd command shell")
-                shell_cmd = CmdExeActivator().activate_cmd
-                os.system(shell_cmd)
+                # stdio.print_stdout("Enter new Windows cmd command shell")
+                # shell_cmd = CmdExeActivator().activate_cmd
+                # print(shell_cmd)
+                # os.system(shell_cmd)
+
+                # ComSpec=C:\Windows\system32\cmd.exe
+                if os.environ["ComSpec"].split("\\")[-1] != "cmd.exe":
+                    stdio.print_stderr("Only support bash shell now!")
+                    sys.exit(1)
+
+                PROMPT = os.getenv(key="PROMPT", default="$P$G ")
+                # CONDA_PROMPT_MODIFIER = os.getenv(
+                #     key="CONDA_PROMPT_MODIFIER", default=""
+                # )
+                PROMPT_NEW = (
+                    "(" + dsname + ")" + " "  + PROMPT
+                )
+
+                set_key(dotenv_path_win, "DATASET_NAME", dsname)
+                set_key(dotenv_path_win, "PROMPT", PROMPT_NEW)
+                
+                with open(dotenv_path_win, "r", encoding = 'utf-8') as f:
+                    lines = f.readlines()
+                
+                for line in lines:
+                    re.sub("DATASET_NAME", "SET DATASET_NAME", line)
+                    re.sub("PROMPT", "SET PROMPT", line)                    
+                    print(line)
+                
+                with open(dotenv_path_win, "w", encoding = 'utf-8') as file:
+                    file.writelines(lines)
+                    file.close()
+                    
+                # load_dotenv(dotenv_path_win)
+
+                stdio.print_stdout(
+                    "to activate new environment, please run:\n call $HOME/.dsdl/.env.bat"
+                )
             elif sysstr in ["Linux"]:
                 """
                 /bin/bash
