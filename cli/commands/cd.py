@@ -91,7 +91,7 @@ class Cd(CmdBase):
 
         dbcli = DBClient()
         is_exists = dbcli.is_dataset_local_exist(dsname)
-        
+
         is_exists = True
         print(dsname)
 
@@ -112,25 +112,23 @@ class Cd(CmdBase):
                 # CONDA_PROMPT_MODIFIER = os.getenv(
                 #     key="CONDA_PROMPT_MODIFIER", default=""
                 # )
-                PROMPT_NEW = (
-                    "(" + dsname + ")" + " "  + PROMPT
-                )
+                PROMPT_NEW = "(" + dsname + ")" + " " + PROMPT
 
                 set_key(dotenv_path_win, "DATASET_NAME", dsname)
                 set_key(dotenv_path_win, "PROMPT", PROMPT_NEW)
-                
-                with open(dotenv_path_win, "r", encoding = 'utf-8') as f:
+
+                with open(dotenv_path_win, "r", encoding="utf-8") as f:
                     lines = f.readlines()
-                
+
                 for line in lines:
                     re.sub("DATASET_NAME", "SET DATASET_NAME", line)
-                    re.sub("PROMPT", "SET PROMPT", line)                    
+                    re.sub("PROMPT", "SET PROMPT", line)
                     print(line)
-                
-                with open(dotenv_path_win, "w", encoding = 'utf-8') as file:
+
+                with open(dotenv_path_win, "w", encoding="utf-8") as file:
                     file.writelines(lines)
                     file.close()
-                    
+
                 # load_dotenv(dotenv_path_win)
 
                 stdio.print_stdout(
