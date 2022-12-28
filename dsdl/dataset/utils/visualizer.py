@@ -140,7 +140,7 @@ class ImageVisualizePipeline:
         return bu_distance * cls.BU_DIST_WEIGHT + td_distance * cls.TD_DIST_WEIGHT
 
     def group_media_and_ann(self):
-        data_dic = deepcopy(self.data_dic)
+        data_dic = self.data_dic
         image_dic = data_dic.pop("image")
         image_paths = list(image_dic.keys())
         result_dic = {k_: ImageSample(image_dic[k_], self.palette) for k_ in image_paths}
