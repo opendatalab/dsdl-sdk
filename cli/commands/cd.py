@@ -97,7 +97,18 @@ class Cd(CmdBase):
                 shell_cmd = CmdExeActivator().activate_cmd
                 os.system(shell_cmd)
             elif sysstr in ["Linux"]:
-                # stdio.print_stdout("Enter new Linux bash command shell")
+                """
+                /bin/bash
+                /bin/zsh
+                /bin/csh
+                /bin/ksh
+                /bin/tcsh
+                /bin/dash
+                """
+
+                if os.environ["SHELL"] != "/bin/bash":
+                    stdio.print_stderr("Only support bash shell now!")
+                    sys.exit(1)
 
                 PS1_VAR_OS = os.getenv(key="PS1", default="[\\u@\\h \\W]\\$ ")
                 CONDA_PROMPT_MODIFIER = os.getenv(
@@ -119,11 +130,42 @@ class Cd(CmdBase):
                 stdio.print_stdout(
                     "to activate new environment, please run:\n source $HOME/.dsdl/.env"
                 )
-
             elif sysstr in ["Darwin"]:
-                stdio.print_stdout("Enter new Darwin bash command shell")
-                shell_cmd = PosixActivator().activate_cmd
-                os.system(shell_cmd)
+                """
+                /bin/bash
+                /bin/zsh
+                /bin/csh
+                /bin/ksh
+                /bin/tcsh
+                /bin/dash
+                """
+
+                if os.environ["SHELL"] != "/bin/bash":
+                    stdio.print_stderr("Only support bash shell now!")
+                    sys.exit(1)
+
+                PS1_VAR_OS = os.getenv(
+                    key="PS1", default="\\h:\\W \\u\\$ "
+                )  # /bin/bash
+                print(PS1_VAR_OS)
+
+                CONDA_PROMPT_MODIFIER = os.getenv(
+                    key="CONDA_PROMPT_MODIFIER", default=""
+                )
+                print(CONDA_PROMPT_MODIFIER)
+
+                PS1_VAR_NEW = (
+                    "(" + dsname + ")" + " " + CONDA_PROMPT_MODIFIER + PS1_VAR_OS
+                )
+                print(PS1_VAR_NEW)
+
+                set_key(dotenv_path, "DATASET_NAME", dsname)
+                set_key(dotenv_path, "PS1", PS1_VAR_NEW)
+                load_dotenv(dotenv_path)
+
+                stdio.print_stdout(
+                    "to activate new environment, please run:\n source $HOME/.dsdl/.env"
+                )
             else:
                 stdio.print_stderr("Other Systems hava not been supported yet!")
         else:
