@@ -25,5 +25,7 @@ DEFAULT_CLI_LOG_FILE_PATH = os.path.join(
 )  # default log file path
 
 # 环境变量配置路径
-_ENV_FILE_PATH = ".env"  # 默认环境变量文件名称
-DEFAULT_ENV_FILE = os.path.join(DEFAULT_CONFIG_DIR, _ENV_FILE_PATH)  # 默认环境变量配置文件路径
+_ENV_FILE_NAME = ".env"  # linux/darwin 默认环境变量文件名称
+_ENV_FILE_NAME_WIN = ".env.bat"  # windows 默认环境变量文件名称
+DEFAULT_ENV_FILE = os.path.join(DEFAULT_CONFIG_DIR, _ENV_FILE_NAME)  # 默认环境变量配置文件路径
+DEFAULT_ENV_FILE_WIN = os.path.join(DEFAULT_CONFIG_DIR, _ENV_FILE_NAME_WIN)  # 默认环境变量配置文件路径
