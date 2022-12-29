@@ -96,7 +96,6 @@ class Cd(CmdBase):
         print(dsname)
 
         is_exists = True
-        print(dsname)
 
         if "DATASET_NAME" in os.environ and is_exists:
             sysstr = platform.system()
@@ -117,24 +116,26 @@ class Cd(CmdBase):
 
                 PROMPT_NEW = "(" + dsname + ")" + " " + PROMPT
 
+                with open(dotenv_path_win, "w", encoding="utf-8") as file:
+                    file.truncate()
+
                 set_key(dotenv_path_win, "DATASET_NAME", dsname)
                 set_key(dotenv_path_win, "PROMPT", PROMPT_NEW)
 
-                with open(dotenv_path_win, "r", encoding="utf-8") as f:
-                    lines = f.readlines()
+                with open(dotenv_path_win, "r", encoding="utf-8") as file:
+                    lines = file.read()
+                    file.close()
 
-                for line in lines:
-                    re.sub("DATASET_NAME", "SET DATASET_NAME", line)
-                    re.sub("PROMPT", "SET PROMPT", line)
-                    print(line)
+                lines = lines.replace("DATASET_NAME", "SET DATASET_NAME")
+                lines = lines.replace("PROMPT", "SET PROMPT")
 
                 with open(dotenv_path_win, "w", encoding="utf-8") as file:
-                    file.writelines(lines)
+                    file.write(lines)
                     file.close()
                 # load_dotenv(dotenv_path_win)
 
                 stdio.print_stdout(
-                    "to activate new environment, please run:\n call $HOME/.dsdl/.env.bat"
+                    "to activate new environment, please run:\n call %HOMEPATH%\.dsdl\.env.bat"
                 )
             elif sysstr in ["Linux"]:
                 """
