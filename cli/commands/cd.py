@@ -92,8 +92,6 @@ class Cd(CmdBase):
         dbcli = DBClient()
         is_exists = dbcli.is_dataset_local_exist(dsname)
 
-        is_exists = True
-
         if "DATASET_NAME" in os.environ and is_exists:
             sysstr = platform.system()
             if sysstr in ["Windows"]:
@@ -130,8 +128,6 @@ class Cd(CmdBase):
                     file.write(lines)
                     file.close()
 
-                # load_dotenv(dotenv_path_win)
-
                 stdio.print_stdout(
                     "to activate new environment, please run:\n call %HOMEPATH%\.dsdl\.env.bat"
                 )
@@ -144,7 +140,6 @@ class Cd(CmdBase):
                 /bin/tcsh
                 /bin/dash
                 """
-
                 if os.environ["SHELL"].split("/")[-1] != "bash":
                     stdio.print_stderr("Only support bash shell now!")
                     sys.exit(1)
@@ -161,10 +156,6 @@ class Cd(CmdBase):
                 set_key(dotenv_path, "PS1", PS1_VAR_NEW)
 
                 load_dotenv(dotenv_path)
-
-                # os.system(
-                #     "/usr/bin/bash",
-                # )
 
                 stdio.print_stdout(
                     "to activate new environment, please run:\n source $HOME/.dsdl/.env"
@@ -186,17 +177,14 @@ class Cd(CmdBase):
                 PS1_VAR_OS = os.getenv(
                     key="PS1", default="\\h:\\W \\u\\$ "
                 )  # /bin/bash
-                print(PS1_VAR_OS)
 
                 CONDA_PROMPT_MODIFIER = os.getenv(
                     key="CONDA_PROMPT_MODIFIER", default=""
                 )
-                print(CONDA_PROMPT_MODIFIER)
 
                 PS1_VAR_NEW = (
                     "(" + dsname + ")" + " " + CONDA_PROMPT_MODIFIER + PS1_VAR_OS
                 )
-                print(PS1_VAR_NEW)
 
                 set_key(dotenv_path, "DATASET_NAME", dsname)
                 set_key(dotenv_path, "PS1", PS1_VAR_NEW)

@@ -115,6 +115,7 @@ class Studio(CmdBase):
 
         dbcli = DBClient()
         local_exists = dbcli.is_dataset_local_exist(dataset_name)
+        local_media_exists = dbcli.is_dataset_media_downloaded(dataset_name)
 
         # TODO support remote dataset exists or not in the future:
         # remote_exists = dbcli.is_dataset_remote_exist(dataset_name)
@@ -133,7 +134,7 @@ class Studio(CmdBase):
                 task_type_name = task_type_name_map[task_type_name]
 
             else:
-                pass # TODO raise?
+                pass  # TODO raise?
 
         if task_type_name not in [
             "detection",
@@ -158,15 +159,21 @@ class Studio(CmdBase):
         # print(f"local_exists: {local_exists}")
 
         if remote is True:
-            if local_exists is True:
+            if local_exists is True and local_media_exists is True:
                 use_local = input(
-                    f"Dataset {dataset_name} already exists on local.\nDo you want view using local dataset:(y/n)?"
+                    f"Dataset {dataset_name} already exists on local.\nDo you want view using local dataset:(y/n)? "
                 )
                 if use_local in ["y", "Y", "yes", "Yes"]:
                     view.view_local_dataset()
                 elif use_local in ["n", "N", "no", "No"]:
-                    stdio.print_stdout(msg="Visualization terminated.")
-                    sys.exit(0)
+                    continue_remote = input(
+                        f"Do you want continue viewing remote dataset:(y/n)? "
+                    )
+                    if continue_remote in ["y", "Y", "yes", "Yes"]:
+                        view.view_remote_dataset()
+                    elif continue_remote in ["n", "N", "no", "No"]:
+                        stdio.print_stdout(msg="Visualization terminated.")
+                        sys.exit(0)
             else:
                 stdio.print_stderr(
                     "Dataset not exists on local,try view remote dataset."

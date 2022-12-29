@@ -21,6 +21,10 @@ def main():
         "--number",
         type=int,
     )
+    parser.add_argument(
+        "--remote",
+        action="store_true",
+    )
 
     try:
         args = parser.parse_args()
@@ -30,9 +34,18 @@ def main():
     dataset_name = args.dataset_name
     task_type = args.task_type
     number = args.number
+    remote = args.remote
 
-    # ex. iterator = StudioView("CIFAR-10", "classification", n=10, shuffle=True)
-    iterator = StudioView(dataset_name, task_type, n=number, shuffle=True)
+    print(remote)
+
+    if remote:
+        # ex. iterator = StudioView("CIFAR-10", "classification", n=10, shuffle=True, remote=True)
+        iterator = StudioView(
+            dataset_name, task_type, n=number, shuffle=True, remote=True
+        )
+    else:
+        # ex. iterator = StudioView("CIFAR-10", "classification", n=10, shuffle=True)
+        iterator = StudioView(dataset_name, task_type, n=number, shuffle=True)
 
     image_list = []
     i = 0
