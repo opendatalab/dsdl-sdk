@@ -33,7 +33,7 @@ class RemoteStudioView(BaseStudioView):
         cfg_lst = [default_cfg]
         for storage in storage_info.values():
             if "ak" in storage and "sk" in storage and "endpoint" in storage:
-                cfg = s3_config(storage["ak"], storage["sk"], storage["storage"],
+                cfg = s3_config(storage["ak"], storage["sk"], storage["endpoint"],
                                 storage.get("region", default_cfg.region), storage.get("bucket", default_cfg.bucket))
                 cfg_lst.append(cfg)
         res = None
