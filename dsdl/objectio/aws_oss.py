@@ -17,7 +17,7 @@ class AwsOSSFileReader(BaseFileReader):
 
     @contextmanager
     def load(self, file):
-        fp = os.path.join(self.working_dir, file)
+        fp = f"{self.working_dir.strip('/')}/{file.strip('/')}"
         try:
             try:
                 data = self.s3_client.get_object(Bucket=self.bucket_name, Key=fp)
