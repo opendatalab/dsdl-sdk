@@ -18,9 +18,12 @@ class AwsOSSFileReader(BaseFileReader):
     @contextmanager
     def load(self, file):
         fp = os.path.join(self.working_dir, file)
-        data = self.s3_client.get_object(Bucket=self.bucket_name, Key=fp)
-        contents = data['Body']
         try:
+            try:
+                data = self.s3_client.get_object(Bucket=self.bucket_name, Key=fp)
+                contents = data['Body']
+            except Exception as e:
+                raise RuntimeError(f"{e}. Failed to read '{fp}' from bucket '{self.bucket_name}'.")
             yield contents
         finally:
             pass
