@@ -11,7 +11,7 @@ from .class_domain import ClassDomain
 from .text import Text
 from .rotate_box import RBBox
 from .shape import Shape, ImageShape
-from .instanceid import InstanceID
+from .uniqueid import UniqueID
 
 __all__ = [
     "BBox",
@@ -33,5 +33,5 @@ __all__ = [
     "RBBox",
     "Shape",
     "ImageShape",
-    "InstanceID",
+    "UniqueID",
 ]

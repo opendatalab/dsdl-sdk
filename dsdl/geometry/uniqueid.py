@@ -1,10 +1,11 @@
 from .base_geometry import BaseGeometry
 
 
-class InstanceID(BaseGeometry):
+class UniqueID(BaseGeometry):
 
-    def __init__(self, value):
+    def __init__(self, value, field_key):
         self._value = value
+        self._field_key = field_key
 
     @property
     def value(self):
@@ -18,4 +19,4 @@ class InstanceID(BaseGeometry):
 
     @property
     def field_key(self):
-        return "InstanceID"
+        return self._field_key
