@@ -36,8 +36,6 @@ def main():
     number = args.number
     remote = args.remote
 
-    print(remote)
-
     if remote:
         # ex. iterator = StudioView("CIFAR-10", "classification", n=10, shuffle=True, remote=True)
         iterator = StudioView(
