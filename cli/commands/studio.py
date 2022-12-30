@@ -176,11 +176,11 @@ class Studio(CmdBase):
                         sys.exit(0)
             else:
                 stdio.print_stderr(
-                    "Dataset not exists on local,try view remote dataset."
+                    "Dataset not exists on local,try to view remote dataset."
                 )
                 view.view_remote_dataset()
         elif local is True:
             if local_exists is True:
                 view.view_local_dataset()
             else:
-                stdio.print_stderr(f"Dataset {dataset_name} is not exists on local.")
+                stdio.print_stderr(f"Dataset {dataset_name} does not exist locally.")
