@@ -105,18 +105,18 @@ class Cd(CmdBase):
                     stdio.print_stderr("Only support bash shell now!")
                     sys.exit(1)
 
+                with open(dotenv_path_win, "w", encoding="utf-8") as file:
+                    file.truncate()
+
                 if "CONDA_PROMPT_MODIFIER" in os.environ:
                     CONDA_PROMPT_MODIFIER = os.getenv(
                         key="CONDA_PROMPT_MODIFIER", default="(base)"
                     )
                     PROMPT = CONDA_PROMPT_MODIFIER + "$P$G"
                 else:
-                    PROMPT = os.getenv(key="PROMPT", default="$P$G ")
+                    PROMPT = "$P$G "
 
                 PROMPT_NEW = "(" + dsname + ")" + " " + PROMPT
-
-                with open(dotenv_path_win, "w", encoding="utf-8") as file:
-                    file.truncate()
 
                 set_key(dotenv_path_win, "DATASET_NAME", dsname)
                 set_key(dotenv_path_win, "PROMPT", PROMPT_NEW)
