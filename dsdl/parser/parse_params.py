@@ -223,6 +223,8 @@ class ParserParam:
             # 4。最后对self.general_param_map中所有的struct中的参数进行检验，如果有参数没有实例化，就报错
             for struct, single_struct_param in self.general_param_map.items():
                 for key, val in single_struct_param.params_dict.items():
+                    if not val:
+                        raise DefineSyntaxError(f"parameter {val} of {key} in {struct} must be defined.")
                     if val.startswith("$"):
                         raise DefineSyntaxError(f"parameter {val} of {key} in {struct} must be defined.")
         return self.general_param_map
