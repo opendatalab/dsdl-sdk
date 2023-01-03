@@ -303,34 +303,31 @@ class ParserField:
             return val
 
         param_dict = dict()
-        if not param_list and field_type != "LabelMap":
+        if not param_list:
             raise DefineSyntaxError(f"{field_type} must contains parameter `dom`")
-        elif not param_list and field_type == "LabelMap":
-            pass
-        else:
-            for param in param_list:
-                parts = param.split("=")
-                parts = [i.strip() for i in parts]
-                # 需要考虑参数省略的情况，因为dom经常省略
-                if len(parts) == 2:
-                    field_para = parts[0]
-                    field_var = parts[1]
-                elif len(parts) == 1:
-                    field_para = "dom"
-                    field_var = parts[0]
-                else:
-                    raise DefineSyntaxError(
-                        f"invalid parameters {param_list} in {field_type}."
-                    )
-                if field_para != "dom":
-                    raise DefineSyntaxError(
-                        f"invalid parameters {field_para} in {field_type}."
-                    )
+        for param in param_list:
+            parts = param.split("=")
+            parts = [i.strip() for i in parts]
+            # 需要考虑参数省略的情况，因为dom经常省略
+            if len(parts) == 2:
+                field_para = parts[0]
+                field_var = parts[1]
+            elif len(parts) == 1:
+                field_para = "dom"
+                field_var = parts[0]
+            else:
+                raise DefineSyntaxError(
+                    f"invalid parameters {param_list} in {field_type}."
+                )
+            if field_para != "dom":
+                raise DefineSyntaxError(
+                    f"invalid parameters {field_para} in {field_type}."
+                )
 
-                if field_para in param_dict:
-                    raise ValueError(f"duplicated param {param} in {field_type}.")
-                else:
-                    param_dict[field_para] = sanitize_dom(field_var)
+            if field_para in param_dict:
+                raise ValueError(f"duplicated param {param} in {field_type}.")
+            else:
+                param_dict[field_para] = sanitize_dom(field_var)
 
         return (
             field_type
