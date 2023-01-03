@@ -374,7 +374,7 @@ class ParserField:
         else:
             # Struct类型的字段的校验
             if field_type not in self.struct:
-                raise DefineTypeError(f"No type {field_type} in DSDL.")
+                raise DefineTypeError(f"No type `{field_type}` in DSDL.")
             field_type = field_type + "()"
         if attr_flag:
             field_type = add_key_value_2_struct_field(field_type, "is_attr", True)
