@@ -189,9 +189,13 @@ class InstanceIDField(Field):
             raise ValidationError(f"InstanceIDField Error: expect str value, got {value}")
 
 
-class FrameIDField(Field):
+class UniqueIDField(Field):
+    def __init__(self, id_type=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.id_type = id_type
+
     def validate(self, value):
         try:
-            return UniqueID("" + value, "FrameID")
+            return UniqueID("" + value, self.id_type)
         except TypeError as _:
-            raise ValidationError(f"FrameIDField Error: expect str value, got {value}")
+            raise ValidationError(f"UniqueIDField Error: expect str value, got {value}")
