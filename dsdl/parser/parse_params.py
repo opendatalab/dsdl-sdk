@@ -205,7 +205,7 @@ class ParserParam:
                     # )
                 if len(parent_struct) > 1:
                     raise DefineSyntaxError(
-                        "each struct must have one parent struct, but can have more than one child struct.\n"
+                        "each struct with param must have one parent struct, but can have more than one child struct.\n"
                         f"{struct} have more than one parent struct"
                     )
                 parent_struct = parent_struct[0]
