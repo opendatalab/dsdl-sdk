@@ -138,24 +138,20 @@ class DSDLClient(object):
 
         """
         import commands
+        config_path = f"{os.path.dirname(__file__)}/resources/commands.json"
+        with open(config_path, "r") as f:
+            commands_config = json.loads(f.read())
 
-        pkgs = [
-            module.stem for module in Path(commands.__path__[0]).iterdir()
-            if module.is_file() and module.suffix == '.py'
-            and not module.name.startswith('_')
-        ]  # 获取commands目录下的所有py文件
-        for pkg in pkgs:  # TODO 这里的性能是硬性最大的地方，可以通过缓存或者打包的时候预定义方式优化
-            module = importlib.import_module(f'commands.{pkg}')
-            for clz_name, clz_obj in inspect.getmembers(module):
-                if inspect.isclass(clz_obj) and issubclass(
-                        clz_obj, CmdBase) and not inspect.isabstract(clz_obj):
-                    cmd_clz = clz_obj()
-                    subcmd_parser = cmd_clz.setup_parser(self.__subparsers)
-                    subcmd_parser.set_defaults(
-                        command_handler=cmd_clz.cmd_main)
-                    subcmd_parser._optionals.title = "Command args"
-                    subcmd_parser._positionals.title = "Positional arguments"
-                    subcmd_parser.formatter_class = CustomHelpFormatter
+        for module_name, cls_name in commands_config.items():
+            mod = importlib.import_module(module_name)
+            cls = getattr(mod, cls_name)
+            cmd_clz = cls()
+            subcmd_parser = cmd_clz.setup_parser(self.__subparsers)
+            subcmd_parser.set_defaults(
+                command_handler=cmd_clz.cmd_main)
+            subcmd_parser._optionals.title = "Command args"
+            subcmd_parser._positionals.title = "Positional arguments"
+            subcmd_parser.formatter_class = CustomHelpFormatter
 
 
 def main():
