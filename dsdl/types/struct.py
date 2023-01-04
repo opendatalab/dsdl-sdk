@@ -146,7 +146,7 @@ class Struct(dict, metaclass=StructMetaclass):
     def extract_path_info(self, pattern, field_keys=None):
         magic_check = re.compile('([*?[])')
         if field_keys is None:
-            flatten_sample = self.flatten_sample
+            flatten_sample = self.flatten_sample()
         else:
             if not isinstance(field_keys, list):
                 field_keys = [field_keys]
@@ -195,13 +195,12 @@ class Struct(dict, metaclass=StructMetaclass):
                 }
             }
         """
-        flatten_sample = self.flatten_sample
+        flatten_sample = self.flatten_sample()
         result_dic = {}
         for field in field_lst:
             result_dic[field] = flatten_sample.get(f"${field}", {})
         return result_dic
 
-    @property
     def flatten_sample(self):
         if self._flatten_format is not None:
             return self._flatten_format
