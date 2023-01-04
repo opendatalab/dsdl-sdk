@@ -146,26 +146,23 @@ class Struct(dict, metaclass=StructMetaclass):
     def extract_path_info(self, pattern, field_keys=None):
         magic_check = re.compile('([*?[])')
         if field_keys is None:
-            if self._flatten_format is None:
-                self._flatten_format = self.flatten_sample()
-            flatten_sample = self._flatten_format
+            flatten_sample = self.flatten_sample
         else:
             if not isinstance(field_keys, list):
                 field_keys = [field_keys]
-            flatten_sample = dict()
-            field_keys = [{_.lower()} for _ in field_keys if isinstance(_, str)]
-            res = self.extract_field_info(field_keys)
-            for field_info in res.values():
-                flatten_sample.update(field_info)
+            field_keys = [_.lower() for _ in field_keys if isinstance(_, str)]
+            flatten_sample = self.extract_field_info(field_keys)
         if magic_check.search(pattern) is None:  # 无通配
-            if pattern in flatten_sample:
-                return {pattern: flatten_sample[pattern]}
+            for field_info in flatten_sample.values():
+                if pattern in field_info:
+                    return {pattern: field_info[pattern]}
             else:
                 return dict()
         res = dict()
-        for path in flatten_sample.keys():
-            if self._match(path, pattern):
-                res[path] = flatten_sample[path]
+        for field_info in flatten_sample.values():
+            for path in field_info.keys():
+                if self._match(path, pattern):
+                    res[path] = field_info[path]
         return res
 
     @staticmethod
@@ -198,21 +195,19 @@ class Struct(dict, metaclass=StructMetaclass):
                 }
             }
         """
-        res = self.flatten_sample([f"${field_name}" for field_name in field_lst])
-        result_dic = {k.strip("$"): v for k, v in res.items()}
+        flatten_sample = self.flatten_sample
+        result_dic = {}
         for field in field_lst:
-            result_dic.setdefault(field, {})
+            result_dic[field] = flatten_sample.get(f"${field}", {})
         return result_dic
 
-    def flatten_sample(self, field_name=None, parse_method=lambda _: _):
+    @property
+    def flatten_sample(self):
+        if self._flatten_format is not None:
+            return self._flatten_format
         result_dic = {}
-        prefix = "."
-        if isinstance(field_name, str):
-            field_name = [field_name]
-        assert field_name is None or (
-                isinstance(field_name, list) and "$struct" not in field_name and "$list" not in field_name and all(
-            [isinstance(_, str) for _ in field_name])), f"invalid fiend_name, got '{field_name}'."
-        self._parse_helper(self.convert2dict(), result_dic, field_name, prefix, parse_method)
+        self._parse_helper(self.convert2dict(), result_dic)
+        self._flatten_format = result_dic
         return result_dic
 
     def convert2json(self):
@@ -262,7 +257,7 @@ class Struct(dict, metaclass=StructMetaclass):
                         field_name is not None and field_type in field_name):
                     for key, value in sample[field_type].items():
                         k_ = f"{prefix}/{key}"
-                        tmp_dic = result_dic.setdefault(field_type, {}) if field_name is not None else result_dic
+                        tmp_dic = result_dic.setdefault(field_type, {})
                         tmp_dic[k_] = parse_method(value)
                 elif field_type == "$list":
                     for key, value in sample[field_type].items():
