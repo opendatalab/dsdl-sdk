@@ -153,9 +153,10 @@ class Struct(dict, metaclass=StructMetaclass):
             if not isinstance(field_keys, list):
                 field_keys = [field_keys]
             flatten_sample = dict()
-            field_keys = [f"${_.lower()}" for _ in field_keys if isinstance(_, str)]
-            for field_name in field_keys:
-                flatten_sample.update(self.flatten_sample(field_name))
+            field_keys = [{_.lower()} for _ in field_keys if isinstance(_, str)]
+            res = self.extract_field_info(field_keys)
+            for field_info in res.values():
+                flatten_sample.update(field_info)
         if magic_check.search(pattern) is None:  # 无通配
             if pattern in flatten_sample:
                 return {pattern: flatten_sample[pattern]}
@@ -197,14 +198,19 @@ class Struct(dict, metaclass=StructMetaclass):
                 }
             }
         """
-        result_dic = {}
-        for field_name in field_lst:
-            result_dic[field_name] = self.flatten_sample(f"${field_name}")
+        field_lst = [f"${field_name}" for field_name in field_lst]
+        res = self.flatten_sample(field_lst)
+        result_dic = {k.strip("$"): v for k, v in res.items()}
         return result_dic
 
     def flatten_sample(self, field_name=None, parse_method=lambda _: _):
         result_dic = {}
         prefix = "."
+        if isinstance(field_name, str):
+            field_name = [field_name]
+        assert field_name is None or (
+                isinstance(field_name, list) and "$struct" not in field_name and "$list" not in field_name and all(
+            [isinstance(_, str) for _ in field_name])), f"invalid fiend_name, got '{field_name}'."
         self._parse_helper(self.convert2dict(), result_dic, field_name, prefix, parse_method)
         return result_dic
 
@@ -248,15 +254,15 @@ class Struct(dict, metaclass=StructMetaclass):
 
     @classmethod
     def _parse_helper(cls, sample, result_dic, field_name=None, prefix=".", parse_method=lambda _: _):
-        assert field_name not in ("$struct", "$list")
 
         if isinstance(sample, dict):
             for field_type in sample:
                 if (field_name is None and field_type not in ("$struct", "$list")) or (
-                        field_name is not None and field_type == field_name):
+                        field_name is not None and field_type in field_name):
                     for key, value in sample[field_type].items():
                         k_ = f"{prefix}/{key}"
-                        result_dic[k_] = parse_method(value)
+                        tmp_dic = result_dic.setdefault(field_type, {}) if field_name is not None else result_dic
+                        tmp_dic[k_] = parse_method(value)
                 elif field_type == "$list":
                     for key, value in sample[field_type].items():
                         k_ = f"{prefix}/{key}"
