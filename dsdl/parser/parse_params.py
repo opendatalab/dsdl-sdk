@@ -20,13 +20,16 @@ class SingleStructParam:
         按照规定struct和class dom的名字不能是白皮书中已经包含的类型名，如List这些内定的名字
         """
         if self.struct_name in TYPES_ALL:
-            raise ValidationError(f"{self.struct_name} is dsdl build-in value name, please rename it. "
-                                  f"Build-in value names are: {','.join(TYPES_ALL)}")
-        if self.struct_name in [i + 'Field' for i in TYPES_ALL]:
-            raise ValidationError(f"{self.struct_name} is dsdl build-in value name, please rename it. "
-                                  f"Build-in value names are: {', '.join(TYPES_ALL)}")
+            raise ValidationError(
+                f"{self.struct_name} is dsdl build-in value name, please rename it. "
+                f"Build-in value names are: {','.join(TYPES_ALL)}"
+            )
+        if self.struct_name in [i + "Field" for i in TYPES_ALL]:
+            raise ValidationError(
+                f"{self.struct_name} is dsdl build-in value name, please rename it. "
+                f"Build-in value names are: {', '.join(TYPES_ALL)}"
+            )
         check_name_format(self.struct_name)
-
 
 
 @dataclass()
@@ -38,7 +41,9 @@ class ParserParam:
     def __init__(self, sample_type, struct_defi, global_info_type=None):
         self.sample_param_map = self._parse_param_sample_type(raw=sample_type)
         if global_info_type:
-            self.global_info_param_map = self._parse_param_sample_type(raw=global_info_type)
+            self.global_info_param_map = self._parse_param_sample_type(
+                raw=global_info_type
+            )
         else:
             self.global_info_param_map = None
         self.general_param_map = self._get_params(class_defi=struct_defi)
@@ -63,7 +68,9 @@ class ParserParam:
         else:
             return None
 
-    def _get_params(self, class_defi: Dict[str, Dict]) -> Optional[Dict[str, SingleStructParam]]:
+    def _get_params(
+        self, class_defi: Dict[str, Dict]
+    ) -> Optional[Dict[str, SingleStructParam]]:
         self.general_param_map = defaultdict(SingleStructParam)
         ###################################################################################
         # 1。对class_defi循环，先拿到每个struct的params(self.general_param_map), 需要一个单独的循环，因为定义的顺序不一定
@@ -108,7 +115,10 @@ class ParserParam:
                     except KeyError as e:
                         raise DefineSyntaxError(f"miss the params {e} in definition")
             # 如果需要填的参数在global-info-type中：
-            elif self.global_info_param_map and temp_name == self.global_info_param_map.struct_name:
+            elif (
+                self.global_info_param_map
+                and temp_name == self.global_info_param_map.struct_name
+            ):
                 for key in temp_param_map.params_dict.keys():
                     try:
                         self.general_param_map[temp_name].params_dict[
@@ -117,7 +127,10 @@ class ParserParam:
                     except KeyError as e:
                         raise DefineSyntaxError(f"miss the params {e} in definition")
             else:
-                warnings.warn(f"parameters in struct {temp_name} is not defined", DefineSyntaxWarning)
+                warnings.warn(
+                    f"parameters in struct {temp_name} is not defined",
+                    DefineSyntaxWarning,
+                )
         else:
             for define_name, define_value in class_defi.items():
                 if "$def" in define_value and define_value["$def"] == "struct":
@@ -134,14 +147,19 @@ class ParserParam:
                                         f"miss the params {e} in definition"
                                     )
                         # 如果需要填的参数在global-info-type中：
-                        elif self.global_info_param_map and define_name == self.global_info_param_map.struct_name:
+                        elif (
+                            self.global_info_param_map
+                            and define_name == self.global_info_param_map.struct_name
+                        ):
                             for key in self.general_param_map[define_name].params_dict:
                                 try:
                                     self.general_param_map[define_name].params_dict[
                                         key
                                     ] = self.global_info_param_map.params_dict[key]
                                 except KeyError as e:
-                                    raise DefineSyntaxError(f"miss the params {e} in definition")
+                                    raise DefineSyntaxError(
+                                        f"miss the params {e} in definition"
+                                    )
 
                         for raw_type in define_value["$fields"].values():
                             field_type = raw_type.replace(" ", "")
@@ -186,7 +204,10 @@ class ParserParam:
                     if len(val.params_dict) <= 1 and len(set(val.parents_struct)) == 1:
                         sort_param_dict[key] = list(set(val.parents_struct))
                     else:
-                        raise DefineSyntaxError(f"error in definition")
+                        raise DefineSyntaxError(
+                            f"each struct with param must have one parent struct, but can have more than one child struct.\n"
+                            f"{key} have more than one parent struct"
+                        )
                 else:
                     sort_param_dict[key] = val.parents_struct  # {list[str]}
             ordered_keys = sort_nx(sort_param_dict)  # 用有向图排序
@@ -218,7 +239,9 @@ class ParserParam:
                 parent_struct = parent_struct[0]
                 for key, val in self.general_param_map[struct].params_dict.items():
                     if val is None:
-                        raise DefineSyntaxError(f"parameter {key} of {struct} must be defined.")
+                        raise DefineSyntaxError(
+                            f"parameter {key} of {struct} must be defined."
+                        )
                     if val.startswith("$"):
                         parent_key = val.replace("$", "").strip()
                         self.general_param_map[struct].params_dict[
@@ -231,9 +254,13 @@ class ParserParam:
             for struct, single_struct_param in self.general_param_map.items():
                 for key, val in single_struct_param.params_dict.items():
                     if not val:
-                        raise DefineSyntaxError(f"parameter {val} of {key} in {struct} must be defined.")
+                        raise DefineSyntaxError(
+                            f"parameter {val} of {key} in {struct} must be defined."
+                        )
                     if val.startswith("$"):
-                        raise DefineSyntaxError(f"parameter {val} of {key} in {struct} must be defined.")
+                        raise DefineSyntaxError(
+                            f"parameter {val} of {key} in {struct} must be defined."
+                        )
         return self.general_param_map
 
     def validate_params(self, struct_params_field: Set, struct_name: str) -> Set:
