@@ -198,9 +198,10 @@ class Struct(dict, metaclass=StructMetaclass):
                 }
             }
         """
-        field_lst = [f"${field_name}" for field_name in field_lst]
-        res = self.flatten_sample(field_lst)
+        res = self.flatten_sample([f"${field_name}" for field_name in field_lst])
         result_dic = {k.strip("$"): v for k, v in res.items()}
+        for field in field_lst:
+            result_dic.setdefault(field, {})
         return result_dic
 
     def flatten_sample(self, field_name=None, parse_method=lambda _: _):
