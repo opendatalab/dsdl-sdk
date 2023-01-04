@@ -28,19 +28,36 @@ TYPES_LABEL = ["Label", "LabelMap", "Keypoint"]
 TYPES_LIST = ["List"]
 TYPES_IMAGE_SHAPE = ["ImageShape"]
 TYPES_ROTATED_BBOX = ["RotatedBBox"]
-TYPES_ALL = TYPES_WITHOUT_PARS + TYPES_TIME + TYPES_LABEL + TYPES_LIST + TYPES_IMAGE_SHAPE + TYPES_ROTATED_BBOX
+TYPES_UNIQUE_ID = ["UniqueID"]
+TYPES_ALL = (
+    TYPES_WITHOUT_PARS
+    + TYPES_TIME
+    + TYPES_LABEL
+    + TYPES_LIST
+    + TYPES_IMAGE_SHAPE
+    + TYPES_ROTATED_BBOX
+    + TYPES_UNIQUE_ID
+)
 
 
 class CheckLogItem(models.Base):
-    def_name = fields.StringField(required=True, validators=validators.Enum("class_domain", "struct", "all"))
+    def_name = fields.StringField(
+        required=True, validators=validators.Enum("class_domain", "struct", "all")
+    )
     yaml = fields.StringField(nullable=True)
-    flag = fields.IntField(required=True, validators=validators.Enum(0, 1), default=0)  # 0:error, 1: right
+    flag = fields.IntField(
+        required=True, validators=validators.Enum(0, 1), default=0
+    )  # 0:error, 1: right
     msg = fields.StringField(nullable=True)
 
 
 class CheckLog(models.Base):
-    def_name = fields.StringField(required=True, validators=validators.Enum("class_domain", "struct", "all"))
-    flag = fields.IntField(required=True, validators=validators.Enum(0, 1), default=0)  # 0:error, 1: right
+    def_name = fields.StringField(
+        required=True, validators=validators.Enum("class_domain", "struct", "all")
+    )
+    flag = fields.IntField(
+        required=True, validators=validators.Enum(0, 1), default=0
+    )  # 0:error, 1: right
     sub_struct = fields.ListField([CheckLogItem], nullable=True)
 
 
