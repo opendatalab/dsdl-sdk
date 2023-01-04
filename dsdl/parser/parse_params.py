@@ -183,7 +183,10 @@ class ParserParam:
             sort_param_dict = {}
             for key, val in self.general_param_map.items():
                 if len(val.parents_struct) > 1:  # 目前只能处理只有一个父节点的情况
-                    raise DefineSyntaxError(f"error in definition")
+                    if len(val.params_dict) <= 1 and len(set(val.parents_struct)) == 1:
+                        sort_param_dict[key] = list(set(val.parents_struct))
+                    else:
+                        raise DefineSyntaxError(f"error in definition")
                 else:
                     sort_param_dict[key] = val.parents_struct  # {list[str]}
             ordered_keys = sort_nx(sort_param_dict)  # 用有向图排序
@@ -197,6 +200,7 @@ class ParserParam:
             #     parents_struct: [SceneAndObjectSample]},}
             for struct in ordered_keys:
                 parent_struct = self.general_param_map[struct].parents_struct
+                param_dict = self.general_param_map[struct].params_dict
                 if not parent_struct:
                     # 因为加了global-info-type以后有两条线了，所以对于没有父类的情况先不处理，最后第4步再统一检查
                     continue
@@ -204,10 +208,13 @@ class ParserParam:
                     #     f"each struct must have one parent struct, but {struct} have no"
                     # )
                 if len(parent_struct) > 1:
-                    raise DefineSyntaxError(
-                        "each struct with param must have one parent struct, but can have more than one child struct.\n"
-                        f"{struct} have more than one parent struct"
-                    )
+                    if len(param_dict) <= 1 and len(set(parent_struct)) == 1:
+                        pass
+                    else:
+                        raise DefineSyntaxError(
+                            "each struct with param must have one parent struct, but can have more than one child struct.\n"
+                            f"{struct} have more than one parent struct"
+                        )
                 parent_struct = parent_struct[0]
                 for key, val in self.general_param_map[struct].params_dict.items():
                     if val is None:
