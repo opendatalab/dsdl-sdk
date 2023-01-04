@@ -1,0 +1,11 @@
+{
+    "commands.cd": "Cd",
+    "commands.config": "Config",
+    "commands.get": "Get",
+    "commands.info": "Info",
+    "commands.ls": "Ls",
+    "commands.rm": "Rm",
+    "commands.search": "Search",
+    "commands.select": "Select",
+    "commands.studio": "Studio"
+}
