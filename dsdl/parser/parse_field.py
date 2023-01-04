@@ -20,6 +20,7 @@ class ParserField:
         self.TYPES_LIST = TYPES_LIST
         self.TYPES_IMAGE_SHAPE = TYPES_IMAGE_SHAPE
         self.TYPES_ROTATED_BBOX = TYPES_ROTATED_BBOX
+        self.TYPES_UNIQUE_ID = TYPES_UNIQUE_ID
         self.TYPES_ALL = TYPES_ALL
         self.is_attr = set()
         self.optional = set()
@@ -144,10 +145,10 @@ class ParserField:
                     param_dict[field_para] = sanitize_fmt(field_var)
 
         return (
-            field_type
-            + "Field("
-            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
-            + ")"
+                field_type
+                + "Field("
+                + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+                + ")"
         )
 
     @staticmethod
@@ -199,10 +200,10 @@ class ParserField:
                             f"invalid parameters '{field_para}' in {field_type}."
                         )
         return (
-            field_type
-            + "Field("
-            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
-            + ")"
+                field_type
+                + "Field("
+                + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+                + ")"
         )
 
     @staticmethod
@@ -271,10 +272,66 @@ class ParserField:
                             f"invalid parameters '{field_para}' in {field_type}."
                         )
         return (
-            field_type
-            + "Field("
-            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
-            + ")"
+                field_type
+                + "Field("
+                + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+                + ")"
+        )
+
+    @staticmethod
+    def parse_unique_id_field(field_type: str, param_list: List[str]) -> str:
+        """
+        解析处理ImageShape类型的field
+        """
+
+        def sanitize_id_type(val: str) -> str:
+            """
+            UniqueID中对id_type部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            try:
+                val = str(val)
+                val = val.strip("\"'")
+            except NameError:
+                raise DefineSyntaxError(
+                    f"""invalid parameters value "{val}" of `id_type` in `{field_type}`, """
+                    f"""`id_type` value must be a string."""
+                )
+            return f'"{val}"'
+
+        param_dict = dict()
+        if not param_list:
+            param_dict["id_type"] = sanitize_id_type("None")
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为mode经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "id_type"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type}."
+                    )
+
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type}.")
+                else:
+                    if field_para == "id_type":
+                        param_dict[field_para] = sanitize_id_type(field_var)
+                    else:
+                        raise DefineSyntaxError(
+                            f"invalid parameters '{field_para}' in {field_type}."
+                        )
+        return (
+                field_type
+                + "Field("
+                + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+                + ")"
         )
 
     @staticmethod
@@ -330,18 +387,18 @@ class ParserField:
                 param_dict[field_para] = sanitize_dom(field_var)
 
         return (
-            field_type
-            + "Field("
-            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
-            + ")"
+                field_type
+                + "Field("
+                + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+                + ")"
         )
 
     def parse_field(
-        self,
-        field_type: str,
-        params_list: List[str] = None,
-        attr_flag: bool = False,
-        optional_flag: bool = False,
+            self,
+            field_type: str,
+            params_list: List[str] = None,
+            attr_flag: bool = False,
+            optional_flag: bool = False,
     ) -> str:
         """
         校验struct类型的每个字段的入口函数，对不同情况（Int,Image,List...）的字段进行校验并读入内存。
@@ -371,6 +428,9 @@ class ParserField:
         elif field_type in self.TYPES_ROTATED_BBOX:
             # 带参数的RotatedBBox类型的字段的校验
             field_type = self.parse_rotated_bbox_field(field_type, params_list)
+        elif field_type in self.TYPES_UNIQUE_ID:
+            # 带参数的RotatedBBox类型的字段的校验
+            field_type = self.parse_unique_id_field(field_type, params_list)
         else:
             # Struct类型的字段的校验
             if field_type not in self.struct:
@@ -383,7 +443,7 @@ class ParserField:
         return field_type
 
     def pre_parse_struct_field(
-        self, field_name: Optional[str], raw_field_type: str
+            self, field_name: Optional[str], raw_field_type: str
     ) -> str:
         # 将所有field可能都有的一些参数提取出来，类似is_attr、optional等
         raw_field_type = raw_field_type.strip()
