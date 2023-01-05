@@ -1,6 +1,6 @@
 import re
 import os
-from fnmatch import fnmatch
+from fnmatch import translate
 from .field import Field
 from ..geometry import Attributes, STRUCT
 from ..exception import ValidationError
@@ -159,22 +159,25 @@ class Struct(dict, metaclass=StructMetaclass):
             else:
                 return dict()
         res = dict()
+        # pattern = re.compile(translate(os.path.normcase(pattern))).match
+        pattern = os.path.normpath(pattern)
+        pattern_seg = pattern.split(os.sep)
+        pattern_seg = [re.compile(translate(_)) for _ in pattern_seg]
         for field_info in flatten_sample.values():
             for path in field_info.keys():
-                if self._match(path, pattern):
+                if self._match(path, pattern_seg):
                     res[path] = field_info[path]
         return res
 
     @staticmethod
-    def _match(path, pattern):
+    def _match(path, pattern_seg):
         path = os.path.normpath(path)
         path_seg = path.split(os.sep)
-        pattern = os.path.normpath(pattern)
-        pattern_seg = pattern.split(os.sep)
+
         if len(path_seg) != len(pattern_seg):
             return False
         for pattern_, path_ in zip(pattern_seg, path_seg):
-            if not fnmatch(path_, pattern_):
+            if pattern_.match(path_) is None:
                 return False
         return True
 
