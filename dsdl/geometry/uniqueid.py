@@ -15,7 +15,7 @@ class UniqueID(BaseGeometry):
         return self.value == other.value
 
     def __repr__(self):
-        return f"instance {self.value}"
+        return f"ID type: {self._field_key} ID value: {self.value}"
 
     @property
     def field_key(self):
