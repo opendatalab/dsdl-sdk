@@ -19,15 +19,12 @@ class StructMetaclass(type):
 
         required = dict()  # 所有必须填写的field对象
         optional = dict()  # 所有可不填写的field对象
-        attr = dict()  # 所有是attribute的field对象
         mappings = dict()  # 所有的field对象
         struct_mappings = dict()  # 所有的Struct对象
 
         for k, v in attributes.items():
             if isinstance(v, Field):
                 mappings[k] = v
-                if v.is_attr:
-                    attr[k] = v
                 if v.is_optional:
                     optional[k] = v
                 else:
@@ -43,7 +40,6 @@ class StructMetaclass(type):
             attributes.pop(k)
 
         attributes["__required__"] = required
-        attributes["__attr__"] = attr
         attributes["__optional__"] = optional
         attributes["__mappings__"] = mappings
         attributes["__struct_mappings__"] = struct_mappings
@@ -54,37 +50,33 @@ class StructMetaclass(type):
 
 
 class Struct(dict, metaclass=StructMetaclass):
-    def __init__(self, file_reader=None, **kwargs):
+    def __init__(self, file_reader=None, prefix=".", **kwargs):
 
         super().__init__()
         self.attributes = Attributes()
         self.file_reader = file_reader
         self._keys = []
         self._dict_format = None
-        self._flatten_format = None
+        self._flatten_format = dict()
         self._raw_dict = kwargs
-        if file_reader is not None:  # 说明是在赋值
-            for k in self.__required__:
-                if k not in kwargs:
-                    FieldNotFoundWarning(f"Required field {k} is missing.")
-                    continue
-                setattr(self, k, kwargs[k])
-                if k not in self.__attr__:
-                    self._keys.append(k)
+        self._prefix = prefix
+
+        for k in self.__required__:
+            if k not in kwargs:
+                FieldNotFoundWarning(f"Required field {k} is missing.")
+                continue
+            setattr(self, k, kwargs[k])
+            self._keys.append(k)
         for k in self.__optional__:
             if k in kwargs:
                 setattr(self, k, kwargs[k])
-                if k not in self.__attr__:
-                    self._keys.append(k)
+                self._keys.append(k)
         for k in self.__struct_mappings__:
             if k not in kwargs:
                 FieldNotFoundWarning(f"Required struct instance {k} is missing.")
                 continue
             setattr(self, k, kwargs[k])
             self._keys.append(k)
-
-        self["$attributes"] = self.attributes
-        self._keys.append("$attributes")
 
     def __getattr__(self, key):
         try:
@@ -94,22 +86,48 @@ class Struct(dict, metaclass=StructMetaclass):
 
     def __setattr__(self, key, value):
 
-        if key in self.__mappings__:
-            if hasattr(self.__mappings__[key], "set_file_reader"):
-                self.__mappings__[key].set_file_reader(self.file_reader)
+        if key in self.__mappings__:  # field
+            field_obj = self.__mappings__[key]
+            if hasattr(field_obj, "set_file_reader"):
+                field_obj.set_file_reader(self.file_reader)
+            if hasattr(field_obj, "set_prefix"):
+                field_obj.set_prefix(f"{self._prefix}/{key}")
             try:
-                if key in self.__attr__:
-                    self.attributes[key] = self.__mappings__[key].validate(value)
-                    return
-                self[key] = self.__mappings__[key].validate(value)
+                geometry_obj = field_obj.validate(value)
             except ValidationError as error:
                 raise ValidationError(f"Field '{key}' validation error: {error}.")
-        elif key in self.__struct_mappings__:
+            self[key] = geometry_obj
+            field_key = field_obj.extract_key()
+            if field_key != "$list":
+                path = f"{self._prefix}/{key}"
+                tmp_field_dic = self._flatten_format.setdefault(field_key, {})
+                tmp_field_dic[path] = geometry_obj
+                return
+            if isinstance(field_obj.ele_type, Field):
+                tmp_field_dic = self._flatten_format.setdefault(field_key, {})
+                for ind, geometry_item in enumerate(geometry_obj):
+                    path = f"{self._prefix}/{key}/{ind}"
+                    tmp_field_dic[path] = geometry_item
+                return
+            if isinstance(field_obj.ele_type, Struct):
+                for struct_item in geometry_obj:
+                    this_flatten_format = struct_item.flatten_sample()
+                    for this_field_key, this_field_value in this_flatten_format.items():
+                        this_tmp_field_dic = self._flatten_format.setdefault(this_field_key, {})
+                        this_tmp_field_dic.update(this_field_value)
+                return
+
+        elif key in self.__struct_mappings__:  # struct
             cls = self.__struct_mappings__[key].__class__
             if not isinstance(value, dict):
                 raise ValidationError(
                     f"Struct validation error: {cls.__name__} requires a dict to initiate, but got '{value}'.")
-            self[key] = cls(file_reader=self.file_reader, **value)
+            struct_obj = cls(file_reader=self.file_reader, prefix=f"{self._prefix}/{key}", **value)
+            self[key] = struct_obj
+            this_flatten_format = struct_obj.flatten_sample()
+            for this_field_key, this_field_value in this_flatten_format.items():
+                this_tmp_field_dic = self._flatten_format.setdefault(this_field_key, {})
+                this_tmp_field_dic.update(this_field_value)
         else:
             self[key] = value
             return
@@ -208,7 +226,7 @@ class Struct(dict, metaclass=StructMetaclass):
         return result_dic
 
     def flatten_sample(self):
-        if self._flatten_format is not None:
+        if self._flatten_format:
             return self._flatten_format
         result_dic = {}
         self._parse_helper(self.convert2dict(), result_dic)
@@ -225,14 +243,8 @@ class Struct(dict, metaclass=StructMetaclass):
             field_mapping = sample.get_mapping()  # all fields
             struct_mapping = sample.get_struct_mapping()  # all structs
             for key in sample.keys():
-                if key.startswith("$"):  # attributes
-                    field_key = key
-                    key = key.replace("$", "")
-                    if field_key in data_item:
-                        data_item[field_key][key] = getattr(sample, field_key)
-                    else:
-                        data_item[field_key] = {key: getattr(sample, field_key)}
-                elif key in field_mapping:  # fields
+
+                if key in field_mapping:  # fields
                     field_obj = getattr(sample, key)
                     field_key = field_mapping[key].extract_key()
                     if field_key in data_item:
