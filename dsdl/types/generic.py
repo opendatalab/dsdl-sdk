@@ -35,10 +35,11 @@ class StrField(Field):
 
 
 class ListField(Field):
-    def __init__(self, ele_type, ordered=False, *args, **kwargs):
+    def __init__(self, ele_type, ordered=False, prefix=None, *args, **kwargs):
         self.ordered = ordered
         self.ele_type = ele_type
         self.file_reader = None
+        self.prefix = prefix
         super().__init__(*args, **kwargs)
 
     def validate(self, value):
@@ -47,11 +48,15 @@ class ListField(Field):
         if isinstance(self.ele_type, Field):
             value = [self.ele_type.validate(item) for item in value]
         elif isinstance(self.ele_type, Struct):
-            value = [self.ele_type.__class__(file_reader=self.file_reader, **item) for item in value]
+            value = [self.ele_type.__class__(file_reader=self.file_reader, prefix=f"{self.prefix}/{i}", **item) for
+                     i, item in enumerate(value)]
         return value
 
     def set_file_reader(self, file_reader):
         self.file_reader = file_reader
+
+    def set_prefix(self, prefix):
+        self.prefix = prefix
 
 
 class DictField(Field):
