@@ -144,7 +144,9 @@ class Struct(dict, metaclass=StructMetaclass):
         return self._dict_format
 
     def extract_path_info(self, pattern, field_keys=None):
-        magic_check = re.compile('([*?[])')
+        def _is_magic(p):
+            return "[" in p or "]" in p or "*" in p or "?" in p
+
         if field_keys is None:
             flatten_sample = self.flatten_sample()
         else:
@@ -152,7 +154,7 @@ class Struct(dict, metaclass=StructMetaclass):
                 field_keys = [field_keys]
             field_keys = [_.lower() for _ in field_keys if isinstance(_, str)]
             flatten_sample = self.extract_field_info(field_keys)
-        if magic_check.search(pattern) is None:  # 无通配
+        if not _is_magic(pattern):  # 无通配
             for field_info in flatten_sample.values():
                 if pattern in field_info:
                     return {pattern: field_info[pattern]}
@@ -162,7 +164,7 @@ class Struct(dict, metaclass=StructMetaclass):
         # pattern = re.compile(translate(os.path.normcase(pattern))).match
         pattern = os.path.normpath(pattern)
         pattern_seg = pattern.split(os.sep)
-        pattern_seg = [re.compile(translate(_)) for _ in pattern_seg]
+        pattern_seg = [re.compile(translate(_)) if _is_magic(_) else _ for _ in pattern_seg]
         for field_info in flatten_sample.values():
             for path in field_info.keys():
                 if self._match(path, pattern_seg):
@@ -177,7 +179,8 @@ class Struct(dict, metaclass=StructMetaclass):
         if len(path_seg) != len(pattern_seg):
             return False
         for pattern_, path_ in zip(pattern_seg, path_seg):
-            if pattern_.match(path_) is None:
+            if ((not isinstance(pattern_, str)) and pattern_.match(path_) is None) or (
+                    isinstance(pattern_, str) and pattern_ != path_):
                 return False
         return True
 
