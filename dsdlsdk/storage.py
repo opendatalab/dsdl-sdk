@@ -11,7 +11,7 @@ from dsdlsdk.exception.exception import DatasetPathNotExists
 
 class Storage(ABC):
     """
-    对config里支持的本地存储方式的一种抽象
+    对config里支持的本地存储&其他存储方式的一种抽象
     """
 
     @abstractmethod
@@ -21,6 +21,15 @@ class Storage(ABC):
         Returns:
 
         """
+        pass
+    
+    def __config_writter(self, config):
+        pass
+
+    def __storage_new(self, config, args):
+        pass        
+
+    def __storage_delete(self, config, args):
         pass
 
 
