@@ -26,8 +26,10 @@ classifiers = [
 ]
 packages = [{ include = "dsdlsdk" }, { include = "cli"  }, { include = "dsdl" }, ]
 [tool.poetry.scripts]
-odl-cli = 'cli.cli:main'
+odl = 'cli.cli:main'
 dsdl = 'dsdl.cli:cli'
+odl-win = { reference = "cli/odl-cli.bat" , type = "file"}
+odl-unx = { reference = "cli/odl-cli.sh" , type = "file"}
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0, !=3.9.7"
