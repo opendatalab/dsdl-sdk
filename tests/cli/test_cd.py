@@ -13,6 +13,7 @@ import termios
 import tty
 import pty
 import pexpect
+import pytest
 
 
 from distutils.spawn import find_executable
@@ -24,6 +25,40 @@ from dotenv import (
     get_key,
     unset_key,
 )
+
+from cli.commands.cd import Cd
+
+
+
+cd = Cd()
+cd_parser = cd.init_parser(self, subparsers)
+
+@pytest.mark.parametrize("option", ("-h", "--help"))
+def test_help(capsys, option):
+    try:
+        main([option])
+    except SystemExit:
+        pass
+    output = capsys.readouterr().out
+    assert "change the context to the specified dataset." in output
+
+@pytest.mark.parametrize("dataset_name", ("CIFAR-10-Auto", "CIFAR-10"))
+def test_cd_windows_cmd(dataset_name):
+    cd_parser.parse_args(["cd", dataset_name])
+    cd_parser.parse_args(["cd", "-h"])
+    cd_parser.parse_args(["cd", "--help"])
+
+@pytest.mark.parametrize("dataset_name", ("CIFAR-10-Auto", "CIFAR-10"))
+def test_cd_darwin_bash(dataset_name):
+    cd_parser.parse_args(["cd", dataset_name])
+    cd_parser.parse_args(["cd", "-h"])
+    cd_parser.parse_args(["cd", "--help"])
+
+@pytest.mark.parametrize("dataset_name", ("CIFAR-10-Auto", "CIFAR-10"))
+def test_cd_centos_bash(dataset_name):
+    cd_parser.parse_args(["cd", dataset_name])
+    cd_parser.parse_args(["cd", "-h"])
+    cd_parser.parse_args(["cd", "--help"])
 
 
 def func1():
