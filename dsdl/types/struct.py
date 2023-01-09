@@ -50,7 +50,7 @@ class StructMetaclass(type):
 
 
 class Struct(dict, metaclass=StructMetaclass):
-    def __init__(self, file_reader=None, prefix=".", flatten_dic=None, **kwargs):
+    def __init__(self, file_reader=None, prefix=None, flatten_dic=None, **kwargs):
 
         super().__init__()
         assert flatten_dic is None or isinstance(flatten_dic, dict)
@@ -60,7 +60,7 @@ class Struct(dict, metaclass=StructMetaclass):
         self._dict_format = None
         self._flatten_format = dict() if flatten_dic is None else flatten_dic
         self._raw_dict = kwargs
-        self._prefix = prefix
+        self._prefix = prefix or "./"
 
         for k in self.__required__:
             if k not in kwargs:
@@ -105,13 +105,6 @@ class Struct(dict, metaclass=StructMetaclass):
                 path = f"{self._prefix}/{key}"
                 tmp_field_dic = self._flatten_format.setdefault(field_key, {})
                 tmp_field_dic[path] = geometry_obj
-                return
-            if isinstance(field_obj.ele_type, Field):
-                tmp_field_dic = self._flatten_format.setdefault(field_key, {})
-                for ind, geometry_item in enumerate(geometry_obj):
-                    path = f"{self._prefix}/{key}/{ind}"
-                    tmp_field_dic[path] = geometry_item
-                return
 
         elif key in self.__struct_mappings__:  # struct
             cls = self.__struct_mappings__[key].__class__
@@ -125,7 +118,6 @@ class Struct(dict, metaclass=StructMetaclass):
             self[key] = struct_obj
         else:
             self[key] = value
-            return
 
     def get_mapping(self):
         return self.__mappings__
