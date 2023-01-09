@@ -60,7 +60,7 @@ class Struct(dict, metaclass=StructMetaclass):
         self._dict_format = None
         self._flatten_format = dict() if flatten_dic is None else flatten_dic
         self._raw_dict = kwargs
-        self._prefix = prefix or "./"
+        self._prefix = prefix or "."
 
         for k in self.__required__:
             if k not in kwargs:
