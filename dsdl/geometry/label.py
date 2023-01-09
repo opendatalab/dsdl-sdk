@@ -55,9 +55,7 @@ class Label(BaseGeometry):
         return CLASSDOMAIN.get(self.domain_name)
 
     def index_in_domain(self):
-        all_label_names = self.class_domain.get_label_names()
-        ind = all_label_names.index(self.category_name) + 1
-        return ind
+        return self.class_domain.get_cat2ind_mapping()[self.category_name]
 
     def __eq__(self, other):
         if self.domain_name != other.domain_name:
