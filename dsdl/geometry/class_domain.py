@@ -17,11 +17,14 @@ class ClassDomainMeta(type):
         classes = attributes.pop('Classes', [])
         classes = [_ for _ in classes if isinstance(_, Label)]
         mapping = {}
-        for label in classes:
+        cat2ind = {}
+        for ind, label in enumerate(classes):
             label.set_domain(name)
             mapping[label.name] = label
+            cat2ind[label.name] = ind + 1
             LABEL.registry(label)
 
+        attributes["__cat2ind_mapping__"] = cat2ind
         attributes["__mapping__"] = mapping
         attributes["__list__"] = classes
         attr_dic = {attr_k: CLASSDOMAIN_ATTRIBUTES[attr_k](attributes.pop(attr_k)) for attr_k in
@@ -57,6 +60,10 @@ class ClassDomain(metaclass=ClassDomainMeta):
     def get_label_names(cls):
         labels = cls.get_labels()
         return [_.name for _ in labels]
+
+    @classmethod
+    def get_cat2ind_mapping(cls):
+        return getattr(cls, '__cat2ind_mapping__')
 
     @classmethod
     def get_label(cls, name):
