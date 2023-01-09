@@ -40,6 +40,7 @@ class ListField(Field):
         self.ele_type = ele_type
         self.file_reader = None
         self.prefix = prefix
+        self.flatten_dic = None
         super().__init__(*args, **kwargs)
 
     def validate(self, value):
@@ -48,8 +49,13 @@ class ListField(Field):
         if isinstance(self.ele_type, Field):
             value = [self.ele_type.validate(item) for item in value]
         elif isinstance(self.ele_type, Struct):
-            value = [self.ele_type.__class__(file_reader=self.file_reader, prefix=f"{self.prefix}/{i}", **item) for
-                     i, item in enumerate(value)]
+            value = [
+                self.ele_type.__class__(
+                    file_reader=self.file_reader,
+                    prefix=f"{self.prefix}/{i}",
+                    flatten_dic=self.flatten_dic, **item)
+                for i, item in enumerate(value)
+            ]
         return value
 
     def set_file_reader(self, file_reader):
@@ -57,6 +63,9 @@ class ListField(Field):
 
     def set_prefix(self, prefix):
         self.prefix = prefix
+
+    def set_flatten_dic(self, dic):
+        self.flatten_dic = dic
 
 
 class DictField(Field):
