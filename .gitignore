@@ -166,3 +166,5 @@ cython_debug/
 sss.ipynb
 loguru_playground.ipynb
 loguru_test.py
+test_dataclass.ipynb
+test_hugging.ipynb
