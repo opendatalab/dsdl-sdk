@@ -261,7 +261,6 @@ class Struct(dict, metaclass=StructMetaclass):
         self.register_path_for_extract(pattern)
 
         all_parsed_pattern = self._REGISTER_PATTERN.get_parsed_pattern(pattern, field_keys)
-        print(all_parsed_pattern)
         res = dict()
         for field_key in field_keys or all_parsed_pattern.keys():
             pattern_field_info = all_parsed_pattern.get(field_key, None)
