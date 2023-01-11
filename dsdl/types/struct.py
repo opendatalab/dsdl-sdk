@@ -234,7 +234,7 @@ class Struct(dict, metaclass=StructMetaclass):
             self._dict_format = self._parse_struct(self)
         return self._dict_format
 
-    def extract_path_info(self, pattern, field_keys=None):
+    def extract_path_info(self, pattern, field_keys=None, verbose=False):
         def _is_magic(p):
             return "[" in p or "]" in p or "*" in p or "?" in p
 
@@ -269,6 +269,8 @@ class Struct(dict, metaclass=StructMetaclass):
                 continue
             for this_pattern in pattern_field_info:
                 self._match(this_pattern, field_info, res)
+        if not verbose:
+            return list(res.values())
         return res
 
     @staticmethod
@@ -298,7 +300,7 @@ class Struct(dict, metaclass=StructMetaclass):
 
         _helper([], digit_num)
 
-    def extract_field_info(self, field_lst, nest_flag=True):
+    def extract_field_info(self, field_lst, nest_flag=True, verbose=False):
         """
         Extract the field info given field list, for example, if field_lst is [bbox, image], the result will be:
 
@@ -317,11 +319,17 @@ class Struct(dict, metaclass=StructMetaclass):
         """
         flatten_sample = self.flatten_sample()
         result_dic = {}
+        field_lst = [_.lower() for _ in field_lst]
         for field in field_lst:
             if nest_flag:
-                result_dic[field] = flatten_sample.get(f"${field}", {})
+                if verbose:
+                    result_dic[field] = flatten_sample.get(f"${field}", {})
+                else:
+                    result_dic[field] = list(flatten_sample.get(f"${field}", {}).values())
             else:
                 result_dic.update(flatten_sample.get(f"${field}", {}))
+        if not nest_flag and not verbose:
+            result_dic = list(result_dic.values())
         return result_dic
 
     def flatten_sample(self):
