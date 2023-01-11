@@ -7,6 +7,87 @@ from ..exception import ValidationError
 from ..warning import FieldNotFoundWarning
 
 
+class RegisterPattern:
+    """
+    {
+        './a/b/*/[1-9]/*': {
+            "$bbox": [('./a/b/det/%d/box', 1), ('./a/b/ann/%d/box', 1)]
+            "$label": [('./a/b/det/[1-9]/cate', 1), ('./a/b/ann/[1-9]/cate', 1)]
+        }
+    }
+    """
+
+    def __init__(self):
+        self.flatten_struct = None
+        self.registered_patterns = dict()
+
+    def set_flatten_struct(self, flatten_struct):
+        self.flatten_struct = flatten_struct
+
+    def register_pattern(self, pattern):
+        if not self._is_magic(pattern):
+            return
+        assert self.flatten_struct is not None
+        if pattern in self.registered_patterns:
+            return
+        res_dic = self.registered_patterns.setdefault(pattern, {})
+        pattern = os.path.normcase(pattern)
+        pattern_seg = pattern.split(os.sep)
+        pattern_seg = [(re.compile(translate(_)), _) if self._is_magic(_) else _ for _ in pattern_seg]
+        for field_key, field_info in self.flatten_struct.items():
+            field_lst = res_dic.setdefault(field_key, [])
+            for field_path in field_info:
+                match_res = self._match(field_path, pattern_seg)
+                field_lst.append(match_res) if match_res else None
+
+    def get_parsed_pattern(self, pattern, field_keys=None):
+        patterns_res = self.registered_patterns[pattern]
+        if field_keys is None:
+            return patterns_res
+
+        res = dict()
+        for field_key in field_keys:
+            field_info = patterns_res.get(field_key, None)
+            if field_info is not None:
+                res[field_key] = field_info
+        return res
+
+    def has_registered(self, pattern):
+        return pattern in self.registered_patterns
+
+    @staticmethod
+    def _match(path, pattern_seg):
+        path = os.path.normcase(path)
+        path_seg = path.split(os.sep)
+        magic_num = 0
+        if len(path_seg) != len(pattern_seg):
+            return False
+        for i, (pattern_, path_) in enumerate(zip(pattern_seg, path_seg)):
+            if path_ != "*":  # not list
+                if isinstance(pattern_, tuple):
+                    p_compile, p_str = pattern_
+                    if p_compile.match(path_) is None:
+                        return False
+                else:
+                    if pattern_ != path_:
+                        return False
+            else:  # list
+                if isinstance(pattern_, tuple):
+                    path_seg[i] = "%d"
+                    magic_num += 1
+                else:
+                    if pattern_.isdigit():
+                        path_seg[i] = pattern_
+                    else:
+                        return False
+
+        return "/".join(path_seg), magic_num
+
+    @staticmethod
+    def _is_magic(p):
+        return "[" in p or "]" in p or "*" in p or "?" in p
+
+
 class StructMetaclass(type):
     def __new__(mcs, name, bases, attributes):
         super_new = super().__new__
@@ -50,6 +131,9 @@ class StructMetaclass(type):
 
 
 class Struct(dict, metaclass=StructMetaclass):
+    _FLATTEN_STRUCT = None
+    _REGISTER_PATTERN = RegisterPattern()
+
     def __init__(self, file_reader=None, prefix=None, flatten_dic=None, **kwargs):
 
         super().__init__()
@@ -119,11 +203,13 @@ class Struct(dict, metaclass=StructMetaclass):
         else:
             self[key] = value
 
-    def get_mapping(self):
-        return self.__mappings__
+    @classmethod
+    def get_mapping(cls):
+        return cls.__mappings__
 
-    def get_struct_mapping(self):
-        return self.__struct_mappings__
+    @classmethod
+    def get_struct_mapping(cls):
+        return cls.__struct_mappings__
 
     def keys(self):
         return tuple(self._keys)
@@ -157,39 +243,63 @@ class Struct(dict, metaclass=StructMetaclass):
         else:
             if not isinstance(field_keys, list):
                 field_keys = [field_keys]
-            field_keys = [_.lower() for _ in field_keys if isinstance(_, str)]
-            flatten_sample = self.extract_field_info(field_keys)
+            field_keys = [f"${_.lower()}" for _ in field_keys if isinstance(_, str)]
+            all_flatten_sample = self.flatten_sample()
+            flatten_sample = dict()
+            for field_key in field_keys:
+                field_info = all_flatten_sample.get(field_key, None)
+                if field_info is not None:
+                    flatten_sample[field_key] = field_info
         if not _is_magic(pattern):  # 无通配
             for field_info in flatten_sample.values():
-                if pattern in field_info:
-                    return {pattern: field_info[pattern]}
-            else:
-                return dict()
+                res = field_info.get(pattern, None)
+                if res:
+                    return {pattern: res}
+                else:
+                    return dict()
+
+        self.register_path_for_extract(pattern)
+
+        all_parsed_pattern = self._REGISTER_PATTERN.get_parsed_pattern(pattern, field_keys)
+        print(all_parsed_pattern)
         res = dict()
-        # pattern = re.compile(translate(os.path.normcase(pattern))).match
-        pattern = os.path.normpath(pattern)
-        pattern_seg = pattern.split(os.sep)
-        pattern_seg = [re.compile(translate(_)) if _is_magic(_) else _ for _ in pattern_seg]
-        for field_info in flatten_sample.values():
-            for path in field_info.keys():
-                if self._match(path, pattern_seg):
-                    res[path] = field_info[path]
+        for field_key in field_keys or all_parsed_pattern.keys():
+            pattern_field_info = all_parsed_pattern.get(field_key, None)
+            field_info = flatten_sample.get(field_key, None)
+            if field_info is None or field_info is None:
+                continue
+            for this_pattern in pattern_field_info:
+                self._match(this_pattern, field_info, res)
         return res
 
     @staticmethod
-    def _match(path, pattern_seg):
-        path = os.path.normpath(path)
-        path_seg = path.split(os.sep)
+    def _match(pattern, all_sample, result_dic):
+        pattern, digit_num = pattern
+        if digit_num == 0:
+            result_dic[pattern] = all_sample[pattern]
+            return
 
-        if len(path_seg) != len(pattern_seg):
-            return False
-        for pattern_, path_ in zip(pattern_seg, path_seg):
-            if ((not isinstance(pattern_, str)) and pattern_.match(path_) is None) or (
-                    isinstance(pattern_, str) and pattern_ != path_):
-                return False
-        return True
+        def _helper(prefix, idx_num):
+            if idx_num == 0:
+                this_pattern = pattern % tuple(prefix)
+                item = all_sample.get(this_pattern, None)
+                if item is not None:
+                    result_dic[this_pattern] = item
+                    return True
+                else:
+                    return False
+            start_idx = 0
+            while 1:
+                res = _helper(prefix + [start_idx], idx_num - 1)
+                if res:
+                    start_idx += 1
+                else:
+                    break
+            return start_idx > 0
 
-    def extract_field_info(self, field_lst):
+        _helper([], digit_num)
+
+    def extract_field_info(self, field_lst, nest_flag=True):
         """
         Extract the field info given field list, for example, if field_lst is [bbox, image], the result will be:
 
@@ -209,7 +319,10 @@ class Struct(dict, metaclass=StructMetaclass):
         flatten_sample = self.flatten_sample()
         result_dic = {}
         for field in field_lst:
-            result_dic[field] = flatten_sample.get(f"${field}", {})
+            if nest_flag:
+                result_dic[field] = flatten_sample.get(f"${field}", {})
+            else:
+                result_dic.update(flatten_sample.get(f"${field}", {}))
         return result_dic
 
     def flatten_sample(self):
@@ -222,6 +335,47 @@ class Struct(dict, metaclass=StructMetaclass):
 
     def convert2json(self):
         return self._raw_dict
+
+    @classmethod
+    def _flatten_struct(cls):
+        prefix = "."
+        res_dic = dict()
+        field_mappings = cls.get_mapping()
+        struct_mappings = cls.get_struct_mapping()
+
+        def _helper(item, pre_path, key_name, flatten_dic):
+            if isinstance(item, Field):
+                field_key = item.extract_key()
+                if field_key != "$list":
+                    path = f"{pre_path}/{key_name}"
+                    field_dic = flatten_dic.setdefault(field_key, [])
+                    field_dic.append(path)
+                else:
+                    path = f"{pre_path}/{key_name}"
+                    _helper(item.ele_type, path, "*", flatten_dic)
+            elif isinstance(item, Struct):
+                path = f"{pre_path}/{key_name}"
+                this_mapping = item.get_mapping()
+                this_struct_mapping = item.get_struct_mapping()
+                for this_key, this_item in this_mapping.items():
+                    _helper(this_item, path, this_key, flatten_dic)
+                for this_key, this_item in this_struct_mapping.items():
+                    _helper(this_item, path, this_key, flatten_dic)
+
+        for field_name, field_obj in field_mappings.items():
+            _helper(field_obj, prefix, field_name, res_dic)
+        for struct_name, struct_obj in struct_mappings.items():
+            _helper(struct_obj, prefix, struct_name, res_dic)
+
+        return res_dic
+
+    @classmethod
+    def register_path_for_extract(cls, pattern):
+        if getattr(cls, "_FLATTEN_STRUCT", None) is None:
+            cls._FLATTEN_STRUCT = cls._flatten_struct()
+            cls._REGISTER_PATTERN.set_flatten_struct(cls._FLATTEN_STRUCT)
+        if not cls._REGISTER_PATTERN.has_registered(pattern):
+            cls._REGISTER_PATTERN.register_pattern(pattern)
 
     @classmethod
     def _parse_struct(cls, sample):
