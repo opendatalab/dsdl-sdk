@@ -115,7 +115,7 @@ class ImageVisualizePipeline:
             self.palette = palette
         if "image" not in field_list:  # 因为是imagevisualizer类，所以field_list中必须包含image字段
             raise ValueError("'image' field not found in the field list to be visualized.")
-        self.data_dic = sample.extract_field_info(field_list)
+        self.data_dic = sample.extract_field_info(field_list, verbose=True)
         self.visualize_result = self.group_media_and_ann()
 
     @classmethod
