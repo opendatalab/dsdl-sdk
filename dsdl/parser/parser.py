@@ -75,12 +75,12 @@ class StructORClassDomain:
         if self.name in TYPES_ALL:
             raise ValidationError(
                 f"{self.name} is dsdl build-in value name, please rename it."
-                f"Build-in value names are: {','.join(TYPES_ALL)}"
+                f"Build-in value names are: {','.join(TYPES_ALL)}."
             )
         if self.name in [i + "Field" for i in TYPES_ALL]:
             raise ValidationError(
                 f"{self.name} is dsdl build-in value name, please rename it."
-                f"Build-in value names are: {','.join(TYPES_ALL)}"
+                f"Build-in value names are: {','.join(TYPES_ALL)}."
             )
         check_name_format(self.name)
 
@@ -116,7 +116,7 @@ class DSDLParser(Parser, ABC):
         try:
             self.meta = desc["meta"]  # 存版meta信息，后续应该会使用（目前木有用）
         except KeyError as e:
-            err_msg = f"data yaml must contains {e} section"
+            err_msg = f"data yaml must contains {e} section."
             if self.report_flag:
                 temp_check_item = CheckLogItem(
                     def_name="all", msg=f"DefineSyntaxError: {err_msg}"
@@ -130,7 +130,7 @@ class DSDLParser(Parser, ABC):
             data_sample_type = desc["data"]["sample-type"]
         except KeyError as e:
             err_msg = (
-                f"data yaml must contains {e} in `data` section with `sample-type`"
+                f"data yaml must contain `data` section and `data` section must have `sample-type`."
             )
             if self.report_flag:
                 temp_check_item = CheckLogItem(
@@ -164,8 +164,8 @@ class DSDLParser(Parser, ABC):
                         import_list.append(temp_p)
                     else:
                         raise DSDLImportError(
-                            f"{p} is not exists in `{library_path}`,"
-                            f"please given right path using `-p`."
+                            f"{p} does not exist in `{library_path}`, "
+                            f"please check the path or give the right path using `-p`."
                         )
             else:
                 library_path = os.path.dirname(data_file)
@@ -181,8 +181,8 @@ class DSDLParser(Parser, ABC):
                             import_list.append(temp_p)
                         else:
                             raise DSDLImportError(
-                                f"{p} is not exists in neither `{library_path}` nor `dsdl/dsdl_library`,"
-                                f"please given right path using `-p`."
+                                f"{p} does not exist in neither `{library_path}` nor `dsdl/dsdl_library`,"
+                                f"please check the path or give the right path using `-p`."
                             )
 
         if "defs" in desc:

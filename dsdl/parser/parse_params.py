@@ -103,17 +103,23 @@ class ParserParam:
         if len(self.general_param_map) == 0:
             return None
         if len(self.general_param_map) == 1:
+            if not self.sample_param_map and not self.general_param_map:
+                raise DefineSyntaxError(
+                    f"error in definition of `sample-type` or `global-info-type`."
+                )
             temp_param_map = list(self.general_param_map.values())[0]
             temp_name = list(self.general_param_map.keys())[0]
             # 如果需要填的参数在sample-type中：
-            if temp_name == self.sample_param_map.struct_name:
+            if self.sample_param_map and temp_name == self.sample_param_map.struct_name:
                 for key in temp_param_map.params_dict.keys():
                     try:
                         self.general_param_map[temp_name].params_dict[
                             key
                         ] = self.sample_param_map.params_dict[key]
                     except KeyError as e:
-                        raise DefineSyntaxError(f"miss the params {e} in definition")
+                        raise DefineSyntaxError(
+                            f"miss the parameters {e} in {temp_name} in `sample-type`."
+                        )
             # 如果需要填的参数在global-info-type中：
             elif (
                 self.global_info_param_map
@@ -125,18 +131,28 @@ class ParserParam:
                             key
                         ] = self.global_info_param_map.params_dict[key]
                     except KeyError as e:
-                        raise DefineSyntaxError(f"miss the params {e} in definition")
+                        raise DefineSyntaxError(
+                            f"miss the parameters {e} in '{temp_name}' in `global-info-type`."
+                        )
             else:
-                warnings.warn(
-                    f"parameters in struct {temp_name} is not defined",
-                    DefineSyntaxWarning,
+                raise DefineSyntaxError(
+                    f"parameter in struct `{temp_name}` is not defined correctly: "
+                    f"1. check your `sample-type` or `global-info-type`, "
+                    f"2. check the definition of struct {temp_name}."
                 )
         else:
+            if not self.sample_param_map and not self.general_param_map:
+                raise DefineSyntaxError(
+                    f"error in definition of `sample-type` or `global-info-type`."
+                )
             for define_name, define_value in class_defi.items():
                 if "$def" in define_value and define_value["$def"] == "struct":
                     struct_params = define_value.get("$params", None)
                     if struct_params:
-                        if define_name == self.sample_param_map.struct_name:
+                        if (
+                            self.sample_param_map
+                            and define_name == self.sample_param_map.struct_name
+                        ):
                             for key in self.general_param_map[define_name].params_dict:
                                 try:
                                     self.general_param_map[define_name].params_dict[
@@ -144,7 +160,7 @@ class ParserParam:
                                     ] = self.sample_param_map.params_dict[key]
                                 except KeyError as e:
                                     raise DefineSyntaxError(
-                                        f"miss the params {e} in definition"
+                                        f"miss the parameters {e} in '{define_name}' in `sample-type`."
                                     )
                         # 如果需要填的参数在global-info-type中：
                         elif (
@@ -158,7 +174,7 @@ class ParserParam:
                                     ] = self.global_info_param_map.params_dict[key]
                                 except KeyError as e:
                                     raise DefineSyntaxError(
-                                        f"miss the params {e} in definition"
+                                        f"miss the parameters {e} in '{define_name}' in `global-info-type`."
                                     )
 
                         for raw_type in define_value["$fields"].values():
@@ -177,13 +193,14 @@ class ParserParam:
                                         )[0]
                                     except (KeyError, IndexError):
                                         raise DefineSyntaxError(
-                                            f"definition error of filed {field_type}"
+                                            f"definition error of filed '{field_type}' in struct `{define_name}`, "
+                                            f"check if parameter in '{field_type}' is defined correctly."
                                         )
                                     for param in temp.split(","):
                                         param = param.split("=")
                                         if len(param) != 2:
                                             raise DefineSyntaxError(
-                                                f"error in params definition {field_type}"
+                                                f"error in parameters definition of '{field_type}' in struct `{define_name}`."
                                             )
                                         key, value = param[0], param[1]
                                         try:
@@ -192,7 +209,8 @@ class ParserParam:
                                             ].params_dict[key] = value
                                         except KeyError as e:
                                             raise DefineSyntaxError(
-                                                f"miss the params {e} in definition"
+                                                f"parameter {e} of '{field_type}' in struct `{define_name}` "
+                                                f"must be defined."
                                             )
                                     break
             ###################################################################################
@@ -205,7 +223,8 @@ class ParserParam:
                         sort_param_dict[key] = list(set(val.parents_struct))
                     else:
                         raise DefineSyntaxError(
-                            f"each struct with param must have one parent struct, but can have more than one child struct.\n"
+                            f"each struct with param must have one parent struct, "
+                            f"but can have more than one child struct.\n"
                             f"{key} have more than one parent struct"
                         )
                 else:
@@ -233,8 +252,9 @@ class ParserParam:
                         pass
                     else:
                         raise DefineSyntaxError(
-                            "each struct with param must have one parent struct, but can have more than one child struct.\n"
-                            f"{struct} have more than one parent struct"
+                            "each struct with param must have one parent struct, "
+                            "but can have more than one child struct.\n"
+                            f"`{struct}` have more than one parent struct."
                         )
                 parent_struct = parent_struct[0]
                 for key, val in self.general_param_map[struct].params_dict.items():
@@ -256,10 +276,14 @@ class ParserParam:
                     if not val:
                         raise DefineSyntaxError(
                             f"parameter {val} of {key} in {struct} must be defined."
+                            f"1. check your `sample-type` or `global-info-type`, "
+                            f"2. check the definition of struct {struct}."
                         )
                     if val.startswith("$"):
                         raise DefineSyntaxError(
                             f"parameter {val} of {key} in {struct} must be defined."
+                            f"1. check your `sample-type` or `global-info-type`, "
+                            f"2. check the definition of struct {struct}."
                         )
         return self.general_param_map
 
@@ -267,6 +291,6 @@ class ParserParam:
         input_params = set(self.general_param_map[struct_name].params_dict.keys())
         if input_params != struct_params_field:
             raise DefineSyntaxError(
-                f"error of definition of params {struct_params_field}"
+                f"error of definition of parameters {struct_params_field} in {struct_name}."
             )
         return struct_params_field
