@@ -90,8 +90,8 @@ class RegisterPattern:
 
 class StructMetaclass(type):
     def __new__(mcs, name, bases, attributes):
-        super_new = super().__new__
 
+        super_new = super().__new__
         # Also ensure initialization is only performed for subclasses of Model
         # (excluding Model class itself).
         parents = [b for b in bases if isinstance(b, StructMetaclass)]
@@ -319,13 +319,14 @@ class Struct(dict, metaclass=StructMetaclass):
         """
         flatten_sample = self.flatten_sample()
         result_dic = {}
-        field_lst = [_.lower() for _ in field_lst]
-        for field in field_lst:
+        ori_field_lst = field_lst
+        field_lst = [_.lower() for _ in ori_field_lst]
+        for ori_field, field in zip(ori_field_lst, field_lst):
             if nest_flag:
                 if verbose:
-                    result_dic[field] = flatten_sample.get(f"${field}", {})
+                    result_dic[ori_field] = flatten_sample.get(f"${field}", {})
                 else:
-                    result_dic[field] = list(flatten_sample.get(f"${field}", {}).values())
+                    result_dic[ori_field] = list(flatten_sample.get(f"${field}", {}).values())
             else:
                 result_dic.update(flatten_sample.get(f"${field}", {}))
         if not nest_flag and not verbose:
