@@ -254,8 +254,8 @@ class Struct(dict, metaclass=StructMetaclass):
             for field_info in flatten_sample.values():
                 res = field_info.get(pattern, None)
                 if res is not None:
-                    return {pattern: res} if verbose else res
-            return dict() if verbose else None
+                    return {pattern: res} if verbose else [res]
+            return dict() if verbose else []
 
         self.register_path_for_extract(pattern)
 
@@ -270,10 +270,6 @@ class Struct(dict, metaclass=StructMetaclass):
                 self._match(this_pattern, field_info, res)
         if not verbose:
             res = list(res.values())
-            if len(res) == 0:
-                res = None
-            elif len(res) == 1:
-                res = res[0]
         return res
 
     @staticmethod
@@ -330,19 +326,11 @@ class Struct(dict, metaclass=StructMetaclass):
                     result_dic[ori_field] = flatten_sample.get(f"${field}", {})
                 else:
                     field_info = list(flatten_sample.get(f"${field}", {}).values())
-                    if len(field_info) == 0:
-                        field_info = None
-                    elif len(field_info) == 1:
-                        field_info = field_info[0]
                     result_dic[ori_field] = field_info
             else:
                 result_dic.update(flatten_sample.get(f"${field}", {}))
         if not nest_flag and not verbose:
             result_dic = list(result_dic.values())
-            if len(result_dic) == 0:
-                result_dic = None
-            elif len(result_dic) == 1:
-                result_dic = result_dic[0]
         return result_dic
 
     def flatten_sample(self):
