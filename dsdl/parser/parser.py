@@ -75,12 +75,12 @@ class StructORClassDomain:
         if self.name in TYPES_ALL:
             raise ValidationError(
                 f"{self.name} is dsdl build-in value name, please rename it."
-                f"Build-in value names are: {','.join(TYPES_ALL)}"
+                f"Build-in value names are: {','.join(TYPES_ALL)}."
             )
         if self.name in [i + "Field" for i in TYPES_ALL]:
             raise ValidationError(
                 f"{self.name} is dsdl build-in value name, please rename it."
-                f"Build-in value names are: {','.join(TYPES_ALL)}"
+                f"Build-in value names are: {','.join(TYPES_ALL)}."
             )
         check_name_format(self.name)
 
@@ -116,7 +116,7 @@ class DSDLParser(Parser, ABC):
         try:
             self.meta = desc["meta"]  # 存版meta信息，后续应该会使用（目前木有用）
         except KeyError as e:
-            err_msg = f"data yaml must contains {e} section"
+            err_msg = f"data yaml must contains {e} section."
             if self.report_flag:
                 temp_check_item = CheckLogItem(
                     def_name="all", msg=f"DefineSyntaxError: {err_msg}"
@@ -130,7 +130,7 @@ class DSDLParser(Parser, ABC):
             data_sample_type = desc["data"]["sample-type"]
         except KeyError as e:
             err_msg = (
-                f"data yaml must contains {e} in `data` section with `sample-type`"
+                f"data yaml must contain `data` section and `data` section must have `sample-type`."
             )
             if self.report_flag:
                 temp_check_item = CheckLogItem(
@@ -145,7 +145,7 @@ class DSDLParser(Parser, ABC):
             global_info_type = desc["data"]["global-info-type"]
         except KeyError as e:
             global_info_type = None
-            warning_msg = f"{e}, `global-info-type` is not defined"
+            warning_msg = f"{e}, `global-info-type` is not defined."
             if self.report_flag:
                 temp_check_item = CheckLogItem(
                     def_name="all", msg=f"DefineSyntaxWarning: {warning_msg}"
@@ -164,8 +164,8 @@ class DSDLParser(Parser, ABC):
                         import_list.append(temp_p)
                     else:
                         raise DSDLImportError(
-                            f"{p} is not exists in `{library_path}`,"
-                            f"please given right path using `-p`."
+                            f"{p} does not exist in `{library_path}`, "
+                            f"please check the path or give the right path using `-p`."
                         )
             else:
                 library_path = os.path.dirname(data_file)
@@ -181,8 +181,8 @@ class DSDLParser(Parser, ABC):
                             import_list.append(temp_p)
                         else:
                             raise DSDLImportError(
-                                f"{p} is not exists in neither `{library_path}` nor `dsdl/dsdl_library`,"
-                                f"please given right path using `-p`."
+                                f"{p} does not exist in neither `{library_path}` nor `dsdl/dsdl_library`,"
+                                f"please check the path or give the right path using `-p`."
                             )
 
         if "defs" in desc:
@@ -229,7 +229,7 @@ class DSDLParser(Parser, ABC):
             try:
                 define_type = define_value["$def"]
             except KeyError as e:
-                err_msg = f"{define_name} section must contains {e} sub-section"
+                err_msg = f"{define_name} section must contain {e} sub-section."
                 if self.report_flag:
                     temp_check_item = CheckLogItem(
                         def_name="all", msg=f"DefineSyntaxError: {err_msg}"
@@ -304,8 +304,9 @@ class DSDLParser(Parser, ABC):
                 # deal with `$optional` section after `$fields` section，
                 # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
                 if "$optional" in define_value or FIELD_PARSER.optional:
+                    temp = define_value.get("$optional", set())
                     optional_set = (
-                        set(define_value["$optional"]) | FIELD_PARSER.optional
+                        set(temp) | FIELD_PARSER.optional
                     )
                     for optional_name in optional_set:
                         optional_name = optional_name.strip()
