@@ -145,7 +145,7 @@ class DSDLParser(Parser, ABC):
             global_info_type = desc["data"]["global-info-type"]
         except KeyError as e:
             global_info_type = None
-            warning_msg = f"{e}, `global-info-type` is not defined"
+            warning_msg = f"{e}, `global-info-type` is not defined."
             if self.report_flag:
                 temp_check_item = CheckLogItem(
                     def_name="all", msg=f"DefineSyntaxWarning: {warning_msg}"
@@ -229,7 +229,7 @@ class DSDLParser(Parser, ABC):
             try:
                 define_type = define_value["$def"]
             except KeyError as e:
-                err_msg = f"{define_name} section must contains {e} sub-section"
+                err_msg = f"{define_name} section must contain {e} sub-section."
                 if self.report_flag:
                     temp_check_item = CheckLogItem(
                         def_name="all", msg=f"DefineSyntaxError: {err_msg}"
@@ -304,8 +304,9 @@ class DSDLParser(Parser, ABC):
                 # deal with `$optional` section after `$fields` section，
                 # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
                 if "$optional" in define_value or FIELD_PARSER.optional:
+                    temp = define_value.get("$optional", set())
                     optional_set = (
-                        set(define_value["$optional"]) | FIELD_PARSER.optional
+                        set(temp) | FIELD_PARSER.optional
                     )
                     for optional_name in optional_set:
                         optional_name = optional_name.strip()
