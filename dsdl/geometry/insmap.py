@@ -1,35 +1,48 @@
+"""
+DSDL Instance Map Geometry.
+"""
 import io
 from PIL import Image
 from ..exception import FileReadError
 from .utils import bytes_to_numpy
 import numpy as np
 import cv2
-
+from ..objectio import BaseFileReader
 from .base_geometry import BaseGeometry
 
 
 class InstanceMap(BaseGeometry):
-    """
-    A Geometry class for instance segmentation map
-    """
+    def __init__(self, location: str, file_reader: BaseFileReader):
+        """A Geometry class which abstracts an instance map object.
 
-    def __init__(self, location, file_reader):
+        Args:
+            location: The relative path of the current instance map object.
+            file_reader: The file reader object of the current instance map object.
+        """
         self._loc = location
         self._reader = file_reader
 
     @property
-    def location(self):
+    def location(self) -> str:
+        """
+        Returns:
+            The relative path of the current instance map.
+        """
         return self._loc
 
-    def to_bypes(self):
-        """
-        turn InstanceMap object to bytes
+    def to_bytes(self) -> io.BytesIO:
+        """Turn InstanceMap object to bytes.
+
+        Returns:
+            The bytes of the current instance map.
         """
         return io.BytesIO(self._reader.read())
 
-    def to_image(self):
-        """
-        turn InstanceMap object to PIL.Image
+    def to_image(self) -> Image:
+        """Turn InstanceMap object to a `PIL.Image` object.
+
+        Returns:
+            The `PIL.Image` object of the current instance map.
         """
         try:
             img = Image.open(self.to_bypes())
@@ -37,13 +50,25 @@ class InstanceMap(BaseGeometry):
             raise FileReadError(f"Failed to convert bytes to an array. {e}") from None
         return img
 
-    def to_array(self):
-        """
-        turn InstanceMap object to numpy.ndarray
+    def to_array(self) -> np.array:
+        """Turn InstanceMap object to numpy.ndarray.
+
+        Returns:
+            The `np.ndarray` object of the current instance map.
         """
         return bytes_to_numpy(self.to_bypes())
 
-    def visualize(self, image, palette, **kwargs):
+    def visualize(self, image: Image, palette: dict, **kwargs) -> Image:
+        """Draw the current instance map on an given image.
+
+        Args:
+            image: The image where the instance map to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current instance map.
+
+        Returns:
+            The image where the current instance map has been drawn on.
+        """
         ins_map = self.to_array()
         color_map = np.zeros((ins_map.shape[0], ins_map[1], 3), dtype=np.uint8)
         ins_ids = np.unique(ins_map)
@@ -60,9 +85,14 @@ class InstanceMap(BaseGeometry):
         overlayed = Image.blend(image, overlay, 0.5)
         return overlayed
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"path:{self.location}"
 
     @property
-    def field_key(self):
+    def field_key(self) -> str:
+        """Get the field type.
+
+        Returns:
+            "InstanceMap"
+        """
         return "InstanceMap"

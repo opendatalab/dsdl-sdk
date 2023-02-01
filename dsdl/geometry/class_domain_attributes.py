@@ -1,9 +1,19 @@
+"""
+DSDL Skeleton class.
+"""
 from .registry import CLASSDOMAIN
+from typing import List, Optional
 
 
 class Skeleton:
 
-    def __init__(self, skeleton, domain_name=None):
+    def __init__(self, skeleton: List[List[int, int]], domain_name: Optional[str] = None):
+        """A relation class which abstracts the skeletons in the keypoints detection task.
+
+        Args:
+            skeleton:
+            domain_name:
+        """
         self._value = skeleton
         self._domain_name = domain_name
 

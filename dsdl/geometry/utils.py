@@ -8,10 +8,10 @@ from ..exception import FileReadError
 def get_image_rotation(image: Image) -> int:
     """Get the rotation degree from the image file's exif message.
 
-    Arguments:
+    Args:
         image: A PIL.Image object.
 
-     Returns:
+    Returns:
          The degree read from image's exif message.
     """
     try:
@@ -28,7 +28,7 @@ def bytes_to_numpy(bytes_: io.BytesIO) -> np.ndarray:  # type: ignore[type-arg]
     """
     Transfer bytes into numpy array.
 
-    Arguments:
+    Args:
         bytes_: The bytes to transfer.
 
     Raises:

@@ -1,21 +1,47 @@
+"""
+DSDL Text Annotation Geometry.
+"""
 from .base_geometry import BaseGeometry
-from PIL import ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont, Image
 import numpy as np
 
 
 class Text(BaseGeometry):
-    def __init__(self, text):
+    def __init__(self, text: str):
+        """A Geometry class which abstracts a text annotation object.
+
+        Args:
+            text: The text annotation.
+        """
         self._text = text
 
     @property
-    def value(self):
+    def value(self) -> str:
+        """
+        Returns:
+            The text of the current text annotation.
+        """
         return self._text
 
     @property
-    def text(self):
+    def text(self) -> str:
+        """
+        Returns:
+            The text of the current text annotation.
+        """
         return self._text
 
-    def visualize(self, image, palette, **kwargs):
+    def visualize(self, image: Image, palette: dict, **kwargs) -> Image:
+        """Draw the current text annotation on an given image.
+
+        Args:
+            image: The image where the text annotation to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current text annotation, such as `BBox` annotation.
+
+        Returns:
+            The image where the current text annotation has been drawn on.
+        """
         draw_obj = ImageDraw.Draw(image)
         text_color = (0, 255, 0)  # green
         font = ImageFont.load_default()
@@ -38,9 +64,14 @@ class Text(BaseGeometry):
         del draw_obj
         return image
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self._text
 
     @property
-    def field_key(self):
+    def field_key(self) -> str:
+        """Get the field type.
+
+        Returns:
+            "Text"
+        """
         return "Text"

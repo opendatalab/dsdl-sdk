@@ -1,3 +1,6 @@
+"""
+DSDL 2D Bounding Box Geometry.
+"""
 from typing import TypeVar, List
 import numpy as np
 from PIL import ImageDraw
@@ -7,7 +10,6 @@ _ELE_TYPE = TypeVar("_ELE_TYPE", int, float)
 
 
 class BBox(BaseGeometry):
-
     def __init__(
             self,
             x: _ELE_TYPE,
@@ -15,62 +17,136 @@ class BBox(BaseGeometry):
             width: _ELE_TYPE,
             height: _ELE_TYPE
     ):
+        """A Geometry class which abstracts a 2D bounding box object.
+
+        Args:
+            x: The bounding box's top left point horizontal axis.
+            y: The bounding box's top left point vertical axis.
+            width: The bounding box's width.
+            height: The bounding box's height.
+
+        Attributes:
+            _data(list[float]): A list which contains the bounding box's top left point horizontal axis, top left point vertical axis, width and height.
+        """
         self._data = [x, y, width, height]
 
     @property
     def x(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's top left point horizontal axis.
+        """
         return self._data[0]
 
     @property
     def y(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's top left point vertical axis.
+        """
         return self._data[1]
 
     @property
     def width(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's width.
+        """
         return self._data[2]
 
     @property
     def height(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's height.
+        """
         return self._data[3]
 
     @property
     def xmin(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's top left point horizontal axis.
+        """
         return self._data[0]
 
     @property
     def ymin(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's top left point vertical axis.
+        """
         return self._data[1]
 
     @property
     def xmax(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's bottom right point horizontal axis.
+        """
         return self._data[0] + self._data[2]
 
     @property
     def ymax(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's bottom right point vertical axis.
+        """
         return self._data[1] + self._data[3]
 
     @property
     def area(self) -> _ELE_TYPE:
+        """
+        Returns:
+            The bounding box's area.
+        """
         return self.width * self.height
 
     @property
     def xyxy(self) -> List[_ELE_TYPE]:
+        """
+        Returns:
+            The bounding box's [xmin ymin xmax ymax] format.
+        """
         return [self.xmin, self.ymin, self.xmax, self.ymax]
 
     @property
     def xywh(self) -> List[_ELE_TYPE]:
+        """
+        Returns:
+            The bounding box's [x y w h] format.
+        """
         return [self.xmin, self.ymin, self.width, self.height]
+
     @property
     def openmmlabformat(self) -> List[_ELE_TYPE]:
+        """
+        Returns:
+            The bounding box's [xmin ymin xmax ymax] format, which is used in openmmlab project.
+        """
         return [self.xmin, self.ymin, self.xmax, self.ymax]
 
-    def to_int(self):
+    def to_int(self) -> None:
+        """Convert the value in `self._data` to `int` type.
+        """
         self._data = [int(_) for _ in self._data]
 
-    def to_float(self):
+    def to_float(self) -> None:
+        """Convert the value in `self._data` to `float` type.
+        """
         self._data = [float(_) for _ in self._data]
 
-    def visualize(self, image, palette, **kwargs):
+    def visualize(self, image: Image, palette: dict, **kwargs) -> Image:
+        """Draw the current bounding box on an given image.
+
+        Args:
+            image: The image where the bounding box to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current bounding box, such as `Label` annotation.
+
+        Returns:
+            The image where the current bounding box has been drawn on.
+        """
         draw_obj = ImageDraw.Draw(image)
         color = (0, 255, 0)
         if "label" in kwargs:
@@ -83,9 +159,14 @@ class BBox(BaseGeometry):
         del draw_obj
         return image
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self.xyxy)
 
     @property
-    def field_key(self):
+    def field_key(self) -> str:
+        """Get the field type.
+
+        Returns:
+            "BBox"
+        """
         return "BBox"
