@@ -21,7 +21,7 @@ from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBB
 from ..exception import ValidationError
 from datetime import date, time, datetime
 import math
-from typing import Iterable, Optional, Dict
+from typing import Iterable, Optional, Dict, List, Union
 
 
 def _validate_list_of_number(value, size_limit, item_type, field_name):
@@ -120,7 +120,7 @@ class BBoxField(Field):
         "BBox"
     """
 
-    def validate(self, value: Iterable[float * 4]) -> BBox:
+    def validate(self, value: Iterable[float]) -> BBox:
         """Validate whether the given value is valid to represent a bounding box object.
 
         Args:
@@ -168,7 +168,7 @@ class RotatedBBoxField(Field):
         except AssertionError as e:
             raise ValidationError("RotateBBox Error: invalid measure, only measure='radian' or 'degree' are permitted.")
 
-    def validate(self, value: Optional[Iterable[float * 5], Iterable[float * 8]]) -> RBBox:
+    def validate(self, value: Optional[Iterable[float], Iterable[float]]) -> RBBox:
         """Validate whether the given value is valid to represent a rotated bounding box object.
 
         Args:
