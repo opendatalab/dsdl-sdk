@@ -130,6 +130,37 @@ class StructMetaclass(type):
         return new_class
 
 
+from collections import defaultdict
+
+
+class _TimeStatus:
+    def __init__(self):
+        self.elapse_dic = defaultdict(0)
+        self.statis_dic = {}
+        self.start_dic = {}
+
+    def start(self, key):
+        self.start_dic[key] = time.time()
+
+    def end(self, key):
+        self.elapse_dic[key] += time.time() - self.start_dic[key]
+
+    def statis(self):
+        total_elapse = sum(self.elapse_dic.values())
+        for k, v in self.elapse_dic:
+            self.statis_dic[k] = v / total_elapse
+
+        return self.statis_dic
+
+    def reset(self):
+        self.elapse_dic = defaultdict(0)
+        self.statis_dic = {}
+        self.start_dic = {}
+
+
+time_status = _TimeStatus()
+
+
 class Struct(dict, metaclass=StructMetaclass):
     _FLATTEN_STRUCT = None
     _REGISTER_PATTERN = RegisterPattern()
@@ -147,21 +178,33 @@ class Struct(dict, metaclass=StructMetaclass):
         self._prefix = prefix or "."
 
         for k in self.__required__:
+            if prefix is None:
+                time_status.start(k)
             if k not in kwargs:
                 FieldNotFoundWarning(f"Required field {k} is missing.")
                 continue
             setattr(self, k, kwargs[k])
             self._keys.append(k)
+            if prefix is None:
+                time_status.end(k)
         for k in self.__optional__:
+            if prefix is None:
+                time_status.start(k)
             if k in kwargs:
                 setattr(self, k, kwargs[k])
                 self._keys.append(k)
+            if prefix is None:
+                time_status.end(k)
         for k in self.__struct_mappings__:
+            if prefix is None:
+                time_status.start(k)
             if k not in kwargs:
                 FieldNotFoundWarning(f"Required struct instance {k} is missing.")
                 continue
             setattr(self, k, kwargs[k])
             self._keys.append(k)
+            if prefix is None:
+                time_status.end(k)
 
     def __getattr__(self, key):
         try:
