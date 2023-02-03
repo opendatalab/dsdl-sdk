@@ -131,6 +131,7 @@ class StructMetaclass(type):
 
 
 from collections import defaultdict
+import time
 
 
 class _TimeStatus:
