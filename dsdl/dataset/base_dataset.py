@@ -17,6 +17,7 @@ from ..geometry import STRUCT
 from dsdl.dataset.utils import Util
 import dsdl.objectio as objectio
 from typing import List, Dict, Any, Callable, Optional, Union
+from tqdm import tqdm
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -93,7 +94,7 @@ class Dataset(Dataset_):
         该函数的作用是将yaml文件中的样本转换为Struct对象，并存储到sample_list列表中
         """
         sample_list = []
-        for sample in self._samples:
+        for sample in tqdm(self._samples, desc="instance initial..."):
             sample_list.append(self.sample_type(file_reader=self.file_reader, **sample))
         return sample_list
 
