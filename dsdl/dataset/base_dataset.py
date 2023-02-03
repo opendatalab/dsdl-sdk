@@ -13,6 +13,7 @@ except ImportError:
         def __getitem__(self, item):
             pass
 from ..types import Struct, StructMetaclass
+from ..types.struct import time_status
 from ..geometry import STRUCT
 from dsdl.dataset.utils import Util
 import dsdl.objectio as objectio
@@ -94,8 +95,12 @@ class Dataset(Dataset_):
         该函数的作用是将yaml文件中的样本转换为Struct对象，并存储到sample_list列表中
         """
         sample_list = []
-        for sample in tqdm(self._samples, desc="instance initial..."):
+        pbar = tqdm(self._samples, desc="instance initial...")
+        for sample in pbar:
             sample_list.append(self.sample_type(file_reader=self.file_reader, **sample))
+            statis_dic = time_status.statis()
+            pbar.set_description_str(str(statis_dic))
+
         return sample_list
 
     def process_sample(self, sample):
