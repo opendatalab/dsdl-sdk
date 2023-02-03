@@ -180,33 +180,21 @@ class Struct(dict, metaclass=StructMetaclass):
         self._prefix = prefix or "."
 
         for k in self.__required__:
-            if prefix is None:
-                time_status.start(k)
             if k not in kwargs:
                 FieldNotFoundWarning(f"Required field {k} is missing.")
                 continue
             setattr(self, k, kwargs[k])
             self._keys.append(k)
-            if prefix is None:
-                time_status.end(k)
         for k in self.__optional__:
-            if prefix is None:
-                time_status.start(k)
             if k in kwargs:
                 setattr(self, k, kwargs[k])
                 self._keys.append(k)
-            if prefix is None:
-                time_status.end(k)
         for k in self.__struct_mappings__:
-            if prefix is None:
-                time_status.start(k)
             if k not in kwargs:
                 FieldNotFoundWarning(f"Required struct instance {k} is missing.")
                 continue
             setattr(self, k, kwargs[k])
             self._keys.append(k)
-            if prefix is None:
-                time_status.end(k)
 
     def __getattr__(self, key):
         try:
@@ -215,7 +203,7 @@ class Struct(dict, metaclass=StructMetaclass):
             raise AttributeError(r"'Model' object has no attribute '%s'" % key)
 
     def __setattr__(self, key, value):
-
+        time_status.start(f"{self._prefix}/{key}")
         if key in self.__mappings__:  # field
             field_obj = self.__mappings__[key]
             if hasattr(field_obj, "set_file_reader"):
@@ -247,6 +235,7 @@ class Struct(dict, metaclass=StructMetaclass):
             self[key] = struct_obj
         else:
             self[key] = value
+        time_status.end(f"{self._prefix}/{key}")
 
     @classmethod
     def get_mapping(cls):
