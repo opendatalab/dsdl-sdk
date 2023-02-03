@@ -135,7 +135,7 @@ from collections import defaultdict
 
 class _TimeStatus:
     def __init__(self):
-        self.elapse_dic = defaultdict(0)
+        self.elapse_dic = {}
         self.statis_dic = {}
         self.start_dic = {}
 
@@ -143,6 +143,7 @@ class _TimeStatus:
         self.start_dic[key] = time.time()
 
     def end(self, key):
+        self.elapse_dic[key] = self.elapse_dic.get(key, 0)
         self.elapse_dic[key] += time.time() - self.start_dic[key]
 
     def statis(self):
