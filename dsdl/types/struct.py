@@ -149,7 +149,7 @@ class _TimeStatus:
 
     def statis(self):
         total_elapse = sum(self.elapse_dic.values())
-        for k, v in self.elapse_dic:
+        for k, v in self.elapse_dic.items():
             self.statis_dic[k] = v / total_elapse
 
         return self.statis_dic
