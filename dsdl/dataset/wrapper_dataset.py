@@ -18,7 +18,7 @@ class DSDLDataset(Dataset):
     JSON_VALID_SUFFIX = ('.json', '.JSON')
     VALID_SUFFIX = YAML_VALID_SUFFIX + JSON_VALID_SUFFIX
 
-    def __init__(self, dsdl_yaml, location_config, import_dir=''):
+    def __init__(self, dsdl_yaml, location_config, import_dir='', lazy_init=True):
         self._dsdl_yaml = dsdl_yaml
         self._location_config = location_config
         self._import_dir = import_dir
@@ -39,7 +39,7 @@ class DSDLDataset(Dataset):
         self.meta = self._yaml_info["meta"]
         self.version = self._yaml_info["version"]
 
-        super().__init__(samples, sample_type, location_config, None, global_info_type, global_info)
+        super().__init__(samples, sample_type, location_config, None, global_info_type, global_info, lazy_init)
 
     def extract_info_from_yml(self):
         dsdl_yaml = self._dsdl_yaml
