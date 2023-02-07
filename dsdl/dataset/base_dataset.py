@@ -35,12 +35,14 @@ class Dataset(Dataset_):
             location_config: dict,
             pipeline: Optional[Callable[[Dict], Dict]] = None,
             global_info_type: Union[str, StructMetaclass] = None,
-            global_info: Dict[str, Any] = None
+            global_info: Dict[str, Any] = None,
+            lazy_init: bool = False
     ):
         self.location_config = location_config
         self.pipeline = pipeline  # 处理样本的函数
         self._samples = samples  # 样本所在的yaml文件路径
         self._global_info = global_info
+        self.lazy_init = lazy_init
 
         if isinstance(sample_type, str):
             sample_type = Util.extract_sample_type(sample_type)
@@ -94,7 +96,7 @@ class Dataset(Dataset_):
         """
         sample_list = []
         for sample in self._samples:
-            sample_list.append(self.sample_type(file_reader=self.file_reader, **sample))
+            sample_list.append(self.sample_type(lazy_init=self.lazy_init, file_reader=self.file_reader, **sample))
         return sample_list
 
     def process_sample(self, sample):

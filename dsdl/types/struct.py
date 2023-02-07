@@ -2,9 +2,13 @@ import re
 import os
 from fnmatch import translate
 from .field import Field
-from ..geometry import Attributes, STRUCT
+from ..geometry import STRUCT
 from ..exception import ValidationError
 from ..warning import FieldNotFoundWarning
+
+
+def _is_magic(p):
+    return "[" in p or "]" in p or "*" in p or "?" in p
 
 
 class RegisterPattern:
@@ -133,35 +137,43 @@ class StructMetaclass(type):
 class Struct(dict, metaclass=StructMetaclass):
     _FLATTEN_STRUCT = None
     _REGISTER_PATTERN = RegisterPattern()
+    _FILE_READER = None
 
-    def __init__(self, file_reader=None, prefix=None, flatten_dic=None, **kwargs):
-
+    def __init__(self, file_reader=None, prefix=None, flatten_dic=None, lazy_init=False, **kwargs):
         super().__init__()
-        assert flatten_dic is None or isinstance(flatten_dic, dict)
-        self.attributes = Attributes()
         self.file_reader = file_reader
-        self._keys = []
-        self._dict_format = None
-        self._flatten_format = dict() if flatten_dic is None else flatten_dic
         self._raw_dict = kwargs
-        self._prefix = prefix or "."
+        self.lazy_init = lazy_init
+        if lazy_init:
+            self._set_file_reader(file_reader)
+            self.init_pattern_register()
+        else:
+            assert flatten_dic is None or isinstance(flatten_dic, dict)
+            self._keys = []
+            self._dict_format = None
+            self._flatten_format = dict() if flatten_dic is None else flatten_dic
+            self._prefix = prefix or "."
 
-        for k in self.__required__:
-            if k not in kwargs:
-                FieldNotFoundWarning(f"Required field {k} is missing.")
-                continue
-            setattr(self, k, kwargs[k])
-            self._keys.append(k)
-        for k in self.__optional__:
-            if k in kwargs:
+            for k in self.__required__:
+                if k not in kwargs:
+                    FieldNotFoundWarning(f"Required field {k} is missing.")
+                    continue
                 setattr(self, k, kwargs[k])
                 self._keys.append(k)
-        for k in self.__struct_mappings__:
-            if k not in kwargs:
-                FieldNotFoundWarning(f"Required struct instance {k} is missing.")
-                continue
-            setattr(self, k, kwargs[k])
-            self._keys.append(k)
+            for k in self.__optional__:
+                if k in kwargs:
+                    setattr(self, k, kwargs[k])
+                    self._keys.append(k)
+            for k in self.__struct_mappings__:
+                if k not in kwargs:
+                    FieldNotFoundWarning(f"Required struct instance {k} is missing.")
+                    continue
+                setattr(self, k, kwargs[k])
+                self._keys.append(k)
+
+    @classmethod
+    def _set_file_reader(cls, file_reader):
+        cls._FILE_READER = file_reader
 
     def __getattr__(self, key):
         try:
@@ -235,8 +247,84 @@ class Struct(dict, metaclass=StructMetaclass):
         return self._dict_format
 
     def extract_path_info(self, pattern, field_keys=None, verbose=False):
-        def _is_magic(p):
-            return "[" in p or "]" in p or "*" in p or "?" in p
+        if self.lazy_init:
+            return self.lazy_extract_path_info(pattern, field_keys, verbose)
+        else:
+            return self.no_lazy_extract_path_info(pattern, field_keys, verbose)
+
+    def extract_field_info(self, field_lst, nest_flag=True, verbose=False):
+        if self.lazy_init:
+            return self.lazy_extract_field_info(field_lst, nest_flag, verbose)
+        else:
+            return self.no_lazy_extract_field_info(field_lst, nest_flag, verbose)
+
+    def lazy_extract_path_info(self, pattern, field_keys=None, verbose=False):
+        if field_keys is not None:
+            if not isinstance(field_keys, list):
+                field_keys = [field_keys]
+            field_keys = [f"${_.lower()}" for _ in field_keys if isinstance(_, str)]
+
+        if not _is_magic(pattern):  # 无通配
+            res = self.lazy_extract_path_value(pattern, field_keys)
+            if res is not None:
+                return res if verbose else list(res.values())
+            return dict() if verbose else []
+
+        self.register_path_for_extract(pattern)
+        all_parsed_pattern = self._REGISTER_PATTERN.get_parsed_pattern(pattern, field_keys)
+        res = dict()
+        for field_key in field_keys or all_parsed_pattern.keys():
+            pattern_field_info = all_parsed_pattern.get(field_key, None)
+            if pattern_field_info is None:
+                continue
+            for this_pattern in pattern_field_info:
+                this_res = self.lazy_extract_path_value(this_pattern[0].replace("%d", "*"), [field_key])
+                if this_res is not None:
+                    res.update(this_res)
+        if not verbose:
+            res = list(res.values())
+        return res
+
+    def lazy_extract_path_value(self, path, field_keys=None):
+
+        def _extract_value_from_pattern(p_segs, value_dic, ret_dic, prefix="."):
+            if len(p_segs) == 0:
+                ret_dic[prefix] = field_obj.validate(value_dic)
+                return
+            p = p_segs[0]
+            if p.isdigit():
+                p = int(p)
+            if p != "*":
+                this_value_dic = value_dic[p]
+                this_prefix = f"{prefix}/{p}"
+                _extract_value_from_pattern(p_segs[1:], this_value_dic, ret_dic, this_prefix)
+            else:
+                for i, v in enumerate(value_dic):  # list
+                    this_prefix = f"{prefix}/{i}"
+                    _extract_value_from_pattern(p_segs[1:], v, ret_dic, this_prefix)
+
+        path_segs = path.split("/")
+        field_path = "/".join([_ if not _.isdigit() else "*" for _ in path_segs])
+        try:
+            field_obj = self._FLATTEN_STRUCT["$field_mapping"][field_path]
+            if field_keys is not None and field_obj.extract_key() not in field_keys:
+                return None
+        except KeyError as e:
+            FieldNotFoundWarning(f"No field of path '{field_path}' exists in this struct.")
+            return None
+        value = self._raw_dict
+        res = dict()
+        try:
+            _extract_value_from_pattern(path_segs[1:], value, res)
+        except KeyError as e:
+            return None
+        except IndexError as e:
+            return None
+        except ValidationError as e:
+            raise e  # not valid
+        return res
+
+    def no_lazy_extract_path_info(self, pattern, field_keys=None, verbose=False):
 
         if field_keys is None:
             flatten_sample = self.flatten_sample()
@@ -264,7 +352,7 @@ class Struct(dict, metaclass=StructMetaclass):
         for field_key in field_keys or all_parsed_pattern.keys():
             pattern_field_info = all_parsed_pattern.get(field_key, None)
             field_info = flatten_sample.get(field_key, None)
-            if field_info is None or field_info is None:
+            if pattern_field_info is None or field_info is None:
                 continue
             for this_pattern in pattern_field_info:
                 self._match(this_pattern, field_info, res)
@@ -299,7 +387,26 @@ class Struct(dict, metaclass=StructMetaclass):
 
         _helper([], digit_num)
 
-    def extract_field_info(self, field_lst, nest_flag=True, verbose=False):
+    def lazy_extract_field_info(self, field_lst, nest_flag=True, verbose=False):
+        ori_field_lst = field_lst
+        # {field_type: [pattern1, pattern2, ...]}
+        field_paths = {_: self._FLATTEN_STRUCT.get(f"${_.lower()}", []) for i, _ in enumerate(ori_field_lst)}
+        res = dict()
+        for field, pattern_lst in field_paths.items():
+            if verbose:
+                this_res = res.setdefault(field, dict())
+            else:
+                this_res = res.setdefault(field, list())
+            for pattern in pattern_lst:
+                extract_res = self.lazy_extract_path_value(pattern, field_keys=[f"${field.lower()}"])
+                if extract_res is not None:
+                    if verbose:
+                        this_res.update(extract_res)
+                    else:
+                        this_res.extend(extract_res.values())
+        return res
+
+    def no_lazy_extract_field_info(self, field_lst, nest_flag=True, verbose=False):
         """
         Extract the field info given field list, for example, if field_lst is [bbox, image], the result will be:
 
@@ -348,6 +455,7 @@ class Struct(dict, metaclass=StructMetaclass):
     def _flatten_struct(cls):
         prefix = "."
         res_dic = dict()
+        res_dic["$field_mapping"] = dict()
         field_mappings = cls.get_mapping()
         struct_mappings = cls.get_struct_mapping()
 
@@ -358,6 +466,9 @@ class Struct(dict, metaclass=StructMetaclass):
                     path = f"{pre_path}/{key_name}"
                     field_dic = flatten_dic.setdefault(field_key, [])
                     field_dic.append(path)
+                    if hasattr(item, "set_file_reader"):
+                        item.set_file_reader(cls._FILE_READER)
+                    flatten_dic["$field_mapping"][path] = item
                 else:
                     path = f"{pre_path}/{key_name}"
                     _helper(item.ele_type, path, "*", flatten_dic)
@@ -379,11 +490,15 @@ class Struct(dict, metaclass=StructMetaclass):
 
     @classmethod
     def register_path_for_extract(cls, pattern):
+        cls.init_pattern_register()
+        if not cls._REGISTER_PATTERN.has_registered(pattern):
+            cls._REGISTER_PATTERN.register_pattern(pattern)
+
+    @classmethod
+    def init_pattern_register(cls):
         if getattr(cls, "_FLATTEN_STRUCT", None) is None:
             cls._FLATTEN_STRUCT = cls._flatten_struct()
             cls._REGISTER_PATTERN.set_flatten_struct(cls._FLATTEN_STRUCT)
-        if not cls._REGISTER_PATTERN.has_registered(pattern):
-            cls._REGISTER_PATTERN.register_pattern(pattern)
 
     @classmethod
     def _parse_struct(cls, sample):
