@@ -295,13 +295,9 @@ class Struct(dict, metaclass=StructMetaclass):
             if p.isdigit():
                 p = int(p)
             if p != "*":
-                this_value_dic = value_dic[p]
-                this_prefix = f"{prefix}/{p}"
-                _extract_value_from_pattern(p_segs[1:], this_value_dic, ret_dic, this_prefix)
+                _extract_value_from_pattern(p_segs[1:], value_dic[p], ret_dic, f"{prefix}/{p}")
             else:
-                for i, v in enumerate(value_dic):  # list
-                    this_prefix = f"{prefix}/{i}"
-                    _extract_value_from_pattern(p_segs[1:], v, ret_dic, this_prefix)
+                [_extract_value_from_pattern(p_segs[1:], v, ret_dic, f"{prefix}/{i}") for i, v in enumerate(value_dic)]
 
         path_segs = path.split("/")
         field_path = "/".join([_ if not _.isdigit() else "*" for _ in path_segs])
