@@ -41,6 +41,7 @@ class ListField(Field):
         self.file_reader = None
         self.prefix = None
         self.flatten_dic = None
+        self.lazy_init = False
         super().__init__(*args, **kwargs)
 
     def validate(self, value):
@@ -61,7 +62,8 @@ class ListField(Field):
                 self.ele_type.__class__(
                     file_reader=self.file_reader,
                     prefix=f"{self.prefix}/{i}",
-                    flatten_dic=self.flatten_dic, **item)
+                    flatten_dic=self.flatten_dic,
+                    lazy_init=self.lazy_init, **item)
                 for i, item in enumerate(value)
             ]
         else:
@@ -77,6 +79,9 @@ class ListField(Field):
 
     def set_flatten_dic(self, dic):
         self.flatten_dic = dic
+
+    def set_lazy_init(self, value):
+        self.lazy_init = value
 
 
 class DictField(Field):

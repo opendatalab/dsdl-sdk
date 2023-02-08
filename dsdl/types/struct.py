@@ -5,6 +5,7 @@ from .field import Field
 from ..geometry import STRUCT
 from ..exception import ValidationError
 from ..warning import FieldNotFoundWarning
+import functools
 
 
 def _is_magic(p):
@@ -29,7 +30,7 @@ class RegisterPattern:
         self.flatten_struct = flatten_struct
 
     def register_pattern(self, pattern):
-        if not self._is_magic(pattern):
+        if not _is_magic(pattern):
             return
         assert self.flatten_struct is not None
         if pattern in self.registered_patterns:
@@ -37,7 +38,7 @@ class RegisterPattern:
         res_dic = self.registered_patterns.setdefault(pattern, {})
         pattern = os.path.normcase(pattern)
         pattern_seg = pattern.split(os.sep)
-        pattern_seg = [(re.compile(translate(_)), _) if self._is_magic(_) else _ for _ in pattern_seg]
+        pattern_seg = [(re.compile(translate(_)), _) if _is_magic(_) else _ for _ in pattern_seg]
         for field_key, field_info in self.flatten_struct.items():
             field_lst = res_dic.setdefault(field_key, [])
             for field_path in field_info:
@@ -87,9 +88,23 @@ class RegisterPattern:
 
         return "/".join(path_seg), magic_num
 
-    @staticmethod
-    def _is_magic(p):
-        return "[" in p or "]" in p or "*" in p or "?" in p
+
+def lazy_init_wrapper(f):
+    @functools.wraps(f)
+    def func(self, *args, **kwargs):
+        assert self.lazy_init, "This method can used only when 'lazy_init' mode is turned on."
+        return f(self, *args, **kwargs)
+
+    return func
+
+
+def no_lazy_init_wrapper(f):
+    @functools.wraps(f)
+    def func(self, *args, **kwargs):
+        assert not self.lazy_init, "This method can used only when 'lazy_init' mode is turned off."
+        return f(self, *args, **kwargs)
+
+    return func
 
 
 class StructMetaclass(type):
@@ -179,7 +194,24 @@ class Struct(dict, metaclass=StructMetaclass):
         try:
             return self[key]
         except KeyError:
-            raise AttributeError(r"'Model' object has no attribute '%s'" % key)
+            if not self["lazy_init"]:
+                raise AttributeError(r"'Model' object has no attribute '%s'" % key)
+            else:
+                try:
+                    value = self["_raw_dict"][key]
+                except KeyError:
+                    raise AttributeError(f"Key '{key}' doesn't exist in the current sample.")
+                field = self.get_mapping().get(key, None)
+                if field is not None:
+                    if hasattr(field, "set_file_reader"):
+                        field.set_file_reader(self["file_reader"])
+                    if hasattr(field, "set_lazy_init"):
+                        field.set_lazy_init(self["lazy_init"])
+                    return field.validate(value)
+                struct = self.get_struct_mapping().get(key, None)
+                if struct is not None:
+                    return struct.__class__(file_reader=self["file_reader"], lazy_init=self["lazy_init"], **value)
+                return value
 
     def __setattr__(self, key, value):
 
@@ -224,27 +256,10 @@ class Struct(dict, metaclass=StructMetaclass):
         return cls.__struct_mappings__
 
     def keys(self):
-        return tuple(self._keys)
-
-    def convert2dict(self):
-        """
-        Convert struct instance to a dict like:
-             sample = {
-                "$image": {"img2": img_obj, "img1":img_obj},
-                "$list": {"objects": [{"$image": {"img1": img_obj}, "$bbox": {"box": box_obj}}],
-                            "object2": [{"$bbox":{"box": box_obj}}, {"$bbox":{"box": box_obj}}], },
-                "$struct": {
-                    "struct1": {
-                        "$image": {"img3": img_obj, "img4": img_obj}
-                    "struct2": {
-                        "$image": {"img4": img_obj}}
-                    }
-                }
-            }
-        """
-        if self._dict_format is None:
-            self._dict_format = self._parse_struct(self)
-        return self._dict_format
+        if not self.lazy_init:
+            return tuple(self._keys)
+        else:
+            return ("lazy_init", "_raw_dict", "file_reader",)
 
     def extract_path_info(self, pattern, field_keys=None, verbose=False):
         if self.lazy_init:
@@ -258,6 +273,7 @@ class Struct(dict, metaclass=StructMetaclass):
         else:
             return self.no_lazy_extract_field_info(field_lst, nest_flag, verbose)
 
+    @lazy_init_wrapper
     def lazy_extract_path_info(self, pattern, field_keys=None, verbose=False):
         if field_keys is not None:
             if not isinstance(field_keys, list):
@@ -285,6 +301,7 @@ class Struct(dict, metaclass=StructMetaclass):
             res = list(res.values())
         return res
 
+    @lazy_init_wrapper
     def lazy_extract_path_value(self, path, field_keys=None):
 
         def _extract_value_from_pattern(p_segs, value_dic, ret_dic, prefix="."):
@@ -321,6 +338,7 @@ class Struct(dict, metaclass=StructMetaclass):
             raise e  # not valid
         return res
 
+    @no_lazy_init_wrapper
     def no_lazy_extract_path_info(self, pattern, field_keys=None, verbose=False):
 
         if field_keys is None:
@@ -384,6 +402,7 @@ class Struct(dict, metaclass=StructMetaclass):
 
         _helper([], digit_num)
 
+    @lazy_init_wrapper
     def lazy_extract_field_info(self, field_lst, nest_flag=True, verbose=False):
         ori_field_lst = field_lst
         # {field_type: [pattern1, pattern2, ...]}
@@ -403,6 +422,7 @@ class Struct(dict, metaclass=StructMetaclass):
                         this_res.extend(extract_res.values())
         return res
 
+    @no_lazy_init_wrapper
     def no_lazy_extract_field_info(self, field_lst, nest_flag=True, verbose=False):
         """
         Extract the field info given field list, for example, if field_lst is [bbox, image], the result will be:
@@ -437,11 +457,30 @@ class Struct(dict, metaclass=StructMetaclass):
             result_dic = list(result_dic.values())
         return result_dic
 
+    @no_lazy_init_wrapper
     def flatten_sample(self):
         if self._flatten_format:
             return self._flatten_format
         result_dic = {}
-        self._parse_helper(self.convert2dict(), result_dic)
+        if self._dict_format is None:
+            """
+            self._dict_format: 
+                Convert struct instance to a dict like:
+                     sample = {
+                        "$image": {"img2": img_obj, "img1":img_obj},
+                        "$list": {"objects": [{"$image": {"img1": img_obj}, "$bbox": {"box": box_obj}}],
+                                    "object2": [{"$bbox":{"box": box_obj}}, {"$bbox":{"box": box_obj}}], },
+                        "$struct": {
+                            "struct1": {
+                                "$image": {"img3": img_obj, "img4": img_obj}
+                            "struct2": {
+                                "$image": {"img4": img_obj}}
+                            }
+                        }
+                    }
+            """
+            self._dict_format = self._parse_struct(self)
+        self._parse_helper(self._dict_format, result_dic)
         self._flatten_format = result_dic
         return result_dic
 
