@@ -40,6 +40,8 @@ class RegisterPattern:
         pattern_seg = pattern.split(os.sep)
         pattern_seg = [(re.compile(translate(_)), _) if _is_magic(_) else _ for _ in pattern_seg]
         for field_key, field_info in self.flatten_struct.items():
+            if field_key == "$field_mapping":
+                continue
             field_lst = res_dic.setdefault(field_key, [])
             for field_path in field_info:
                 match_res = self._match(field_path, pattern_seg)
