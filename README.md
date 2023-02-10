@@ -52,7 +52,7 @@ pip install dsdl
 **Case b** install it from source
 
 ```shell
-git clone https://github.com/opendatalab/dsdl.git
+git clone https://github.com/opendatalab/dsdl-sdk/
 cd dsdl
 python setup.py install
 ```
