@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from PIL import ImageFont, ImageDraw
 from .registry import CLASSDOMAIN
@@ -75,7 +76,7 @@ class Label(BaseGeometry):
         if self.category_name not in palette:
             palette[self.category_name] = tuple(np.random.randint(0, 255, size=[3]))
         color = palette[self.category_name]
-        font = ImageFont.load_default()
+        font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf"))
         label_size = draw_obj.textsize(self.category_name, font)
         if "bbox" in kwargs:
             coords = np.array([[item.xyxy[0], item.xyxy[1] + 0.2 * label_size[1]] for item in kwargs["bbox"].values()])
@@ -121,7 +122,7 @@ class LabelList(BaseGeometry):
 
     def visualize(self, image, palette, **kwargs):
         draw_obj = ImageDraw.Draw(image)
-        font = ImageFont.load_default()
+        font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf"))
         y_offset = np.zeros((1, 2))
         for label_obj in self.label_list:
 

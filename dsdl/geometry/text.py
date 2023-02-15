@@ -1,6 +1,7 @@
 from .base_geometry import BaseGeometry
 from PIL import ImageDraw, ImageFont
 import numpy as np
+import os
 
 
 class Text(BaseGeometry):
@@ -18,7 +19,7 @@ class Text(BaseGeometry):
     def visualize(self, image, palette, **kwargs):
         draw_obj = ImageDraw.Draw(image)
         text_color = (0, 255, 0)  # green
-        font = ImageFont.load_default()
+        font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf"))
         label_size = draw_obj.textsize(self.value, font)
         if "bbox" in kwargs:
             coords = np.array([[item.xyxy[0], item.xyxy[3] - 1.2 * label_size[1]] for item in kwargs["bbox"].values()])
