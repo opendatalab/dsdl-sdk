@@ -2,10 +2,11 @@ import os
 import numpy as np
 from PIL import ImageFont, ImageDraw
 from .registry import CLASSDOMAIN
-from .base_geometry import BaseGeometry
+from .base_geometry import BaseGeometry, FontMixin
 
 
-class Label(BaseGeometry):
+class Label(BaseGeometry, FontMixin):
+
     def __init__(self, name, supercategories=(), domain_name=None):
         self._name = name
         self._supercategories = [_ for _ in supercategories if isinstance(_, Label)]
@@ -76,8 +77,9 @@ class Label(BaseGeometry):
         if self.category_name not in palette:
             palette[self.category_name] = tuple(np.random.randint(0, 255, size=[3]))
         color = palette[self.category_name]
-        font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf"))
-        label_size = draw_obj.textsize(self.category_name, font)
+        if self.font is None:
+            self.set_font(ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf")))
+        label_size = draw_obj.textsize(self.category_name, self.font)
         if "bbox" in kwargs:
             coords = np.array([[item.xyxy[0], item.xyxy[1] + 0.2 * label_size[1]] for item in kwargs["bbox"].values()])
         elif "polygon" in kwargs:
@@ -87,7 +89,7 @@ class Label(BaseGeometry):
             coords = np.array([[0, 0.2 * label_size[1]]])
         for coord in coords:
             draw_obj.rectangle([tuple(coord), tuple(coord + label_size)], fill=(*color, 255))
-            draw_obj.text(tuple(coord), self.category_name, fill=(255, 255, 255, 255), font=font)
+            draw_obj.text(tuple(coord), self.category_name, fill=(255, 255, 255, 255), font=self.font)
         del draw_obj
         return image
 
@@ -99,7 +101,7 @@ class Label(BaseGeometry):
         return "Label"
 
 
-class LabelList(BaseGeometry):
+class LabelList(BaseGeometry, FontMixin):
 
     def __init__(self, label_list):
         self._label_list = list(label_list)
@@ -122,7 +124,8 @@ class LabelList(BaseGeometry):
 
     def visualize(self, image, palette, **kwargs):
         draw_obj = ImageDraw.Draw(image)
-        font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf"))
+        if self.font is None:
+            self.set_font(ImageFont.truetype(os.path.join(os.path.dirname(__file__), "source", "Arial_Font.ttf")))
         y_offset = np.zeros((1, 2))
         for label_obj in self.label_list:
 
@@ -132,7 +135,7 @@ class LabelList(BaseGeometry):
                 palette[category_name] = tuple(np.random.randint(0, 255, size=[3]))
             color = palette[category_name]
 
-            label_size = draw_obj.textsize(category_name, font)
+            label_size = draw_obj.textsize(category_name, self.font)
             if "bbox" in kwargs:
                 # coords.shape = [num_box, 2]
                 coords = y_offset + np.array(
@@ -154,7 +157,7 @@ class LabelList(BaseGeometry):
             y_offset += np.array([[0., 1.2 * label_size[1]]])
             for coord in coords:
                 draw_obj.rectangle([tuple(coord), tuple(coord + label_size)], fill=(*color, 255))
-                draw_obj.text(tuple(coord), category_name, fill=(255, 255, 255, 255), font=font)
+                draw_obj.text(tuple(coord), category_name, fill=(255, 255, 255, 255), font=self.font)
 
         del draw_obj
         return image
