@@ -27,7 +27,7 @@ setup(
     author="DSDL team",
     author_email="dsdl-team@pjlab.org.cn",
     packages=find_packages(),
-    package_data={},
+    package_data={"dsdl": ["geometry/source/Arial_Font.ttf"]},
     include_package_data=True,
     install_requires=[
         "pyyaml>=6.0",
