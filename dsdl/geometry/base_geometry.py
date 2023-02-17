@@ -20,4 +20,4 @@ class FontMixin:
 
     @property
     def font(self):
-        return self.font
+        return self.FONT
