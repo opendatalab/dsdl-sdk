@@ -38,10 +38,21 @@ def check(dsdl_yaml, num, random, fields, config, position, output, **kwargs):
         parse_report = check_dsdl_parser(dsdl_yaml["yaml_file"], dsdl_library_path="", report_flag=True)
     dsdl_py = parse_report["dsdl_py"]
     parse_report = json.loads(parse_report["check_log"])
+    parse_report["samples"] = {
+        "flag": 1,
+        "msg": f"Totally {len(dsdl_yaml['samples'])} samples found."
+    }
+    if len(dsdl_yaml["samples"]) == 0:
+        parse_report['flag'] = 0
+        parse_report["samples"] = {
+            "flag": 0,
+            "msg": "No samples found, please check the path of json file."
+        }
     report_obj.set_parser_info(parse_report)
     if parse_report['flag'] == 0:
         report_obj.generate()
         return
+
     exec(dsdl_py, {})
 
     dataset = CheckDataset(report_obj, dsdl_yaml["samples"], dsdl_yaml["sample_type"], config,
