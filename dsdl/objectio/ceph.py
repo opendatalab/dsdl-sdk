@@ -1,6 +1,7 @@
 from .base import BaseFileReader
 from contextlib import contextmanager
 import os
+import re
 
 
 class CephFileReader(BaseFileReader):
