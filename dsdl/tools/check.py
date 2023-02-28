@@ -16,7 +16,7 @@ from ..parser import check_dsdl_parser
 @click.command(name="check")
 @click.option("-y", "--yaml", "dsdl_yaml", type=str, required=True, help="the path of dsdl yaml file")
 @click.option("-c", "--config", "config", type=str, required=True, help="the path of the config file")
-@click.option("-l", "--location", "location", type=click.Choice(["local", "ali-oss"]), required=True,
+@click.option("-l", "--location", "location", type=click.Choice(["local", "ali-oss", "ceph"]), required=True,
               help="the path of the config file")
 @click.option("-n", "--num", "num", type=int, default=5, help="how many samples sampled from the dataset")
 @click.option("-r", "--random", is_flag=True, help="whether to sample randomly")
