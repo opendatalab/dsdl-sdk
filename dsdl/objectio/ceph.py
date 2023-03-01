@@ -49,6 +49,7 @@ class PetrelFileReader(BaseFileReader):
         return re.sub(r'\\+', '/', filepath)
 
     def load(self, filepath):
+        filepath = os.paht.join(self.working_dir, filepath)
         filepath = self._format_path(filepath)
         value = self._client.Get(filepath)
         try:
