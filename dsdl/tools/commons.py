@@ -142,7 +142,7 @@ def prepare_input(**kwargs):
             config_dic = {}
             with open(config, encoding='utf-8') as config_file:
                 exec(config_file.read(), config_dic)
-            location_config = config_dic[location.repace("-", "_")]
+            location_config = config_dic[location.replace("-", "_")]
             result["config"] = location_config
 
             # parse field list
