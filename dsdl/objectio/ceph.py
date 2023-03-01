@@ -4,6 +4,14 @@ import os
 import re
 
 
+class BytesWrapper:
+    def __init__(self, value):
+        self.value = value
+
+    def read(self):
+        return self.value
+
+
 class CephFileReader(BaseFileReader):
 
     def __init__(self, working_dir):
@@ -20,7 +28,7 @@ class CephFileReader(BaseFileReader):
         filepath = os.path.join(self.working_dir, filepath)
         value = self._client.Get(filepath)
         try:
-            yield memoryview(value)
+            yield BytesWrapper(value)
         finally:
             pass
 
@@ -53,6 +61,6 @@ class PetrelFileReader(BaseFileReader):
         filepath = self._format_path(filepath)
         value = self._client.Get(filepath)
         try:
-            yield memoryview(value)
+            yield BytesWrapper(value)
         finally:
             pass
