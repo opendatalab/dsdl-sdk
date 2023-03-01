@@ -26,14 +26,14 @@ class CephFileReader(BaseFileReader):
 
 
 class PetrelFileReader(BaseFileReader):
-    def __init__(self, working_dir, enable_mc=True):
+    def __init__(self, working_dir, conf_path=None, enable_mc=True):
         super().__init__(working_dir)
         try:
             from petrel_client import client
         except ImportError:
             raise ImportError('Please install petrel_client to enable '
                               'PetrelBackend.')
-        self._client = client.Client(enable_mc=enable_mc)
+        self._client = client.Client(enable_mc=enable_mc, conf_path=conf_path)
 
     def _format_path(self, filepath: str) -> str:
         """Convert a ``filepath`` to standard format of petrel oss.
