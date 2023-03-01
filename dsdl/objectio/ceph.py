@@ -56,6 +56,7 @@ class PetrelFileReader(BaseFileReader):
         """
         return re.sub(r'\\+', '/', filepath)
 
+    @contextmanager
     def load(self, filepath):
         filepath = os.path.join(self.working_dir, filepath)
         filepath = self._format_path(filepath)
