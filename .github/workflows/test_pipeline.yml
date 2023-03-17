@@ -1,10 +1,10 @@
 name: 'run test pipeline'
 
-on:
-  push:
-    branches: [ sherry_dev , dev-alg ]
-  pull_request:
-    branches: [ dev-alg ]
+#on:
+#  push:
+#    branches: [ sherry_dev , dev-alg ]
+#  pull_request:
+#    branches: [ dev-alg ]
 
 jobs:
   test:
