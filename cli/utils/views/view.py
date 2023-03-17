@@ -55,7 +55,6 @@ class View:
         stdio.print_stdout(
             f"Processing local dataset {self.dataset_name} visulization..."
         )
-        viewed = False
         if self.task is True:
             self.view_local_dataset_with_task_type(
                 self.dataset_name, self.task_type, self.number
@@ -154,9 +153,30 @@ class View:
         returns:
             dataset visualization webpage url.
         """
-        stdio.print_stderr(
-            f"[ TO BE DONE ] Remote dataset {self.dataset_name} visualization.\n Bye..."
-        )
+        viewed = False
+        signal.signal(signal.SIGINT, self.ctrl_c_handler)
+
+        view_code_name = "general_app.py"
+        view_base_dir = Path(os.path.dirname(__file__))
+        view_code_abspath = Path.joinpath(view_base_dir, view_code_name)
+        streamlit_cmd = f"streamlit run {view_code_abspath} -- --dataset-name {self.dataset_name} --task-type {self.task_type} --number={self.number} --remote"
+        try:
+            process = Popen(
+                streamlit_cmd,
+                shell=True,
+            ).wait()
+        except KeyboardInterrupt:
+            process.send_signal(signal.SIGINT)
+            process.wait()
+        except CLIException as e:
+            stdio.print_stderr(e.message)
+            logger.exception(e.message)
+            raise CLIException(ExistCode.VIEW_FROM_INSPECT_FAILED, str(e))
+
+        if viewed is False:
+            stdio.print_stdout(
+                f"Code for Dataset:{self.dataset_name} visualization has not been found, to be done."
+            )
 
     def view_from_info(self, split_name):
         """

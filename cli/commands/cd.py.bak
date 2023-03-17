@@ -130,7 +130,10 @@ class Cd(CmdBase):
                 with open(dotenv_path_win, "w", encoding="utf-8") as file:
                     file.write(lines)
                     file.close()
+<<<<<<< HEAD
                 # load_dotenv(dotenv_path_win)
+=======
+>>>>>>> 9a28a79 (init studio remote dataset.)
 
                 stdio.print_stdout(
                     "to activate new environment, please run:\n call %HOMEPATH%\.dsdl\.env.bat"
