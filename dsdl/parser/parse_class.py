@@ -40,27 +40,27 @@ class ParserClass:
                                 isinstance(ele, int) and len(item) == 2 for ele in item
                         ):
                             raise DefineSyntaxError(
-                                f"Error in skeleton of {self.class_name}: skeleton must be list of list of int."
+                                f"Error in skeleton of `{self.class_name}`: skeleton must be list of list of int."
                             )
                     return skeleton
                 else:
                     raise DefineSyntaxError(
-                        f"Error in skeleton of {self.class_name}: skeleton must be list of list of int."
+                        f"Error in skeleton of `{self.class_name}`: skeleton must be list of list of int."
                     )
             else:
                 raise DefineSyntaxError(
-                    f"Error in skeleton of {self.class_name}: skeleton must be list of list of int."
+                    f"Error in skeleton of `{self.class_name}`: skeleton must be list of list of int."
                 )
 
     def _check_label_name(self, label_name: str) -> str:
         if "." in label_name:
             check_flag = re.search(r"^[\w.]+$", label_name)
             if label_name.startswith("."):
-                raise DefineSyntaxError(f"`{label_name}` is not allowed. Label in class-dom can't starts with dot `.`")
+                raise DefineSyntaxError(f"`{label_name}` is not allowed. Label in class-dom can't start with dot `.`")
             if not check_flag:
                 warn_msg = (
-                    f"`{label_name}` is not recommended."
-                    f" we recommend use alphanumeric letters (a-z, A-Z and 0-9), and underscores (_) "
+                    f"`{label_name}` is not recommended. "
+                    f"We recommend using alphanumeric letters (a-z, A-Z and 0-9), and underscores (_) "
                     f"for label in class-dom (with hierarchical structure)."
                 )
                 warnings.warn(

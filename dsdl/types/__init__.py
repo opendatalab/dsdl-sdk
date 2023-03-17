@@ -14,6 +14,7 @@ from .special import (
     TextField,
     ImageShapeField,
     InstanceIDField,
+    UniqueIDField,
 )
 from .unstructure import ImageField, LabelMapField, InstanceMapField
 
@@ -41,5 +42,6 @@ __all__ = [
     "TextField",
     "ImageShapeField",
     "InstanceIDField",
+    "UniqueIDField",
     "StructMetaclass",
 ]

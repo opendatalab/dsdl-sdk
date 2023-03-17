@@ -35,12 +35,14 @@ class Dataset(Dataset_):
             location_config: dict,
             pipeline: Optional[Callable[[Dict], Dict]] = None,
             global_info_type: Union[str, StructMetaclass] = None,
-            global_info: Dict[str, Any] = None
+            global_info: Dict[str, Any] = None,
+            lazy_init: bool = False
     ):
         self.location_config = location_config
         self.pipeline = pipeline  # 处理样本的函数
         self._samples = samples  # 样本所在的yaml文件路径
         self._global_info = global_info
+        self.lazy_init = lazy_init
 
         if isinstance(sample_type, str):
             sample_type = Util.extract_sample_type(sample_type)
@@ -93,19 +95,20 @@ class Dataset(Dataset_):
         该函数的作用是将yaml文件中的样本转换为Struct对象，并存储到sample_list列表中
         """
         sample_list = []
-        for sample in self._samples:
-            sample_list.append(self.sample_type(file_reader=self.file_reader, **sample))
+        for i, sample in enumerate(self._samples):
+            struct_sample = self.sample_type(lazy_init=self.lazy_init, file_reader=self.file_reader, **sample)
+            sample_list.append(self.process_sample(i, struct_sample))
         return sample_list
 
-    def process_sample(self, sample):
+    def process_sample(self, i, sample):
         return sample
 
     def __len__(self):
         return len(self.sample_list)
 
     def __getitem__(self, idx):
-        sample = self.sample_list[idx]
-        data = self.process_sample(sample)
+        data = self.sample_list[idx]
+        # data = self.process_sample(sample)
         if self.pipeline is not None:
             data = self.pipeline(data)
         return data

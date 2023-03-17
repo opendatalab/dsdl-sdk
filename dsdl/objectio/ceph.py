@@ -1,6 +1,15 @@
 from .base import BaseFileReader
 from contextlib import contextmanager
 import os
+import re
+
+
+class BytesWrapper:
+    def __init__(self, value):
+        self.value = value
+
+    def read(self):
+        return self.value
 
 
 class CephFileReader(BaseFileReader):
@@ -19,20 +28,20 @@ class CephFileReader(BaseFileReader):
         filepath = os.path.join(self.working_dir, filepath)
         value = self._client.Get(filepath)
         try:
-            yield memoryview(value)
+            yield BytesWrapper(value)
         finally:
             pass
 
 
 class PetrelFileReader(BaseFileReader):
-    def __init__(self, working_dir, enable_mc=True):
+    def __init__(self, working_dir, conf_path=None):
         super().__init__(working_dir)
         try:
             from petrel_client import client
         except ImportError:
             raise ImportError('Please install petrel_client to enable '
                               'PetrelBackend.')
-        self._client = client.Client(enable_mc=enable_mc)
+        self._client = client.Client(conf_path=conf_path)
 
     def _format_path(self, filepath: str) -> str:
         """Convert a ``filepath`` to standard format of petrel oss.
@@ -47,10 +56,12 @@ class PetrelFileReader(BaseFileReader):
         """
         return re.sub(r'\\+', '/', filepath)
 
+    @contextmanager
     def load(self, filepath):
+        filepath = os.path.join(self.working_dir, filepath)
         filepath = self._format_path(filepath)
         value = self._client.Get(filepath)
         try:
-            yield memoryview(value)
+            yield BytesWrapper(value)
         finally:
             pass

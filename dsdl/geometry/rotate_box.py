@@ -7,7 +7,8 @@ from PIL import Image, ImageDraw
 
 class RBBox(BaseGeometry):
     def __init__(self, value, mode):
-        if mode == "xywhr":
+        assert mode in ("xywht", "xyxy")
+        if mode == "xywht":
             self._polygon = None
             self._rbbox = value
         else:

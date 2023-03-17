@@ -9,3 +9,15 @@ class BaseGeometry:
     @property
     def field_key(self):
         return self.__class__.__name__
+
+
+class FontMixin:
+    FONT = None
+
+    @classmethod
+    def set_font(cls, font):
+        cls.FONT = font
+
+    @property
+    def font(self):
+        return self.FONT

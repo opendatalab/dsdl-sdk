@@ -1,5 +1,5 @@
 from .field import Field
-from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox, ImageShape, InstanceID
+from ..geometry import BBox, Polygon, PolygonItem, Coord2D, KeyPoints, Text, RBBox, ImageShape, UniqueID
 from ..exception import ValidationError
 from datetime import date, time, datetime
 import math
@@ -63,7 +63,7 @@ class RotatedBBoxField(Field):
                 value[-1] = value[-1] / 180 * math.pi  # convert to radian
         else:
             value = validate_list_of_number(value, 8, float, "RotateBBoxField")
-            value = [value[i:i+2] for i in (0, 2, 4, 6)]
+            value = [value[i:i + 2] for i in (0, 2, 4, 6)]
         return RBBox(value, self.mode)
 
 
@@ -184,6 +184,18 @@ class ImageShapeField(Field):
 class InstanceIDField(Field):
     def validate(self, value):
         try:
-            return InstanceID("" + value)
+            return UniqueID("" + value, "InstanceID")
         except TypeError as _:
             raise ValidationError(f"InstanceIDField Error: expect str value, got {value}")
+
+
+class UniqueIDField(Field):
+    def __init__(self, id_type=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.id_type = id_type
+
+    def validate(self, value):
+        try:
+            return UniqueID("" + value, self.id_type)
+        except TypeError as _:
+            raise ValidationError(f"UniqueIDField Error: expect str value, got {value}")

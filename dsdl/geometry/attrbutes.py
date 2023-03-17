@@ -1,5 +1,6 @@
 from .base_geometry import BaseGeometry
 
+
 class Attributes(BaseGeometry):
     def __init__(self, **kwargs):
         self.container = {}

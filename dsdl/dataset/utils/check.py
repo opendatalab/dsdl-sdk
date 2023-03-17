@@ -46,7 +46,7 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
             _, nested_report = check_struct(struct_type, sample_value, file_reader)
             if not nested_report["normal_flag"]:
                 report["normal_flag"] = False
-                report["warning_flag"] = report["warning_flag"] and nested_report["warning_flag"]
+                report["warning_flag"] = report["warning_flag"] or nested_report["warning_flag"]
                 if "warning_msgs" in nested_report:
                     field_not_matching_msg.extend(nested_report["warning_msgs"])
         elif k in field_mappings:
@@ -60,7 +60,7 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
                     _, nested_report = check_struct(struct_type, s, file_reader)
                     if not nested_report["normal_flag"]:
                         report["normal_flag"] = False
-                        report["warning_flag"] = report["warning_flag"] and nested_report["warning_flag"]
+                        report["warning_flag"] = report["warning_flag"] or nested_report["warning_flag"]
                         if "warning_msgs" in nested_report:
                             field_not_matching_msg.extend(nested_report["warning_msgs"])
     if not report["normal_flag"]:
@@ -193,6 +193,7 @@ class Report:
 
         res = self.parse_sample_info()
         total_num, normal_num, warn_num, error_num = res["total"], res["normal"], res["warn"], res["error"]
+        assert total_num == normal_num + warn_num + error_num, "Error. Number not match!"
         file_handler.write("samples验证结果如下：" + os.linesep)
         res_str = f"共实例化<font color=blue>{total_num}</font>个样本，" \
                   f"其中<font color=green>{normal_num}</font>个样本实例化正常，" \
