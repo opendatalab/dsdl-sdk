@@ -7,6 +7,10 @@ class AwsOSSFileReader(BaseFileReader):
 
     def __init__(self, working_dir, bucket_name, access_key_id, access_key_secret, endpoint, region):
         super().__init__(working_dir)
+        try:
+            from boto3.session import Session
+        except ImportError:
+            raise ImportError('Please install boto3 to enable AwsOSSBackend.')
         self.bucket_name = bucket_name
         self.session = Session(access_key_id, access_key_secret)
         self.s3_client = self.session.client("s3",

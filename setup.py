@@ -34,14 +34,12 @@ setup(
         "click>=8.1.3",
         "networkx>=2.8.4",
         "Pillow>=9.1.0",
-        "oss2>=2.15.0",
         "prettytable>=3.3.0",
         "opencv-python>=4.6.0.66",
         "jsonmodels==2.6.0",
         "environs==9.5.0",
-        "oss2==2.16.0",
         "pylint>=2.15.5",
-        "boto3>=1.26.93"
+        "jsonschema>=4.17.3"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
