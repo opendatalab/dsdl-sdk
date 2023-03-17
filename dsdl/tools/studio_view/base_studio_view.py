@@ -1,17 +1,17 @@
-from ...dataset import ImageVisualizePipeline, Util
+from dsdl.dataset import ImageVisualizePipeline, Util
 import os
 import json
 import random
-from ...warning import FieldNotFoundWarning
+from dsdl.warning import FieldNotFoundWarning
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
 except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 from ..commons import load_samples, TASK_FIELDS
-from ...parser import dsdl_parse
+from dsdl.parser import dsdl_parse
 from yaml import load as yaml_load
-from ...geometry import LABEL, STRUCT, CLASSDOMAIN
+from dsdl.geometry import LABEL, STRUCT, CLASSDOMAIN
 
 
 class BaseStudioView:
@@ -60,8 +60,9 @@ class BaseStudioView:
                 "sample_type"], yaml_info["samples"], yaml_info["global_info_type"], yaml_info["global_info"]
             exec(dsdl_py, {})
             sample_type = self.parse_sample_type(sample_type)
+            sample_type.set_file_reader(self.file_reader)
             for sample in samples:
-                sample = sample_type(file_reader=self.file_reader, **sample)
+                sample = sample_type(sample)
                 sample = ImageVisualizePipeline(sample=sample, palette=self._palette, field_list=self.fields)
                 vis_sample = sample.visualize()
                 for _, vis_item in vis_sample.items():
@@ -88,7 +89,8 @@ class BaseStudioView:
     @staticmethod
     def parse_sample_type(sample_type):
         sample_type = Util.extract_sample_type(sample_type)
-        sample_type = STRUCT.get(sample_type)
+        sample_args = Util.extract_class_dom(sample_type)
+        sample_type = STRUCT.get(sample_type)(**sample_args)
         return sample_type
 
     @staticmethod

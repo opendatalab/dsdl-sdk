@@ -2,7 +2,7 @@ import os
 import json
 from boto3.session import Session
 from collections import namedtuple
-from ...objectio import AwsOSSFileReader
+from dsdl.objectio import AwsOSSFileReader
 from .base_studio_view import BaseStudioView
 
 s3_config = namedtuple("s3_config", ("ak", "sk", "endpoint", "region", "bucket"))
