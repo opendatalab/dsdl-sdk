@@ -41,6 +41,7 @@ setup(
         "environs==9.5.0",
         "oss2==2.16.0",
         "pylint>=2.15.5",
+        "boto3>=1.26.93"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
