@@ -5,17 +5,18 @@ from dsdl.exception import DefineSyntaxError, ValidationError
 from dsdl.warning import DefineSyntaxWarning
 from dataclasses import dataclass, field
 import re
-from typing import Optional
+from typing import Union, Optional,Set, Dict
+from typing import List as _List
 
 
 @dataclass()
 class EleClass:
     label_value: str
-    super_categories: Optional[List[str]] = field(default_factory=list)
+    super_categories: Optional[_List[str]] = field(default_factory=list)
 
 
 class ParserClass:
-    def __init__(self, class_name: str, class_value: List[str], skeleton: List = None):
+    def __init__(self, class_name: str, class_value: _List[str], skeleton: _List = None):
         self.class_name = self._parse_class_name(raw_name=class_name)
         self.class_field = self._parse_class_value(class_value=class_value)
         self.skeleton = self._parse_skeleton(skeleton=skeleton)
@@ -29,7 +30,7 @@ class ParserClass:
             raise ValidationError(f"Error with class-dom name, {e}")
         return raw_name
 
-    def _parse_skeleton(self, skeleton: List) -> Optional[List[List[int]]]:
+    def _parse_skeleton(self, skeleton: _List) -> Optional[_List[_List[int]]]:
         if not skeleton:
             return None
         else:
@@ -81,10 +82,11 @@ class ParserClass:
                 )
         return label_name.strip()
 
-    def _parse_class_value(self, class_value: List[str]) -> List[EleClass]:
+    def _parse_class_value(self, class_value: _List[str]) -> _List[EleClass]:
         class_field = list()
         for value in class_value:
             value = self._check_label_name(value)
             ele_class = EleClass(label_value=value, super_categories=None)
             class_field.append(ele_class)
         return class_field
+

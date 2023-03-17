@@ -8,14 +8,8 @@ _ELE_TYPE = TypeVar("_ELE_TYPE", int, float)
 
 class BBox(BaseGeometry):
 
-    def __init__(
-            self,
-            x: _ELE_TYPE,
-            y: _ELE_TYPE,
-            width: _ELE_TYPE,
-            height: _ELE_TYPE
-    ):
-        self._data = [x, y, width, height]
+    def __init__(self, data: List[_ELE_TYPE]):
+        self._data = data
 
     @property
     def x(self) -> _ELE_TYPE:
@@ -60,6 +54,7 @@ class BBox(BaseGeometry):
     @property
     def xywh(self) -> List[_ELE_TYPE]:
         return [self.xmin, self.ymin, self.width, self.height]
+
     @property
     def openmmlabformat(self) -> List[_ELE_TYPE]:
         return [self.xmin, self.ymin, self.xmax, self.ymax]
@@ -85,7 +80,3 @@ class BBox(BaseGeometry):
 
     def __repr__(self):
         return str(self.xyxy)
-
-    @property
-    def field_key(self):
-        return "BBox"

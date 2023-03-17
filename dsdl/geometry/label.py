@@ -96,10 +96,6 @@ class Label(BaseGeometry, FontMixin):
     def __repr__(self):
         return self.category_name
 
-    @property
-    def field_key(self):
-        return "Label"
-
 
 class LabelList(BaseGeometry, FontMixin):
 

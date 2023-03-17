@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image, ExifTags
 from typing import Tuple, Any
 import io
-from ..exception import FileReadError
+from dsdl.exception import FileReadError
 
 
 def get_image_rotation(image: Image) -> int:

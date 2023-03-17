@@ -1,20 +1,34 @@
 import warnings
 
-import click
-import json
-from abc import ABC, abstractmethod
-from yaml import load as yaml_load
-from dsdl.exception import DefineSyntaxError, DSDLImportError
-from dsdl.warning import DuplicateDefineWarning, DefineSyntaxWarning
 import os
+import re
+import json
+import click
+import traceback
+import networkx as nx
+from yaml import load as yaml_load
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Union, Optional
+
 from collections import defaultdict
+from abc import ABC, abstractmethod
+from typing import Optional, Set, Dict,Union
+from typing import List as _List
+
+# from petrel_client.client import Client
+# conf_path = '~/petreloss.conf'
+# client = Client(conf_path)
+
 from .utils import *
-from .parse_params import ParserParam
-from .parse_field import ParserField, EleStruct
+from .parse_field import EleStruct, ParserField
 from .parse_class import ParserClass, EleClass
+
+# 先导入dsdl.fields这里FIELD才可以生效
+from dsdl.fields import *
+from dsdl.geometry import FIELD
+from dsdl.exception import DefineSyntaxError, DSDLImportError
+from dsdl.exception import ValidationError
+from dsdl.warning import DuplicateDefineWarning, DefineSyntaxWarning
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
@@ -22,7 +36,6 @@ except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 
 CHECK_LOG = CheckLog(def_name="all", flag=0)
-
 
 class Parser(ABC):
     """
@@ -47,6 +60,11 @@ class Parser(ABC):
     def process(self, data_file, library_path, output_file):
         self._parse(data_file, library_path)
         dsdl_py = self._generate()
+        print(
+            f"Convert Yaml File to Python Code Successfully!\n"
+            f"Yaml file (source): {data_file}\n"
+            f"Output file (output): {output_file}"
+        )
         return dsdl_py
 
 
@@ -59,30 +77,31 @@ class TypeEnum(Enum):
 class StructORClassDomain:
     name: str
     type: TypeEnum = TypeEnum.STRUCT
-    field_list: List[Union[EleStruct, EleClass]] = field(default_factory=list)
-    parent: List[str] = None  # class_dom 特有的super category
-    skeleton: List[List[int]] = None
+    field_list: _List[Union[EleStruct, EleClass]] = field(default_factory=list)
+    parent: _List[str] = None  # class_dom 特有的super category
+    skeleton: _List[_List[int]] = None
+    optional_list: _List[str] = None
+    params: _List[str] = None
 
     def __post_init__(self):
         """
         按照规定struct和class dom的名字不能是白皮书中已经包含的类型名，如List这些内定的名字
         """
-        if self.name in TYPES_ALL:
+        if self.name in FIELD:
+        #  or self.name in [i.replace("Field","") for i in FIELD]:
             raise ValidationError(
                 f"{self.name} is dsdl build-in value name, please rename it."
-                f"Build-in value names are: {','.join(TYPES_ALL)}."
+                f"Build-in value names are: {','.join(FIELD)}."
             )
-        if self.name in [i + "Field" for i in TYPES_ALL]:
-            raise ValidationError(
-                f"{self.name} is dsdl build-in value name, please rename it."
-                f"Build-in value names are: {','.join(TYPES_ALL)}."
-            )
+        
         check_name_format(self.name)
+
 
 
 class DSDLParser(Parser, ABC):
     def __init__(self, report_flag: bool):
         self.struct_name = set()
+        self.struct_name_params = defaultdict(list)
         self.define_map = defaultdict(StructORClassDomain)
         self.dsdl_version = None
         self.meta = dict()
@@ -93,6 +112,8 @@ class DSDLParser(Parser, ABC):
         将yaml文件中的模型（struct）和标签(label)部分校验之后读入变量self.define_map中
             input_file_list: 读入的yaml文件
         """
+        ########################################################################################
+        # 1. 校验train.yaml文件中必需的字段
         with open(data_file, "r") as f:
             desc = yaml_load(f, Loader=YAMLSafeLoader)
 
@@ -139,7 +160,6 @@ class DSDLParser(Parser, ABC):
         try:
             global_info_type = desc["data"]["global-info-type"]
         except KeyError as e:
-            global_info_type = None
             warning_msg = f"{e}, `global-info-type` is not defined."
             if self.report_flag:
                 temp_check_item = CheckLogItem(
@@ -154,31 +174,43 @@ class DSDLParser(Parser, ABC):
             _import = desc["$import"]
             if library_path:
                 for p in _import:
-                    temp_p = os.path.join(library_path, p.strip() + ".yaml")
+                    # ceph仅能读取绝对路径，使用normpath和replace来规范
+                    temp_p = os.path.normpath(os.path.join(library_path, p.strip() + ".yaml")).replace('s3:/','s3://')
                     if os.path.exists(temp_p):
-                        import_list.append(temp_p)
+                            import_list.append(temp_p)
                     else:
-                        raise DSDLImportError(
-                            f"{p} does not exist in `{library_path}`, "
-                            f"please check the path or give the right path using `-p`."
+                        err_msg = (
+                            f"{temp_p} does not exist, please check the path or give the right path using `-p`."
                         )
+                        if self.report_flag:
+                            temp_check_item = CheckLogItem(
+                                def_name="all", msg=f"DSDLImportError: {err_msg}"
+                            )
+                            CHECK_LOG.sub_struct.append(temp_check_item)
+                            return
+                        raise DSDLImportError(err_msg)
             else:
                 library_path = os.path.dirname(data_file)
                 for p in _import:
-                    temp_p = os.path.join(library_path, p.strip() + ".yaml")
+                    temp_p = os.path.normpath(os.path.join(library_path, p.strip() + ".yaml")).replace('s3:/','s3://')
                     if os.path.exists(temp_p):
                         import_list.append(temp_p)
                     else:
-                        temp_p = os.path.join(
-                            "dsdl", "dsdl_library", p.strip() + ".yaml"
-                        )
+                        temp_p = os.path.normpath(os.path.join(library_path+'/../defs/', p.strip() + ".yaml")).replace('s3:/','s3://')
+                        print("temp_p:",temp_p)
                         if os.path.exists(temp_p):
                             import_list.append(temp_p)
                         else:
-                            raise DSDLImportError(
-                                f"{p} does not exist in neither `{library_path}` nor `dsdl/dsdl_library`,"
-                                f"please check the path or give the right path using `-p`."
+                            err_msg = (
+                                f"{p} does not exist in neither `{library_path}` nor `defs/`, please check the path or give the right path using `-p`."
                             )
+                            if self.report_flag:
+                                temp_check_item = CheckLogItem(
+                                    def_name="all", msg=f"DSDLImportError: {err_msg}"
+                                )
+                                CHECK_LOG.sub_struct.append(temp_check_item)
+                                return
+                            raise DSDLImportError(err_msg)
 
         if "defs" in desc:
             # 获取yaml中模型（struct）和标签(label)部分的内容，存储在变量class_defi中，
@@ -203,21 +235,8 @@ class DSDLParser(Parser, ABC):
         # root_class_defi是数据yaml里面定义的模型，如果和import里面的重复了，会覆盖掉前面import的。参见白皮书2.5.1
         class_defi.update(root_class_defi)
 
-        # get self.data_sample_type and self.sample_param_map
-        try:
-            PARAMS = ParserParam(
-                sample_type=data_sample_type,
-                struct_defi=class_defi,
-                global_info_type=global_info_type,
-            )
-        except Exception as e:
-            if self.report_flag:
-                temp_check_item = CheckLogItem(
-                    def_name=TypeEnum.STRUCT.value, msg=f"{e}"
-                )
-                CHECK_LOG.sub_struct.append(temp_check_item)
-                return
-            raise Exception(e)
+        ########################################################################################
+        # 2. 校验train.yaml文件中import导入的文件，包括def.yaml、class-domain.yaml、global.yaml等
         for define_name, define_value in class_defi.items():
             if define_name.startswith("$"):
                 continue
@@ -243,6 +262,7 @@ class DSDLParser(Parser, ABC):
                         return
                     raise DuplicateDefineWarning(err_msg)
                 self.struct_name.add(define_name)
+                self.struct_name_params[define_name] = define_value.get("$params", [])
 
         # loop for `class_defi` section，deal with each `struct` and `class_domain`
         for define_name, define_value in class_defi.items():
@@ -254,11 +274,21 @@ class DSDLParser(Parser, ABC):
             define_type = define_value["$def"]
 
             if define_type == "struct":
-                define_info = StructORClassDomain(name=define_name)
+                # 判断struct名字是否符合规范
+                try:
+                    define_info = StructORClassDomain(name=define_name)
+                except Exception as e:
+                    if self.report_flag:
+                            temp_check_item = CheckLogItem(
+                                def_name=TypeEnum.STRUCT.value,
+                                msg=f"Error in `{define_name}`, {e}",
+                            )
+                            CHECK_LOG.sub_struct.append(temp_check_item)
+                            return
+                    raise ValidationError(f"Error in `{define_name}`, {e}")
                 define_info.type = TypeEnum.STRUCT
-                FIELD_PARSER = ParserField(self.struct_name)
-                # verify each ele of `struct` in `class_defi`, and save in define_info
-                struct_params = define_value.get("$params", None)
+                struct_params = define_value.get("$params", [])
+                FIELD_PARSER = ParserField(self.struct_name_params, self.struct_name,struct_params)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
                     field_name = raw_field[0].strip()
@@ -275,19 +305,9 @@ class DSDLParser(Parser, ABC):
                             CHECK_LOG.sub_struct.append(temp_check_item)
                             return
                         raise ValidationError(f"Error in `{define_name}`, {e}")
-                    # 将参数实例化
-                    if struct_params:
-                        for param, value in PARAMS.general_param_map[
-                            define_name
-                        ].params_dict.items():
-                            field_type = field_type.replace("$" + param, value)
+
                     try:
-                        field_list[field_name] = EleStruct(
-                            name=field_name,
-                            type=FIELD_PARSER.pre_parse_struct_field(
-                                field_name, field_type
-                            ),
-                        )
+                        field_list[field_name] = FIELD_PARSER.pre_parse_struct_field(field_name, field_type)
                     except Exception as e:
                         if self.report_flag:
                             temp_check_item = CheckLogItem(
@@ -298,48 +318,17 @@ class DSDLParser(Parser, ABC):
                         raise Exception(e)
                 # deal with `$optional` section after `$fields` section，
                 # because we must ensure filed in `$optional` is the `filed_name` in `$fields` section.
-                if "$optional" in define_value or FIELD_PARSER.optional:
-                    temp = define_value.get("$optional", set())
-                    optional_set = (
-                        set(temp) | FIELD_PARSER.optional
-                    )
-                    for optional_name in optional_set:
-                        optional_name = optional_name.strip()
-                        if optional_name in field_list:
-                            temp_type = field_list[optional_name].type
-                            temp_type = add_key_value_2_struct_field(
-                                temp_type, "optional", True
-                            )
-                            field_list[optional_name].type = temp_type
-                        else:
-                            err_msg = (
-                                f"Error in $optional: {optional_name} is not in $field"
-                            )
-                            if self.report_flag:
-                                temp_check_item = CheckLogItem(
-                                    def_name=TypeEnum.STRUCT.value,
-                                    msg=f"DefineSyntaxError: {err_msg}",
-                                )
-                                CHECK_LOG.sub_struct.append(temp_check_item)
-                                return
-                            raise DefineSyntaxError(err_msg)
-                for attr_name in FIELD_PARSER.is_attr:
-                    temp_type = field_list[attr_name].type
-                    temp_type = add_key_value_2_struct_field(temp_type, "is_attr", True)
-                    field_list[attr_name].type = temp_type
+                temp = define_value.get("$optional", set())
+                option_list = list(set(temp))
+                # option_list = []
+                # if "$optional" in define_value:
+                #     temp = define_value.get("$optional", set())
+                #     option_list = list(set(temp))
 
-                # get processed struct filed and save it in define_info
-                if not field_list:
-                    err_msg = "Struct must have fields more than or equal to 1"
-                    if self.report_flag:
-                        temp_check_item = CheckLogItem(
-                            def_name=TypeEnum.STRUCT.value,
-                            msg=f"DefineSyntaxError: {err_msg}",
-                        )
-                        CHECK_LOG.sub_struct.append(temp_check_item)
-                        return
-                    raise DefineSyntaxError(err_msg)
-                define_info.field_list = list(field_list.values())
+                define_info.field_list = field_list
+                
+                define_info.params = struct_params
+                define_info.optional_list = option_list
 
             elif define_type == "class_domain":
                 try:
@@ -385,19 +374,15 @@ class DSDLParser(Parser, ABC):
         将内存里面的模型（struct）和标签(label)部分输出成ORM模型（python代码）
         """
         # check define cycles. 如果有环形（就是循环定义）那是不行滴～
+        # -------------------------------------------------------------,这里是否需要校验循环定义的情况
         define_graph = nx.DiGraph()
         define_graph.add_nodes_from(self.define_map.keys())
         for key, val in self.define_map.items():
             if val.type == TypeEnum.STRUCT:
-                for field_list in val.field_list:
+                for fieldname in list(val.field_list.keys()):
                     for k in self.define_map.keys():
-                        if k in field_list.type:
+                        if k in val.field_list[fieldname]:
                             define_graph.add_edge(k, key)
-            # elif val.type == TypeEnum.CLASS_DOMAIN:
-            #     for field_list in val.parent:
-            #         for k in self.define_map.keys():
-            #             if k in field_list:
-            #                 define_graph.add_edge(k, key)
         if not nx.is_directed_acyclic_graph(define_graph):
             err_msg = "define cycle found."
             if self.report_flag:
@@ -407,27 +392,35 @@ class DSDLParser(Parser, ABC):
             raise err_msg
 
         dsdl_py = "# Generated by the dsdl parser. DO NOT EDIT!\n"
-        dsdl_py += "from dsdl.types import *\n"
-        dsdl_py += "from dsdl.geometry import *\n\n\n"
+        dsdl_py += "from dsdl.geometry import ClassDomain\n"
+        dsdl_py += "from dsdl.fields import *\n\n\n"
+        # ordered_keys = list(nx.topological_sort(define_graph))
+        # for idx, key in enumerate(ordered_keys):
         ordered_keys = list(nx.topological_sort(define_graph))
-        for idx, key in enumerate(ordered_keys):
+        for idx,key in enumerate(ordered_keys):
+        # for key,val in self.define_map.items():
             val = self.define_map[key]
             if val.type == TypeEnum.STRUCT:
                 dsdl_py += f"class {key}(Struct):\n"
-                for field_list in val.field_list:
-                    dsdl_py += f"""    {field_list.name} = {field_list.type}\n"""
+                if val.params:
+                    dsdl_py += f"""    __params__ = {val.params}\n"""
+                if val.field_list:
+                    dsdl_py += """    __fields__ = {\n"""
+                    for field_name in val.field_list:
+                        dsdl_py += f"""        "{field_name}": {val.field_list[field_name]},\n"""
+                    dsdl_py += """    }\n"""
+                if val.optional_list:
+                    dsdl_py += f"""    __optional__ = {val.optional_list}\n"""
             if val.type == TypeEnum.CLASS_DOMAIN:
-                dsdl_py += f"class {key}(ClassDomain):\n"
-                dsdl_py += "    Classes = [\n"
+                dsdl_py += f"ClassDomain(\n"
+                dsdl_py += f"""    name = "{key}",\n"""
+                dsdl_py += "    classes = ["
                 for ele_class in val.field_list:
-                    if ele_class.super_categories:
-                        temp = ", ".join(ele_class.super_categories)
-                        dsdl_py += f"""        Label("{ele_class.label_value}", supercategories=[{temp}]),\n"""
-                    else:
-                        dsdl_py += f"""        Label("{ele_class.label_value}"),\n"""
-                dsdl_py += "    ]\n"
+                    dsdl_py += f""""{ele_class.label_value}","""
+                dsdl_py += "],\n"
                 if val.skeleton:
-                    dsdl_py += f"""    Skeleton = {val.skeleton}\n"""
+                    dsdl_py += f"""    skeleton = {val.skeleton}\n"""
+                dsdl_py += ")\n"
             if idx != len(ordered_keys) - 1:
                 dsdl_py += "\n\n"
 
@@ -461,12 +454,15 @@ class DSDLParser(Parser, ABC):
             dsdl_py = self._generate()
         else:
             dsdl_py = None
-        # if dsdl_py:
-        #     print(
-        #         f"Convert Yaml File to Python Code Successfully!\n"
-        #         f"Yaml file (source): {data_file}\n"
-        #         f"Output file (output): {output_file}"
-        #     )
+            print('dsdl_py is None! The following is the specific log:\n')
+            print(CHECK_LOG.to_struct())
+        if dsdl_py:
+            print(
+                f"Convert Yaml File to Python Code Successfully!\n"
+                f"Yaml file (source): {data_file}\n"
+                f"Output file (output): {output_file}"
+            )
+            
         if output_file:
             with open(output_file, "w") as of:
                 print(dsdl_py, file=of)
@@ -496,7 +492,6 @@ def dsdl_parse(
     res = dsdl_parser.process(dsdl_yaml, dsdl_library_path, output_file)
     return res
 
-
 def check_dsdl_parser(
     dsdl_yaml: str,
     dsdl_library_path: str = None,
@@ -513,7 +508,6 @@ def check_dsdl_parser(
     if report_flag:
         res["check_log"] = json.dumps(CHECK_LOG.to_struct())
     return res
-
 
 @click.command()
 @click.option(
@@ -543,3 +537,48 @@ def parse(dsdl_yaml: str, dsdl_library_path: str = None):
     dsdl_name = os.path.splitext(os.path.basename(dsdl_yaml))[0]
     output_file = os.path.join(os.path.dirname(dsdl_yaml), f"{dsdl_name}.py")
     dsdl_parse(dsdl_yaml, dsdl_library_path, output_file)
+
+# if __name__ == '__main__':
+#     # parse()
+
+#     # # 遍历方式获取dsdl数据集
+#     url = 's3://odl-dsdl/dsdl/'
+#     contents = client.list(url)
+#     ann_files = []
+#     for content in contents:
+#         if content.endswith('/'):
+#             for content1 in client.list(url+content):
+#                 if content1.startswith('set'):
+#                     for content2 in client.list(url+content+content1):
+#                         if content2.endswith('yaml'):
+#                             ann_files.append(url+content+content1+content2)
+#                             # break
+#                     # break
+#         else:
+#             print('object:', content)
+#     # ann_files = open('new_parser/fail_parser.txt','r').readlines()
+#     # ann_files = ['s3://odl-dsdl/dsdl/DIOR_RotDet_full/set-test/rotated_test.yaml']
+#     print(f'dsdl数据集共{len(ann_files)}个')
+#     ff = open('./new_parser/fail_parser.txt','w')
+#     for i,ann_file in enumerate(ann_files):
+#         dataset = ann_file.split('/')[4]
+#         taskname = dataset.split('_')[-2]
+#         datasetname = '_'.join(dataset.split('_')[:-2])
+#         unique_name = ann_file.split('/')[-1].split('.')[0]
+#         try:
+#             dsdl_py = dsdl_parse(ann_file, dsdl_library_path=None,output_file=f'./new_parser/data/dsdl_new/{taskname}_{datasetname}_{unique_name}_new.py',report_flag=True)
+#             exec(dsdl_py)
+#             print('-----------------',i,dataset, 'exec success!')
+
+#         except:
+#             print (traceback.format_exc ())
+#             print('-----------------',i,dataset, 'parser fail!', ann_file)
+
+#             ff.write(ann_file+'\n')
+#             ff.flush()
+#     ff.close()
+
+# 
+
+    # pf = ParseField(set(['KeyPointLocalObject','ImageMedia','KeyPointSample']))
+    # print(pf.pre_parse_struct_field(field_name=None, raw_field_type = 'Str[is_attr=True,List[etype=ImageMedia[cdom0=$cdom0],isoptional=True,arg1 = 1],arg2=2]'))

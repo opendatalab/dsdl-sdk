@@ -6,10 +6,13 @@ from PIL import Image, ImageDraw
 
 
 class RBBox(BaseGeometry):
-    def __init__(self, value, mode):
-        assert mode in ("xywht", "xyxy")
+    def __init__(self, value, mode="xywht", measure="radian"):
+        assert mode in ("xywht", "xyxy") and measure in ("radian", "degree")
         if mode == "xywht":
             self._polygon = None
+            if measure == "degree":
+                value = value.copy()
+                value[-1] = value[-1] / 180 * math.pi
             self._rbbox = value
         else:
             self._polygon = value
@@ -88,7 +91,3 @@ class RBBox(BaseGeometry):
         x, y, w, h, angle = self.rbbox_value
         x, y, w, h, angle = int(x), int(y), int(w), int(h), int(angle / math.pi * 180)
         return f"[{x}, {y}, {w}, {h}, {angle}°]"
-
-    @property
-    def field_key(self):
-        return "RotatedBBox"

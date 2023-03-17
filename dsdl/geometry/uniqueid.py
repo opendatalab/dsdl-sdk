@@ -3,9 +3,9 @@ from .base_geometry import BaseGeometry
 
 class UniqueID(BaseGeometry):
 
-    def __init__(self, value, field_key):
+    def __init__(self, value, id_type):
         self._value = value
-        self._field_key = field_key
+        self._field_key = id_type
 
     @property
     def value(self):
@@ -16,7 +16,3 @@ class UniqueID(BaseGeometry):
 
     def __repr__(self):
         return f"ID type: {self._field_key} ID value: {self.value}"
-
-    @property
-    def field_key(self):
-        return self._field_key

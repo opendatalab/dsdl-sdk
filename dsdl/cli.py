@@ -1,6 +1,6 @@
 import click
 
-from dsdl import parse
+from dsdl.parser import parse
 from dsdl.tools import view, check
 
 

@@ -8,9 +8,9 @@ except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 import os
 import json
-from ..parser import dsdl_parse
+from dsdl.parser import dsdl_parse
 from .utils.commons import Util
-from ..geometry import CLASSDOMAIN
+from dsdl.geometry import CLASSDOMAIN
 
 
 class DSDLDataset(Dataset):

@@ -1,10 +1,10 @@
 from .commons import Util
-from .check import check_struct, Report
 from .visualizer import ImageVisualizePipeline
+from .check import Report, check_struct
 
 __all__ = [
     "Util",
-    "check_struct",
+    "ImageVisualizePipeline",
     "Report",
-    "ImageVisualizePipeline"
+    "check_struct",
 ]

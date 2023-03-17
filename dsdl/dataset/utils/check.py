@@ -2,15 +2,14 @@ import json
 import os
 import os.path as osp
 
-from ...types import Struct, StructMetaclass
-from ...objectio import BaseFileReader
+from dsdl.fields import Struct
 
 
-def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFileReader):
+def check_struct(sample_type: Struct, sample: dict):
     report = {"error_flag": False, "warning_flag": False, "normal_flag": True}
 
     try:
-        struct_sample = sample_type(file_reader=file_reader, **sample)
+        struct_sample = sample_type(sample)
     except Exception as e:
         report["error_msg"] = repr(e)
         report["error_flag"] = True
@@ -19,9 +18,9 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
         return None, report
 
     field_not_matching_msg = []
-    field_mappings = struct_sample.__mappings__
-    struct_mappings = struct_sample.__struct_mappings__
-    optional_mappings = struct_sample.__optional__
+    field_mappings = sample_type.__mappings__
+    struct_mappings = sample_type.__struct_mappings__
+    optional_mappings = sample_type.__optional__
     for k in field_mappings:
         if k not in sample and k not in optional_mappings:
             warn_msg = f"Field not matching warning: required field '{k}' not found in sample."
@@ -41,9 +40,9 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
             report["warning_flag"] = True
             report["normal_flag"] = False
         elif k in struct_mappings:
-            struct_type = struct_mappings[k].__class__
+            struct_type = struct_mappings[k]
             sample_value = sample[k]
-            _, nested_report = check_struct(struct_type, sample_value, file_reader)
+            _, nested_report = check_struct(struct_type, sample_value)
             if not nested_report["normal_flag"]:
                 report["normal_flag"] = False
                 report["warning_flag"] = report["warning_flag"] or nested_report["warning_flag"]
@@ -53,11 +52,11 @@ def check_struct(sample_type: StructMetaclass, sample: dict, file_reader: BaseFi
             this_field = field_mappings[k]
             if this_field.extract_key() != "$list":
                 continue
-            if isinstance(this_field.ele_type, Struct):
-                struct_type = this_field.ele_type.__class__
+            if isinstance(this_field.etype, Struct):
+                struct_type = this_field.etype
                 sample_value = sample[k]
                 for s in sample_value:
-                    _, nested_report = check_struct(struct_type, s, file_reader)
+                    _, nested_report = check_struct(struct_type, s)
                     if not nested_report["normal_flag"]:
                         report["normal_flag"] = False
                         report["warning_flag"] = report["warning_flag"] or nested_report["warning_flag"]

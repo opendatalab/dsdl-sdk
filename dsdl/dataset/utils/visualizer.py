@@ -2,8 +2,8 @@ from typing import Optional, Dict, Tuple, List
 import os
 from collections import defaultdict
 from .commons import Util
-from ...geometry import LabelList, BBox
-from ...types import Struct
+from dsdl.geometry import LabelList, BBox
+from dsdl.fields.struct import StructObject
 from copy import deepcopy
 
 
@@ -49,7 +49,7 @@ class ImageSample:
                     for ann_item in gt_item[field_key].values():
                         if hasattr(ann_item, "visualize"):
                             image = ann_item.visualize(image=image, palette=self.palette, **gt_item)
-        LabelList(image_label_lst).visualize(image=image, palette=self.palette, bbox={"temp": BBox(0, 0, 0, 0)})
+        LabelList(image_label_lst).visualize(image=image, palette=self.palette, bbox={"temp": BBox([0, 0, 0, 0])})
         return image
 
     def format(self):
@@ -108,7 +108,7 @@ class ImageVisualizePipeline:
     TD_DIST_WEIGHT = 0.01
     DIST_TRHESH = 2
 
-    def __init__(self, field_list: List[str], sample: Struct, palette: Optional[Dict[str, Tuple]] = None):
+    def __init__(self, field_list: List[str], sample: StructObject, palette: Optional[Dict[str, Tuple]] = None):
         self.field_list = field_list
         self.palette = self.PALETTE
         if palette is not None:  # 如果用户自己定义了label调色盘，则更新默认的调色盘
@@ -140,7 +140,7 @@ class ImageVisualizePipeline:
         return bu_distance * cls.BU_DIST_WEIGHT + td_distance * cls.TD_DIST_WEIGHT
 
     def group_media_and_ann(self):
-        data_dic = self.data_dic
+        data_dic = deepcopy(self.data_dic)
         image_dic = data_dic.pop("image")
         image_paths = list(image_dic.keys())
         result_dic = {k_: ImageSample(image_dic[k_], self.palette) for k_ in image_paths}

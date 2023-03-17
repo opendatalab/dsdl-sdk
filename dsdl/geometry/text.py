@@ -5,8 +5,8 @@ import os
 
 
 class Text(BaseGeometry, FontMixin):
-    def __init__(self, text):
-        self._text = text
+    def __init__(self, value):
+        self._text = value
 
     @property
     def value(self):
@@ -42,7 +42,3 @@ class Text(BaseGeometry, FontMixin):
 
     def __repr__(self):
         return self._text
-
-    @property
-    def field_key(self):
-        return "Text"

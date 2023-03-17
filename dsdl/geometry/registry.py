@@ -1,11 +1,12 @@
-from ..exception import ClassNotFoundError
-from ..warning import ClassHasDefinedWarning
+from dsdl.exception import ClassNotFoundError
+from dsdl.warning import ClassHasDefinedWarning
 
 
 class Registry:
     def __init__(self, name):
         self._name = name
-        self._map = {}
+        self._map = dict()
+        self._names_contained = []
 
     @property
     def name(self):
@@ -17,6 +18,8 @@ class Registry:
         if name in self._map:
             # raise ClassHasDefinedError
             ClassHasDefinedWarning(f"Class '{name}' has been registered, it will be replaced by this updated one.")
+        else:
+            self._names_contained.append(name)
         self._map[name] = cls
 
     def get(self, name):
@@ -27,9 +30,18 @@ class Registry:
     def clear(self):
         self._map = {}
 
+    def names_contained(self):
+        return self._names_contained
 
+    def __contains__(self, name):
+        return name in self._names_contained
+
+
+GEOMETRY = Registry("geometry")
 STRUCT = Registry("struct")
 CLASSDOMAIN = Registry("class domain")
+FILEREADER = Registry("file reader")
+FIELD = Registry("field")
 
 
 class LabelRegistry:
