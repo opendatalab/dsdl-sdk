@@ -136,7 +136,6 @@ class Cd(CmdBase):
                     file.write("@echo off\n")
                     file.write(lines)
                     file.close()
-                # load_dotenv(dotenv_path_win)
 
                 stdio.print_stdout(
                     "to activate new environment, please run:\n call %USERPROFILE%\.dsdl\.env.bat"
