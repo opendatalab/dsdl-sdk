@@ -108,10 +108,6 @@ class Cd(CmdBase):
                     stdio.print_stderr("Only support bash shell now!")
                     sys.exit(1)
                 PROMPT = os.getenv(key="PROMPT", default="$P$G ")
-                # CONDA_PROMPT_MODIFIER = os.getenv(
-                #     key="CONDA_PROMPT_MODIFIER", default=""
-                # )
-
                 PROMPT_NEW = "(" + dsname + ")" + " " + PROMPT
 
                 with open(dotenv_path_win, "w", encoding="utf-8") as file:
@@ -126,14 +122,16 @@ class Cd(CmdBase):
 
                 lines = lines.replace("DATASET_NAME", "SET DATASET_NAME")
                 lines = lines.replace("PROMPT", "SET PROMPT")
+                lines = lines.replace("'", "")
 
                 with open(dotenv_path_win, "w", encoding="utf-8") as file:
+                    file.write("@echo off\n")
                     file.write(lines)
                     file.close()
                 # load_dotenv(dotenv_path_win)
 
                 stdio.print_stdout(
-                    "to activate new environment, please run:\n call %HOMEPATH%\.dsdl\.env.bat"
+                    "to activate new environment, please run:\n call %USERPROFILE%\.dsdl\.env.bat"
                 )
             elif sysstr in ["Linux"]:
                 """
