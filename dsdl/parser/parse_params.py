@@ -225,11 +225,8 @@ class ParserParam:
                         raise DefineSyntaxError(
                             f"each struct with param must have one parent struct, "
                             f"but can have more than one child struct.\n"
-<<<<<<< HEAD
-                            f"{key} have more than one parent struct."
-=======
                             f"{key} have more than one parent struct"
->>>>>>> 51b8906 (alter a lot error msg)
+
                         )
                 else:
                     sort_param_dict[key] = val.parents_struct  # {list[str]}
