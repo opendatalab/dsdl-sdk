@@ -107,7 +107,15 @@ class Cd(CmdBase):
                 if os.environ["ComSpec"].split("\\")[-1] != "cmd.exe":
                     stdio.print_stderr("Only support bash shell now!")
                     sys.exit(1)
-                PROMPT = os.getenv(key="PROMPT", default="$P$G ")
+
+                if "CONDA_PROMPT_MODIFIER" in os.environ:
+                    CONDA_PROMPT_MODIFIER = os.getenv(
+                        key="CONDA_PROMPT_MODIFIER", default="(base)"
+                    )
+                    PROMPT = CONDA_PROMPT_MODIFIER + "$P$G"
+                else:
+                    PROMPT = os.getenv(key="PROMPT", default="$P$G ")
+
                 PROMPT_NEW = "(" + dsname + ")" + " " + PROMPT
 
                 with open(dotenv_path_win, "w", encoding="utf-8") as file:
