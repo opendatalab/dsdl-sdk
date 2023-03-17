@@ -44,8 +44,9 @@ class Dataset(Dataset_):
         self.file_reader = self._load_file_reader(location_config)  # 样本的路径配置（如本地路径或是阿里云路径）
 
         if isinstance(sample_type, str):
-            sample_type = Util.extract_sample_type(sample_type)
-            sample_args = Util.extract_class_dom(sample_type)
+            sample_type_str = sample_type
+            sample_type = Util.extract_sample_type(sample_type_str)
+            sample_args = Util.extract_class_dom(sample_type_str)
             self.sample_type = STRUCT.get(sample_type)(**sample_args)
         elif isinstance(sample_type, Struct):
             self.sample_type = sample_type
@@ -56,8 +57,9 @@ class Dataset(Dataset_):
 
         if global_info_type is not None:
             if isinstance(global_info_type, str):
-                global_info_type = Util.extract_sample_type(global_info_type)
-                global_info_args = Util.extract_class_dom(global_info_type)
+                global_info_type_str = global_info_type
+                global_info_type = Util.extract_sample_type(global_info_type_str)
+                global_info_args = Util.extract_class_dom(global_info_type_str)
                 self.global_info_type = STRUCT.get(global_info_type)(**global_info_args)
             elif isinstance(global_info_type, Struct):
                 self.global_info_type = global_info_type
@@ -100,7 +102,7 @@ class Dataset(Dataset_):
         """
         sample_list = []
         for i, sample in enumerate(self._samples):
-            struct_sample = self.sample_type(**sample)
+            struct_sample = self.sample_type(sample)
             sample_list.append(self.process_sample(i, struct_sample))
         return sample_list
 

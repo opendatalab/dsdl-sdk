@@ -88,8 +88,9 @@ class BaseStudioView:
 
     @staticmethod
     def parse_sample_type(sample_type):
-        sample_type = Util.extract_sample_type(sample_type)
-        sample_args = Util.extract_class_dom(sample_type)
+        sample_type_str = sample_type
+        sample_type = Util.extract_sample_type(sample_type_str)
+        sample_args = Util.extract_class_dom(sample_type_str)
         sample_type = STRUCT.get(sample_type)(**sample_args)
         return sample_type
 
