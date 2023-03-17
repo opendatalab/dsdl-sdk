@@ -91,7 +91,7 @@ class Dataset(Dataset_):
 
     def _load_global_info(self):
         if self.global_info_type is not None and self._global_info is not None:
-            global_info = self.global_info_type(**self._global_info)
+            global_info = self.global_info_type(self._global_info)
             return global_info
         else:
             return None
