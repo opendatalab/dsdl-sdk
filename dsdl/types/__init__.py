@@ -1,17 +1,22 @@
-from .struct import Struct
-from .generic import StrField, IntField, BoolField, NumField, ListField
+from .struct import Struct, StructMetaclass
+from .generic import StrField, IntField, BoolField, NumField, ListField, DictField
 from .special import (
     LabelField,
     CoordField,
     Coord3DField,
     IntervalField,
     BBoxField,
+    RotatedBBoxField,
     PolygonField,
     DateField,
     TimeField,
     KeypointField,
+    TextField,
+    ImageShapeField,
+    InstanceIDField,
+    UniqueIDField,
 )
-from .unstructure import ImageField, SegMapField
+from .unstructure import ImageField, LabelMapField, InstanceMapField
 
 __all__ = [
     "Struct",
@@ -22,13 +27,21 @@ __all__ = [
     "ImageField",
     "LabelField",
     "ListField",
+    "DictField",
     "CoordField",
     "Coord3DField",
     "IntervalField",
     "BBoxField",
+    "RotatedBBoxField",
     "PolygonField",
     "DateField",
     "TimeField",
-    "SegMapField",
+    "LabelMapField",
+    "InstanceMapField",
     "KeypointField",
+    "TextField",
+    "ImageShapeField",
+    "InstanceIDField",
+    "UniqueIDField",
+    "StructMetaclass",
 ]

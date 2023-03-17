@@ -1,22 +1,18 @@
 <div align="center">
-  <img src="resources/opendatalab.svg" width="600"/>
+  <img src="https://raw.githubusercontent.com/opendatalab/dsdl-sdk/2ae5264a7ce1ae6116720478f8fa9e59556bed41/resources/opendatalab.svg" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b><font size="5">OpenDataLab 官网</font></b>
-    <sup>
-      <a href="https://opendatalab.com/">
-        <i><font size="4">HOT</font></i>
-      </a>
-    </sup>
+    <a href="https://opendatalab.com/"> OpenDataLab Website</a>
     &nbsp;&nbsp;&nbsp;&nbsp;
   </div>
   <div>&nbsp;</div>
 </div>
+
 [English](README.md) | 简体中文
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/odl-cli) ](https://pypi.org/project/odl-cli/)[![PyPI](https://img.shields.io/pypi/v/odl-cli)](https://pypi.org/project/odl-cli/) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs)
 
-[📘使用文档](https://opendatalab.github.io/dsdl-docs/) |
+[📘使用文档](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs) |
 
 ## 简介
 
@@ -95,16 +91,16 @@ ali_oss = dict(
 
 每个参数的意义为：
 
-| 参数简写 | 参数全写      | 参数解释                                                     |
-| -------- | ------------- | :----------------------------------------------------------- |
-| -y       | `--yaml`      | 定义所有samples的yaml文件的路径                              |
-| -c       | `--config`    | 配置文件（`config.py`）的路径                                |
-| -l       | `--location`  | 只可以指定为`local`或是`ali-oss`，分别表示读取本地的数据与读取阿里云的数据 |
-| -n       | `--num`       | 加载数据集的样本数量                                         |
-| -r       | `--random`    | 在加载数据集中的样本时是否随机选取样本，如果不指定的话就按顺序从开始选取样本 |
-| -v       | `--visualize` | 是否将加载的数据进行可视化展示                               |
+| 参数简写 | 参数全写      | 参数解释                                                                                                                                                  |
+| -------- | ------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -y       | `--yaml`      | 定义所有samples的yaml文件的路径                                                                                                                           |
+| -c       | `--config`    | 配置文件（`config.py`）的路径                                                                                                                             |
+| -l       | `--location`  | 只可以指定为`local`或是`ali-oss`，分别表示读取本地的数据与读取阿里云的数据                                                                                |
+| -n       | `--num`       | 加载数据集的样本数量                                                                                                                                      |
+| -r       | `--random`    | 在加载数据集中的样本时是否随机选取样本，如果不指定的话就按顺序从开始选取样本                                                                              |
+| -v       | `--visualize` | 是否将加载的数据进行可视化展示                                                                                                                            |
 | -f       | `--field`     | 选择需要进行可视化的字段，如`-f BBox`表示可视化bbox，`-f Attributes`表示对样本的attributes进行可视化等等，可以同时选择多个，如`-f Label BBox  Attributes` |
-| -t       | `--task`      | 可以选择当前需要可视化的任务类型，如果选择`-t detection`，则等价于`-f Label BBox Polygon Attributes` |
+| -t       | `--task`      | 可以选择当前需要可视化的任务类型，如果选择`-t detection`，则等价于`-f Label BBox Polygon Attributes`                                                      |
 
 ## 引用
 

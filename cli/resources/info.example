@@ -1,0 +1,2 @@
+01  show the info of a dataset
+    $%(prog)s CIFAR-10

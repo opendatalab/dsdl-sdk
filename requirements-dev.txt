@@ -1,0 +1,6 @@
+poetry
+pre-commit
+tox
+yapf
+types-PyYAML
+

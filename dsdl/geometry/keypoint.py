@@ -112,3 +112,7 @@ class KeyPoints(BaseGeometry):
 
     def __repr__(self):
         return str(self.value)
+
+    @property
+    def field_key(self):
+        return "Keypoint"

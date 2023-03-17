@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+cli/commands/__version__.py
 # Distribution / packaging
 .Python
 build/
@@ -25,6 +25,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+poetry.lock
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -162,3 +163,8 @@ cython_debug/
 .DS_Store
 *.swp
 /examples/computer-vision/image-classification/test/
+sss.ipynb
+loguru_playground.ipynb
+loguru_test.py
+test_dataclass.ipynb
+test_hugging.ipynb

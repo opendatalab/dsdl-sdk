@@ -1,0 +1,1671 @@
+{
+    "dataset_name": "fgvc-aircraft-2013b",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "FGVC Aircraft manufacturer Classification",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "ATR"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "Airbus"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "Antonov"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "Beechcraft"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "Boeing"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "Bombardier Aerospace"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "British Aerospace"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "Canadair"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "Cessna"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "Cirrus Aircraft"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "Dassault Aviation"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "Dornier"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "Douglas Aircraft Company"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "Embraer"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "Eurofighter"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "Fairchild"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "Fokker"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "Gulfstream Aerospace"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "Ilyushin"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "Lockheed Corporation"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "Lockheed Martin"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "McDonnell Douglas"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "Panavia"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "Piper"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "Robin"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "Saab"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "Supermarine"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "Tupolev"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "Yakovlev"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "de Havilland"
+                }
+            ]
+        },
+        {
+            "name": "FGVC Aircraft manufacturer Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "ATR"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "Airbus"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "Antonov"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "Beechcraft"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "Boeing"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "Bombardier Aerospace"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "British Aerospace"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "Canadair"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "Cessna"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "Cirrus Aircraft"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "Dassault Aviation"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "Dornier"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "Douglas Aircraft Company"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "Embraer"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "Eurofighter"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "Fairchild"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "Fokker"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "Gulfstream Aerospace"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "Ilyushin"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "Lockheed Corporation"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "Lockheed Martin"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "McDonnell Douglas"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "Panavia"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "Piper"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "Robin"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "Saab"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "Supermarine"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "Tupolev"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "Yakovlev"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "de Havilland"
+                }
+            ]
+        },
+        {
+            "name": "FGVC Aircraft family Classification",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "A300"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "A310"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "A320"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "A330"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "A340"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "A380"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "ATR-42"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "ATR-72"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "An-12"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "BAE 146"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "BAE-125"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "Beechcraft 1900"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "Boeing 707"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "Boeing 717"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "Boeing 727"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "Boeing 737"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "Boeing 747"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "Boeing 757"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "Boeing 767"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "Boeing 777"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "C-130"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "C-47"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "CRJ-200"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "CRJ-700"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "Cessna 172"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "Cessna 208"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "Cessna Citation"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "Challenger 600"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "DC-10"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "DC-3"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "DC-6"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "DC-8"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "DC-9"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "DH-82"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "DHC-1"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "DHC-6"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "DR-400"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "Dash 8"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "Dornier 328"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "EMB-120"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "Embraer E-Jet"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "Embraer ERJ 145"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "Embraer Legacy 600"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "Eurofighter Typhoon"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "F-16"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "F/A-18"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "Falcon 2000"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "Falcon 900"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "Fokker 100"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "Fokker 50"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "Fokker 70"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "Global Express"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "Gulfstream"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "Hawk T1"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "Il-76"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "King Air"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "L-1011"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "MD-11"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "MD-80"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "MD-90"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "Metroliner"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "PA-28"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "SR-20"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "Saab 2000"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "Saab 340"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "Spitfire"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "Tornado"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "Tu-134"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "Tu-154"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "Yak-42"
+                }
+            ]
+        },
+        {
+            "name": "FGVC Aircraft family Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "A300"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "A310"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "A320"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "A330"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "A340"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "A380"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "ATR-42"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "ATR-72"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "An-12"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "BAE 146"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "BAE-125"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "Beechcraft 1900"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "Boeing 707"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "Boeing 717"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "Boeing 727"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "Boeing 737"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "Boeing 747"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "Boeing 757"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "Boeing 767"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "Boeing 777"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "C-130"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "C-47"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "CRJ-200"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "CRJ-700"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "Cessna 172"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "Cessna 208"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "Cessna Citation"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "Challenger 600"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "DC-10"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "DC-3"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "DC-6"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "DC-8"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "DC-9"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "DH-82"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "DHC-1"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "DHC-6"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "DR-400"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "Dash 8"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "Dornier 328"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "EMB-120"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "Embraer E-Jet"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "Embraer ERJ 145"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "Embraer Legacy 600"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "Eurofighter Typhoon"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "F-16"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "F/A-18"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "Falcon 2000"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "Falcon 900"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "Fokker 100"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "Fokker 50"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "Fokker 70"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "Global Express"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "Gulfstream"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "Hawk T1"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "Il-76"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "King Air"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "L-1011"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "MD-11"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "MD-80"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "MD-90"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "Metroliner"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "PA-28"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "SR-20"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "Saab 2000"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "Saab 340"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "Spitfire"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "Tornado"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "Tu-134"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "Tu-154"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "Yak-42"
+                }
+            ]
+        },
+        {
+            "name": "FGVC Aircraft variant Classification",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "707-320"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "727-200"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "737-200"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "737-300"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "737-400"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "737-500"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "737-600"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "737-700"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "737-800"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "737-900"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "747-100"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "747-200"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "747-300"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "747-400"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "757-200"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "757-300"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "767-200"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "767-300"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "767-400"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "777-200"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "777-300"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "A300B4"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "A310"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "A318"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "A319"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "A320"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "A321"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "A330-200"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "A330-300"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "A340-200"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "A340-300"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "A340-500"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "A340-600"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "A380"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "ATR-42"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "ATR-72"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "An-12"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "BAE 146-200"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "BAE 146-300"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "BAE-125"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "Beechcraft 1900"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "Boeing 717"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "C-130"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "C-47"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "CRJ-200"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "CRJ-700"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "CRJ-900"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "Cessna 172"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "Cessna 208"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "Cessna 525"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "Cessna 560"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "Challenger 600"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "DC-10"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "DC-3"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "DC-6"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "DC-8"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "DC-9-30"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "DH-82"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "DHC-1"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "DHC-6"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "DHC-8-100"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "DHC-8-300"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "DR-400"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "Dornier 328"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "E-170"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "E-190"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "E-195"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "EMB-120"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "ERJ 135"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "ERJ 145"
+                },
+                {
+                    "category_id": 70,
+                    "category_name": "Embraer Legacy 600"
+                },
+                {
+                    "category_id": 71,
+                    "category_name": "Eurofighter Typhoon"
+                },
+                {
+                    "category_id": 72,
+                    "category_name": "F-16A/B"
+                },
+                {
+                    "category_id": 73,
+                    "category_name": "F/A-18"
+                },
+                {
+                    "category_id": 74,
+                    "category_name": "Falcon 2000"
+                },
+                {
+                    "category_id": 75,
+                    "category_name": "Falcon 900"
+                },
+                {
+                    "category_id": 76,
+                    "category_name": "Fokker 100"
+                },
+                {
+                    "category_id": 77,
+                    "category_name": "Fokker 50"
+                },
+                {
+                    "category_id": 78,
+                    "category_name": "Fokker 70"
+                },
+                {
+                    "category_id": 79,
+                    "category_name": "Global Express"
+                },
+                {
+                    "category_id": 80,
+                    "category_name": "Gulfstream IV"
+                },
+                {
+                    "category_id": 81,
+                    "category_name": "Gulfstream V"
+                },
+                {
+                    "category_id": 82,
+                    "category_name": "Hawk T1"
+                },
+                {
+                    "category_id": 83,
+                    "category_name": "Il-76"
+                },
+                {
+                    "category_id": 84,
+                    "category_name": "L-1011"
+                },
+                {
+                    "category_id": 85,
+                    "category_name": "MD-11"
+                },
+                {
+                    "category_id": 86,
+                    "category_name": "MD-80"
+                },
+                {
+                    "category_id": 87,
+                    "category_name": "MD-87"
+                },
+                {
+                    "category_id": 88,
+                    "category_name": "MD-90"
+                },
+                {
+                    "category_id": 89,
+                    "category_name": "Metroliner"
+                },
+                {
+                    "category_id": 90,
+                    "category_name": "Model B200"
+                },
+                {
+                    "category_id": 91,
+                    "category_name": "PA-28"
+                },
+                {
+                    "category_id": 92,
+                    "category_name": "SR-20"
+                },
+                {
+                    "category_id": 93,
+                    "category_name": "Saab 2000"
+                },
+                {
+                    "category_id": 94,
+                    "category_name": "Saab 340"
+                },
+                {
+                    "category_id": 95,
+                    "category_name": "Spitfire"
+                },
+                {
+                    "category_id": 96,
+                    "category_name": "Tornado"
+                },
+                {
+                    "category_id": 97,
+                    "category_name": "Tu-134"
+                },
+                {
+                    "category_id": 98,
+                    "category_name": "Tu-154"
+                },
+                {
+                    "category_id": 99,
+                    "category_name": "Yak-42"
+                }
+            ]
+        },
+        {
+            "name": "FGVC Aircraft variant Classification",
+            "type": "classification",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 0,
+                    "category_name": "707-320"
+                },
+                {
+                    "category_id": 1,
+                    "category_name": "727-200"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "737-200"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "737-300"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "737-400"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "737-500"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "737-600"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "737-700"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "737-800"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "737-900"
+                },
+                {
+                    "category_id": 10,
+                    "category_name": "747-100"
+                },
+                {
+                    "category_id": 11,
+                    "category_name": "747-200"
+                },
+                {
+                    "category_id": 12,
+                    "category_name": "747-300"
+                },
+                {
+                    "category_id": 13,
+                    "category_name": "747-400"
+                },
+                {
+                    "category_id": 14,
+                    "category_name": "757-200"
+                },
+                {
+                    "category_id": 15,
+                    "category_name": "757-300"
+                },
+                {
+                    "category_id": 16,
+                    "category_name": "767-200"
+                },
+                {
+                    "category_id": 17,
+                    "category_name": "767-300"
+                },
+                {
+                    "category_id": 18,
+                    "category_name": "767-400"
+                },
+                {
+                    "category_id": 19,
+                    "category_name": "777-200"
+                },
+                {
+                    "category_id": 20,
+                    "category_name": "777-300"
+                },
+                {
+                    "category_id": 21,
+                    "category_name": "A300B4"
+                },
+                {
+                    "category_id": 22,
+                    "category_name": "A310"
+                },
+                {
+                    "category_id": 23,
+                    "category_name": "A318"
+                },
+                {
+                    "category_id": 24,
+                    "category_name": "A319"
+                },
+                {
+                    "category_id": 25,
+                    "category_name": "A320"
+                },
+                {
+                    "category_id": 26,
+                    "category_name": "A321"
+                },
+                {
+                    "category_id": 27,
+                    "category_name": "A330-200"
+                },
+                {
+                    "category_id": 28,
+                    "category_name": "A330-300"
+                },
+                {
+                    "category_id": 29,
+                    "category_name": "A340-200"
+                },
+                {
+                    "category_id": 30,
+                    "category_name": "A340-300"
+                },
+                {
+                    "category_id": 31,
+                    "category_name": "A340-500"
+                },
+                {
+                    "category_id": 32,
+                    "category_name": "A340-600"
+                },
+                {
+                    "category_id": 33,
+                    "category_name": "A380"
+                },
+                {
+                    "category_id": 34,
+                    "category_name": "ATR-42"
+                },
+                {
+                    "category_id": 35,
+                    "category_name": "ATR-72"
+                },
+                {
+                    "category_id": 36,
+                    "category_name": "An-12"
+                },
+                {
+                    "category_id": 37,
+                    "category_name": "BAE 146-200"
+                },
+                {
+                    "category_id": 38,
+                    "category_name": "BAE 146-300"
+                },
+                {
+                    "category_id": 39,
+                    "category_name": "BAE-125"
+                },
+                {
+                    "category_id": 40,
+                    "category_name": "Beechcraft 1900"
+                },
+                {
+                    "category_id": 41,
+                    "category_name": "Boeing 717"
+                },
+                {
+                    "category_id": 42,
+                    "category_name": "C-130"
+                },
+                {
+                    "category_id": 43,
+                    "category_name": "C-47"
+                },
+                {
+                    "category_id": 44,
+                    "category_name": "CRJ-200"
+                },
+                {
+                    "category_id": 45,
+                    "category_name": "CRJ-700"
+                },
+                {
+                    "category_id": 46,
+                    "category_name": "CRJ-900"
+                },
+                {
+                    "category_id": 47,
+                    "category_name": "Cessna 172"
+                },
+                {
+                    "category_id": 48,
+                    "category_name": "Cessna 208"
+                },
+                {
+                    "category_id": 49,
+                    "category_name": "Cessna 525"
+                },
+                {
+                    "category_id": 50,
+                    "category_name": "Cessna 560"
+                },
+                {
+                    "category_id": 51,
+                    "category_name": "Challenger 600"
+                },
+                {
+                    "category_id": 52,
+                    "category_name": "DC-10"
+                },
+                {
+                    "category_id": 53,
+                    "category_name": "DC-3"
+                },
+                {
+                    "category_id": 54,
+                    "category_name": "DC-6"
+                },
+                {
+                    "category_id": 55,
+                    "category_name": "DC-8"
+                },
+                {
+                    "category_id": 56,
+                    "category_name": "DC-9-30"
+                },
+                {
+                    "category_id": 57,
+                    "category_name": "DH-82"
+                },
+                {
+                    "category_id": 58,
+                    "category_name": "DHC-1"
+                },
+                {
+                    "category_id": 59,
+                    "category_name": "DHC-6"
+                },
+                {
+                    "category_id": 60,
+                    "category_name": "DHC-8-100"
+                },
+                {
+                    "category_id": 61,
+                    "category_name": "DHC-8-300"
+                },
+                {
+                    "category_id": 62,
+                    "category_name": "DR-400"
+                },
+                {
+                    "category_id": 63,
+                    "category_name": "Dornier 328"
+                },
+                {
+                    "category_id": 64,
+                    "category_name": "E-170"
+                },
+                {
+                    "category_id": 65,
+                    "category_name": "E-190"
+                },
+                {
+                    "category_id": 66,
+                    "category_name": "E-195"
+                },
+                {
+                    "category_id": 67,
+                    "category_name": "EMB-120"
+                },
+                {
+                    "category_id": 68,
+                    "category_name": "ERJ 135"
+                },
+                {
+                    "category_id": 69,
+                    "category_name": "ERJ 145"
+                },
+                {
+                    "category_id": 70,
+                    "category_name": "Embraer Legacy 600"
+                },
+                {
+                    "category_id": 71,
+                    "category_name": "Eurofighter Typhoon"
+                },
+                {
+                    "category_id": 72,
+                    "category_name": "F-16A/B"
+                },
+                {
+                    "category_id": 73,
+                    "category_name": "F/A-18"
+                },
+                {
+                    "category_id": 74,
+                    "category_name": "Falcon 2000"
+                },
+                {
+                    "category_id": 75,
+                    "category_name": "Falcon 900"
+                },
+                {
+                    "category_id": 76,
+                    "category_name": "Fokker 100"
+                },
+                {
+                    "category_id": 77,
+                    "category_name": "Fokker 50"
+                },
+                {
+                    "category_id": 78,
+                    "category_name": "Fokker 70"
+                },
+                {
+                    "category_id": 79,
+                    "category_name": "Global Express"
+                },
+                {
+                    "category_id": 80,
+                    "category_name": "Gulfstream IV"
+                },
+                {
+                    "category_id": 81,
+                    "category_name": "Gulfstream V"
+                },
+                {
+                    "category_id": 82,
+                    "category_name": "Hawk T1"
+                },
+                {
+                    "category_id": 83,
+                    "category_name": "Il-76"
+                },
+                {
+                    "category_id": 84,
+                    "category_name": "L-1011"
+                },
+                {
+                    "category_id": 85,
+                    "category_name": "MD-11"
+                },
+                {
+                    "category_id": 86,
+                    "category_name": "MD-80"
+                },
+                {
+                    "category_id": 87,
+                    "category_name": "MD-87"
+                },
+                {
+                    "category_id": 88,
+                    "category_name": "MD-90"
+                },
+                {
+                    "category_id": 89,
+                    "category_name": "Metroliner"
+                },
+                {
+                    "category_id": 90,
+                    "category_name": "Model B200"
+                },
+                {
+                    "category_id": 91,
+                    "category_name": "PA-28"
+                },
+                {
+                    "category_id": 92,
+                    "category_name": "SR-20"
+                },
+                {
+                    "category_id": 93,
+                    "category_name": "Saab 2000"
+                },
+                {
+                    "category_id": 94,
+                    "category_name": "Saab 340"
+                },
+                {
+                    "category_id": 95,
+                    "category_name": "Spitfire"
+                },
+                {
+                    "category_id": 96,
+                    "category_name": "Tornado"
+                },
+                {
+                    "category_id": 97,
+                    "category_name": "Tu-134"
+                },
+                {
+                    "category_id": 98,
+                    "category_name": "Tu-154"
+                },
+                {
+                    "category_id": 99,
+                    "category_name": "Yak-42"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "train": [
+            {
+                "media_type": "image",
+                "media_num": 3334,
+                "annotated_media_num": 3334
+            }
+        ],
+        "test": [
+            {
+                "media_type": "image",
+                "media_num": 3333,
+                "annotated_media_num": 3333
+            }
+        ],
+        "val": [
+            {
+                "media_type": "image",
+                "media_num": 3333,
+                "annotated_media_num": 3333
+            }
+        ]
+    }
+}

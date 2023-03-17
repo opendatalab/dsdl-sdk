@@ -1,0 +1,65 @@
+{
+    "dataset_name": "KITTIObject-Original",
+    "protocol_version": "v0.3rc3",
+    "tasks": [
+        {
+            "name": "KITTI Object Detection",
+            "type": "box2d",
+            "source": "annotated",
+            "catalog": [
+                {
+                    "category_id": 1,
+                    "category_name": "Car"
+                },
+                {
+                    "category_id": 2,
+                    "category_name": "Van"
+                },
+                {
+                    "category_id": 3,
+                    "category_name": "Truck"
+                },
+                {
+                    "category_id": 4,
+                    "category_name": "Pedestrian"
+                },
+                {
+                    "category_id": 5,
+                    "category_name": "Person_sitting"
+                },
+                {
+                    "category_id": 6,
+                    "category_name": "Cyclist"
+                },
+                {
+                    "category_id": 7,
+                    "category_name": "Tram"
+                },
+                {
+                    "category_id": 8,
+                    "category_name": "Misc"
+                },
+                {
+                    "category_id": 9,
+                    "category_name": "DontCare"
+                }
+            ]
+        }
+    ],
+    "statistics": {
+        "training": [
+            {
+                "media_type": "image",
+                "media_num": 7481,
+                "annotated_media_num": 7481
+            }
+        ],
+        "testing": [
+            {
+                "media_type": "image",
+                "media_num": 7518,
+                "annotated_media_num": 0
+            }
+        ]
+    }
+}

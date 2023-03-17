@@ -27,7 +27,7 @@ setup(
     author="DSDL team",
     author_email="dsdl-team@pjlab.org.cn",
     packages=find_packages(),
-    package_data={},
+    package_data={"dsdl": ["geometry/source/Arial_Font.ttf"]},
     include_package_data=True,
     install_requires=[
         "pyyaml>=6.0",
@@ -37,6 +37,10 @@ setup(
         "oss2>=2.15.0",
         "prettytable>=3.3.0",
         "opencv-python>=4.6.0.66",
+        "jsonmodels==2.6.0",
+        "environs==9.5.0",
+        "oss2==2.16.0",
+        "pylint>=2.15.5",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",

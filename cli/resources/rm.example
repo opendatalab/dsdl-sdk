@@ -1,0 +1,4 @@
+    01. permanentaly remove all the data including media files and annotation.
+        $%(prog)s openmmlab/Openlane
+    02. delete dataset without confirmation.
+        $%(prog)s -y openmmlab/Openlane

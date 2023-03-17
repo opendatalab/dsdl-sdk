@@ -1,0 +1,17 @@
+  01. show all the available keys
+      $%(prog)s -k
+  02. show exist configurations
+      $%(prog)s -l
+  03. show exist configurations and expand
+      $%(prog)s -ll
+  04. set repo configurations
+      $%(prog)s repo --repo-name PJLAB --repo-username odl-dev --repo-userpswd 123456 \
+      --repo-service http://10.12.13.14
+  05. remove repo configurations
+      $%(prog)s repo --repo-name PJLAB --repo-remove
+  06. set storage configurations
+      $%(prog)s storage --storage-name myremoteS3 --storage-path s3://mydata/datasets/CIFAR \
+      --storage-credentials myaccesskey mysecret --storage-endpoint http://123.456.678
+  07. remove storage configurations
+      $%(prog)s storage -storage-name myremoteS3 --storage-path s3://mydata/datasets/CIFAR \
+      --storage-remove

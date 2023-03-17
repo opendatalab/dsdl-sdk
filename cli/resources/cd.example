@@ -1,0 +1,2 @@
+  01. cd a dataset
+      $%(prog)s CIFAR-10

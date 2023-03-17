@@ -39,3 +39,7 @@ class ImageMedia(BaseGeometry):
 
     def __repr__(self):
         return f"path:{self.location}"
+
+    @property
+    def field_key(self):
+        return "Image"

@@ -1,0 +1,6 @@
+  01. show all the local datasets
+      $%(prog)s
+  02. show without header
+      $%(prog)s -s
+  03. show in verbose mode
+      $%(prog)s -v

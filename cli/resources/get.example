@@ -1,0 +1,10 @@
+01  download a full dataset
+    $%(prog)s CIFAR-10
+02  download a split of a dataset
+    $%(prog)s CIFAR-10 --split train
+03  only download label data of a split of dataset
+    $%(prog)s CIFAR-10 --split train --label
+04  only download label data of a dataset
+    $%(prog)s CIFAR-10 --label
+05  download to given local storage (set storage by config command)
+    $%(prog)s CIFAR-10 --output default

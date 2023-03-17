@@ -1,0 +1,491 @@
+{
+    "sub_dataset_name": "test",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000002041.jpg",
+                "source": "jpg/image_06742.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 553
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002043",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002044.jpg",
+                "source": "jpg/image_06745.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 609
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002045",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002043.jpg",
+                "source": "jpg/image_06735.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002041",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002042.jpg",
+                "source": "jpg/image_06737.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 595
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002042",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002046.jpg",
+                "source": "jpg/image_06743.jpg",
+                "type": "image",
+                "height": 601,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002044",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002040.jpg",
+                "source": "jpg/image_06734.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 523
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002040",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002045.jpg",
+                "source": "jpg/image_06746.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 524
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002046",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002049.jpg",
+                "source": "jpg/image_06752.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 692
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002049",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002050.jpg",
+                "source": "jpg/image_06753.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 561
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002050",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002052.jpg",
+                "source": "jpg/image_06757.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 516
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002052",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002051.jpg",
+                "source": "jpg/image_06756.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002051",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002048.jpg",
+                "source": "jpg/image_06748.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 556
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002047",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002053.jpg",
+                "source": "jpg/image_06759.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002054",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002047.jpg",
+                "source": "jpg/image_06751.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002048",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002055.jpg",
+                "source": "jpg/image_06758.jpg",
+                "type": "image",
+                "height": 750,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002053",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002054.jpg",
+                "source": "jpg/image_06760.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 840
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002055",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002057.jpg",
+                "source": "jpg/image_06772.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002059",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002058.jpg",
+                "source": "jpg/image_06769.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 754
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002057",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002056.jpg",
+                "source": "jpg/image_06764.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 667
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002056",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002060.jpg",
+                "source": "jpg/image_05087.jpg",
+                "type": "image",
+                "height": 578,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002060",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002059.jpg",
+                "source": "jpg/image_05088.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002061",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002061.jpg",
+                "source": "jpg/image_05089.jpg",
+                "type": "image",
+                "height": 616,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002062",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002062.jpg",
+                "source": "jpg/image_05090.jpg",
+                "type": "image",
+                "height": 613,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002063",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002063.jpg",
+                "source": "jpg/image_06770.jpg",
+                "type": "image",
+                "height": 500,
+                "width": 666
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002058",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002064.jpg",
+                "source": "jpg/image_05094.jpg",
+                "type": "image",
+                "height": 521,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002066",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002067.jpg",
+                "source": "jpg/image_05099.jpg",
+                "type": "image",
+                "height": 749,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002070",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000002065.jpg",
+                "source": "jpg/image_05092.jpg",
+                "type": "image",
+                "height": 625,
+                "width": 500
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000002064",
+                    "name": "Oxford 102 Flower Classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        }
+    ]
+}

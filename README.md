@@ -1,13 +1,8 @@
 <div align="center">
-  <img src="resources/opendatalab.svg" width="600"/>
+  <img src="https://raw.githubusercontent.com/opendatalab/dsdl-sdk/2ae5264a7ce1ae6116720478f8fa9e59556bed41/resources/opendatalab.svg" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
-    <b><font size="5">OpenDataLab website</font></b>
-    <sup>
-      <a href="https://opendatalab.com/">
-        <i><font size="4">HOT</font></i>
-      </a>
-    </sup>
+    <a href="https://opendatalab.com/"> OpenDataLab Website</a>
     &nbsp;&nbsp;&nbsp;&nbsp;
   </div>
   <div>&nbsp;</div>
@@ -15,9 +10,9 @@
 
 English | [简体中文](README_zh-CN.md)
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dsdl) ](https://pypi.org/project/dsdl/)[![PyPI](https://img.shields.io/pypi/v/dsdl)](https://pypi.org/project/dsdl) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://opendatalab.github.io/dsdl-docs/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/odl-cli) ](https://pypi.org/project/odl-cli/)[![PyPI](https://img.shields.io/pypi/v/odl-cli)](https://pypi.org/project/odl-cli/) [![docs](https://img.shields.io/badge/docs-latest-blue)](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs)[![dev workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/dev.yml)[![stage & preview workflow](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml/badge.svg?branch=dev)](https://github.com/opendatalab/dsdl-sdk/actions/workflows/preview.yml)
 
-[📘Documentation](https://opendatalab.github.io/dsdl-docs/) |
+[📘Documentation](https://github.com/opendatalab/dsdl-sdk/tree/dev-cli/docs) |
 
 ## Introduction
 
@@ -96,16 +91,16 @@ ali_oss = dict(
 
 The description of each argument is shown below:  
 
-| simplified  argument | argument      | description                                                  |
-| -------------------- | ------------- | :----------------------------------------------------------- |
-| -y                   | `--yaml`      | The path of dsdl yaml file.                                  |
-| -c                   | `--config`    | The path of  location configuration file.                    |
-| -l                   | `--location`  | `local` or `ali-oss`，which means read media from local or aliyun oss. |
-| -n                   | `--num`       | The number of samples to be visualized.                      |
-| -r                   | `--random`    | Whether to load the samples in a random order.               |
-| -v                   | `--visualize` | Whether to visualize the samples or just print the information in console. |
+| simplified  argument | argument      | description                                                                                                                                                                                                                                        |
+| -------------------- | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -y                   | `--yaml`      | The path of dsdl yaml file.                                                                                                                                                                                                                        |
+| -c                   | `--config`    | The path of  location configuration file.                                                                                                                                                                                                          |
+| -l                   | `--location`  | `local` or `ali-oss`，which means read media from local or aliyun oss.                                                                                                                                                                             |
+| -n                   | `--num`       | The number of samples to be visualized.                                                                                                                                                                                                            |
+| -r                   | `--random`    | Whether to load the samples in a random order.                                                                                                                                                                                                     |
+| -v                   | `--visualize` | Whether to visualize the samples or just print the information in console.                                                                                                                                                                         |
 | -f                   | `--field`     | The field type to visualize, e.g. `-f BBox`means show the bounding box in samples, `-f Attributes`means show the attributes of a sample in the console . One can specify multiple field types simultaneously, such as `-f Label BBox  Attributes`. |
-| -t                   | `--task`      | The task you are working on, for example, `-t detection` is equivalent to `-f Label BBox Polygon Attributes`. |
+| -t                   | `--task`      | The task you are working on, for example, `-t detection` is equivalent to `-f Label BBox Polygon Attributes`.                                                                                                                                      |
 
 ## Citation
 

@@ -1,0 +1,4 @@
+  01. select and export a new dataset split
+      $%(prog)s CIFAR-10 --split train --filter "label='automobile'" --limit 1000 --export-name example
+  02. select 10 items from train split and show to console
+      $%(prog)s CIFAR-10 --split train --limit 10

@@ -6,7 +6,7 @@ from ..exception import ValidationError
 class BoolField(Field):
     def validate(self, value):
         if value not in [True, False]:
-            raise ValidationError(f"expect True/False, got {value}")
+            raise ValidationError(f"BoolField Error: expect True/False, got {value}")
         return value
 
 
@@ -15,7 +15,7 @@ class IntField(Field):
         try:
             return int(value)
         except (ValueError, TypeError) as _:
-            raise ValidationError(f"expect int, got {value}")
+            raise ValidationError(f"IntField Error: expect int, got {value}")
 
 
 class NumField(Field):
@@ -23,7 +23,7 @@ class NumField(Field):
         try:
             return float(value)
         except (ValueError, TypeError) as _:
-            raise ValidationError(f"expect num, got {value}")
+            raise ValidationError(f"NumField Error: expect num, got {value}")
 
 
 class StrField(Field):
@@ -31,7 +31,7 @@ class StrField(Field):
         try:
             return "" + value
         except TypeError as _:
-            raise ValidationError(f"expect str, got {value}")
+            raise ValidationError(f"StrField Error: expect str value, got {value}")
 
 
 class ListField(Field):
@@ -39,16 +39,53 @@ class ListField(Field):
         self.ordered = ordered
         self.ele_type = ele_type
         self.file_reader = None
+        self.prefix = None
+        self.flatten_dic = None
+        self.lazy_init = False
         super().__init__(*args, **kwargs)
 
     def validate(self, value):
         if hasattr(self.ele_type, "set_file_reader"):
             self.ele_type.set_file_reader(self.file_reader)
         if isinstance(self.ele_type, Field):
-            value = [self.ele_type.validate(item) for item in value]
+            if self.prefix is not None and self.flatten_dic is not None:
+                field_key = self.ele_type.extract_key()
+                field_dic = self.flatten_dic.setdefault(field_key, {})
+                res = [self.ele_type.validate(_) for _ in value]
+                paths = [f"{self.prefix}/{ind}" for ind in range(len(res))]
+                _ = [field_dic.update({k: v}) for k, v in zip(paths, res)]
+            else:
+                res = [self.ele_type.validate(_) for _ in value]
+
         elif isinstance(self.ele_type, Struct):
-            value = [self.ele_type.__class__(file_reader=self.file_reader, **item) for item in value]
-        return value
+            res = [
+                self.ele_type.__class__(
+                    file_reader=self.file_reader,
+                    prefix=f"{self.prefix}/{i}",
+                    flatten_dic=self.flatten_dic,
+                    lazy_init=self.lazy_init, **item)
+                for i, item in enumerate(value)
+            ]
+        else:
+            raise ValidationError(
+                f"Wrong ele_type in ListField, only 'Struct' or 'Field' are permitted, but got '{type(self.ele_type)}'")
+        return res
 
     def set_file_reader(self, file_reader):
         self.file_reader = file_reader
+
+    def set_prefix(self, prefix):
+        self.prefix = prefix
+
+    def set_flatten_dic(self, dic):
+        self.flatten_dic = dic
+
+    def set_lazy_init(self, value):
+        self.lazy_init = value
+
+
+class DictField(Field):
+    def validate(self, value):
+        if not isinstance(value, dict):
+            raise ValidationError(f"DictField Error: expect dict value, got {value.__class__}")
+        return value

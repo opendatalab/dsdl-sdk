@@ -2,6 +2,8 @@ from dsdl.exception import DefineSyntaxError, DefineTypeError
 from .utils import *
 from dataclasses import dataclass
 from typing import Optional, Set
+import warnings
+from dsdl.warning import DefineSyntaxWarning
 
 
 @dataclass()
@@ -16,6 +18,9 @@ class ParserField:
         self.TYPES_TIME = TYPES_TIME
         self.TYPES_LABEL = TYPES_LABEL
         self.TYPES_LIST = TYPES_LIST
+        self.TYPES_IMAGE_SHAPE = TYPES_IMAGE_SHAPE
+        self.TYPES_ROTATED_BBOX = TYPES_ROTATED_BBOX
+        self.TYPES_UNIQUE_ID = TYPES_UNIQUE_ID
         self.TYPES_ALL = TYPES_ALL
         self.is_attr = set()
         self.optional = set()
@@ -48,17 +53,23 @@ class ParserField:
                     return "False"
             else:
                 raise DefineSyntaxError(
-                    f"invalid value {val} in ordered of {field_type}: {','.join(param_list)}."
+                    f"invalid value {val} in `ordered` of `{field_type}` field: check the '{','.join(param_list)}'."
                 )
 
         ele_type, ordered = None, None
         if len(param_list) == 2:
-            ele_type = param_list[0].strip()
-            ordered = param_list[1].strip()
+            if param_list[0].strip().startswith("etype"):
+                ele_type = param_list[0].strip()
+                ordered = param_list[1].strip()
+            elif param_list[1].strip().startswith("etype"):
+                ordered = param_list[0].strip()
+                ele_type = param_list[1].strip()
+            else:
+                raise DefineSyntaxError(f"invalid parameters {param_list} in List.")
         elif len(param_list) == 1:
             ele_type = param_list[0].strip()
         else:
-            raise DefineSyntaxError(f"invalid parameters {param_list} in List.")
+            raise DefineSyntaxError(f"Invalid parameters {param_list} in List field.")
 
         if ele_type.startswith("etype"):
             # if ele_type like "etype=LocalObjectEntry[cdom=$objectdom]", split by "="
@@ -67,12 +78,12 @@ class ParserField:
             if len(ele_type) == 2:
                 if ele_type[0].strip() != "etype":
                     raise DefineSyntaxError(
-                        f"List types must contains parameters `etype`."
+                        f"List field must contain parameter `etype`."
                     )
                 ele_type = ele_type[1].strip()
             else:
                 raise DefineSyntaxError(
-                    f"invalid parameters {', '.join(param_list)} in {field_type}."
+                    f"Invalid parameters {', '.join(param_list)} in {field_type} field."
                 )
 
         res = field_type + "Field("
@@ -80,7 +91,7 @@ class ParserField:
             ele_type = sanitize_etype(ele_type)
             res += "ele_type=" + ele_type
         else:
-            raise DefineSyntaxError(f"List types must contains parameters `etype`.")
+            raise DefineSyntaxError(f"List field must contain parameter `etype`.")
         if ordered:
             ordered = ordered.split("=")[-1]
             ordered = sanitize_ordered(ordered)
@@ -102,29 +113,220 @@ class ParserField:
             return f'"{val}"'
 
         param_dict = dict()
-        for param in param_list:
-            parts = param.split("=")
-            parts = [i.strip() for i in parts]
-            # 需要考虑参数省略的情况，因为dom经常省略
-            if len(parts) == 2:
-                field_para = parts[0]
-                field_var = parts[1]
-            elif len(parts) == 1:
-                field_para = "fmt"
-                field_var = parts[0]
-            else:
-                raise DefineSyntaxError(f"invalid parameters {param} in {field_type}.")
+        if not param_list:
+            warnings.warn(
+                f"basic type `{field_type}` not contains fmt, we use ISO 8601 format by default.",
+                DefineSyntaxWarning,
+            )
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为dom经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "fmt"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type} field."
+                    )
 
-            if field_para != "fmt":
+                if field_para != "fmt":
+                    raise DefineSyntaxError(
+                        f"invalid parameters {field_para} in {field_type} field."
+                    )
+
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type} field.")
+                else:
+                    param_dict[field_para] = sanitize_fmt(field_var)
+
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
+
+    @staticmethod
+    def parse_image_shape_field(field_type: str, param_list: List[str]) -> str:
+        """
+        解析处理ImageShape类型的field
+        """
+
+        def sanitize_mode(val: str) -> str:
+            """
+            ImageShape中对mode部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            val = val.strip("\"'")
+            temp = ["hw", "wh"]
+            if val in temp:
+                return f'"{val}"'
+            raise DefineSyntaxError(
+                f"""invalid parameters value "{val}" of `mode` in `{field_type}` field, """
+                f"""`mode` value must be one of ["{'", "'.join(temp)}"]."""
+            )
+
+        param_dict = dict()
+        if not param_list:
+            param_dict["mode"] = sanitize_mode("hw")
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为mode经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "mode"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type} field."
+                    )
+
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type} field.")
+                else:
+                    if field_para == "mode":
+                        param_dict[field_para] = sanitize_mode(field_var)
+                    else:
+                        raise DefineSyntaxError(
+                            f"invalid parameters '{field_para}' in {field_type} field."
+                        )
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
+
+    @staticmethod
+    def parse_rotated_bbox_field(field_type: str, param_list: List[str]) -> str:
+        """
+        解析处理RotatedBBox类型的field
+        """
+
+        def sanitize_mode(val: str) -> str:
+            """
+            RotatedBBox中对mode部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            val = val.strip("\"'")
+            temp = ["xywht", "xyxy"]
+            if val in temp:
+                return f'"{val}"'
+            raise DefineSyntaxError(
+                f"""invalid parameters value "{val}" of `mode` in `{field_type}` field, """
+                f"""`mode` value must be one of ["{'", "'.join(temp)}"]."""
+            )
+
+        def sanitize_measure(val: str) -> str:
+            """
+            RotatedBBox中对measure部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            val = val.strip("\"'")
+            temp = ["degree", "radian"]
+            if val in temp:
+                return f'"{val}"'
+            raise DefineSyntaxError(
+                f"""invalid parameters value "{val}" of `measure` in `{field_type}` field, """
+                f"""`measure` value must be one of ["{'", "'.join(temp)}"]."""
+            )
+
+        param_dict = dict()
+        if not param_list:
+            param_dict["mode"] = sanitize_mode("xywht")
+            param_dict["measure"] = sanitize_measure("radian")
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为mode经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "mode"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type} field."
+                    )
+
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type} field.")
+                else:
+                    if field_para == "mode":
+                        param_dict[field_para] = sanitize_mode(field_var)
+                    elif field_para == "measure":
+                        param_dict[field_para] = sanitize_measure(field_var)
+                    else:
+                        raise DefineSyntaxError(
+                            f"invalid parameters '{field_para}' in {field_type} field."
+                        )
+        return (
+            field_type
+            + "Field("
+            + ", ".join([f"{k}={v}" for k, v in param_dict.items()])
+            + ")"
+        )
+
+    @staticmethod
+    def parse_unique_id_field(field_type: str, param_list: List[str]) -> str:
+        """
+        解析处理ImageShape类型的field
+        """
+
+        def sanitize_id_type(val: str) -> str:
+            """
+            UniqueID中对id_type部分的校验，是用来严格限制特定格式或者字符。
+            防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
+            """
+            try:
+                val = str(val)
+                val = val.strip("\"'")
+            except NameError:
                 raise DefineSyntaxError(
-                    f"invalid parameters {field_para} in {field_type}."
+                    f"""invalid parameters value "{val}" of `id_type` in `{field_type}` field, """
+                    f"""`id_type` value must be a string."""
                 )
+            return f'"{val}"'
 
-            if field_para in param_dict:
-                raise ValueError(f"duplicated param {param} in {field_type}.")
-            else:
-                param_dict[field_para] = sanitize_fmt(field_var)
+        param_dict = dict()
+        if not param_list:
+            param_dict["id_type"] = sanitize_id_type("None")
+        else:
+            for param in param_list:
+                parts = param.split("=")
+                parts = [i.strip() for i in parts]
+                # 需要考虑参数省略的情况，因为mode经常省略
+                if len(parts) == 2:
+                    field_para = parts[0]
+                    field_var = parts[1]
+                elif len(parts) == 1:
+                    field_para = "id_type"
+                    field_var = parts[0]
+                else:
+                    raise DefineSyntaxError(
+                        f"invalid parameters {param} in {field_type} field."
+                    )
 
+                if field_para in param_dict:
+                    raise ValueError(f"duplicated param {param} in {field_type} field.")
+                else:
+                    if field_para == "id_type":
+                        param_dict[field_para] = sanitize_id_type(field_var)
+                    else:
+                        raise DefineSyntaxError(
+                            f"invalid parameters '{field_para}' in {field_type} field."
+                        )
         return (
             field_type
             + "Field("
@@ -143,13 +345,23 @@ class ParserField:
             Label中对dom部分的校验，是用来严格限制特定格式或者字符。
             防止yaml里有一些异常代码注入到生成的Python 代码里被执行起来。
             """
-            if not val.isidentifier():
-                raise DefineSyntaxError(f"invalid dom: {val}")
+            if re.search(r"^\[[\w\s,]+\]$", val):
+                temp = re.findall(r"^\[(.*)\]$", val)
+                p_list = re.split(r",\s*(?![^\[]*\])", temp[0])
+                for p in p_list:
+                    p = p.strip()
+                    if not p.isidentifier():
+                        raise DefineSyntaxError(
+                            f"invalid `dom` in List field: `{val}`, for `{p}` in `{val}` is illegal."
+                        )
+            else:
+                if not val.isidentifier():
+                    raise DefineSyntaxError(f"invalid dom: `{val}` in List field")
             return val
 
         param_dict = dict()
         if not param_list:
-            raise DefineSyntaxError(f"{field_type} must contains parameter `dom`")
+            raise DefineSyntaxError(f"{field_type} field must contain parameter `dom`")
         for param in param_list:
             parts = param.split("=")
             parts = [i.strip() for i in parts]
@@ -162,15 +374,15 @@ class ParserField:
                 field_var = parts[0]
             else:
                 raise DefineSyntaxError(
-                    f"invalid parameters {param_list} in {field_type}."
+                    f"invalid parameters {param_list} in {field_type} field."
                 )
             if field_para != "dom":
                 raise DefineSyntaxError(
-                    f"invalid parameters {field_para} in {field_type}."
+                    f"invalid parameters {field_para} in {field_type} field."
                 )
 
             if field_para in param_dict:
-                raise ValueError(f"duplicated param {param} in {field_type}.")
+                raise ValueError(f"duplicated param {param} in {field_type} field.")
             else:
                 param_dict[field_para] = sanitize_dom(field_var)
 
@@ -196,13 +408,17 @@ class ParserField:
             # 不带参数的不需要校验，直接可以转化为python代码（注意区分yaml中的模型部分到ORM的校验和通过ORM读入数据的校验，
             # 后者在dataset.py中定义，你脑子里想的Int也需要校验是数据的校验。）
             if params_list:
-                raise DefineSyntaxError(f"{field_type} should not contains parameters.")
+                raise DefineSyntaxError(
+                    f"{field_type} should not contain parameters besides [1.optional 2. is_attr]."
+                )
             field_type = field_type + "Field()"
         elif field_type in self.TYPES_LIST:
             # 带参数的List类型的字段的校验
             # （因为List类型比较特殊，里面可以包含List，Label等各种其他字段，涉及递归，所以单独拿出来）
             if not params_list:
-                raise DefineSyntaxError(f"{field_type} must contains parameters.")
+                raise DefineSyntaxError(
+                    f"{field_type} must contain parameters in addition to [1.optional 2. is_attr]."
+                )
             field_type = self.parse_list_filed(field_type, params_list)
         elif field_type in self.TYPES_TIME:
             # 带参数的Date, Time类型的字段的校验
@@ -210,10 +426,19 @@ class ParserField:
         elif field_type in self.TYPES_LABEL:
             # 带参数的Label,SegMap类型的字段的校验
             field_type = self.parse_label_field(field_type, params_list)
+        elif field_type in self.TYPES_IMAGE_SHAPE:
+            # 带参数的ImageShape类型的字段的校验
+            field_type = self.parse_image_shape_field(field_type, params_list)
+        elif field_type in self.TYPES_ROTATED_BBOX:
+            # 带参数的RotatedBBox类型的字段的校验
+            field_type = self.parse_rotated_bbox_field(field_type, params_list)
+        elif field_type in self.TYPES_UNIQUE_ID:
+            # 带参数的RotatedBBox类型的字段的校验
+            field_type = self.parse_unique_id_field(field_type, params_list)
         else:
             # Struct类型的字段的校验
             if field_type not in self.struct:
-                raise DefineTypeError(f"No type {field_type} in DSDL.")
+                raise DefineTypeError(f"No type `{field_type}` in DSDL.")
             field_type = field_type + "()"
         if attr_flag:
             field_type = add_key_value_2_struct_field(field_type, "is_attr", True)
@@ -228,7 +453,7 @@ class ParserField:
         raw_field_type = raw_field_type.strip()
         fixed_params = re.findall(r"\[(.*)\]", raw_field_type)
         if len(fixed_params) >= 2:
-            raise DefineSyntaxError(f"Error in definition of {raw_field_type} in DSDL.")
+            raise DefineSyntaxError(f"Error in field with value of `{raw_field_type}`.")
         elif len(fixed_params) == 0:
             field_type = self.parse_field(field_type=raw_field_type)
         else:
@@ -241,16 +466,28 @@ class ParserField:
             other_filed = set()
             attr_flag, optional_flag = False, False
             for k_v in k_v_list:
-                if k_v.replace(" ", "") == "is_attr=True":
-                    if field_name:
-                        self.is_attr.add(field_name)
+                k_v_temp = k_v.replace(" ", "")
+                if not check_is_bracket_pair(k_v_temp):
+                    raise DefineSyntaxError(
+                        f"Error in field with value of `{raw_field_type}`. Check the `{k_v}` part."
+                    )
+                if k_v_temp.startswith(("is_attr=", "optional=")):
+                    if k_v_temp == "is_attr=True":
+                        if field_name:
+                            self.is_attr.add(field_name)
+                        else:
+                            attr_flag = True
+                    elif k_v_temp == "optional=True":
+                        if field_name:
+                            self.optional.add(field_name)
+                        else:
+                            optional_flag = True
+                    elif k_v_temp in ["optional=False", "is_attr=False"]:
+                        pass
                     else:
-                        attr_flag = True
-                elif k_v.replace(" ", "") == "optional=True":
-                    if field_name:
-                        self.optional.add(field_name)
-                    else:
-                        optional_flag = True
+                        raise DefineSyntaxError(
+                            f"Error in field with value of {raw_field_type}: check format of `optional` and `is_attr`."
+                        )
                 else:
                     other_filed.add(k_v)
             field_type = self.parse_field(

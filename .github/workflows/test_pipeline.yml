@@ -1,0 +1,43 @@
+name: 'run test pipeline'
+
+#on:
+#  push:
+#    branches: [ sherry_dev , dev-alg ]
+#  pull_request:
+#    branches: [ dev-alg ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Run in all these versions of Python
+        python-version: [ "3.8", "3.9", "3.10" ]
+
+    steps:
+        # Checkout the latest code from the repo
+      - name: Checkout
+        uses: actions/checkout@v3
+        # Setup which version of Python to use
+      - name: Set Up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+        # Display the Python version being used
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+        # Install the package using the setup.py
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          poetry env use system
+          poetry install --with test
+        # Run the tests. I'm using pytest and the file is in the tests directory.
+      - name: Run tests
+        env:
+          ALI_OSS_DICT: ${{ secrets.ALI_OSS_DICT }}
+        run: |
+          cd dsdl/test
+          poetry run pytest test_pipeline.py::TestPipe

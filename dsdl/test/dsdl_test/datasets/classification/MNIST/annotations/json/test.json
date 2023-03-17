@@ -1,0 +1,311 @@
+{
+    "sub_dataset_name": "test",
+    "samples": [
+        {
+            "media": {
+                "path": "media/000000000000.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000000",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 7
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000009.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000006",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000001.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000007",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000002.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000003",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000008.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000002",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000004.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000008",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000005.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000004",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 4
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000007.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000005",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000003.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000009",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000006.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000001",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 2
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000012.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000012",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000016.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000016",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 9
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000011.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000011",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 6
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000015.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000015",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 5
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000014.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000014",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 1
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000018.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000018",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 3
+                }
+            ]
+        },
+        {
+            "media": {
+                "path": "media/000000000013.png",
+                "source": "/mnt/datasets/demo/MNIST/t10k-images-idx3-ubyte",
+                "type": "image",
+                "height": 28,
+                "width": 28
+            },
+            "ground_truth": [
+                {
+                    "ann_id": "000000000013",
+                    "name": "MNIST image classification",
+                    "type": "classification",
+                    "source": "annotated",
+                    "category_id": 0
+                }
+            ]
+        }
+    ]
+}

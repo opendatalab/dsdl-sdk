@@ -1,11 +1,6 @@
 class Field:
-    def __init__(self, is_attr=False, optional=False):
-        self._is_attr = is_attr
+    def __init__(self, optional=False):
         self._optional = optional
-
-    @property
-    def is_attr(self):
-        return self._is_attr
 
     @property
     def is_optional(self):
@@ -19,3 +14,8 @@ class Field:
         Validate value and raise ValidationError if necessary.
         """
         return value
+
+    @classmethod
+    def extract_key(cls):
+        field_cls_name = cls.__name__
+        return "$" + field_cls_name.replace("Field", "").lower()

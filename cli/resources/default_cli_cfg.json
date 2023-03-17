@@ -1,0 +1,14 @@
+{
+    "repo": {
+        "central": {
+            "user": "readonly",
+            "passwd": "readonly",
+            "service": " http://10.140.0.94:9800"
+        }
+    },
+    "storage": {
+        "default": {
+            "path": "~/.dsdl/datasets"
+        }
+    }
+}

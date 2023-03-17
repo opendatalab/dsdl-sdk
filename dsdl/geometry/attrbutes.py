@@ -1,5 +1,6 @@
 from .base_geometry import BaseGeometry
 
+
 class Attributes(BaseGeometry):
     def __init__(self, **kwargs):
         self.container = {}
@@ -23,3 +24,7 @@ class Attributes(BaseGeometry):
 
     def __repr__(self):
         return self.container.__repr__()
+
+    @property
+    def field_key(self):
+        return "Attributes"

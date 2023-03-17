@@ -1,0 +1,49 @@
+repos:
+#  - repo: https://github.com/PyCQA/flake8
+#    rev: 5.0.4
+#    hooks:
+#      - id: flake8
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks: # https://pre-commit.com/hooks.html
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.9.0
+    hooks:
+      - id: python-use-type-annotations
+
+  - repo: https://github.com/chengzhang/google-python-style-precommit-hook.git
+    rev: 0f10b46c22c8c389ce6bc16d71a18c03c74d160c
+    hooks:
+      - id: google-python-style
+
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args: [ "--diff" ]
+
+        #-   repo: https://github.com/google/pre-commit-tool-hooks
+        #    rev: v1.2.2 # Use the rev you want to point at.
+        #    hooks:
+        #    -   id: check-copyright
+      #    -   id: check-google-doc-style
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.0
+    hooks:
+      - id: isort
+        files: "\\.(py)$"
+        args: [ --settings-path=isort.toml ]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.902
+    hooks:
+      - id: mypy
+        exclude: ^tests/
+        args: [--no-strict-optional, --ignore-missing-imports]
+        additional_dependencies: ['types-requests']
