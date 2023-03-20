@@ -1,7 +1,7 @@
 from copy import deepcopy
-from jsonschema import validate, FormatChecker, Draft7Validator, ValidationError, SchemaError
 from dsdl.geometry import GEOMETRY, CLASSDOMAIN, PlaceHolder, FIELD
 from typing import Union, List as List_
+from fastjsonschema import compile, JsonSchemaDefinitionException, JsonSchemaValueException
 
 
 class FieldMeta(type):
@@ -28,47 +28,61 @@ class BaseField(metaclass=FieldMeta):
     def __init__(self, **kwargs):
         all_kwargs = deepcopy(self.default_args)
         all_kwargs.update(kwargs)
-        self.validate_schema(all_kwargs, self.args_schema)
+        _args_schema = self._compile_schema(self.args_schema)
+        self.validate_schema(_args_schema, all_kwargs)
         self.kwargs = all_kwargs
+        self._all_schema = self._compile_all_schema()
 
-    # @classmethod
-    # def get_schema(cls, **kwargs):
-    #     schema = deepcopy(cls.data_schema)
-    #     default_args = deepcopy(cls.default_args)
-    #     default_args.update(kwargs)
-    #
-    #     cls.validate_schema(default_args, cls.args_schema)
-    #     schema["dsdl_args"] = default_args
-    #     return schema
+    @classmethod
+    def validate_schema(cls, schema, data):
+        try:
+            schema(data)
+        except JsonSchemaValueException as e:
+            raise JsonSchemaValueException(
+                f"ValidationError in {cls.extract_key()[1:].capitalize()} field: \n  Schema is {schema}. \n  Data is {data}.\n  `{e}`")
+        return schema
 
     def additional_validate(self, value):
         return value
 
-    @property
-    def all_schema(self):
-        default_all_schema = getattr(self.__class__, "whole_schema", None)
-        all_schema = {
-            "type": "object",
-            "properties": {
-                "args": self.args_schema,
-                "value": self.data_schema
-            },
-            "required": ["args", "value"]
-        }
-        return default_all_schema or all_schema
-
-    def validate_schema(self, data, schema):
+    @classmethod
+    def _compile_schema(cls, schema):
+        schema = schema.copy()
+        schema["$schema"] = "http://json-schema.org/draft-07/schema"
         try:
-            validate(data, schema, format_checker=FormatChecker(), cls=Draft7Validator)
-        except SchemaError as e:
-            raise SchemaError(f"SchemaError in {self.extract_key()[1:].capitalize()} field: \n  Schema is {schema}.\n  `{e}`")
-        except ValidationError as e:
-            raise ValidationError(
-                f"ValidationError in {self.extract_key()[1:].capitalize()} field: \n  Schema is {schema}. \n  Data is {data}.\n  `{e}`")
+            res = compile(schema)
+        except JsonSchemaDefinitionException as e:
+            raise JsonSchemaDefinitionException(
+                f"SchemaError in {cls.extract_key()[1:].capitalize()} field: \n  `{e}`")
+        return res
+
+    @classmethod
+    def _compile_all_schema(cls):
+
+        default_all_schema = getattr(cls, "whole_schema", None)
+        if default_all_schema is not None:
+            default_all_schema["$schema"] = "http://json-schema.org/draft-07/schema"
+            all_schema = default_all_schema
+        else:
+            all_schema = {
+                "$schema": "http://json-schema.org/draft-07/schema",
+                "type": "object",
+                "properties": {
+                    "args": cls.args_schema,
+                    "value": cls.data_schema
+                },
+                "required": ["args", "value"]
+            }
+        try:
+            compiled_all_schema = compile(all_schema)
+        except JsonSchemaDefinitionException as e:
+            raise JsonSchemaDefinitionException(
+                f"SchemaError in {cls.extract_key()[1:].capitalize()} field: \n  `{e}`")
+        return compiled_all_schema
 
     def validate_all_schema(self, value):
         all_data = {"value": value, "args": self.kwargs}
-        self.validate_schema(all_data, self.all_schema)
+        self.validate_schema(self._all_schema, all_data)
         return self.additional_validate(value)
 
     def load_value(self, value):
@@ -114,7 +128,8 @@ class BaseFieldWithDomain(BaseField):
     def __init__(self, dom: Union[str, List_[str]], **kwargs):
         super().__init__(**kwargs)
         self.namespace = None
-        self.validate_schema({"dom": dom}, self.dom_schema)
+        dom_schema = self._compile_schema({"dom": dom})
+        self.validate_schema(dom_schema, self.dom_schema)
         self.arg_dom = PlaceHolder(dom)
         self.actural_dom = None
 
