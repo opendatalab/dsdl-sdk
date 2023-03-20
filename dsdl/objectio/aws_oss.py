@@ -1,4 +1,3 @@
-from boto3.session import Session
 from contextlib import contextmanager
 from .base import BaseFileReader
 
