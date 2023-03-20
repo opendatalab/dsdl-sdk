@@ -39,7 +39,7 @@ setup(
         "jsonmodels==2.6.0",
         "environs==9.5.0",
         "pylint>=2.15.5",
-        "jsonschema>=4.17.3"
+        "fastjsonschema>=2.16.3"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
