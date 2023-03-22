@@ -56,6 +56,7 @@ python setup.py install
 
 #### Use dsdl parser to deserialize the Yaml file to Python code
 ```bash
+cd <dsdl project directory>
 dsdl parse --yaml demo/coco_demo.yaml
 ```
 
@@ -66,7 +67,7 @@ Create a configuration file `config.py` with the following contents（for now ds
 ```python
 local = dict(
     type="LocalFileReader",
-    working_dir="local path of your media",
+    working_dir="demo",
 )
 
 ali_oss = dict(
@@ -86,21 +87,21 @@ ali_oss = dict(
 #### Visualize samples
 
    ```bash
-   dsdl view -y <yaml-name>.yaml -c <config.py> -l ali-oss -n 10 -r -v -f Label BBox Attributes
+   dsdl view -y <yaml-name>.yaml -c <config.py> -l ali-oss -n 5 -r -v -f Label BBox
    ```
 
 The description of each argument is shown below:  
 
-| simplified  argument | argument      | description                                                                                                                                                                                                                                        |
-| -------------------- | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| -y                   | `--yaml`      | The path of dsdl yaml file.                                                                                                                                                                                                                        |
-| -c                   | `--config`    | The path of  location configuration file.                                                                                                                                                                                                          |
-| -l                   | `--location`  | `local` or `ali-oss`，which means read media from local or aliyun oss.                                                                                                                                                                             |
-| -n                   | `--num`       | The number of samples to be visualized.                                                                                                                                                                                                            |
-| -r                   | `--random`    | Whether to load the samples in a random order.                                                                                                                                                                                                     |
-| -v                   | `--visualize` | Whether to visualize the samples or just print the information in console.                                                                                                                                                                         |
-| -f                   | `--field`     | The field type to visualize, e.g. `-f BBox`means show the bounding box in samples, `-f Attributes`means show the attributes of a sample in the console . One can specify multiple field types simultaneously, such as `-f Label BBox  Attributes`. |
-| -t                   | `--task`      | The task you are working on, for example, `-t detection` is equivalent to `-f Label BBox Polygon Attributes`.                                                                                                                                      |
+| simplified  argument | argument      | description                                                  |
+| -------------------- | ------------- | :----------------------------------------------------------- |
+| -y                   | `--yaml`      | The path of dsdl yaml file.                                  |
+| -c                   | `--config`    | The path of  location configuration file.                    |
+| -l                   | `--location`  | `local` or `ali-oss`，which means read media from local or aliyun oss. |
+| -n                   | `--num`       | The number of samples to be visualized.                      |
+| -r                   | `--random`    | Whether to load the samples in a random order.               |
+| -v                   | `--visualize` | Whether to visualize the samples or just print the information in console. |
+| -f                   | `--field`     | The field type to visualize, e.g. `-f BBox`means show the bounding box in samples, `-f Label`means show the labels of a sample in the console . One can specify multiple field types simultaneously, such as `-f Label BBox`. |
+| -t                   | `--task`      | The task you are working on, for example, `-t detection` is equivalent to `-f Label BBox Polygon`. |
 
 ## Citation
 

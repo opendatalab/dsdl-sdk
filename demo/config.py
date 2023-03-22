@@ -1,6 +1,6 @@
 local = dict(
     type="LocalFileReader",
-    working_dir="local path of your media",
+    working_dir="demo",
 )
 
 ali_oss = dict(

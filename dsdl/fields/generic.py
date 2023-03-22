@@ -8,7 +8,7 @@ class Bool(BaseField):
         "description": "Bool field in dsdl.",
         "oneOf": [
             {"type": "boolean"},
-            {"enum": [0, 1]}
+            {"type": "number", "enum": [0, 1]}
         ]
     }
     geometry_class = bool
