@@ -236,7 +236,7 @@ class ImageShape(BaseField):
         "title": "ImageShapeField",
         "description": "ImageShape field in dsdl.",
         "type": "array",
-        "items": {"type": "integer"},
+        "items": {"type": "integer", "minimum": 0},
         "minItems": 2,
         "maxItems": 2,
     }
@@ -244,7 +244,10 @@ class ImageShape(BaseField):
     args_schema = {
         "type": "object",
         "properties": {
-            "mode": {"enum": ["hw", "wh"]}
+            "mode": {
+                "type": "string",
+                "enum": ["hw", "wh"]
+            }
         },
         "minProperties": 1,
         "maxProperties": 1,
