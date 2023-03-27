@@ -291,7 +291,7 @@ def generate_subset_yaml_and_json(meta_dict, dsdl_root_path, samples_list):
 
     sub_yaml_file_name = f"{sub_name}.yaml"
     sub_yaml_path = save_subset_p.joinpath(sub_yaml_file_name)
-    sub_sample_json_path = save_subset_p.joinpath("samples.json")
+    sub_sample_json_path = save_subset_p.joinpath(f"{sub_name}_samples.json")
 
     template_file_name = get_dsdl_template_file_name(dsdl_root_path)
     if not template_file_name:

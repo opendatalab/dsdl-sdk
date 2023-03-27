@@ -34,13 +34,15 @@ class Dataset(Dataset_):
             pipeline: Optional[Callable[[Dict], Dict]] = None,
             global_info_type: Union[str, Struct] = None,
             global_info: Dict[str, Any] = None,
-            lazy_init: bool = False
+            lazy_init: bool = False,
+            strict_init: bool = False
     ):
         self.location_config = location_config
         self.pipeline = pipeline  # 处理样本的函数
         self._samples = samples  # 样本所在的yaml文件路径
         self._global_info = global_info
         self.lazy_init = lazy_init
+        self.strict_init = strict_init
         self.file_reader = self._load_file_reader(location_config)  # 样本的路径配置（如本地路径或是阿里云路径）
 
         if isinstance(sample_type, str):
@@ -53,6 +55,7 @@ class Dataset(Dataset_):
         else:
             raise RuntimeError("sample_type must be a string or a Struct class")
         self.sample_type.set_lazy_init(self.lazy_init)
+        self.sample_type.set_strict_init(self.strict_init)
         self.sample_type.set_file_reader(self.file_reader)
 
         if global_info_type is not None:
@@ -66,6 +69,7 @@ class Dataset(Dataset_):
             else:
                 raise RuntimeError("global_info_type must be a string or a Struct class")
             self.global_info_type.set_lazy_init(self.lazy_init)
+            self.global_info_type.set_strict_init(self.strict_init)
             self.global_info_type.set_file_reader(self.file_reader)
         else:
             self.global_info_type = None

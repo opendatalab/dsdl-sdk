@@ -6,7 +6,7 @@ class CheckDataset(Dataset):
 
     def __init__(self, report: Report, *args, **kwargs):
         self.report = report
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs, strict_init=True)
 
     def _load_sample(self):
         """
