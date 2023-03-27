@@ -4,7 +4,7 @@ from fnmatch import translate
 from .base_field import BaseField
 import os
 import re
-from dsdl.exception import ValidationError
+from dsdl.exception import ValidationError, InterruptError, FieldNotFoundError
 from dsdl.warning import FieldNotFoundWarning
 
 
@@ -128,6 +128,7 @@ class Struct(object, metaclass=StructMetaclass):
         self.file_reader = None
         self.namespace = None
         self.lazy_init = False
+        self.strict_init = False
         self.params = dict()
         for k, v in kwargs.items():
             assert k in self.__class__.__params__, f"Invalid arguments '{k}'"
@@ -175,6 +176,14 @@ class Struct(object, metaclass=StructMetaclass):
 
     def set_lazy_init(self, flag):
         self.lazy_init = flag
+        if self.lazy_init and self.strict_init:
+            raise InterruptError("You can't set lazy_init mode and strict_init mode on at the same time.")
+        self._register_namespace()
+
+    def set_strict_init(self, flag):
+        self.strict_init = flag
+        if self.lazy_init and self.strict_init:
+            raise InterruptError("You can't set lazy_init mode and strict_init mode on at the same time.")
         self._register_namespace()
 
     def set_file_reader(self, file_reader):
@@ -184,6 +193,7 @@ class Struct(object, metaclass=StructMetaclass):
     def set_namespace(self, struct_obj):
         self.namespace = struct_obj
         self.lazy_init = self.namespace.lazy_init
+        self.strict_init = self.namespace.strict_init
         for d in self.params.values():
             d.set_namespace(struct_obj)
         self.file_reader = struct_obj.file_reader
@@ -246,10 +256,14 @@ class StructObject(dict):
         super().__init__()
         self['namespace'] = struct_obj
         self["lazy_init"] = struct_obj.lazy_init
+        self["strict_init"] = struct_obj.strict_init
         self['_raw_dict'] = kwargs
 
         if not self.lazy_init:
-            self.setup()
+            if self.strict_init:
+                self.strict_setup()
+            else:
+                self.setup()
 
     def setup(self):
         kwargs = self._raw_dict
@@ -266,6 +280,28 @@ class StructObject(dict):
                 FieldNotFoundWarning(f"Required struct instance {k} is missing.")
                 continue
             setattr(self, k, kwargs[k])
+
+    def strict_setup(self):
+        kwargs = self._raw_dict
+        keys = list(kwargs.keys())
+        for k in self.namespace.__required__:
+            if k not in kwargs:
+                raise FieldNotFoundError(f"Required field {k} is missing.")
+            setattr(self, k, kwargs[k])
+            keys.remove(k)
+        for k in self.namespace.__optional__:
+            if k in kwargs:
+                setattr(self, k, kwargs[k])
+                keys.remove(k)
+        for k in self.namespace.get_struct_mapping():
+            if k not in kwargs:
+                raise FieldNotFoundError(f"Required struct instance {k} is missing.")
+            setattr(self, k, kwargs[k])
+            keys.remove(k)
+
+        if keys:
+            raise InterruptError(
+                f"Not defined keys {keys} found in sample, which is not permitted in strict init mode.")
 
     def __getattr__(self, key):
         try:

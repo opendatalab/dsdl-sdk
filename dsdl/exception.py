@@ -26,3 +26,9 @@ class FileReadError(TypeError):
     pass
 
 
+class InterruptError(RuntimeError):
+    pass
+
+
+class FieldNotFoundError(RuntimeError):
+    pass
