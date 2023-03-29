@@ -278,7 +278,7 @@ def get_subset_yaml_str(meta_info, template_file_name, sample_struct_name, class
     yaml_str += f'  Task: \"{task_name}\"\n\n'
     yaml_str += 'data:\n'
     yaml_str += f'  sample-type: {sample_struct_name}[cdom={class_dom_name}]\n'
-    yaml_str += '  sample-path: samples.json\n'
+    yaml_str += f'  sample-path: {subset_name}_samples.json\n'
     return yaml_str
 
 def generate_subset_yaml_and_json(meta_dict, dsdl_root_path, samples_list):

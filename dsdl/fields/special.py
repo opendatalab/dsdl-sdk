@@ -90,8 +90,8 @@ class RotatedBBox(BaseField):
     args_schema = {
         "type": "object",
         "properties": {
-            "measure": {"enum": ["radian", "degree"]},
-            "mode": {"enum": ["xywht", "xyxy"]}
+            "measure": {"type": "string", "enum": ["radian", "degree"]},
+            "mode": {"type": "string", "enum": ["xywht", "xyxy"]}
         },
         "minProperties": 2,
         "maxProperties": 2,
@@ -106,8 +106,8 @@ class RotatedBBox(BaseField):
                     "args": {
                         "type": "object",
                         "properties": {
-                            "measure": {"enum": ["radian", "degree"]},
-                            "mode": {"enum": ["xywht"]}
+                            "measure": {"type": "string", "enum": ["radian", "degree"]},
+                            "mode": {"type": "string", "enum": ["xywht"]}
                         },
                         "minProperties": 2,
                         "maxProperties": 2,
@@ -127,8 +127,8 @@ class RotatedBBox(BaseField):
                 "properties": {
                     "args": {"type": "object",
                              "properties": {
-                                 "measure": {"enum": ["radian", "degree"]},
-                                 "mode": {"enum": ["xyxy"]}
+                                 "measure": {"type": "string", "enum": ["radian", "degree"]},
+                                 "mode": {"type": "string", "enum": ["xyxy"]}
                              },
                              "minProperties": 2,
                              "maxProperties": 2,
