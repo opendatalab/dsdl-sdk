@@ -31,7 +31,6 @@ class UnstructuredObjectFieldWithDomain(BaseFieldWithDomain):
         self.file_reader = struct_obj.file_reader
 
     def load_value(self, value):
-        print(value)
         assert self.file_reader is not None and self.actural_dom is not None, \
             "You should set namespace before validating."
         if self.geometry_class is None:
