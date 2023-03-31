@@ -252,7 +252,10 @@ class DSDLDataset(Dataset):
 
         self.log = Logger()
         
-        self.required_fields = required_fields
+        if required_fields:
+            self.required_fields = required_fields
+        else:
+            self.required_fields = ["Image", "Label", "Bbox", "Polygon", "LabelMap"]
         self._dsdl_yaml = dsdl_yaml
         self._location_config = location_config
         self.transform = transform
