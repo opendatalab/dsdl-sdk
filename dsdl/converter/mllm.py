@@ -25,42 +25,46 @@ ali_oss = dict(
     else:
         print("config.py already exists!")
 
+
 def generate_tree_generator(dir_path, prefix='', space='    ', branch='│   ', tee='├── ', last='└── ', display_num=3):
     _, folders, files = next(os.walk(dir_path))
-    if len(folders)>display_num:
-        folders[display_num:]=["..."]
+    if len(folders) > display_num:
+        folders[display_num:] = ["..."]
     ext_list = defaultdict(list)
     files_list = []
     for file in sorted(files):
         ext = os.path.splitext(file)[1]
-        if len(ext_list[ext])<display_num:
-            ext_list[ext].append(file)            
-        elif len(ext_list[ext])==display_num:
-            ext_list[ext].append("...")            
+        if len(ext_list[ext]) < display_num:
+            ext_list[ext].append(file)
+        elif len(ext_list[ext]) == display_num:
+            ext_list[ext].append("...")
         else:
             continue
     for ext in ext_list:
         files_list.extend(ext_list[ext])
-    
-    pointers = [tee] * (len(folders)+len(files_list) - 1) + [last]
-    
+
+    pointers = [tee] * (len(folders) + len(files_list) - 1) + [last]
+
     for pointer, path in zip(pointers[:len(folders)], folders):
         yield prefix + pointer + path
         if path == "...":
             continue
-        extension = branch if pointer == tee else space 
-        
-        yield from generate_tree_generator(os.path.join(dir_path, path), prefix=prefix+extension, space=space, branch=branch, tee=tee, last=last, display_num=display_num)
-    
+        extension = branch if pointer == tee else space
+
+        yield from generate_tree_generator(os.path.join(dir_path, path), prefix=prefix + extension, space=space,
+                                           branch=branch, tee=tee, last=last, display_num=display_num)
+
     for pointer, path in zip(pointers[len(folders):], files_list):
         yield prefix + pointer + path
 
-def generate_tree_string(path_in):
+
+def generate_tree_string(path_in, display_num=3):
     tree_str = ""
-    tree_iter = generate_tree_generator(path_in)
+    tree_iter = generate_tree_generator(path_in, display_num=display_num)
     for line in tree_iter:
         tree_str += f"{line}\n"
     return tree_str
+
 
 def generate_readme_without_middle_format(save_root_path, dataset_name, task_name, original_tree, dsdl_tree):
     readme_str = f"""# Data Set Description Language(DSDL) for {dataset_name} dataset
@@ -121,6 +125,7 @@ e.g. if the full path of your prepared dataset is "oss://bucket_name/dataset_nam
             fp.write(readme_str)
     else:
         print("README.md already exists.")
+
 
 def generate_readme_with_middle_format(save_root_path, dataset_name, task_name, original_tree, dsdl_tree):
     readme_str = f"""# Data Set Description Language(DSDL) for {dataset_name} dataset
