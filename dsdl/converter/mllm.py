@@ -76,7 +76,7 @@ Please make sure the folder structure of prepared dataset is organized as follow
 The folder structure of dsdl annotation for {task_name} is organized as followed:
 
 ```
-<dataset_root>
+<dsdl_root>
 {dsdl_tree}
 ```
 
@@ -163,7 +163,7 @@ Please make sure the folder structure of prepared dataset is organized as follow
 The folder structure of dsdl annotation for {task_name} is organized as followed:
 
 ```
-<dataset_root>
+<dsdl_root>
 {dsdl_tree}
 ```
 
