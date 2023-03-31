@@ -50,19 +50,68 @@ class Interval(BaseField):
 
 
 class BBox(BaseField):
+    default_args = {
+        "mode": "xywh"
+    }
+
+    args_schema = {
+        "type": "object",
+        "properties": {
+            "mode": {"type": "string", "enum": ["xywh", "xyxy"]}
+        },
+        "minProperties": 1,
+        "maxProperties": 1,
+        "required": ["mode"]
+    }
+
     data_schema = {
         "$id": "/special/bbox",
         "title": "BBoxField",
         "description": "Bounding box field in dsdl.",
         "type": "array",
-        "items": [
-            {"type": "number"},
-            {"type": "number"},
-            {"type": "number", "minimum": 0.},
-            {"type": "number", "minimum": 0.},
-        ],
+        "items": {"type": "number"},
         "minItems": 4,
         "maxItems": 4,
+    }
+
+    whole_schema = {
+        "type": "object",
+        "oneOf": [
+            {
+                "properties": {
+                    "args": {
+                        "type": "object",
+                        "properties": {
+                            "mode": {"type": "string", "enum": ["xywh"]}
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "required": ["mode"]
+                    },
+                    "value": {
+                        "type": "array",
+                        "minItems": 4,
+                        "maxItems": 4,
+                        "items": [{"type": "number"}, {"type": "number"}, {"type": "number", "minimum": 0},
+                                  {"type": "number", "minimum": 0}]
+                    }
+                }
+            },
+
+            {
+                "properties": {
+                    "args": {"type": "object",
+                             "properties": {
+                                 "mode": {"type": "string", "enum": ["xyxy"]}
+                             },
+                             "minProperties": 1,
+                             "maxProperties": 1,
+                             "required": ["mode"]},
+                    "value": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}}
+                }
+            }
+        ],
+        "required": ["args", "value"]
     }
 
     geometry_class = "BBox"

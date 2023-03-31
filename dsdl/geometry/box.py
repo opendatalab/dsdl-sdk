@@ -8,7 +8,10 @@ _ELE_TYPE = TypeVar("_ELE_TYPE", int, float)
 
 class BBox(BaseGeometry):
 
-    def __init__(self, data: List[_ELE_TYPE]):
+    def __init__(self, data: List[_ELE_TYPE], mode):
+        assert mode in ("xyxy", "xywh")
+        if mode == "xyxy":
+            data = [data[0], data[1], data[2] - data[0], data[3] - data[1]]
         self._data = data
 
     @property
