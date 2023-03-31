@@ -202,7 +202,7 @@ def rle2polygon(ann, img_height, img_width):
     return result
 
 def generate_class_dom(dsdl_root_path, names_list, class_dom_name="ClassDom"):
-    # 这里可以调用某个函数获取版本号
+    # the dsdl_version should get from dsdl sdk.
     dsdl_version="0.5.3"
     if not class_dom_name:
         raise ValueError(f"The class-dom name is {class_dom_name}, please specify the correct class-dom name !")
@@ -225,7 +225,7 @@ def generate_class_dom(dsdl_root_path, names_list, class_dom_name="ClassDom"):
             fp1.write(code_str)
     else:
         print(f"{class_dom_path} already exists !")
-    print("class_dom.yaml 已经生成")
+    print("class_dom.yaml is generated.")
 
 def generate_global_info(dsdl_root_path, class_info_list):
     if len(class_info_list) == 0:
@@ -300,7 +300,7 @@ def generate_subset_yaml_and_json(meta_dict, dsdl_root_path, samples_list):
     sample_struct_name = get_dsdl_sample_struct_name(dsdl_root_path)
     class_dom_name = get_dsdl_class_dom_name(dsdl_root_path)
     
-    # 这里可以调用某个函数获取版本号
+    # the dsdl_version should get from dsdl sdk.
     dsdl_version="0.5.3"
     yaml_str = get_subset_yaml_str(meta_dict, template_file_name, sample_struct_name, class_dom_name, dsdl_version)
     if not sub_yaml_path.exists():
@@ -413,5 +413,5 @@ def get_dsdl_class_dom_name(dsdl_root_path):
             else:
                 class_dom_name = item_name
     else:
-        raise ValueError(f"class-dom.yaml中出现多个类域名称。")
+        raise ValueError(f"Mulitiple class-dom name in class-dom.yaml.")
     return class_dom_name
