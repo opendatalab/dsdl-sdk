@@ -241,7 +241,7 @@ def generate_global_info(dsdl_root_path, class_info_list):
         result_dict = {}
         result_dict["global-info"] = {"class_info": class_info_list}
         with open(global_info_path, "w", encoding="utf-8") as fp:
-            json.dump(result_dict, fp, indent=4)
+            json.dump(result_dict, fp)
     else:
         print(f"The {global_info_path} already exists !")
 
@@ -309,7 +309,7 @@ def generate_subset_yaml_and_json(meta_dict, dsdl_root_path, samples_list):
     
     samples_result = {"samples": samples_list}
     with open(sub_sample_json_path, "w", encoding="utf-8") as fp:
-        json.dump(samples_result, fp, indent=4)
+        json.dump(samples_result, fp)
 
 def parse_xml_det_task(xml_path):
     tree = ET.parse(xml_path)
