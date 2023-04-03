@@ -49,7 +49,8 @@ class ImageSample:
                     for ann_item in gt_item[field_key].values():
                         if hasattr(ann_item, "visualize"):
                             image = ann_item.visualize(image=image, palette=self.palette, **gt_item)
-        LabelList(image_label_lst).visualize(image=image, palette=self.palette, bbox={"temp": BBox([0, 0, 0, 0])})
+        LabelList(image_label_lst).visualize(image=image, palette=self.palette,
+                                             bbox={"temp": BBox([0, 0, 0, 0], mode="xywh")})
         return image
 
     def format(self):
