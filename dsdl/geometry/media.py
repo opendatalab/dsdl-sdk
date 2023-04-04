@@ -3,6 +3,7 @@ from PIL import Image as Image_
 from dsdl.exception import FileReadError
 from .base_geometry import BaseGeometry
 from .utils import bytes_to_numpy
+from tifffile import imread
 
 
 class Image(BaseGeometry):
@@ -17,6 +18,11 @@ class Image(BaseGeometry):
         self._loc = value
         self._reader = file_reader
         self.namespace = None
+        _splits = value.split(".")
+        if len(_splits) > 1:
+            self._ext = value.split(".")[-1].lower()
+        else:
+            self._ext = ""
 
     def set_namespace(self, struct_obj):
         self.namespace = struct_obj
@@ -44,6 +50,8 @@ class Image(BaseGeometry):
         Returns:
             The `PIL.Image` object of the current image.
         """
+        if self._ext in ("tif", "tiff"):
+            return Image_.fromarray(self.to_array())
         try:
             img = Image_.open(self.to_bytes())
         except Exception as e:
@@ -56,6 +64,8 @@ class Image(BaseGeometry):
         Returns:
             The `np.ndarray` object of the current image.
         """
+        if self._ext in ("tif", "tiff"):
+            return imread(self.to_bytes())
         return bytes_to_numpy(self.to_bytes())
 
     def __repr__(self):

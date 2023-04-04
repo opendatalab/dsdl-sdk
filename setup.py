@@ -42,7 +42,8 @@ setup(
         "fastjsonschema>=2.16.3",
         "pycocotools>=2.0.6",
         "tqdm>=4.65.0",
-        "scikit-image>=0.19.3"
+        "scikit-image>=0.19.3",
+        "tifffile"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
