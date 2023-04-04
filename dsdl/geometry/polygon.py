@@ -10,21 +10,50 @@ class PolygonItem(BaseGeometry):
             self,
             points: List[List[float]]
     ):
+        """A Geometry class which abstracts a single polygon item object (which means there is only one closed shape).
+
+        Args:
+            points: The coordinates of a polygon object, whose format is `[[x1, y1], [x2, y2], ...]`
+
+        Attributes:
+            _data(list[list[float]]): The coordinates of a polygon object, whose format is `[[x1, y1], [x2, y2], ...]`
+        """
         self._data = points
 
     @property
     def points(self) -> List[List[float]]:
+        """
+        Returns:
+            The coordinates of the current polygon item. The format is `[[x1, y1], [x2, y2], ...]`.
+        """
         return self._data
 
     @property
     def points_x(self) -> List[float]:
+        """
+        Returns:
+            The horizontal axis of all the points which the current polygon item consists of. The format is [x1, x2, x3, ...].
+        """
         return [_[0] for _ in self._data]
 
     @property
     def points_y(self) -> List[float]:
+        """
+        Returns:
+            The vertical axis of all the points which the current polygon item consists of. The format is [y1, y2, y3, ...].
+        """
         return [_[1] for _ in self._data]
 
     def point_for_draw(self, mode: str = "lt"):
+        """
+        Get the point's coordinate where a legend is fit to draw.
+        Args:
+            mode: The position model. Only "lb", "lt", "rb", "rt" are permitted, which mean get the coordinate of left bottom,
+                left top, right bottom and right top corresponding.
+
+        Returns:
+            The coordinate corresponding to the `mode`, whose format is [x, y].
+        """
         assert mode in ("lb", "lt", "rb", "rt")
         if mode == "lt":
             p = min(self._data, key=lambda x: x[0] + x[1])
@@ -39,9 +68,17 @@ class PolygonItem(BaseGeometry):
 
     @property
     def openmmlabformat(self) -> List[float]:
+        """
+        Returns:
+            All the points of the format [x1, y1, x2, y2, ...].
+        """
         return self._flatten()
 
     def to_tuple(self):
+        """
+        Returns:
+            The coordinates of the current polygon item. The format is `((x1, y1), (x2, y2), ...)`.
+        """
         return tuple([(_[0], _[1]) for _ in self._data])
 
     def _flatten(self) -> List[float]:
@@ -54,6 +91,11 @@ class PolygonItem(BaseGeometry):
 class Polygon(BaseGeometry):
 
     def __init__(self, value):
+        """A Geometry class which abstracts a polygon object (which meas there may be multi closed shapes).
+
+        Args:
+            value: A list of a number of PolygonItem objects.
+        """
         polygon_lst = []
         for idx, points in enumerate(value):
             polygon_lst.append(PolygonItem(points))
@@ -61,13 +103,30 @@ class Polygon(BaseGeometry):
 
     @property
     def polygons(self):
+        """
+        Returns:
+            A list of all the PolygonItem objects in the current polygon object.
+        """
         return self._data
 
     @property
     def openmmlabformat(self) -> List[List[float]]:
+        """
+        Returns:
+            All the points of all the polygon item. The format is `[[x1, y1, x2, y2, ...], [x1, y1, x2, y2, ...], ...]`.
+        """
         return [_.openmmlabformat for _ in self._data]
 
     def point_for_draw(self, mode: str = "lt") -> [int, int]:
+        """
+        Get the point's coordinate where a legend is fit to draw.
+        Args:
+            mode: The position model. Only "lb", "lt", "rb", "rt" are permitted, which mean get the coordinate of left bottom,
+                left top, right bottom and right top corresponding.
+
+        Returns:
+            The coordinate correspond to the `mode`. The format is [x, y].
+        """
         assert mode in ("lb", "lt", "rb", "rt")
         if mode == "lt":
             p = min(self._data, key=lambda x: x.point_for_draw(mode)[0] + x.point_for_draw(mode)[1])
@@ -81,6 +140,16 @@ class Polygon(BaseGeometry):
         return p
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current polygon object on an given image.
+
+        Args:
+            image: The image where the polygon to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current polygon object, such as `Label` annotation.
+
+        Returns:
+            The image where the current polygon object has been drawn on.
+        """
         color = (0, 255, 0)
         if "label" in kwargs:
             for label in kwargs["label"].values():

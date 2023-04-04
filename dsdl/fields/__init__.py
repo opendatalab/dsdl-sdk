@@ -18,7 +18,8 @@ __special_fields__ = [
     "InstanceID",
     "UniqueID",
     "Date",
-    "Time"
+    "Time",
+    "BBox3D"
 ]
 
 __generic_fields__ = [
@@ -33,7 +34,8 @@ __generic_fields__ = [
 __unstructure_fields__ = [
     "Image",
     "LabelMap",
-    "InstanceMap"
+    "InstanceMap",
+    "PointCloud"
 ]
 
 __all__ = __unstructure_fields__ + __generic_fields__ + __special_fields__ + ["Struct"]

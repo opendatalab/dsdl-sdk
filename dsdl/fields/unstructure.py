@@ -37,3 +37,28 @@ class InstanceMap(UnstructuredObjectField):
     }
 
     geometry_class = "InstanceMap"
+
+
+class PointCloud(UnstructuredObjectField):
+    default_args = {
+        "load_dim": 3
+    }
+
+    args_schema = {
+        "type": "object",
+        "properties": {
+            "load_dim": {"type": "integer"}
+        },
+        "minProperties": 1,
+        "maxProperties": 1,
+        "required": ["load_dim"]
+    }
+
+    data_schema = {
+        "$id": "/special/pointcloud",
+        "title": "PointCloudField",
+        "description": "PointCloud Field in dsdl.",
+        "type": "string"
+    }
+
+    geometry_class = "PointCloud"
