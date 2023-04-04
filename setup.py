@@ -44,6 +44,7 @@ setup(
         "tqdm>=4.65.0",
         "scikit-image>=0.19.3",
         "tifffile"
+        "terminaltables>=3.1.10"
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",

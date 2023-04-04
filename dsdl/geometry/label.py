@@ -91,6 +91,10 @@ class Label(BaseGeometry, FontMixin):
         return self._name
 
     @property
+    def leaf_node_name(self):
+        return self._name.split(".")[-1]
+    
+    @property
     def openmmlabformat(self):
         """
         Returns:

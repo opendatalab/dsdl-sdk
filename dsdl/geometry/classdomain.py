@@ -1,3 +1,5 @@
+import numpy as np
+
 from dsdl.geometry.registry import CLASSDOMAIN, LABEL
 from dsdl.geometry.label import Label
 from dsdl.geometry.class_domain_attributes import Skeleton
@@ -105,6 +107,38 @@ class ClassDomainMeta(type):
     def get_attribute(cls, attr_name):
         attr_dic = getattr(cls, "__attributes__")
         return attr_dic.get(attr_name, None)
+    
+    def get_hierarchy_info(cls):
+        class_names_in = [i.category_name for i in cls.__list__]
+        single_name_dict = {}
+        name_2_index_dict = {}
+        for curr_name in class_names_in:
+            arrs = curr_name.split(".")[1:]
+            for cname in arrs:
+                if cname not in single_name_dict:
+                    single_name_dict[cname] = 0
+        single_class_nums = len(single_name_dict)
+        class_names_sort = sorted(list(single_name_dict.keys()))
+        relation_metric = np.eye(single_class_nums, single_class_nums)
+        for index, key in enumerate(class_names_sort):
+            name_2_index_dict[key] = index
+
+        for idx, item in enumerate(class_names_sort):
+            curr_dict = {}
+            index_list = []
+            for class_name in class_names_in:
+                name_arrs = class_name.split(".")[1:]
+                if item in name_arrs:
+                    curr_index = name_arrs.index(item)
+                    curr_used_names = name_arrs[:curr_index+1]
+                    for used_name in curr_used_names:
+                        if used_name not in curr_dict:
+                            curr_dict[used_name] = 0
+            for ckey in curr_dict:
+                m_index = name_2_index_dict[ckey]
+                index_list.append(m_index)
+                relation_metric[idx, m_index] = 1
+        return class_names_sort, relation_metric
 
 
 def ClassDomain(name, **kwargs):

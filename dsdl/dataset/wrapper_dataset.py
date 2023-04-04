@@ -8,9 +8,23 @@ import matplotlib.pyplot as plt
 from .base_dataset import Dataset
 from yaml import load as yaml_load
 from typing import Sequence, Union, Iterable
-from torch.utils.data import Dataset as _Dataset
-from torch.utils.data import DataLoader, ConcatDataset
 from terminaltables import AsciiTable
+try:
+    from torch.utils.data import Dataset as _Dataset
+    from torch.utils.data import DataLoader, ConcatDataset
+except:
+    from ..warning import ImportWarning
+    ImportWarning("'torch' is not installed.")
+    
+    class _Dataset:
+        def __init__(self, *args, **kwargs):
+            pass
+    class DataLoader:
+        def __init__(self, *args, **kwargs):
+            pass
+    class ConcatDataset:
+        def __init__(self, *args, **kwargs):
+            pass
 
 try:
     from yaml import CSafeLoader as YAMLSafeLoader
