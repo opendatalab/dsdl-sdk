@@ -11,6 +11,13 @@ class SegmentationMap(Image):
     """
 
     def __init__(self, value, dom, file_reader):
+        """A Geometry class which abstracts a semantic segmentation map object.
+
+        Args:
+            value: The relative path of the current semantic segmentation map image.
+            file_reader: The file reader object of the current semantic segmentation map image.
+            dom: The current semantic segmentation map's class domain.
+        """
         super().__init__(value, file_reader)
         if isinstance(dom, list):
             assert len(dom) == 1, "You can only assign one class dom in LabelMapField."
@@ -19,9 +26,23 @@ class SegmentationMap(Image):
 
     @property
     def class_domain(self):
+        """
+        Returns:
+            The current semantic segmentation map's class domain.
+        """
         return self._dom
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current semantic segmentation map on an given image.
+
+        Args:
+            image: The image where the semantic segmentation map to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current semantic segmentation map.
+
+        Returns:
+            The image where the current semantic segmentation map has been drawn on.
+        """
         seg = self.to_array()
         color_seg = np.zeros((seg.shape[0], seg.shape[1], 3), dtype=np.uint8)
         category_ids = np.unique(seg)

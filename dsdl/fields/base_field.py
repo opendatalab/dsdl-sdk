@@ -16,6 +16,9 @@ class FieldMeta(type):
 
 
 class BaseField(metaclass=FieldMeta):
+    """
+    The Parent Class of all fields.
+    """
     data_schema = {}
     args_schema = {
         "type": "object",
@@ -160,6 +163,26 @@ class BaseFieldWithDomain(BaseField):
 
 
 class List(BaseField):
+    """A DSDL Field to validate all the value in the given list and return a list of validated object.
+
+    Examples:
+        >>> from dsdl.fields import Dict
+        >>> list_field = List(ele_type=Dict(), ordered=False)
+        >>> value = [{"a": 1}, {"b": 2}, {"c": 3}]
+        >>> list_field.validate(value)
+        [{"a": 1}, {"b": 2}, {"c": 3}]
+
+    Args:
+        ele_type: The field type of the element in the given list value.
+        ordered: Whether the order of the elements in the list should be contained.
+
+    Attributes:
+        ele_type(Union[Field, Struct]): The field type or struct type of the element in the given list value.
+        ordered(bool): Whether the order of the elements in the list should be contained.
+        file_reader(BaseFileReader): The file reader object which is needed when the ele_type is ImageField, LabelMapField or InstanceMapField.
+        prefix(str): A helper prefix string which is used when initializing a Struct object.
+        flatten_dic(Dict[str, Any]): A helper dict which is used in a Struct object.
+    """
     data_schema = {
         "$id": "/generic/list",
         "title": "ListField",

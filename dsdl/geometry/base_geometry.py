@@ -15,6 +15,16 @@ class GeometryMeta(type):
 class BaseGeometry(metaclass=GeometryMeta):
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current geometry object on an given image.
+
+        Args:
+            image: The image where the geometry object to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current geometry object.
+
+        Returns:
+            The image where the current geometry object has been drawn on.
+        """
         return image
 
     def __repr__(self):

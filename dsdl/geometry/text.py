@@ -6,17 +6,40 @@ import os
 
 class Text(BaseGeometry, FontMixin):
     def __init__(self, value):
+        """A Geometry class which abstracts a text annotation object.
+
+        Args:
+            value: The text annotation.
+        """
         self._text = value
 
     @property
     def value(self):
+        """
+        Returns:
+            The text of the current text annotation.
+        """
         return self._text
 
     @property
     def text(self):
+        """
+        Returns:
+            The text of the current text annotation.
+        """
         return self._text
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current text annotation on an given image.
+
+        Args:
+            image: The image where the text annotation to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current text annotation, such as `BBox` annotation.
+
+        Returns:
+            The image where the current text annotation has been drawn on.
+        """
         draw_obj = ImageDraw.Draw(image)
         text_color = (0, 255, 0)  # green
         if self.font is None:

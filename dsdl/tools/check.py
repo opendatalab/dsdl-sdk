@@ -68,8 +68,22 @@ def check(dsdl_yaml, num, random, fields, config, position, output, **kwargs):
         report_obj.generate()
         return
 
-    dataset = CheckDataset(report_obj, dsdl_yaml["samples"], dsdl_yaml["sample_type"], config,
-                           global_info_type=dsdl_yaml["global_info_type"], global_info=dsdl_yaml["global_info"])
+    parse_report["dataset_init"] = {
+        "flag": 1,
+        "msg": "Dataset init successfully!"
+    }
+
+    try:
+        dataset = CheckDataset(report_obj, dsdl_yaml["samples"], dsdl_yaml["sample_type"], config,
+                               global_info_type=dsdl_yaml["global_info_type"], global_info=dsdl_yaml["global_info"])
+    except Exception as e:
+        parse_report["flag"] = 0
+        parse_report["dataset_init"] = {
+            "flag": 0,
+            "msg": f"Dataset init error: {e}"
+        }
+        report_obj.generate()
+        return
 
     num = min(num, len(dataset))
 

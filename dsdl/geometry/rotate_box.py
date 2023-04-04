@@ -7,6 +7,18 @@ from PIL import Image, ImageDraw
 
 class RBBox(BaseGeometry):
     def __init__(self, value, mode="xywht", measure="radian"):
+        """A Geometry class which abstracts a rotated bounding box object.
+
+        Args:
+            value: The value of the current rotated bounding box.
+                   When the `mode` is `"xywht"`,
+                   the format is [x, y, w, h, t], which are the bounding box's center point horizontal axis,
+                   the bounding box's center point vertical axis, the bounding box's width the bounxing box's height,
+                   and the bounding box's rotate angle (in radians).
+                   Whe the `mode` is `"xyxy"`,
+                   the format is `[[x1, y1], [x2, y2], [x3, y3], [x4, y4]]`, which represents the coordinates of the bounding box's four vertices.
+            mode: The mode of the given `value`. Only `"xywht"` and `"xyxy"` are permitted.
+        """
         assert mode in ("xywht", "xyxy") and measure in ("radian", "degree")
         if mode == "xywht":
             self._polygon = None
@@ -15,11 +27,19 @@ class RBBox(BaseGeometry):
                 value[-1] = value[-1] / 180 * math.pi
             self._rbbox = value
         else:
-            self._polygon = value
+            self._polygon = [value[i:i + 2] for i in (0, 2, 4, 6)]
             self._rbbox = None
 
     @staticmethod
     def rbbox2polygon(value):
+        """Convert the `xywht` mode bounding box into `xyxy` mode.
+
+        Args:
+            value: The `xywht` mode bounding box's value.
+
+        Returns:
+            The coresponding `xyxy` mode bounding box's value.
+        """
         x, y, width, height, angle = value
         cosA, sinA = math.cos(angle), math.sin(angle)
 
@@ -35,6 +55,15 @@ class RBBox(BaseGeometry):
         return [_rotate(p_lt), _rotate(p_lb), _rotate(p_rb), _rotate(p_rt)]
 
     def point_for_draw(self, mode: str = "lt"):
+        """
+        Get the point's coordinate where a legend is fit to draw.
+        Args:
+            mode: The position model. Only "lb", "lt", "rb", "rt" are permitted, which mean get the coordinate of left bottom,
+                left top, right bottom and right top corresponding.
+
+        Returns:
+            The coordinate corresponding to the `mode`, whose format is [x, y].
+        """
         assert mode in ("lb", "lt", "rb", "rt")
         if mode == "lt":
             p = min(self.polygon_value, key=lambda x: x[0] + x[1])
@@ -49,6 +78,14 @@ class RBBox(BaseGeometry):
 
     @staticmethod
     def polygon2rbbox(value):
+        """Converted the `xyxy` mode bounding box into `xywht` mode.
+
+        Args:
+            value: The `xyxy` mode bounding box's value.
+
+        Returns:
+            The coresponding `xywht` mode bounding box's value.
+        """
         res = cv2.minAreaRect(np.array(value).astype(np.int32))
         x, y = res[0]
         width, height = res[1]  # width is "first edge"
@@ -61,17 +98,37 @@ class RBBox(BaseGeometry):
 
     @property
     def polygon_value(self):
+        """Get the `xyxy` mode bounding box's value.
+
+        Returns:
+            The `xyxy` mode bounding box's value.
+        """
         if self._polygon is None:
             self._polygon = self.rbbox2polygon(self._rbbox)
         return self._polygon
 
     @property
     def rbbox_value(self):
+        """Get the `xywht` mode bounding box's value.
+
+        Returns:
+            The `xywht` mode bounding box's value.
+        """
         if self._rbbox is None:
             self._rbbox = self.polygon2rbbox(self._polygon)
         return self._rbbox
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current rotated bounding box on an given image.
+
+        Args:
+            image: The image where the rotated bounding box to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current bounding box, such as `Label` annotation.
+
+        Returns:
+            The image where the current rotated bounding box has been drawn on.
+        """
         color = (0, 255, 0)
         if "label" in kwargs:
             for label in kwargs["label"].values():

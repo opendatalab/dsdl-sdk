@@ -10,6 +10,16 @@ class InstanceMap(Image):
     """
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current instance map on an given image.
+
+        Args:
+            image: The image where the instance map to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current instance map.
+
+        Returns:
+            The image where the current instance map has been drawn on.
+        """
         ins_map = self.to_array()
         color_map = np.zeros((ins_map.shape[0], ins_map[1], 3), dtype=np.uint8)
         ins_ids = np.unique(ins_map)

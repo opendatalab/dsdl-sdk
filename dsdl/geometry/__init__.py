@@ -12,6 +12,8 @@ from .shape import Shape, ImageShape
 from .uniqueid import UniqueID
 from .params_placeholder import PlaceHolder
 from .classdomain import ClassDomain, ClassDomainMeta
+from .box3d import BBox3D
+from .pointcloud import PointCloud
 
 __all__ = [
     "BBox",
@@ -37,5 +39,7 @@ __all__ = [
     "UniqueID",
     "PlaceHolder",
     "ClassDomain",
-    "ClassDomainMeta"
+    "ClassDomainMeta",
+    "BBox3D",
+    "PointCloud",
 ]
