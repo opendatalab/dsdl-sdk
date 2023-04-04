@@ -291,8 +291,28 @@ class DSDLParser(Parser, ABC):
                 FIELD_PARSER = ParserField(self.struct_name_params, self.struct_name,struct_params)
                 field_list = dict()
                 for raw_field in define_value["$fields"].items():
-                    field_name = raw_field[0].strip()
-                    field_type = raw_field[1].strip()
+                    try:
+                        field_name = raw_field[0].strip()
+                    except:
+                        msg = f"field name must be string, got `{raw_field[0]}` (type: {type(raw_field[0])})"
+                        if self.report_flag:
+                            temp_check_item = CheckLogItem(
+                                def_name=TypeEnum.STRUCT.value, msg=msg
+                            )
+                            CHECK_LOG.sub_struct.append(temp_check_item)
+                            return
+                        raise Exception(msg)
+                    try:
+                        field_type = raw_field[1].strip()
+                    except:
+                        msg = f"field type must be string, got `{raw_field[1]}` (type: {type(raw_field[1])})"
+                        if self.report_flag:
+                            temp_check_item = CheckLogItem(
+                                def_name=TypeEnum.STRUCT.value, msg=msg
+                            )
+                            CHECK_LOG.sub_struct.append(temp_check_item)
+                            return
+                        raise Exception(msg)
                     # 判断field_name是否为python保留字和是符合命名规范
                     try:
                         check_name_format(field_name)
