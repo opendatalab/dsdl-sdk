@@ -1,5 +1,5 @@
 from .base_field import BaseField, BaseFieldWithDomain
-from datetime import date, time
+from datetime import date, time, datetime
 from dsdl.geometry import LABEL
 
 
@@ -511,7 +511,23 @@ class Date(BaseField):
         "format": "date"
     }
 
-    geometry_class = date.fromisoformat
+    default_args = {"fmt": ""}
+
+    args_schema = {
+        "type": "object",
+        "properties": {
+            "fmt": {"type": "string"}
+        },
+        "minProperties": 1,
+        "maxProperties": 1,
+        "required": ["fmt"]
+    }
+
+    def load_value(self, value):
+        if self.kwargs["fmt"]:
+            return datetime.strptime(value, format=self.kwargs["fmt"]).date()
+        else:
+            return date.fromisoformat(value)
 
 
 class Time(BaseField):
@@ -538,4 +554,20 @@ class Time(BaseField):
         "format": "time"
     }
 
-    geometry_class = time.fromisoformat
+    default_args = {"fmt": ""}
+
+    args_schema = {
+        "type": "object",
+        "properties": {
+            "fmt": {"type": "string"}
+        },
+        "minProperties": 1,
+        "maxProperties": 1,
+        "required": ["fmt"]
+    }
+
+    def load_value(self, value):
+        if self.kwargs["fmt"]:
+            return datetime.strptime(value, format=self.kwargs["fmt"]).time()
+        else:
+            return date.fromisoformat(value)
