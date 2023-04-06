@@ -40,11 +40,11 @@ setup(
         "environs==9.5.0",
         "pylint>=2.15.5",
         "fastjsonschema>=2.16.3",
-        "pycocotools>=2.0.6",
+        # "pycocotools>=2.0.6",
         "tqdm>=4.65.0",
         "scikit-image>=0.19.3",
-        "tifffile"
-        "terminaltables>=3.1.10"
+        "tifffile",
+        "terminaltables>=3.1.10",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
