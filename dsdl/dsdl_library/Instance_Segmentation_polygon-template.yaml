@@ -1,0 +1,16 @@
+$dsdl-version: "0.5.0"
+
+LocalInstanceEntry:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        label: Label[dom=$cdom]
+        bbox: BBox
+        polygon: Polygon
+
+InstanceSegmentationSample:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        image: Image
+        instances: List[LocalInstanceEntry[cdom=$cdom]]

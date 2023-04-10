@@ -1,0 +1,9 @@
+$dsdl-version: "0.5.0"
+
+InstanceSegmentationSample:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        image: Image
+        instance_map: InsMap
+        semantic_map: LabelMap[dom=$cdom]
