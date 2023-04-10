@@ -8,19 +8,23 @@ import numpy as np
 from skimage import measure
 from pycocotools import mask as mask_util
 import xml.etree.ElementTree as ET
+import shutil
 
 DSDL_TASK_NAMES_TEMPLATE = {
-    "Image Classification": "class_template",
-    "Object Detection": "detection_template",
-    "Semantic Segmentation": None,
-    "Instance Segmentation": None,
-    "Panoptic Segmentation": None,
-    "Keypoint Detection": None,
-    "Multi-Object Tracking": None,
-    "Single-Object Tracking": None,
+    "Image Classification": "Image_Classification-template.yam",
+    "Object Detection": "Object_Detection-template.yaml",
+    "Semantic Segmentation": "Semantic_Segmentation-template.yaml",
+    "Instance Segmentation-segmap": "Instance_Segmentation_segmap-template.yaml",
+    "Instance Segmentation-polygon": "Instance_Segmentation_polygon-template",
+    "Panoptic Segmentation": "Panoptic_Segmentation-template.yaml",
+    "Keypoint Detection": "Keypoint_Detection-template.yaml",
+    "Object Tracking": "Object_Tracking-template.yaml",
     "Image Generation": None,
-    "Optical Character Recognition": None,
-    "Rotated Object Detection": None,
+    "Optical Character Recognition-detection": "OCR_detection-template.yaml",
+    "Optical Character Recognition-segmentation": "OCR_segmap-template.yaml",
+    "Optical Character Recognition-recognition": "OCR_recog-template.yaml",
+    "Optical Character Recognition-end_to_end": "OCR_end2end-template.yaml",
+    "Rotated Object Detection": "Rotated_Object_Detection-template.yaml",
 }
 
 DSDL_MODALITYS = ("Images", "Texts", "Videos", "Audio", "3D")
@@ -263,6 +267,18 @@ def generate_global_info(dsdl_root_path, class_info_list):
     else:
         print(f"The {global_info_path} already exists !")
 
+def get_dsdl_template_from_lib(task_name, save_path):
+    template_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "dsdl_library")
+    print('__file__ is ', __file__)
+    try:
+        template_file = os.path.join(template_path, DSDL_TASK_NAMES_TEMPLATE[task_name])
+    except:
+        raise ValueError(f"The template of {task_name} not exists in library, the avaliable template list is {DSDL_TASK_NAMES_TEMPLATE.keys()}. Please check.")
+    save_path_p = Path(save_path)
+    save_defs_p = save_path_p.joinpath("defs")
+    if not os.path.exists(save_defs_p):
+        os.mkdir(save_defs_p)
+    shutil.copyfile(template_file, os.path.join(save_defs_p, "template.yaml"))
 
 def get_dsdl_template_file_name(dsdl_root_path):
     save_path_p = Path(dsdl_root_path)

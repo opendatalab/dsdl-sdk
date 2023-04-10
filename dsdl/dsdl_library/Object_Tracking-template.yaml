@@ -1,0 +1,24 @@
+$dsdl-version: "0.5.0"
+
+LocalObjectEntry:  
+    $def: struct   
+    $params: ["cdom"]
+    $fields: 
+        instance_id: InstanceID
+        bbox: BBox
+        category: Label[dom=$cdom]
+
+FrameSample:
+    $def: struct
+    $params: ["cdom"]
+    $fields:
+        frame_id: UniqueID
+        media_path: Image
+        objects: List[etype=LocalObjectEntry[cdom=$cdom]]
+
+VideoFrame:
+    $def: struct
+    $params: ["cdom"]
+    $fields:
+        video_name: Str
+        videoframes: List[etype=FrameSample[cdom=$cdom]]

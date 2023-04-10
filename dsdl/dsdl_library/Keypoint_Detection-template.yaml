@@ -1,0 +1,16 @@
+$dsdl-version: "0.5.0"
+
+KeyPointLocalObject:   
+    $def: struct
+    $params: ['cdom1', 'cdom2']
+    $fields:
+        keypoint: Keypoint[dom=$cdom2]
+        label: Label[dom=$cdom1]
+    $optional: ["label"]
+        
+KeyPointSample:
+    $def: struct
+    $params: ['cdom1', 'cdom2']
+    $fields:
+        image: Image
+        annotations: List[etype=LocalObjectEntry[cdom1=$cdom1, cdom2=$cdom2]]
