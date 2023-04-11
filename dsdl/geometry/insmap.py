@@ -21,7 +21,7 @@ class InstanceMap(Image):
             The image where the current instance map has been drawn on.
         """
         ins_map = self.to_array()
-        color_map = np.zeros((ins_map.shape[0], ins_map[1], 3), dtype=np.uint8)
+        color_map = np.zeros((ins_map.shape[0], ins_map.shape[1], 3), dtype=np.uint8)
         ins_ids = np.unique(ins_map)
 
         for ins_id in ins_ids:
