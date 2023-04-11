@@ -314,14 +314,98 @@ class Label(BaseFieldWithDomain):
 
 
 class BBox3D(BaseField):
+    default_args = {"mode": "auto-drive"}
+
+    args_schema = {
+        "type": "object",
+        "properties": {
+            "mode": {"type": "string", "enum": ["auto-drive", "indoor"]}
+        },
+        "minProperties": 1,
+        "maxProperties": 1,
+        "required": ["mode"]
+    }
+
     data_schema = {
         "$id": "/special/bbox3d",
         "title": "BBox3DField",
         "description": "BBox3D Field in dsdl.",
         "type": "array",
-        "items": {"type": "number"},
-        "minItems": 7,
-        "maxItems": 7,
+        "oneOf": [
+            {"minItems": 7, "maxItems": 7,
+             "items": [{"type": "number"},
+                       {"type": "number"},
+                       {"type": "number"},
+                       {"type": "number", "minimum": 0},
+                       {"type": "number", "minimum": 0},
+                       {"type": "number", "minimum": 0},
+                       {"type": "number"}]},
+            {"minItems": 9, "maxItems": 9,
+             "items": [{"type": "number"},
+                       {"type": "number"},
+                       {"type": "number"},
+                       {"type": "number", "minimum": 0},
+                       {"type": "number", "minimum": 0},
+                       {"type": "number", "minimum": 0},
+                       {"type": "number"},
+                       {"type": "number"},
+                       {"type": "number"}]}
+        ]
+    }
+
+    whole_schema = {
+        "type": "object",
+        "oneOf": [
+            {
+                "properties": {
+                    "args": {
+                        "type": "object",
+                        "properties": {
+                            "mode": {"type": "string", "enum": ["auto-drive"]}
+                        },
+                        "minProperties": 1,
+                        "maxProperties": 1,
+                        "required": ["mode"]
+                    },
+                    "value": {
+                        "type": "array",
+                        "minItems": 7, "maxItems": 7,
+                        "items": [{"type": "number"},
+                                  {"type": "number"},
+                                  {"type": "number"},
+                                  {"type": "number", "minimum": 0},
+                                  {"type": "number", "minimum": 0},
+                                  {"type": "number", "minimum": 0},
+                                  {"type": "number"}]
+                    }
+                }
+            },
+
+            {
+                "properties": {
+                    "args": {"type": "object",
+                             "properties": {
+                                 "mode": {"type": "string", "enum": ["indoor"]}
+                             },
+                             "minProperties": 1,
+                             "maxProperties": 1,
+                             "required": ["mode"]},
+                    "value": {
+                        "type": "array",
+                        "minItems": 9, "maxItems": 9,
+                        "items": [{"type": "number"},
+                                  {"type": "number"},
+                                  {"type": "number"},
+                                  {"type": "number", "minimum": 0},
+                                  {"type": "number", "minimum": 0},
+                                  {"type": "number", "minimum": 0},
+                                  {"type": "number"},
+                                  {"type": "number"},
+                                  {"type": "number"}]}
+                }
+            }
+        ],
+        "required": ["args", "value"]
     }
 
     geometry_class = "BBox3D"

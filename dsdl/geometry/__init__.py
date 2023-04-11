@@ -14,6 +14,7 @@ from .params_placeholder import PlaceHolder
 from .classdomain import ClassDomain, ClassDomainMeta
 from .box3d import BBox3D
 from .pointcloud import PointCloud
+from .video import Video
 
 __all__ = [
     "BBox",
@@ -42,4 +43,5 @@ __all__ = [
     "ClassDomainMeta",
     "BBox3D",
     "PointCloud",
+    "Video",
 ]
