@@ -29,7 +29,7 @@ class InstanceMap(Image):
                 continue
             contour_color = tuple(np.random.randint(0, 255, size=[3]))
             this_map = (ins_map == ins_id).astype(np.uint8) * 255
-            _, contours, _ = cv2.findContours(this_map, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(this_map, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             cv2.drawContours(color_map, contours, -1, contour_color, 2)
 
         overlay = Image_.fromarray(color_map).convert("RGBA")
