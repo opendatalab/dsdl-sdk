@@ -3,6 +3,7 @@ import io
 from .utils import video_decode, video_encode
 from fastjsonschema import compile
 import numpy as np
+from typing import Optional
 
 
 def _compile_schema(schema):
@@ -134,7 +135,7 @@ class Video(BaseGeometry):
         """
         return io.BytesIO(self._reader.read(self._loc))
 
-    def init_video_reader(self, backend=DEFAULT_BACKEND, **kwargs):
+    def init_video_reader(self, backend: str = DEFAULT_BACKEND, **kwargs):
         assert backend in self.ALL_BACKENDS
         all_args = self.ENCODE_DEFAUTL_KWARGS[backend]
         all_args.update(kwargs)
@@ -146,12 +147,14 @@ class Video(BaseGeometry):
         self.frame_num = frame_num
         return video_reader, frame_num
 
-    def to_array(self, frame_ids: np.ndarray, **kwargs):
+    def to_array(self, frame_ids: Optional[np.ndarray] = None, **kwargs):
         """Turn Video object to a numpy.ndarray list.
 
         Returns:
             The `np.ndarray` object of the current image.
         """
+        if frame_ids is None:
+            frame_ids = np.arange(0, self.frame_num)
         all_args = self.DECODE_DEFAULT_KWARGS[self.backend]
         all_args.update(kwargs)
         self.DECODE_SCHEMA[self.backend](all_args)
