@@ -60,5 +60,5 @@ class SegmentationMap(Image):
             color_seg[seg == category_id, :] = np.array(palette[category_name])
         overlay = Image_.fromarray(color_seg).convert("RGBA")
         overlayed = Image_.blend(image, overlay, 0.5)
-        LabelList(label_lst).visualize(image=overlayed, palette=palette, bbox={"temp": BBox([0, 0, 0, 0])})
+        LabelList(label_lst).visualize(image=overlayed, palette=palette, bbox={"temp": BBox([0, 0, 0, 0], mode="xywh")})
         return overlayed

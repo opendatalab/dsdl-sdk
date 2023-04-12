@@ -283,25 +283,35 @@ class StructObject(dict):
 
     def strict_setup(self):
         kwargs = self._raw_dict
-        keys = list(kwargs.keys())
+        extra_keys = list(kwargs.keys())
+        missing_fields = list()
+        missing_structs = list()
         for k in self.namespace.__required__:
             if k not in kwargs:
-                raise FieldNotFoundError(f"Required field {k} is missing.")
-            setattr(self, k, kwargs[k])
-            keys.remove(k)
+                missing_fields.append(k)
+            else:
+                setattr(self, k, kwargs[k])
+                extra_keys.remove(k)
         for k in self.namespace.__optional__:
             if k in kwargs:
                 setattr(self, k, kwargs[k])
-                keys.remove(k)
+                extra_keys.remove(k)
         for k in self.namespace.get_struct_mapping():
             if k not in kwargs:
-                raise FieldNotFoundError(f"Required struct instance {k} is missing.")
-            setattr(self, k, kwargs[k])
-            keys.remove(k)
+                missing_structs.append(k)
+            else:
+                setattr(self, k, kwargs[k])
+                extra_keys.remove(k)
 
-        if keys:
-            raise InterruptError(
-                f"Not defined keys {keys} found in sample, which is not permitted in strict init mode.")
+        if extra_keys or missing_structs or missing_fields:
+            msg = f"Interrupt happens when initial the struct, "
+            if extra_keys:
+                msg += f"the keys {extra_keys} in the sample are redundant, please remove them. "
+            if missing_structs:
+                msg += f"the required structs {missing_structs} should be defined in the sample. "
+            if missing_fields:
+                msg += f"the required fields {missing_fields} should be defined in the sample. "
+            raise InterruptError(msg)
 
     def __getattr__(self, key):
         try:
