@@ -609,7 +609,7 @@ class Date(BaseField):
 
     def load_value(self, value):
         if self.kwargs["fmt"]:
-            return datetime.strptime(value, format=self.kwargs["fmt"]).date()
+            return datetime.strptime(value, self.kwargs["fmt"]).date()
         else:
             return date.fromisoformat(value)
 
@@ -652,6 +652,6 @@ class Time(BaseField):
 
     def load_value(self, value):
         if self.kwargs["fmt"]:
-            return datetime.strptime(value, format=self.kwargs["fmt"]).time()
+            return datetime.strptime(value, self.kwargs["fmt"]).time()
         else:
             return date.fromisoformat(value)
