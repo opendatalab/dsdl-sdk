@@ -654,4 +654,4 @@ class Time(BaseField):
         if self.kwargs["fmt"]:
             return datetime.strptime(value, self.kwargs["fmt"]).time()
         else:
-            return date.fromisoformat(value)
+            return time.fromisoformat(value)
