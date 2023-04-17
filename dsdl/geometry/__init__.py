@@ -1,7 +1,7 @@
 from .box import BBox
 from .label import Label, LabelList
 from .media import Image
-from .polygon import Polygon, PolygonItem
+from .polygon import Polygon, PolygonItem, RLEPolygon
 from .segmap import SegmentationMap
 from .insmap import InstanceMap
 from .keypoint import Coord2D, KeyPoints
@@ -24,6 +24,7 @@ __all__ = [
     "LabelList",
     "Polygon",
     "PolygonItem",
+    "RLEPolygon",
     "SegmentationMap",
     "InstanceMap",
     "Coord2D",
