@@ -5,8 +5,14 @@ from pathlib import Path
 import networkx as nx
 import yaml
 import numpy as np
-from skimage import measure
-from pycocotools import mask as mask_util
+try:
+    from skimage import measure
+except ImportError:
+    measure = None
+try:
+    from pycocotools import mask as mask_util
+except ImportError:
+    mask_util = None
 import xml.etree.ElementTree as ET
 
 DSDL_TASK_NAMES_TEMPLATE = {
@@ -164,6 +170,8 @@ def annToRLE(ann, img_height, img_width):
     Convert annotation which can be polygons, uncompressed RLE to RLE.
     :return: binary mask (numpy 2D array)
     """
+    if mask_util is None:
+        raise RuntimeError('Package pycocotools.mask is not installed.')
     h, w = img_height, img_width
     segm = ann['segmentation']
     if type(segm) == list:
@@ -185,6 +193,8 @@ def annToMask(ann, h, w):
     Convert annotation which can be polygons, uncompressed RLE, or RLE to binary mask.
     :return: binary mask (numpy 2D array)
     """
+    if mask_util is None:
+        raise RuntimeError('Package pycocotools.mask is not installed.')
     rle = annToRLE(ann, h, w)
     m = mask_util.decode(rle)
     return m
@@ -195,6 +205,8 @@ def mask2polygon(mask):
     # encoded_ground_truth = mask_util.encode(fortran_ground_truth_binary_mask)
     # ground_truth_area = mask_util.area(encoded_ground_truth)
     # ground_truth_bounding_box = mask_util.toBbox(encoded_ground_truth)
+    if measure is None:
+        raise RuntimeError('Package skimage.measure is not installed.')
     contours = measure.find_contours(mask, 0.5)
     segmentations = []
     for contour in contours:
