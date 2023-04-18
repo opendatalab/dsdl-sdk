@@ -26,5 +26,5 @@ class PointCloud(BaseGeometry):
         points = np.frombuffer(self.to_bytes().read(), dtype=np.float32)
         return points.reshape(-1, self.load_dim)
 
-    def __repr(self):
+    def __repr__(self):
         return f"point cloud path: {self.location}"

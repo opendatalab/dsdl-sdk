@@ -1,0 +1,15 @@
+$dsdl-version: "0.5.0"
+
+LocalObjectEntry:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        bbox: BBox
+        label: Label[dom=$cdom]
+
+ObjectDetectionSample:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        image: Image
+        objects: List[LocalObjectEntry[cdom=$cdom]]

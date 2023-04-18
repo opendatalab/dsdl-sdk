@@ -1,0 +1,13 @@
+$dsdl-version: "0.5.0"
+
+LocalInstanceEntry:
+    $def: struct
+    $fields:
+        location: Polygon/Bbox 
+        text: Text
+
+OCRSample:
+    $def: struct
+    $fields:
+        image: Image
+        instances: List[LocalInstanceEntry]

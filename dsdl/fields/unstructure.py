@@ -55,10 +55,21 @@ class PointCloud(UnstructuredObjectField):
     }
 
     data_schema = {
-        "$id": "/special/pointcloud",
+        "$id": "/unstructure/pointcloud",
         "title": "PointCloudField",
         "description": "PointCloud Field in dsdl.",
         "type": "string"
     }
 
     geometry_class = "PointCloud"
+
+
+class Video(UnstructuredObjectField):
+    data_schema = {
+        "$id": "/unstructure/video",
+        "title": "VideoField",
+        "description": "Video field in dsdl.",
+        "type": "string",
+    }
+
+    geometry_class = "Video"

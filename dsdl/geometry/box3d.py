@@ -1,9 +1,30 @@
 from .base_geometry import BaseGeometry
+import numpy as np
 
 
 class BBox3D(BaseGeometry):
-    def __init__(self, value):
-        self._data = value
+    def __init__(self, value, mode):
+        assert mode in ("indoor", "auto-drive")
+        self._mode = mode
+        if mode == "auto-drive":
+            self._data = list(value) + [0., 0.]
+
+    def to_array(self):
+        if self.mode == "auto-drive":
+            return np.array(self._data[:7])
+        else:
+            return np.array(self._data)
+
+    @property
+    def data(self):
+        if self.mode == "auto-drive":
+            return self._data[:7]
+        else:
+            return self._data
+
+    @property
+    def mode(self):
+        return self._mode
 
     @property
     def x(self):
@@ -30,8 +51,16 @@ class BBox3D(BaseGeometry):
         return self._data[5]
 
     @property
-    def alpha(self):
+    def yaw(self):
         return self._data[6]
+
+    @property
+    def pitch(self):
+        return self._data[7]
+
+    @property
+    def roll(self):
+        return self._data[8]
 
     @property
     def xmin(self):
@@ -60,3 +89,6 @@ class BBox3D(BaseGeometry):
     @property
     def volumn(self):
         return self.length * self.width * self.height
+
+    def __repr__(self):
+        return f'BoundingBox3D(xmin={self.xmin}, ymin={self.ymin}, zmin={self.zmin}, xmax={self.xmax}, ymax={self.ymax}, zmax={self.zmax})'
