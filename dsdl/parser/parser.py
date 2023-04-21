@@ -438,7 +438,7 @@ class DSDLParser(Parser, ABC):
                 for ele_class in val.field_list:
                     dsdl_py += f""""{ele_class.label_value}","""
                 dsdl_py += "],\n"
-                if val.skeleton:
+                if val.skeleton is not None:
                     dsdl_py += f"""    skeleton = {val.skeleton}\n"""
                 dsdl_py += ")\n"
             if idx != len(ordered_keys) - 1:

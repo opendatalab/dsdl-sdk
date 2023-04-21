@@ -38,7 +38,6 @@ def view(dsdl_yaml, num, random, visualize, fields, config, position, multistage
         else:
             dsdl_py = dsdl_parse(dsdl_yaml["yaml_file"], dsdl_library_path="")
         exec(dsdl_py, {})
-
     dataset = Dataset(dsdl_yaml["samples"], dsdl_yaml["sample_type"], config,
                       global_info=dsdl_yaml["global_info"], global_info_type=dsdl_yaml["global_info_type"])
 

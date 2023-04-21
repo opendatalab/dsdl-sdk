@@ -31,7 +31,7 @@ class ParserClass:
         return raw_name
 
     def _parse_skeleton(self, skeleton: _List) -> Optional[_List[_List[int]]]:
-        if not skeleton:
+        if skeleton is None:
             return None
         else:
             if isinstance(skeleton, list):
