@@ -1,0 +1,117 @@
+{
+    "cfgs": [
+        {
+            "data_name": "BBBC038v1",
+            "split": "stage1_train",
+            "dsdl_dir": "datasets/BBBC038v1",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/BBBC038v1/prepared",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 227
+        },
+        {
+            "data_name": "DOORS",
+            "split": "DS1_T",
+            "dsdl_dir": "datasets/DOORS",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/DOORS/prepared",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 10000
+        },
+        {
+            "data_name": "TimberSeg",
+            "split": "original",
+            "dsdl_dir": "datasets/TimberSeg",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/TimberSeg/original",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 220
+        },
+        {
+            "data_name": "NDD20",
+            "split": "ABOVE",
+            "dsdl_dir": "datasets/NDD20",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/NDD20/prepared",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 4402
+        },
+        {
+            "data_name": "LVIS",
+            "split": "val",
+            "dsdl_dir": "datasets/LVIS",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/LVIS/original",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 945
+        },
+        {
+            "data_name": "STREETS",
+            "split": "train",
+            "dsdl_dir": "datasets/STREETS",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/STREETS/prepared",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 819
+        },
+        {
+            "data_name": "ZeroWaste-f",
+            "split": "train",
+            "dsdl_dir": "datasets/ZeroWaste-f",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/ZeroWaste-f/original",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 2947
+        },
+        {
+            "data_name": "iShape",
+            "split": "antenna_train",
+            "dsdl_dir": "datasets/iShape",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/iShape/prepared",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 754
+        },
+        {
+            "data_name": "OVIS",
+            "split": "train",
+            "dsdl_dir": "datasets/OVIS",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/OVIS/prepared",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 2044
+        },
+        {
+            "data_name": "NDISPark",
+            "split": "train",
+            "dsdl_dir": "datasets/NDISPark",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/NDISPark/original",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 111
+        },
+        {
+            "data_name": "Plittersdorf",
+            "split": "test",
+            "dsdl_dir": "datasets/Plittersdorf",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/Plittersdorf/original",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 187
+        },
+        {
+            "data_name": "TrashCan",
+            "split": "instance_train",
+            "dsdl_dir": "datasets/TrashCan",
+            "working_dir": "s3://dsdl_bucket/segmentation/simple_version/TrashCan/original",
+            "petrel_cfg": "~/petreloss.conf",
+            "sample_nums": 5936
+        },
+
+        {
+            "data_name": "DRAM",
+            "split": "impressionism",
+            "dsdl_dir": "datasets/DRAM",
+            "working_dir": "s3://myBuck/evaluation_datasest/SAM/DRAM/prepared",
+            "petrel_cfg": "~/petreloss_liushuo.conf",
+            "sample_nums": 718
+        },
+        {
+            "data_name": "GTEA",
+            "split": "train",
+            "dsdl_dir": "datasets/GTEA",
+            "working_dir": "s3://myBuck/evaluation_datasest/SAM/GTEA/prepared",
+            "petrel_cfg": "~/petreloss_liushuo.conf",
+            "sample_nums": 652
+        }
+    ]
+}
