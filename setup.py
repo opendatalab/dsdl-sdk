@@ -47,6 +47,7 @@ setup(
         # "scikit-image>=0.19.3",
         "tifffile",
         "terminaltables>=3.1.10",
+        "matplotlib>=3.3.3",
     ],
     classifiers=[
         "Programming Language :: Python :: 3.8",
