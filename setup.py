@@ -40,6 +40,7 @@ setup(
         "environs==9.5.0",
         "pylint>=2.15.5",
         "fastjsonschema>=2.16.3",
+        "jsonschema>=3.2.0",
         # "pycocotools>=2.0.6",
         "tqdm>=4.65.0",
         # "scikit-image>=0.19.3",
