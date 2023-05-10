@@ -1,57 +1,48 @@
-from .base_geometry import BaseGeometry
-from .utils import bytes_to_numpy
-from ..exception import FileReadError
 import numpy as np
-from PIL import Image
-import io
+from PIL import Image as Image_
 from .label import LabelList
 from .box import BBox
-from .class_domain import _LabelMapDefaultDomain
+from .media import Image
 
 
-class SegmentationMap(BaseGeometry):
+class SegmentationMap(Image):
     """
     A Geometry class for semantic segmentation map.
     """
 
-    def __init__(self, location, file_reader, dom):
-        self._loc = location
-        self._reader = file_reader
+    def __init__(self, value, dom, file_reader):
+        """A Geometry class which abstracts a semantic segmentation map object.
+
+        Args:
+            value: The relative path of the current semantic segmentation map image.
+            file_reader: The file reader object of the current semantic segmentation map image.
+            dom: The current semantic segmentation map's class domain.
+        """
+        super().__init__(value, file_reader)
+        if isinstance(dom, list):
+            assert len(dom) == 1, "You can only assign one class dom in LabelMapField."
+            dom = dom[0]
         self._dom = dom
-        if self._dom is None:
-            self._dom = _LabelMapDefaultDomain
 
     @property
     def class_domain(self):
+        """
+        Returns:
+            The current semantic segmentation map's class domain.
+        """
         return self._dom
 
-    @property
-    def location(self):
-        return self._loc
-
-    def to_bytes(self):
-        """
-        turn SegmentationMap object to bytes
-        """
-        return io.BytesIO(self._reader.read())
-
-    def to_image(self):
-        """
-        turn SegmentationMap object to PIL.Image
-        """
-        try:
-            img = Image.open(self.to_bytes())
-        except Exception as e:
-            raise FileReadError(f"Failed to convert bytes to an array. {e}") from None
-        return img
-
-    def to_array(self):
-        """
-        turn SegmentationMap object to numpy.ndarray
-        """
-        return bytes_to_numpy(self.to_bytes())
-
     def visualize(self, image, palette, **kwargs):
+        """Draw the current semantic segmentation map on an given image.
+
+        Args:
+            image: The image where the semantic segmentation map to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current semantic segmentation map.
+
+        Returns:
+            The image where the current semantic segmentation map has been drawn on.
+        """
         seg = self.to_array()
         color_seg = np.zeros((seg.shape[0], seg.shape[1], 3), dtype=np.uint8)
         category_ids = np.unique(seg)
@@ -67,14 +58,7 @@ class SegmentationMap(BaseGeometry):
                 palette[category_name] = tuple(np.random.randint(0, 255, size=[3]))
             label_lst.append(label)
             color_seg[seg == category_id, :] = np.array(palette[category_name])
-        overlay = Image.fromarray(color_seg).convert("RGBA")
-        overlayed = Image.blend(image, overlay, 0.5)
-        LabelList(label_lst).visualize(image=overlayed, palette=palette, bbox={"temp": BBox(0, 0, 0, 0)})
+        overlay = Image_.fromarray(color_seg).convert("RGBA")
+        overlayed = Image_.blend(image, overlay, 0.5)
+        LabelList(label_lst).visualize(image=overlayed, palette=palette, bbox={"temp": BBox([0, 0, 0, 0], mode="xywh")})
         return overlayed
-
-    def __repr__(self):
-        return f"path:{self.location}, class domain: {self._dom.__name__}"
-
-    @property
-    def field_key(self):
-        return "LabelMap"

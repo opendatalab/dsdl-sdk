@@ -1,0 +1,9 @@
+datasets/*
+*.pkl
+*.bak
+*.sh
+*pth
+aws*
+.ipynb_checkpoints*
+temp*
+count*

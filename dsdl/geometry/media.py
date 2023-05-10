@@ -1,45 +1,72 @@
 import io
-from PIL import Image
-from ..exception import FileReadError
+from PIL import Image as Image_
+from dsdl.exception import FileReadError
 from .base_geometry import BaseGeometry
 from .utils import bytes_to_numpy
+from tifffile import imread
 
 
-class ImageMedia(BaseGeometry):
+class Image(BaseGeometry):
 
-    def __init__(self, location, file_reader):
-        self._loc = location
+    def __init__(self, value, file_reader):
+        """A Geometry class which abstracts an image object.
+
+        Args:
+            value: The relative path of the current image object.
+            file_reader: The file reader object of the current image object.
+        """
+        self._loc = value
         self._reader = file_reader
+        self.namespace = None
+        _splits = value.split(".")
+        if len(_splits) > 1:
+            self._ext = value.split(".")[-1].lower()
+        else:
+            self._ext = ""
+
+    def set_namespace(self, struct_obj):
+        self.namespace = struct_obj
+        self._reader = struct_obj.file_reader
 
     @property
     def location(self):
+        """
+        Returns:
+            The relative path of the current image.
+        """
         return self._loc
 
     def to_bytes(self):
+        """Turn ImageMedia object to bytes.
+
+        Returns:
+            The bytes of the current image.
         """
-        turn ImageMedia object to bytes
-        """
-        return io.BytesIO(self._reader.read())
+        return io.BytesIO(self._reader.read(self._loc))
 
     def to_image(self):
+        """Turn ImageMedia object to a `PIL.Image` object.
+
+        Returns:
+            The `PIL.Image` object of the current image.
         """
-        turn ImageMedia object to PIL.Image
-        """
+        if self._ext in ("tif", "tiff"):
+            return Image_.fromarray(self.to_array())
         try:
-            img = Image.open(self.to_bytes())
+            img = Image_.open(self.to_bytes())
         except Exception as e:
             raise FileReadError(f"Failed to convert bytes to an array. {e}") from None
         return img
 
     def to_array(self):
+        """Turn ImageMedia object to numpy.ndarray.
+
+        Returns:
+            The `np.ndarray` object of the current image.
         """
-        turn ImageMedia object to numpy.ndarray
-        """
+        if self._ext in ("tif", "tiff"):
+            return imread(self.to_bytes())
         return bytes_to_numpy(self.to_bytes())
 
     def __repr__(self):
         return f"path:{self.location}"
-
-    @property
-    def field_key(self):
-        return "Image"

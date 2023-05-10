@@ -1,4 +1,3 @@
-import oss2
 import os
 from contextlib import contextmanager
 from .base import BaseFileReader
@@ -11,6 +10,10 @@ class AliOSSFileReader(BaseFileReader):
 
     def __init__(self, working_dir, bucket_name, access_key_id, access_key_secret, endpoint):
         super().__init__(working_dir)
+        try:
+            import oss2
+        except ImportError:
+            raise ImportError('Please install oss2 to enable AliOSSBackend.')
         auth = oss2.Auth(access_key_id, access_key_secret)
         self.bucket = oss2.Bucket(auth, endpoint, bucket_name)
 

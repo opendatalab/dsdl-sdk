@@ -10,7 +10,7 @@ try:
 except ImportError:
     from yaml import SafeLoader as YAMLSafeLoader
 from .commons import OptionEatAll, prepare_input
-from ..parser import check_dsdl_parser
+from dsdl.parser import check_dsdl_parser
 
 
 @click.command(name="check")
@@ -38,6 +38,21 @@ def check(dsdl_yaml, num, random, fields, config, position, output, **kwargs):
         parse_report = check_dsdl_parser(dsdl_yaml["yaml_file"], dsdl_library_path="", report_flag=True)
     dsdl_py = parse_report["dsdl_py"]
     parse_report = json.loads(parse_report["check_log"])
+
+    parse_report["py_runtime"] = {
+        "flag": 1,
+        "msg": f"Successfully run!"
+    }
+
+    try:
+        exec(dsdl_py, {})
+    except Exception as e:
+        parse_report['flag'] = 0
+        parse_report["py_runtime"] = {
+            "flag": 0,
+            "msg": f"Error occurred when run python script. {e}"
+        }
+
     parse_report["samples"] = {
         "flag": 1,
         "msg": f"Totally {len(dsdl_yaml['samples'])} samples found."
@@ -53,10 +68,22 @@ def check(dsdl_yaml, num, random, fields, config, position, output, **kwargs):
         report_obj.generate()
         return
 
-    exec(dsdl_py, {})
+    parse_report["dataset_init"] = {
+        "flag": 1,
+        "msg": "Dataset init successfully!"
+    }
 
-    dataset = CheckDataset(report_obj, dsdl_yaml["samples"], dsdl_yaml["sample_type"], config,
-                           global_info_type=dsdl_yaml["global_info_type"], global_info=dsdl_yaml["global_info"])
+    try:
+        dataset = CheckDataset(report_obj, dsdl_yaml["samples"], dsdl_yaml["sample_type"], config,
+                               global_info_type=dsdl_yaml["global_info_type"], global_info=dsdl_yaml["global_info"])
+    except Exception as e:
+        parse_report["flag"] = 0
+        parse_report["dataset_init"] = {
+            "flag": 0,
+            "msg": f"Dataset init error: {e}"
+        }
+        report_obj.generate()
+        return
 
     num = min(num, len(dataset))
 

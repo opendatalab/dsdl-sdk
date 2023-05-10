@@ -4,5 +4,5 @@ __all__ = [
     "parse",
     "dsdl_parse",
     "CHECK_LOG",
-    "check_dsdl_parser"
+    "check_dsdl_parser",
 ]

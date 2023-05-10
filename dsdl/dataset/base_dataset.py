@@ -12,8 +12,8 @@ except ImportError:
 
         def __getitem__(self, item):
             pass
-from ..types import Struct, StructMetaclass
-from ..geometry import STRUCT
+from dsdl.fields import Struct
+from dsdl.geometry import STRUCT
 from dsdl.dataset.utils import Util
 import dsdl.objectio as objectio
 from typing import List, Dict, Any, Callable, Optional, Union
@@ -25,45 +25,55 @@ except ImportError:
 
 
 class Dataset(Dataset_):
-    # PALETTE用来存储每个类别的颜色（用于可视化）
-    PALETTE = {}
 
     def __init__(
             self,
             samples: List[Dict[str, Any]],
-            sample_type: Union[str, StructMetaclass],
+            sample_type: Union[str, Struct],
             location_config: dict,
             pipeline: Optional[Callable[[Dict], Dict]] = None,
-            global_info_type: Union[str, StructMetaclass] = None,
+            global_info_type: Union[str, Struct] = None,
             global_info: Dict[str, Any] = None,
-            lazy_init: bool = False
+            lazy_init: bool = False,
+            strict_init: bool = False
     ):
         self.location_config = location_config
         self.pipeline = pipeline  # 处理样本的函数
         self._samples = samples  # 样本所在的yaml文件路径
         self._global_info = global_info
         self.lazy_init = lazy_init
+        self.strict_init = strict_init
+        self.file_reader = self._load_file_reader(location_config)  # 样本的路径配置（如本地路径或是阿里云路径）
 
         if isinstance(sample_type, str):
-            sample_type = Util.extract_sample_type(sample_type)
-            self.sample_type = STRUCT.get(sample_type)
-        elif issubclass(sample_type, Struct):
+            sample_type_str = sample_type
+            sample_type = Util.extract_sample_type(sample_type_str)
+            sample_args = Util.extract_class_dom(sample_type_str)
+            self.sample_type = STRUCT.get(sample_type)(**sample_args)
+        elif isinstance(sample_type, Struct):
             self.sample_type = sample_type
         else:
             raise RuntimeError("sample_type must be a string or a Struct class")
+        self.sample_type.set_lazy_init(self.lazy_init)
+        self.sample_type.set_strict_init(self.strict_init)
+        self.sample_type.set_file_reader(self.file_reader)
 
         if global_info_type is not None:
             if isinstance(global_info_type, str):
-                global_info_type = Util.extract_sample_type(global_info_type)
-                self.global_info_type = STRUCT.get(global_info_type)
-            elif issubclass(global_info_type, Struct):
+                global_info_type_str = global_info_type
+                global_info_type = Util.extract_sample_type(global_info_type_str)
+                global_info_args = Util.extract_class_dom(global_info_type_str)
+                self.global_info_type = STRUCT.get(global_info_type)(**global_info_args)
+            elif isinstance(global_info_type, Struct):
                 self.global_info_type = global_info_type
             else:
                 raise RuntimeError("global_info_type must be a string or a Struct class")
+            self.global_info_type.set_lazy_init(self.lazy_init)
+            self.global_info_type.set_strict_init(self.strict_init)
+            self.global_info_type.set_file_reader(self.file_reader)
         else:
             self.global_info_type = None
 
-        self.file_reader = self._load_file_reader(location_config)  # 样本的路径配置（如本地路径或是阿里云路径）
         self.global_info = self._load_global_info()
         self.sample_list = self._load_sample()  # 将yaml文件中的样本内容加载到self.sample_list中
         self._has_global_info = self.global_info is not None
@@ -85,7 +95,7 @@ class Dataset(Dataset_):
 
     def _load_global_info(self):
         if self.global_info_type is not None and self._global_info is not None:
-            global_info = self.global_info_type(file_reader=self.file_reader, **self._global_info)
+            global_info = self.global_info_type(self._global_info)
             return global_info
         else:
             return None
@@ -96,7 +106,7 @@ class Dataset(Dataset_):
         """
         sample_list = []
         for i, sample in enumerate(self._samples):
-            struct_sample = self.sample_type(lazy_init=self.lazy_init, file_reader=self.file_reader, **sample)
+            struct_sample = self.sample_type(sample)
             sample_list.append(self.process_sample(i, struct_sample))
         return sample_list
 
@@ -108,7 +118,6 @@ class Dataset(Dataset_):
 
     def __getitem__(self, idx):
         data = self.sample_list[idx]
-        # data = self.process_sample(sample)
         if self.pipeline is not None:
             data = self.pipeline(data)
         return data

@@ -10,5 +10,5 @@ __all__ = [
     "BaseFileReader",
     "CephFileReader",
     "PetrelFileReader",
-    "AwsOSSFileReader",
+    "AwsOSSFileReader"
 ]

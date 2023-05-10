@@ -1,8 +1,12 @@
-from typing import List, overload
+from typing import List
 import numpy as np
+import cv2
 from PIL import ImageDraw, Image
 from .base_geometry import BaseGeometry
-
+try:
+    import pycocotools.mask as mask_util
+except:
+    mask_util = None
 
 class PolygonItem(BaseGeometry):
 
@@ -10,21 +14,50 @@ class PolygonItem(BaseGeometry):
             self,
             points: List[List[float]]
     ):
+        """A Geometry class which abstracts a single polygon item object (which means there is only one closed shape).
+
+        Args:
+            points: The coordinates of a polygon object, whose format is `[[x1, y1], [x2, y2], ...]`
+
+        Attributes:
+            _data(list[list[float]]): The coordinates of a polygon object, whose format is `[[x1, y1], [x2, y2], ...]`
+        """
         self._data = points
 
     @property
     def points(self) -> List[List[float]]:
+        """
+        Returns:
+            The coordinates of the current polygon item. The format is `[[x1, y1], [x2, y2], ...]`.
+        """
         return self._data
 
     @property
     def points_x(self) -> List[float]:
+        """
+        Returns:
+            The horizontal axis of all the points which the current polygon item consists of. The format is [x1, x2, x3, ...].
+        """
         return [_[0] for _ in self._data]
 
     @property
     def points_y(self) -> List[float]:
+        """
+        Returns:
+            The vertical axis of all the points which the current polygon item consists of. The format is [y1, y2, y3, ...].
+        """
         return [_[1] for _ in self._data]
 
     def point_for_draw(self, mode: str = "lt"):
+        """
+        Get the point's coordinate where a legend is fit to draw.
+        Args:
+            mode: The position model. Only "lb", "lt", "rb", "rt" are permitted, which mean get the coordinate of left bottom,
+                left top, right bottom and right top corresponding.
+
+        Returns:
+            The coordinate corresponding to the `mode`, whose format is [x, y].
+        """
         assert mode in ("lb", "lt", "rb", "rt")
         if mode == "lt":
             p = min(self._data, key=lambda x: x[0] + x[1])
@@ -39,9 +72,17 @@ class PolygonItem(BaseGeometry):
 
     @property
     def openmmlabformat(self) -> List[float]:
+        """
+        Returns:
+            All the points of the format [x1, y1, x2, y2, ...].
+        """
         return self._flatten()
 
     def to_tuple(self):
+        """
+        Returns:
+            The coordinates of the current polygon item. The format is `((x1, y1), (x2, y2), ...)`.
+        """
         return tuple([(_[0], _[1]) for _ in self._data])
 
     def _flatten(self) -> List[float]:
@@ -53,18 +94,57 @@ class PolygonItem(BaseGeometry):
 
 class Polygon(BaseGeometry):
 
-    def __init__(self, polygons: List[PolygonItem]):
-        self._data = polygons
+    def __init__(self, value):
+        """A Geometry class which abstracts a polygon object (which meas there may be multi closed shapes).
+
+        Args:
+            value: A list of a number of PolygonItem objects.
+        """
+        polygon_lst = []
+        for idx, points in enumerate(value):
+            polygon_lst.append(PolygonItem(points))
+        self._data = polygon_lst
 
     @property
     def polygons(self):
+        """
+        Returns:
+            A list of all the PolygonItem objects in the current polygon object.
+        """
         return self._data
+    
+    def to_mask(self, imsize: List[int] = [1000, 1000]) -> np.array:
+        """
+        generate mask from polygon.
+        """
+        mask = np.zeros(imsize).astype(np.uint8)
+        points = []
+        for p in self.polygons:
+            pts = np.array(p.points, np.int32)
+            pts = pts.reshape((-1, 1, 2))
+            points.append(pts)
+
+        mask = cv2.fillPoly(mask, points, 1)
+        return mask
 
     @property
     def openmmlabformat(self) -> List[List[float]]:
+        """
+        Returns:
+            All the points of all the polygon item. The format is `[[x1, y1, x2, y2, ...], [x1, y1, x2, y2, ...], ...]`.
+        """
         return [_.openmmlabformat for _ in self._data]
 
     def point_for_draw(self, mode: str = "lt") -> [int, int]:
+        """
+        Get the point's coordinate where a legend is fit to draw.
+        Args:
+            mode: The position model. Only "lb", "lt", "rb", "rt" are permitted, which mean get the coordinate of left bottom,
+                left top, right bottom and right top corresponding.
+
+        Returns:
+            The coordinate correspond to the `mode`. The format is [x, y].
+        """
         assert mode in ("lb", "lt", "rb", "rt")
         if mode == "lt":
             p = min(self._data, key=lambda x: x.point_for_draw(mode)[0] + x.point_for_draw(mode)[1])
@@ -78,6 +158,16 @@ class Polygon(BaseGeometry):
         return p
 
     def visualize(self, image, palette, **kwargs):
+        """Draw the current polygon object on an given image.
+
+        Args:
+            image: The image where the polygon to be drawn.
+            palette: The palette which stores the color of different category name.
+            **kwargs: Other annotations which may be used when drawing the current polygon object, such as `Label` annotation.
+
+        Returns:
+            The image where the current polygon object has been drawn on.
+        """
         color = (0, 255, 0)
         if "label" in kwargs:
             for label in kwargs["label"].values():
@@ -97,15 +187,11 @@ class Polygon(BaseGeometry):
     def __repr__(self):
         return str(self._data)
 
-    @property
-    def field_key(self):
-        return "Polygon"
-
 
 class RLEPolygon(BaseGeometry):
     def __init__(self, rle_data, image_shape):
         """
-        rle_data: rle list
+        rle_data: rle list or bytes
         image_shape: [H, W]
         """
         self._rle_data = rle_data
@@ -119,23 +205,29 @@ class RLEPolygon(BaseGeometry):
     def image_shape(self):
         return self._image_shape
 
-    @property
-    def mask(self):
+    def to_mask(self) -> np.array:
         '''
         # ref: https://www.kaggle.com/paulorzp/run-length-encode-and-decode
         mask_rle: run-length as string formated (start length)
         shape: (height,width) of array to return
         Returns numpy array, 1 - mask, 0 - background
         '''
-        s = self._rle_data
-        shape = self._image_shape
-        starts, lengths = [np.asarray(x, dtype=int) for x in (s[0:][::2], s[1:][::2])]
-        starts -= 1
-        ends = starts + lengths
-        img = np.zeros(shape[0] * shape[1], dtype=np.uint8)
-        for lo, hi in zip(starts, ends):
-            img[lo:hi] = 1
-        return img.reshape(shape)
+        if mask_util is not None:
+            coco_rle = {'size': self._image_shape,
+                        'counts': self._rle_data}
+            return mask_util.decode([coco_rle])[:,:,0]
+        else:
+            shape = self._image_shape
+            lens = list(self._rle_data)
+            starts = [sum(lens[0:i]) for i in range(len(lens))]
+            img = np.zeros(shape[0]*shape[1], dtype=np.uint8)
+            flag = 1
+            for begin, length in zip(starts, lens):
+                flag = 1 - flag
+                if not flag:
+                    continue
+                img[begin: begin+length] = 1
+            return img.reshape(shape)
 
     @property
     def openmmlabformat(self):

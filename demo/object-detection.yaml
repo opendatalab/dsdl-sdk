@@ -1,0 +1,18 @@
+$dsdl-version: "0.5.0"
+
+LocalObjectEntry:
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        bbox: BBox
+        label: Label[dom=$cdom]
+        is_crowd: Bool
+    $optional: ['label']
+
+ObjectDetectionSample:
+    # Each sample contains an image together with a list of local objects.
+    $def: struct
+    $params: ['cdom']
+    $fields:
+        image: Image
+        objects: List[etype=LocalObjectEntry[cdom=$cdom]]
