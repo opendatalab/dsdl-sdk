@@ -107,11 +107,13 @@ ali_oss = dict(
 如果你觉得本项目对你的研究工作有所帮助，请参考如下 bibtex 引用 DSDL。
 
 ```bibtex
-@misc{dsdl2022,
-    title={{DSDL}: Data Set Description Language},
-    author={DSDL Contributors},
-    howpublished = {\url{https://github.com/opendatalab/dsdl}},
-    year={2022}
+@misc{wang2024dsdl,
+      title={DSDL: Data Set Description Language for Bridging Modalities and Tasks in AI Data}, 
+      author={Bin Wang and Linke Ouyang and Fan Wu and Wenchang Ning and Xiao Han and Zhiyuan Zhao and Jiahui Peng and Yiying Jiang and Dahua Lin and Conghui He},
+      year={2024},
+      eprint={2405.18315},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI}
 }
 ```
 
